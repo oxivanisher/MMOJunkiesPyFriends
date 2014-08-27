@@ -1,0 +1,7 @@
+DEBUG = True
+OUTPUTDIR = "output"
+USERNAME = "admin"
+PASSWORD = "changeme"
+EMAILTARGET = ['yourname@example.com']
+EMAILSERVER = "127.0.0.1"
+EMAILFROM = "yourname@example.com"
