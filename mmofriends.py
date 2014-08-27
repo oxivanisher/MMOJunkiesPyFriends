@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 # imports
+import sys
 import logging
 from sqlite3 import dbapi2 as sqlite3
+
+import mmonetworks
 
 # configure logging
 logging.basicConfig(filename='/tmp/mmofriends.log', format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)

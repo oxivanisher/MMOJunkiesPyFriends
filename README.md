@@ -46,3 +46,6 @@ Notes:
 		1: target is a client
 		2: target is a channel
 		3: target is a virtual serve
+
+
+git submodule foreach git pull
