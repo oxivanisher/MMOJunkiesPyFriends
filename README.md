@@ -17,6 +17,7 @@ http://voicecommandcenter.com/knowledgebase/24/Teamspeak-3-FAQ.html
 http://community.mybb.com/thread-117220.html
 https://support.teamspeakusa.com/index.php?/Knowledgebase/List/Index/10/english#ts3_integrate_userdb
 http://media.teamspeak.com/ts3_literature/TeamSpeak%203%20Server%20Query%20Manual.pdf
+http://stackoverflow.com/questions/1811730/how-do-i-work-with-a-git-repository-within-another-repository
 
 Libs:
 https://github.com/nikdoof/python-ts3
