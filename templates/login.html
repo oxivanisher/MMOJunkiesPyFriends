@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<form action="{{ url_for('login') }}" id="login" method="post" autocomplete="off">
+	<h2>Login</h2>
+		<dl>
+			<dt>Username:
+			<dd><input type="text" name="username" class="backend">
+			<dt>Password:
+			<dd><input type="password" name="password" class="backend">
+		</dl>
+	<input type="submit" />
+</form>
+{% endblock %}

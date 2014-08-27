@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+	<h3>Admin</h3>
+	<ul>
+		<li>ToDo!</li>
+	</ul>
+	<form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<dl>
+			<dt>Upload ZIP File:
+			<dd><input type="file" name="file">
+			<dd><input type="Submit" value="Upload">
+		</dl>
+	</form>
+{% endblock %}

@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		{% block head %}
+		<title>{% block title %}{% endblock %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="MMOJunkies Friends">
+		<meta name="author" content="Marc Urben">
+
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+		<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+		
+		<script src="{{ url_for('static', filename='jquery/jquery.dataTables.min.js') }}"></script>
+
+		<link href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+		<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
+		
+		<link href="{{ url_for('static', filename='friendstable.css') }}" rel="stylesheet" media="all" type="text/css" />
+		<script src="{{ url_for('static', filename='friendstable.js') }}"></script>
+		<link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" />
+
+		<style>
+		  body {
+			padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+		  }
+		</style>
+		<script>
+			$(function() {
+				$( "#dialog" ).dialog({
+					autoOpen: true,
+					dialogClass: 'success',
+					modal: true,
+					open: function(event, ui) {
+						setTimeout(function(){
+						$('#dialog').dialog('close');                
+						}, 3000);
+					},
+					buttons: {
+						Close: function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+			});
+            function showPopup(imgSrc) {
+            	$('img#popupimg').attr( "src", imgSrc );
+            	$("#popup").show();
+            }
+            function hidePopup() {
+            	$("#popup").hide();
+            }
+		</script>
+		{% endblock %}
+	</head>
+	<body>
+		<div><span id="popup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"><img id="popupimg" style="max-width:400px; max-height: 400px; width: auto;" src="" /></span></div>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+		  <div class="navbar-inner">
+			<div class="container">
+			  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="brand" href="{{ url_for('show_index') }}">MMOFriends</a>
+			  <div class="nav-collapse collapse">
+				<ul class="nav">
+				  <li class="{% if url_for('show_index') == request.path %}active{% endif %}"><a href="{{ url_for('show_index') }}">Friends Index</a></li>
+				  {% if session.logged_in %}
+				  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Admin</a></li>
+				  {% endif %}
+				  <li class="{% if url_for('login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('logout') }}">Logout</a>{% else %}<a href="{{ url_for('login') }}">Login</a>{% endif %}</li>
+				</ul>
+			  </div><!--/.nav-collapse -->
+			</div>
+		  </div>
+		</div>
+
+		<div class="container">
+			{% block content %}{% endblock %}
+		</div>
+
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<div id="dialog" title="Info">
+				<ul>
+				{% for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor %}
+				</ul>
+				</div>
+			{% endif %}
+		{% endwith %}
+
+		{% block footer %}
+		<div class="bottombar">
+			<div class="fill">
+				<div class="container">
+					&copy; Copyright 2013 by <a href="http://oxi.ch/">oXiVanisher</a>.
+				</div>
+			</div>
+		</div>
+		{% endblock %}
+		</body>
+</html>

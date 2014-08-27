@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<table class='table table-striped' id='dt_friendstable'>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Movies</th>
+		</tr>
+	</thead>
+	<thead>
+		<tr>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for name, count, content in data %}
+			<tr><td><a href="{{ url_for('show_search', field=searchToken, token=name) }}">{{ name }}</a></td><td><span title="{{ content }}">{{ count }}</span></td></tr>
+		{% endfor %}	
+	</tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Search Result for {{ token }} in {{ Field }}{% endblock %}
+{% block content %}
+<table class='table table-striped' id='dt_friendstable'>
+	<thead>
+		<tr>
+			<th>Title</th>
+ 			<th style='width:60px;'>Year</th>
+			<th style='width:80px;'>Medium</th>
+			<th style='width:120px;'>Loaned to</th>
+		</tr>
+	</thead>
+	<thead>
+		<tr>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for friend in friends %}
+		<tr>
+			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.index) }}');" onmouseout="hidePopup();" onclick="document.location='{{ url_for('show_friend', friendId=friend.index) }}'">
+				<a href="{{ url_for('show_friend', friendId=friend.index) }}">{{friend.Name}}</a>
+			</td>
+			<td><a href="{{ url_for('show_search', field='Medium', token=friend.MediaString) }}">{{friend.GamesString}}</a></td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
