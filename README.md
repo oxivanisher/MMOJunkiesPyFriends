@@ -37,6 +37,7 @@ Notes:
 		- clientdbfind pattern={clientName|clientUID} [-uid]
 		- clientdbedit cldbid={clientDBID} [client_properties…]
 		- clientdbdelete cldbid={clientDBID}
+		- clientkick clid={clientID}… reasonid={4|5} [reasonmsg={text}]
 
 		- sendtextmessage targetmode={1-3} target={serverID|channelID|clientID} msg={text}
 

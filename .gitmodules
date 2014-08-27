@@ -1,0 +1,3 @@
+[submodule "libs/python-ts3"]
+	path = libs/python-ts3
+	url = https://github.com/nikdoof/python-ts3
