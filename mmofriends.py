@@ -8,13 +8,15 @@ import logging
 from sqlite3 import dbapi2 as sqlite3
 
 import config
-import mmonetworks
+from mmobase import *
+from mmonetwork import *
+from mmouser import *
 
 # configure logging
 logging.basicConfig(filename='log/mmofriends.log', format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+console.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(name)-16s: %(levelname)-8s %(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 log = logging.getLogger(__name__)
@@ -26,10 +28,8 @@ except ImportError:
     log.error("Please install flask")
     sys.exit(2)
 
-# working on networks
-myconfig = config.YamlConfig("config/mmonetworks.yml").get_values()
-ts3cfg = mmonetwork.MMONetworkConfig("ts3", myconfig['ts3'])
-test = mmonetwork.TS3Network(ts3cfg)
+# loading mmofriends base
+mmobase = mmobase.MMOBase()
 
 # setup flask app
 app = Flask(__name__)

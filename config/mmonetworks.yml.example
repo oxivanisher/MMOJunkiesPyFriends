@@ -1,11 +1,11 @@
-ts3:
+TS3:
   ip: 127.0.0.1
   port: 10011
   serverid: 1
   username: serveradmin
   password: secret
-battlenet:
+Blizz:
   spikey: secret
   apisecret: secret
-valve:
+Valve:
   apikey: secret

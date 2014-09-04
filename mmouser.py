@@ -5,7 +5,7 @@ import logging
 import time
 
 import mmobase
-import mmonetwork
+from mmonetwork import *
 
 class MMOUserLevel(object):
 
@@ -15,7 +15,7 @@ class MMOUser(object):
 
 	def __init__(self):
 		self.log = logging.getLogger(__name__)
-		self.log.debug("Initializing mmouser")
+		self.log.debug("Initializing MMOUser")
 		self.name = None
 		self.nick = None
 		self.email = None
@@ -29,15 +29,15 @@ class MMOUser(object):
 		self.locked = False
 
 	def lock(self):
-		self.log.debug("Lock user %s" % self.getDisplayName())
+		self.log.debug("Lock MMOUser %s" % self.getDisplayName())
 		self.locked = True
 
 	def unlock(self):
-		self.log.debug("Unlock user %s" % self.getDisplayName())
+		self.log.debug("Unlock MMOUser %s" % self.getDisplayName())
 		self.locked = False
 
 	def refreshNetworks(self):
-		self.log.debug("Refresh networks for user %s" % self.getDisplayName())
+		self.log.debug("Refresh MMONetwork for MMOUser %s" % self.getDisplayName())
 		pass
 
 	def getDisplayName(self):
