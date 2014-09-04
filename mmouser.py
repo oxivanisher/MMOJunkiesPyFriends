@@ -14,7 +14,8 @@ class MMOUserLevel(object):
 class MMOUser(object):
 
 	def __init__(self):
-		""" initialized mmouser """
+		self.log = logging.getLogger(__name__)
+		self.log.debug("Initializing mmouser")
 		self.name = None
 		self.nick = None
 		self.email = None
@@ -28,13 +29,16 @@ class MMOUser(object):
 		self.locked = False
 
 	def lock(self):
-		""" lock user """
+		self.log.debug("Lock user %s" % self.getDisplayName())
 		self.locked = True
 
 	def unlock(self):
-		""" unlock user """
+		self.log.debug("Unlock user %s" % self.getDisplayName())
 		self.locked = False
 
 	def refreshNetworks(self):
-		""" refresh networks """
+		self.log.debug("Refresh networks for user %s" % self.getDisplayName())
 		pass
+
+	def getDisplayName(self):
+		return self.nick + " (" + self.name + ")"

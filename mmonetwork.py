@@ -11,66 +11,67 @@ import mmouser
 class MMONetworkConfig(object):
 
     def __init__(self, name = None, config = {}):
-        """ initialize a mmonetwork config """
+        self.log = logging.getLogger(__name__)
+        self.log.debug("Initializing a mmonetwork config")
         self.name = name
         self.config = config
-        self.log = logging.getLogger(__name__)
 
     def get(self):
-        """ get config """
+        self.log.debug("Getting config %s" % self.name)
         return self.config
 
 class MMONetworkProduct(object):
 
     def __init__(self, name):
-        """ initialize a network product """
+        self.log = logging.getLogger(__name__)
+        self.log.debug("Initializing network product %s" % name)
         self.name = name
         self.fields = []
-        self.log = logging.getLogger(__name__)
 
     def addField(self, name, comment = "", fieldType = str):
-        """ add a field with name, comment and fieldType """
+        self.log.debug("Add a field with name, comment and fieldType")
         self.fields.append((name, fieldType))
 
 class MMONetwork(object):
 
     def __init__(self, config):
-        """ initialize mmonetwork """
+        self.log = logging.getLogger(__name__)
 
         # loading config
         self.config = config.get()
 
         # setting variables
         self.name = self.config.name
+        self.log.debug("Initializing mmonetwork %s" % self.name)
+
         self.icon = self.config.icon
         self.comment = self.config.comment
         self.description = self.config.description
         self.lastRefreshDate = 0
         self.hidden = False
 
-        self.log = logging.getLogger(__name__)
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
         self.log.info("Initialized network: %s" % self.name)
 
     def refresh(self):
-        """ refresh data from source """
+        self.log.debug("Refresh data from source")
         pass
 
     def link(self):
-        """ link user to network """
+        self.log.debug("Link user to network %s" % self.name)
         pass
 
     def unlink(self):
-        """ unlink network """
+        self.log.debug("Unlink network %s" % self.name)
         pass
 
     def listPartner(self, user):
-        """ list all partners for given user """
+        self.log.debug("List all partners for given user")
         pass
 
     def getProducts(self):
-        """ fetches the products """
+        self.log.debug("Fetches the products")
         pass
 
 
