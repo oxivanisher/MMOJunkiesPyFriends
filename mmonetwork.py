@@ -4,28 +4,77 @@
 import logging
 import ts3
 
+import mmobase
+import mmouser
+
 # base classes
-class TS3NetworkConfig(object):
+class MMONetworkConfig(object):
 
     def __init__(self, name = None, config = {}):
+        """ initialize a mmonetwork config """
         self.name = name
         self.config = config
+        self.log = logging.getLogger(__name__)
 
     def get(self):
+        """ get config """
         return self.config
 
+class MMONetworkProduct(object):
+
+    def __init__(self, name):
+        """ initialize a network product """
+        self.name = name
+        self.fields = []
+        self.log = logging.getLogger(__name__)
+
+    def addField(self, name, comment = "", fieldType = str):
+        """ add a field with name, comment and fieldType """
+        self.fields.append((name, fieldType))
 
 class MMONetwork(object):
 
     def __init__(self, config):
+        """ initialize mmonetwork """
+
+        # loading config
         self.config = config.get()
-        self.name = config.name
+
+        # setting variables
+        self.name = self.config.name
+        self.icon = self.config.icon
+        self.comment = self.config.comment
+        self.description = self.config.description
+        self.lastRefreshDate = 0
+        self.hidden = False
+
         self.log = logging.getLogger(__name__)
+        self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
+
         self.log.info("Initialized network: %s" % self.name)
+
+    def refresh(self):
+        """ refresh data from source """
+        pass
+
+    def link(self):
+        """ link user to network """
+        pass
+
+    def unlink(self):
+        """ unlink network """
+        pass
+
+    def listPartner(self, user):
+        """ list all partners for given user """
+        pass
+
+    def getProducts(self):
+        """ fetches the products """
+        pass
 
 
 # ts3 classes
-
 class TS3Network(MMONetwork):
 
     def __init__(self, config):

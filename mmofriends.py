@@ -28,8 +28,8 @@ except ImportError:
 
 # working on networks
 myconfig = config.YamlConfig("config/mmonetworks.yml").get_values()
-ts3cfg = mmonetworks.TS3NetworkConfig("ts3", myconfig['ts3'])
-test = mmonetworks.TS3Network(ts3cfg)
+ts3cfg = mmonetwork.MMONetworkConfig("ts3", myconfig['ts3'])
+test = mmonetwork.TS3Network(ts3cfg)
 
 # setup flask app
 app = Flask(__name__)
