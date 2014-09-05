@@ -28,6 +28,12 @@ except ImportError:
     log.error("Please install flask")
     sys.exit(2)
 
+try:
+    from flask.ext.sqlalchemy import SQLAlchemy
+except ImportError:
+    log.error("Please install the sqlalchemy extension for flask")
+    sys.exit(2)
+
 # loading mmofriends base
 mmobase = mmobase.MMOBase()
 
@@ -35,6 +41,12 @@ mmobase = mmobase.MMOBase()
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['dbFile'] = "mmofriends.db"
+
+try:
+    os.environ['MMOFRIENDS_CFG']
+except KeyError:
+    log.warning("Loading config from dist/mmofriends.cfg.example becuase MMOFRIENDS_CFG environment variable is not set.")
+    os.environ['MMOFRIENDS_CFG'] = "dist/mmofriends.cfg.example"
 
 try:
     app.config.from_envvar('MMOFRIENDS_CFG', silent=False)
