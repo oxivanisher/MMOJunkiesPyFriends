@@ -5,7 +5,10 @@
 import sys
 import os
 import logging
-from sqlite3 import dbapi2 as sqlite3
+# from sqlite3 import dbapi2 as sqlite3
+
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
 
 import config
 from mmobase import *
@@ -34,13 +37,14 @@ except ImportError:
     log.error("Please install the sqlalchemy extension for flask")
     sys.exit(2)
 
+
 # loading mmofriends base
-mmobase = mmobase.MMOBase()
+mymmobase = mmobase.MMOBase(db)
 
 # setup flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['dbFile'] = "mmofriends.db"
+db.init_app(app)
 
 try:
     os.environ['MMOFRIENDS_CFG']

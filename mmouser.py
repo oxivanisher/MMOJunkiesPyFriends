@@ -4,6 +4,9 @@
 import logging
 import time
 
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+
 import mmobase
 from mmonetwork import *
 
@@ -11,7 +14,8 @@ class MMOUserLevel(object):
 
 	pass
 
-class MMOUser(object):
+class MMOUser(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
 
 	def __init__(self):
 		self.log = logging.getLogger(__name__)

@@ -5,3 +5,4 @@ PASSWORD = "changeme"
 EMAILTARGET = ['yourname@example.com']
 EMAILSERVER = "127.0.0.1"
 EMAILFROM = "yourname@example.com"
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmofriends.db'

@@ -4,15 +4,19 @@
 import logging
 import time
 
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+
 import config
 from mmonetwork import *
 from mmouser import *
 
 class MMOBase(object):
 
-    def __init__(self):
+    def __init__(self, db):
         self.log = logging.getLogger(__name__)
         self.log.info("Initializing MMOBase")
+        self.db = db
         self.startupDate = time.time()
         self.lastRefreshDate = 0
         self.user = None #my user
