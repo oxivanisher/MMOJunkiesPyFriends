@@ -4,20 +4,18 @@
 import logging
 import time
 
-from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+from mmofriends import db
 
-# import config
 from config import *
 from mmonetwork import *
 from mmouser import *
 
 class MMOBase(object):
 
-    def __init__(self, db):
+    def __init__(self):
         self.log = logging.getLogger(__name__)
-        self.log.info("Initializing MMOBase")
-        self.db = db
+        self.log.debug("Initializing MMOBase")
+        # self.db = db
         self.startupDate = time.time()
         self.lastRefreshDate = 0
         self.user = None #my user
@@ -27,13 +25,17 @@ class MMOBase(object):
         self.networkConfig = None
 
     def startup(self):
-        self.log.debug("Starting up")
+        self.log.info("Starting up")
 
         # load network configs
         self.networkConfig = YamlConfig("config/mmonetworks.yml").get_values()
 
-        self.loadNetworks()
-        self.loadUsers()
+        # test = MMOUser('testuser')
+        # db.session.add(test)
+        # db.session.commit()
+
+        # self.loadNetworks()
+        # self.loadUsers()
 
     def login(self):
         self.log.debug("Login user %s" % self.user.getDisplayName())

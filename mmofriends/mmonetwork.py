@@ -3,14 +3,9 @@
 
 import logging
 import ts3
+import time
 
-from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
-
-# import config
-from config import *
-from mmobase import *
-from mmouser import *
+from mmofriends import db
 
 # base classes
 class MMONetworkConfig(object):
@@ -93,10 +88,31 @@ class TS3Network(MMONetwork):
         self.description = "TS3 description"
 
         self.onlineclients = {}
+        self.clients = {}
 
         self.connect()
-        self.getOnlineClients()
-        self.listOnlineClients()
+        self.lastOnlineRefreshDate = 0
+        self.fetchOnlineClients()
+
+    def refresh(self):
+        if self.lastRefreshDate > (time.time() - 10):
+            self.log.debug("Not refreshing clients")
+        else:
+            self.log.debug("Refreshing all clients")
+            self.lastRefreshDate = time.time()
+            response = self.server.send_command('clientdblist')
+            self.clients = {}
+            for client in response.data:
+                self.clients[client['client_unique_identifier']] = {
+                    'client_unique_identifier': client['client_unique_identifier'],
+                    'cldbid': client['cldbid'],
+                    'client_lastip': client['client_lastip'],
+                    'client_lastconnected': client['client_lastconnected'],
+                    'client_totalconnections': client['client_totalconnections'],
+                    'client_created': client['client_created'],
+                    'client_nickname': client['client_nickname'],
+                    'client_description': client['client_description']
+                }
 
     # helper functions
     def connect(self):
@@ -105,18 +121,44 @@ class TS3Network(MMONetwork):
         self.server.login(self.config['username'], self.config['password'])
         self.server.use(self.config['serverid'])
 
-    def getOnlineClients(self):
-        self.log.debug("Fetching online clients")
-        response = self.server.send_command('clientlist')
-        self.onlineclients = {}
-        for client in response.data:
-            self.onlineclients[client['client_database_id']] = {
-                'client_nickname': client['client_nickname'],
-                'cid': client['cid'],
-                'clid': client['clid'],
-                'client_type': client['client_type']
-            }
-        self.log.info("Found %s online clients" % len(self.onlineclients))
+    def getUserdetatilsByCldbid(self, cldbid):
+        for client in self.clients.keys():
+            if self.clients[client]['cldbid'] == cldbid:
+                return self.clients[client]
+        return None
+
+    def fetchOnlineClients(self):
+        if self.lastOnlineRefreshDate > (time.time() - 10):
+            self.log.debug("Not refreshing online clients")
+        else:
+            self.lastOnlineRefreshDate = time.time()
+            self.log.debug("Fetching online clients")
+            response = self.server.send_command('clientlist')
+            self.onlineclients = {}
+            for client in response.data:
+                self.onlineclients[client['client_database_id']] = {
+                    'client_database_id': client['client_database_id'],
+                    'client_nickname': client['client_nickname'],
+                    'cid': client['cid'],
+                    'clid': client['clid'],
+                    'client_type': client['client_type']
+                }
+            self.log.info("Found %s online clients" % len(self.onlineclients))
+
+    def getUserDetails(self, clid):
+        self.log.debuf("Getting user details for clid: %s" % clid)
+        self.refresh()
+        for user in self.clients.keys():
+            if self.clients[user]['cldbid'] == clid:
+                return self.clients[user]
+        return None
+
+    def returnOnlineUserDetails(self):
+        self.fetchOnlineClients()
+        ret = []
+        for cldbid in self.onlineclients.keys():
+            print self.getUserdetatilsByCldbid(cldbid)
+        return ret
 
     def listOnlineClients(self):
         for client in self.onlineclients.keys():

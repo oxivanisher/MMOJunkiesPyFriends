@@ -4,11 +4,7 @@
 import logging
 import time
 
-from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
-
-import mmobase
-from mmonetwork import *
+from mmofriends import db
 
 class MMOUserLevel(object):
 
@@ -16,12 +12,22 @@ class MMOUserLevel(object):
 
 class MMOUser(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	nick = db.Column(db.String(20), unique=True)
+	name = db.Column(db.String(20), unique=False)
+	email = db.Column(db.String(120), unique=True)
+	website = db.Column(db.String(120), unique=False)
+	password = db.Column(db.String(20), unique=False)
+	joinedDate = db.Column(db.Integer, unique=False)
+	lastLoginDate = db.Column(db.Integer, unique=False)
+	lastRefreshDate = db.Column(db.Integer, unique=False)
+	level = db.Column(db.Integer, unique=False)
+	locked = db.Column(db.Boolean)
 
-	def __init__(self):
+	def __init__(self, nick):
 		self.log = logging.getLogger(__name__)
-		self.log.debug("Initializing MMOUser")
+		self.log.debug("Initializing MMOUser: %s" % nick)
+		self.nick = nick
 		self.name = None
-		self.nick = None
 		self.email = None
 		self.website = None
 		self.password = None
@@ -31,6 +37,9 @@ class MMOUser(db.Model):
 		self.lastRefreshDate = 0
 		self.level = 0
 		self.locked = False
+
+	def __repr__(self):
+		return '<MMOUser %r>' % self.nick
 
 	def lock(self):
 		self.log.debug("Lock MMOUser %s" % self.getDisplayName())
