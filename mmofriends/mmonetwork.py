@@ -7,7 +7,8 @@ import ts3
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
-import config
+# import config
+from config import *
 from mmobase import *
 from mmouser import *
 

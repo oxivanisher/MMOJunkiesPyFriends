@@ -7,7 +7,8 @@ import time
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
-import config
+# import config
+from config import *
 from mmonetwork import *
 from mmouser import *
 
@@ -29,7 +30,7 @@ class MMOBase(object):
         self.log.debug("Starting up")
 
         # load network configs
-        self.networkConfig = config.YamlConfig("config/mmonetworks.yml").get_values()
+        self.networkConfig = YamlConfig("config/mmonetworks.yml").get_values()
 
         self.loadNetworks()
         self.loadUsers()
