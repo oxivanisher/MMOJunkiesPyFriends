@@ -42,6 +42,7 @@ class MMONetwork(object):
         # setting variables
         self.longName = config.longName
         self.shortName = config.shortName
+        self.icon = self.config['icon']
 
         self.log = logging.getLogger(__name__ + "." + self.shortName.lower())
         self.log.debug("Initializing MMONetwork: %s" % self.longName)
@@ -99,31 +100,11 @@ class TS3Network(MMONetwork):
         self.description = "Team Speak 3 is like skype for gamers."
 
         self.onlineclients = {}
-        self.clients = {}
+        self.clientDatabase = {}
 
         self.connect()
         self.lastOnlineRefreshDate = 0
-        self.fetchOnlineClients()
-
-    def refresh(self):
-        if self.lastRefreshDate > (time.time() - self.config['updateLock']):
-            self.log.debug("Not refreshing clients")
-        else:
-            self.log.debug("Refreshing all clients")
-            self.lastRefreshDate = time.time()
-            response = self.server.send_command('clientdblist')
-            self.clients = {}
-            for client in response.data:
-                self.clients[client['client_unique_identifier']] = {
-                    'client_unique_identifier': client['client_unique_identifier'],
-                    'cldbid': int(client['cldbid']),
-                    'client_lastip': client['client_lastip'],
-                    'client_lastconnected': client['client_lastconnected'],
-                    'client_totalconnections': int(client['client_totalconnections']),
-                    'client_created': client['client_created'],
-                    'client_nickname': client['client_nickname'],
-                    'client_description': client['client_description']
-                }
+        self.refresh()
 
     # helper functions
     def connect(self):
@@ -137,13 +118,7 @@ class TS3Network(MMONetwork):
                 self.setNetworkMoreInfo(server['virtualserver_name'])
                 self.log.info("Connected to: %s" % self.moreInfo)
 
-    def getUserdetatilsByCldbid(self, cldbid):
-        for client in self.clients.keys():
-            if self.clients[client]['cldbid'] == cldbid:
-                return self.clients[client]
-        return False
-
-    def fetchOnlineClients(self):
+    def refresh(self):
         if self.lastOnlineRefreshDate > (time.time() - self.config['updateOnlineLock']):
             self.log.debug("Not refreshing online clients")
         else:
@@ -163,29 +138,35 @@ class TS3Network(MMONetwork):
                     }
             self.log.info("Found %s online clients" % len(self.onlineclients))
 
-    def getUserDetails(self, clid):
-        self.log.debuf("Getting user details for clid: %s" % clid)
-        self.refresh()
-        for user in self.clients.keys():
-            if self.clients[user]['cldbid'] == clid:
-                return self.clients[user]
-        return {}
-
+    # request from frontend
     def returnOnlineUserDetails(self):
-        self.fetchOnlineClients()
+        self.refresh()
         ret = []
         for cldbid in self.onlineclients.keys():
-            myRet = self.getUserdetatilsByCldbid(cldbid)
-            if myRet:
-                ret.append(myRet)
+            # apperently currently not needed
+            # myRet = self.fetchUserdetatilsByCldbid(cldbid)
+            # if myRet:
+            ret.append({'networkId': self.myId,
+                        'networkName': self.longName,
+                        'networkMoreInfo': self.moreInfo,
+                        'id': 1234,
+                        'nick': self.onlineclients[cldbid]['client_nickname'],
+                        'moreInfo': "blah user comment"})
         return ret
 
-    # tmp methods, delete please
-    def listOnlineClients(self):
-        for client in self.onlineclients.keys():
-            self.log.debug("Client %s: (dbid: %s, type: %s, cid: %s, clid: %s)" %
-                (self.onlineclients[client]['client_nickname'],
-                    client,
-                    self.onlineclients[client]['client_type'],
-                    self.onlineclients[client]['cid'],
-                    self.onlineclients[client]['clid'] ))
+    def fetchUserdetatilsByCldbid(self, cldbid):
+        update = False
+        try:
+            if self.clientDatabase[cldbid]['lastUpdateDate'] < (time.time() - self.config['updateLock']):
+                update = True
+        except KeyError:
+            update = True
+
+        if update:
+            self.log.debug("Fetching user details for cldbid: %s" % cldbid)
+            response = self.server.send_command('clientdbinfo cldbid=%s' % cldbid)
+            response.data[0]
+            self.clientDatabase[cldbid] = response.data[0]
+        else:
+            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+        return self.clientDatabase[cldbid]

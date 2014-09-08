@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<table class='table table-striped' id='dt_friendtable'>
+<table class='table table-striped' id='dt_friendstable'>
 	<thead>
 		<tr>
  			<th style='width:60px;'>Network</th>
@@ -19,12 +19,20 @@
 	<tbody>
 	{% for friend in friends %}
 		<tr>
-			<td onclick="document.location='{{ url_for('show_network', friendId=friend.networkId) }}'">
-				<a href="{{ url_for('show_network', networkId=friend.networkId) }}"><img src="{{ url_for('get_icon', friendId=friend.networkId) }}" alt="{{friend.networkName}}: {{friend.networkMoreInfo}}"></a></td>
-			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.friendId) }}');"
+			<td onclick="document.location='{{ url_for('show_network', networkId=friend.networkId) }}'">
+				<a href="{{ url_for('show_network', networkId=friend.networkId) }}">
+				<img class="icon"
+					 src="{{ url_for('get_icon', networkId=friend.networkId) }}"
+					 title="{{friend.networkName}}: {{friend.networkMoreInfo}}" />
+				<img class="icon"
+					 src="{{ url_for('get_icon', networkId=friend.networkId) }}"
+					 title="{{friend.networkName}}: {{friend.networkMoreInfo}}" />
+				</a>
+			</td>
+			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.id) }}');"
 				onmouseout="hidePopup();"
 				onclick="document.location='{{ url_for('show_friend', friendId=friend.friendId) }}'">
-				<a href="{{ url_for('show_friend', friendId=friend.friendId) }}">{{friend.nick}}</a></td>
+				<a href="{{ url_for('show_friend', friendId=friend.id) }}">{{friend.nick}}</a></td>
 			<td>{{friend.moreInfo}}</td>
 		</tr>
 	{% endfor %}

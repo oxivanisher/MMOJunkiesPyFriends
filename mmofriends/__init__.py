@@ -35,6 +35,7 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 db = SQLAlchemy(app)
 
 try:
@@ -91,12 +92,18 @@ def show_index():
         network.refresh()
 
     friends = MMONetworks[0].returnOnlineUserDetails()
-    MMONetworks[0].listOnlineClients()
+    # MMONetworks[0].listOnlineClients()
 
-    users = MMOUser.query.all()
-    for user in users:
-        print user
+    print friends
+
+    # users = MMOUser.query.all()
+    # for user in users:
+    #     print user
     return render_template('index.html', friends = friends)
+
+@app.route('/Network/Show', methods = ['GET'])
+def show_network():
+    pass
 
 @app.route('/register', methods=['GET'])
 def register():
@@ -133,14 +140,28 @@ def logout():
     flash('Logged out')
     return redirect(url_for('show_index'))
 
+@app.route('/Avatar/<int:friendId>', methods = ['GET'])
+def get_avatar(friendId):
+    filePath = os.path.join(app.config['scriptPath'], 'static', 'avatar')
+    try:
+        if os.path.isfile(os.path.join(filePath, MMOFriends[friendId].avatar)):
+            return send_from_directory(filePath, MMOFriends[friendId].avatar)
+        else:
+            log.warning("Icon not found: %s" % filePath)
+    except IndexError:
+        log.warning("Unknown friend ID for avatar")
+    abort(404)
 
-@app.route('/Images/<int:friendId>', methods = ['GET'])
-def get_avatar(movieId):
-    # moviesList = get_moviesData()
-    # cover = moviesList[movieId]['Cover']
-    # if cover:
-    #     return send_from_directory(os.path.join(app.config['scriptPath'], app.config['OUTPUTDIR']), cover)
-    # else:
+@app.route('/Icon/<int:networkId>', methods = ['GET'])
+def get_icon(networkId):
+    filePath = os.path.join(app.config['scriptPath'], 'static', 'icon')
+    try:
+        if os.path.isfile(os.path.join(filePath, MMONetworks[networkId].icon)):
+            return send_from_directory(filePath, MMONetworks[networkId].icon)
+        else:
+            log.warning("Icon not found: %s" % filePath)
+    except IndexError:
+        log.warning("Unknown network ID for icon")
     abort(404)
 
 @app.route('/ShowFriend')
