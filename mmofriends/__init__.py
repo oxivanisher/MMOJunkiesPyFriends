@@ -63,10 +63,12 @@ with app.test_request_context():
     db.create_all()
 
 # initialize stuff
-networks = []
+app.config['networkConfig'] = YamlConfig("config/mmonetworks.yml").get_values()
+MMONetworks = []
 
 # helper methods
-
+def loadNetwork(network, shortName, longName):
+    MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
 
 # flask error handlers
 @app.errorhandler(404)
@@ -76,16 +78,20 @@ def not_found(error):
 # app routes
 @app.before_first_request
 def before_first_request():
-    log.debug("Starting Application")
-    networkConfig = YamlConfig("config/mmonetworks.yml").get_values()
-    networks.append(TS3Network(MMONetworkConfig(networkConfig, "TS3", "Team Speak 3")))
+    log.debug("Before first request")
+
+    # load networks
+    loadNetwork(TS3Network, "TS3", "Team Speak 3")
+
+    log.debug("Serving first request")
 
 @app.route('/')
 def show_index():
-    for network in networks:
+    for network in MMONetworks:
         network.refresh()
 
-    friends = networks[0].returnOnlineUserDetails()
+    friends = MMONetworks[0].returnOnlineUserDetails()
+    MMONetworks[0].listOnlineClients()
 
     users = MMOUser.query.all()
     for user in users:

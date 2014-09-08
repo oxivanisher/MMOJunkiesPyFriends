@@ -35,7 +35,7 @@ class MMONetworkProduct(object):
 
 class MMONetwork(object):
 
-    def __init__(self, config):
+    def __init__(self, config, myId):
         # loading config
         self.config = config.get()
 
@@ -46,11 +46,12 @@ class MMONetwork(object):
         self.log = logging.getLogger(__name__ + "." + self.shortName.lower())
         self.log.debug("Initializing MMONetwork: %s" % self.longName)
 
-        self.icon = "Unset"
         self.comment = "Unset"
         self.description = "Unset"
+        self.moreInfo = 'NoMoreInfo'
         self.lastRefreshDate = 0
         self.hidden = False
+        self.myId = myId
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
@@ -76,16 +77,26 @@ class MMONetwork(object):
         self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
         pass
 
+    def getNetworkDetails(self):
+        return { 'networkId': self.myId,
+                 'networkShortName': config.shortName,
+                 'networkLongName': config.longName,
+                 'networkMoreInfo': self.moreInfo
+                }
+
+    def setNetworkMoreInfo(self, moreInfo):
+        self.moreInfo = moreInfo
+
+    def setNetworkComment(self, comment):
+        self.comment = comment
 
 # ts3 classes
 class TS3Network(MMONetwork):
 
-    def __init__(self, config):
-        super(TS3Network, self).__init__(config)
+    def __init__(self, config, myId):
+        super(TS3Network, self).__init__(config, myId)
 
-        self.icon = "None"
-        self.comment = "TS3 comment"
-        self.description = "TS3 description"
+        self.description = "Team Speak 3 is like skype for gamers."
 
         self.onlineclients = {}
         self.clients = {}
@@ -95,7 +106,7 @@ class TS3Network(MMONetwork):
         self.fetchOnlineClients()
 
     def refresh(self):
-        if self.lastRefreshDate > (time.time() - 10):
+        if self.lastRefreshDate > (time.time() - self.config['updateLock']):
             self.log.debug("Not refreshing clients")
         else:
             self.log.debug("Refreshing all clients")
@@ -105,10 +116,10 @@ class TS3Network(MMONetwork):
             for client in response.data:
                 self.clients[client['client_unique_identifier']] = {
                     'client_unique_identifier': client['client_unique_identifier'],
-                    'cldbid': client['cldbid'],
+                    'cldbid': int(client['cldbid']),
                     'client_lastip': client['client_lastip'],
                     'client_lastconnected': client['client_lastconnected'],
-                    'client_totalconnections': client['client_totalconnections'],
+                    'client_totalconnections': int(client['client_totalconnections']),
                     'client_created': client['client_created'],
                     'client_nickname': client['client_nickname'],
                     'client_description': client['client_description']
@@ -120,29 +131,36 @@ class TS3Network(MMONetwork):
         self.server = ts3.TS3Server(self.config['ip'], self.config['port'])
         self.server.login(self.config['username'], self.config['password'])
         self.server.use(self.config['serverid'])
+        result = self.server.send_command('serverinfo')
+        for server in result.data:
+            if int(server['virtualserver_id']) == self.config['serverid']:
+                self.setNetworkMoreInfo(server['virtualserver_name'])
+                self.log.info("Connected to: %s" % self.moreInfo)
 
     def getUserdetatilsByCldbid(self, cldbid):
         for client in self.clients.keys():
             if self.clients[client]['cldbid'] == cldbid:
                 return self.clients[client]
-        return None
+        return False
 
     def fetchOnlineClients(self):
-        if self.lastOnlineRefreshDate > (time.time() - 10):
+        if self.lastOnlineRefreshDate > (time.time() - self.config['updateOnlineLock']):
             self.log.debug("Not refreshing online clients")
         else:
             self.lastOnlineRefreshDate = time.time()
             self.log.debug("Fetching online clients")
-            response = self.server.send_command('clientlist')
+            clients = self.server.clientlist()
             self.onlineclients = {}
-            for client in response.data:
-                self.onlineclients[client['client_database_id']] = {
-                    'client_database_id': client['client_database_id'],
-                    'client_nickname': client['client_nickname'],
-                    'cid': client['cid'],
-                    'clid': client['clid'],
-                    'client_type': client['client_type']
-                }
+            for client in clients.keys():
+                # ignoring console users
+                if int(clients[client]['client_type']) != 1:
+                    self.onlineclients[clients[client]['client_database_id']] = {
+                        'client_database_id': int(clients[client]['client_database_id']),
+                        'client_nickname': clients[client]['client_nickname'],
+                        'cid': int(clients[client]['cid']),
+                        'clid': int(clients[client]['clid']),
+                        'client_type': int(clients[client]['client_type'])
+                    }
             self.log.info("Found %s online clients" % len(self.onlineclients))
 
     def getUserDetails(self, clid):
@@ -151,21 +169,23 @@ class TS3Network(MMONetwork):
         for user in self.clients.keys():
             if self.clients[user]['cldbid'] == clid:
                 return self.clients[user]
-        return None
+        return {}
 
     def returnOnlineUserDetails(self):
         self.fetchOnlineClients()
         ret = []
         for cldbid in self.onlineclients.keys():
-            print self.getUserdetatilsByCldbid(cldbid)
+            myRet = self.getUserdetatilsByCldbid(cldbid)
+            if myRet:
+                ret.append(myRet)
         return ret
 
+    # tmp methods, delete please
     def listOnlineClients(self):
         for client in self.onlineclients.keys():
-            if int(self.onlineclients[client]['client_type']) == 0:
-                self.log.debug("Client %s: (dbid: %s, type: %s, cid: %s, clid: %s)" %
-                    (self.onlineclients[client]['client_nickname'],
-                        client,
-                        self.onlineclients[client]['client_type'],
-                        self.onlineclients[client]['cid'],
-                        self.onlineclients[client]['clid'] ))
+            self.log.debug("Client %s: (dbid: %s, type: %s, cid: %s, clid: %s)" %
+                (self.onlineclients[client]['client_nickname'],
+                    client,
+                    self.onlineclients[client]['client_type'],
+                    self.onlineclients[client]['cid'],
+                    self.onlineclients[client]['clid'] ))

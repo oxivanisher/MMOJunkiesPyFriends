@@ -4,15 +4,13 @@
 <table class='table table-striped' id='dt_friendtable'>
 	<thead>
 		<tr>
-			<th>Title</th>
- 			<th style='width:60px;'>Year</th>
-			<th style='width:80px;'>Medium</th>
-			<th style='width:120px;'>Loaned to</th>
+ 			<th style='width:60px;'>Network</th>
+			<th style='width:80px;'>Nick Name</th>
+			<th style='width:120px;'>More Info</th>
 		</tr>
 	</thead>
 	<thead>
 		<tr>
-			<th><input style='width:100%;'/></th>
 			<th><input style='width:100%;'/></th>
 			<th><input style='width:100%;'/></th>
 			<th><input style='width:100%;'/></th>
@@ -21,10 +19,13 @@
 	<tbody>
 	{% for friend in friends %}
 		<tr>
-			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.index) }}');" onmouseout="hidePopup();" onclick="document.location='{{ url_for('show_friend', friendId=friend.index) }}'">
-				<a href="{{ url_for('show_friend', friendId=friend.index) }}">{{friend.Name}}</a>
-			</td>
-			<td><a href="{{ url_for('show_search', field='Medium', token=friend.MediaString) }}">{{friend.GamesString}}</a></td>
+			<td onclick="document.location='{{ url_for('show_network', friendId=friend.networkId) }}'">
+				<a href="{{ url_for('show_network', networkId=friend.networkId) }}"><img src="{{ url_for('get_icon', friendId=friend.networkId) }}" alt="{{friend.networkName}}: {{friend.networkMoreInfo}}"></a></td>
+			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.friendId) }}');"
+				onmouseout="hidePopup();"
+				onclick="document.location='{{ url_for('show_friend', friendId=friend.friendId) }}'">
+				<a href="{{ url_for('show_friend', friendId=friend.friendId) }}">{{friend.nick}}</a></td>
+			<td>{{friend.moreInfo}}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
