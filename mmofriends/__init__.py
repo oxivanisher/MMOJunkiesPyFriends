@@ -66,6 +66,7 @@ with app.test_request_context():
 # initialize stuff
 app.config['networkConfig'] = YamlConfig("config/mmonetworks.yml").get_values()
 MMONetworks = []
+MyUser = None
 
 # helper methods
 def loadNetwork(network, shortName, longName):
@@ -81,10 +82,20 @@ def fetchFriendsList():
             flash(friendsList)
     return retFriendsList
 
+def getUser(nick = None):
+    with app.test_request_context():
+        if not nick:
+            nick = session.get('nick')
+        return MMOUser.query.filter_by(nick=nick).first()
+
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('error.html'), 404
+    return render_template('error.html', number = 404, message = "Page not found!"), 404
+
+@app.errorhandler(401)
+def not_found(error):
+    return render_template('error.html', number = 401, message = "Unauthorized!"), 401
 
 # app routes
 @app.before_first_request
@@ -97,18 +108,28 @@ def before_first_request():
     log.debug("Serving first request")
 
 @app.route('/About')
-def show_about():
+def about():
     return render_template('about.html')
 
 @app.route('/')
-def show_index():
+def index():
     # users = MMOUser.query.all()
     # for user in users:
     #     print user
     if session.get('logged_in'):
         return render_template('index.html', friends = fetchFriendsList())
     else:
-        return redirect(url_for('show_about'))
+        return redirect(url_for('about'))
+
+@app.route('/Admin')
+def admin():
+    if not session.get('logged_in'):
+        abort(401)
+    if not session.get('admin'):
+        log.warning("<%s> tried to access admin without permission!")
+        abort(401)
+    flash("admin page would be loading ^^")
+    return redirect(url_for('index'))
 
 @app.route('/Network/Show', methods = ['GET'])
 def show_network():
@@ -120,7 +141,7 @@ def show_network():
 def register():
     if request.method == 'POST':
         valid = True
-        if request.form['username'] and \
+        if request.form['nick'] and \
             request.form['password'] and \
             request.form['password2'] and \
             request.form['email']:
@@ -128,6 +149,15 @@ def register():
             if request.form['password'] != request.form['password2']:
                 flash("Passwords do not match!")
                 valid = False
+
+            if len(request.form['nick']) < 3:
+                flash("Nickname is too short")
+                valid = False
+
+            if len(request.form['password']) < 8:
+                flash("Password is too short")
+                valid = False
+
 
             #and further checks for registration plz
             # - user needs to be uniq!
@@ -140,7 +170,7 @@ def register():
             flash("Please fill out all the fields!")
 
         if valid:
-            newUser = MMOUser(request.form['username'])
+            newUser = MMOUser(request.form['nick'])
             newUser.email = request.form['email']
             newUser.name = request.form['name']
             newUser.website = request.form['website']
@@ -159,27 +189,41 @@ def register():
     
     return render_template('register.html', values = request.form)
 
+@app.route('/Profile', methods=['GET', 'POST'])
+def profile():
+    flash("show profile, change template in the future")
+    return render_template('register.html', values = getUser())
+
 @app.route('/Login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            log.info("Invalid username for %s" % request.form['username'])
-            flash('Invalid login')
-        elif request.form['password'] != app.config['PASSWORD']:
-            log.info("Invalid password for %s" % request.form['username'])
-            flash('Invalid login')
+        log.info("Trying to login user: %s" % request.form['nick'])
+        myUser = False
+        myUser = getUser(request.form['nick'])
+
+        if myUser:
+            myUser.load()
+            if myUser.checkPassword(request.form['password']):
+                log.info("<%s> logged in" % myUser.nick)
+                session['logged_in'] = True
+                session['nick'] = myUser.nick
+                session['admin'] = myUser.admin
+                flash('Welcome %s' % myUser.nick)
+                return redirect(url_for('index'))                
+            else:
+                log.info("Invalid password for %s" % myUser.nick)
         else:
-            log.info("%s Logged in" % request.form['username'])
-            session['logged_in'] = True
-            flash('Logged in')
-            return redirect(url_for('admin'))
+            flash('Invalid login')                
+
     return render_template('login.html')
 
 @app.route('/Logout')
 def logout():
     session.pop('logged_in', None)
+    session.pop('nick', None)
+    session.pop('admin', None)
     flash('Logged out')
-    return redirect(url_for('show_index'))
+    return redirect(url_for('login'))
 
 @app.route('/Avatar/<int:friendId>', methods = ['GET'])
 def get_avatar(friendId):
@@ -209,4 +253,4 @@ def get_icon(networkId):
 def show_friend(freiendID):
     if not session.get('logged_in'):
         abort(401)
-    return redirect(url_for('show_index'))
+    return redirect(url_for('index'))
