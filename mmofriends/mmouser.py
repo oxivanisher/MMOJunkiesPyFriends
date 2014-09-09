@@ -3,6 +3,7 @@
 
 import logging
 import time
+import hashlib
 
 from mmofriends import db
 
@@ -22,6 +23,7 @@ class MMOUser(db.Model):
 	lastRefreshDate = db.Column(db.Integer, unique=False)
 	level = db.Column(db.Integer, unique=False)
 	locked = db.Column(db.Boolean)
+	veryfied = db.Column(db.Boolean)
 
 	def __init__(self, nick):
 		self.log = logging.getLogger(__name__)
@@ -36,7 +38,8 @@ class MMOUser(db.Model):
 		self.lastLoginDate = 0
 		self.lastRefreshDate = 0
 		self.level = 0
-		self.locked = False
+		self.locked = True
+		self.veryfied = False
 
 	def __repr__(self):
 		return '<MMOUser %r>' % self.nick
@@ -55,3 +58,8 @@ class MMOUser(db.Model):
 
 	def getDisplayName(self):
 		return self.nick + " (" + self.name + ")"
+
+	def setPassword(self, password):
+		self.log.info("Setting new Password")
+		hash_object = hashlib.sha512(password)
+		self.password = hash_object.hexdigest()

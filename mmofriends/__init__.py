@@ -26,7 +26,7 @@ except ImportError:
 
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
-    from sqlalchemy.exc import IntegrityError
+    from sqlalchemy.exc import IntegrityError, InterfaceError
 
 except ImportError:
     log.error("Please install the sqlalchemy extension for flask")
@@ -116,23 +116,48 @@ def show_network():
         abort(401)
     pass
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            #and further checks for registration
-            nick = request.args.get("nick")
-            test = MMOUser(nick)
-            db.session.add(test)
+        valid = True
+        if request.form['username'] and \
+            request.form['password'] and \
+            request.form['password2'] and \
+            request.form['email']:
+
+            if request.form['password'] != request.form['password2']:
+                flash("Passwords do not match!")
+                valid = False
+
+            #and further checks for registration plz
+            # - user needs to be uniq!
+            # - minimal field length
+            # - is the website a website?
+            # - max length (cut oversize)
+
+        else:
+            valid = False
+            flash("Please fill out all the fields!")
+
+        if valid:
+            newUser = MMOUser(request.form['username'])
+            newUser.email = request.form['email']
+            newUser.name = request.form['name']
+            newUser.website = request.form['website']
+            newUser.setPassword(request.form['password'])
+
+            db.session.add(newUser)
             try:
                 db.session.commit()
-                flash("added %s" % nick)
-                return redirect(url_for('show_index'))
+                flash("Please check your emails on %s" % newUser.email)
+                return redirect(url_for('login'))
 
             except IntegrityError, e:
-                flash("error because: %s" % e)
+                flash("SQL Alchemy IntegrityError: %s" % e)
+            except InterfaceError, e:
+                flash("SQL Alchemy InterfaceError %s" % e)
     
-    return render_template('register.html')
+    return render_template('register.html', values = request.form)
 
 @app.route('/Login', methods=['GET', 'POST'])
 def login():

@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<h2>Registration</h2>
-Please register yourself to access the friendslist.
+<form action="{{ url_for('register') }}" id="register" method="post" autocomplete="on">
+	<h2>Registration</h2>
+		<dl>
+			<dt>Username: *
+			<dd><input type="text" name="username" class="backend" value="{{ values.username }}">
+			<dt>Password: *
+			<dd><input type="password" name="password" class="backend" >
+			<dt>Again the password: *
+			<dd><input type="password" name="password2" class="backend">
+			<dt>Email: *
+			<dd><input type="text" name="email" class="backend" value="{{ values.email }}">
+			<dt>Website:
+			<dd><input type="text" name="website" class="backend" value="{{ values.website }}">
+			<dt>Name:
+			<dd><input type="text" name="name" class="backend" value="{{ values.name }}">
+		</dl>
+	<input type="submit" /> <input type="reset" />
+</form>
 {% endblock %}

@@ -74,7 +74,7 @@
 				  {% if session.logged_in %}
 				  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Admin</a></li>
 				  {% else %}
-				  <li class="{% if url_for('register') == request.path %}active{% endif %}"><a href="{{ url_for('register') }}">Register</a></li>
+				  <li class="{% if url_for('register') == request.path %}active{% endif %}"><a href="{{ url_for('register') }}">Registration</a></li>
 				  {% endif %}
 				  <li class="{% if url_for('login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('logout') }}">Logout</a>{% else %}<a href="{{ url_for('login') }}">Login</a>{% endif %}</li>
 				</ul>
@@ -103,7 +103,7 @@
 		<div class="bottombar">
 			<div class="fill">
 				<div class="container">
-					&copy; Copyright 2013 by <a href="http://oxi.ch/">oXiVanisher</a>.
+					&copy; Copyright 2014 by <a href="http://oxi.ch/">oXiVanisher</a>.
 				</div>
 			</div>
 		</div>
