@@ -4,6 +4,7 @@
 import logging
 import ts3
 import time
+import socket
 
 from mmofriends import db
 
@@ -105,6 +106,9 @@ class TS3Network(MMONetwork):
         self.connected = False
         self.connect()
         self.lastOnlineRefreshDate = 0
+        self.clientftfid = 0
+
+        self.serverinfo = {}
 
         self.refresh()
 
@@ -117,10 +121,26 @@ class TS3Network(MMONetwork):
                 self.server.login(self.config['username'], self.config['password'])
                 self.server.use(self.config['serverid'])
 
+                # get server user groups
+                # result = self.server.send_command('servergrouplist')
+                # print result.data
+
+                # get channel list
+                # result = self.server.send_command('channellist -icon')
+                # print result.data
+
+                # get instanceinfo
+                # serverinstance_filetransfer_port=30033 !!
+
+                # VIRTUALSERVER_ICON_ID
+
                 result = self.server.send_command('serverinfo')
+                print result.data
                 for server in result.data:
                     if int(server['virtualserver_id']) == self.config['serverid']:
-                        self.setNetworkMoreInfo(server['virtualserver_name'])
+                        self.serverinfo = server
+                        self.setNetworkMoreInfo(self.serverinfo['virtualserver_name'])
+                        print self.serverinfo['virtualserver_icon_id']
                         self.log.info("Connected to: %s" % self.moreInfo)
 
                 self.connected = True
@@ -141,8 +161,13 @@ class TS3Network(MMONetwork):
         else:
             self.lastOnlineRefreshDate = time.time()
             self.log.debug("Fetching online clients")
-            clients = self.server.clientlist()
+            # clients = self.server.clientlist()
+            response = self.server.send_command("clientlist -icon")
             self.onlineclients = {}
+            clients = {}
+            for client in response.data:
+                clients[client['clid']] = client
+
             for client in clients.keys():
                 # ignoring console users
                 if int(clients[client]['client_type']) != 1:
@@ -151,6 +176,7 @@ class TS3Network(MMONetwork):
                         'client_nickname': clients[client]['client_nickname'],
                         'cid': int(clients[client]['cid']),
                         'clid': int(clients[client]['clid']),
+                        'client_icon_id': int(clients[client]['client_icon_id']),
                         'client_type': int(clients[client]['client_type'])
                     }
             self.log.info("Found %s online clients" % len(self.onlineclients))
@@ -173,6 +199,36 @@ class TS3Network(MMONetwork):
             return (True, ret)
         else:
             return (False, "Unable to connect to TS3 server.")
+
+    def requestFile(self, clientftfid, name, cid, cpw = "", seekpos = 0):
+        if seekpos == 0:
+            self.clientftfid += 1
+
+        #core/teamspeak/TSQuery.class.php:160
+        if self.refresh():
+
+            response = self.server.send_command("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (clientftfid, name, cid, cpw, seekpos))
+            print response
+            return
+            downloaded = 0
+            download = ""
+            # get size from response!
+            while downloaded < size - seek:
+                content = self.fileConnection(response.data['port'])
+                downloaded += len(content)
+                download += content
+            return download
+        pass
+
+    def getIcon(self, iconId):
+        iconId += 4294967296
+        img = self.requestFile("/icon_%s" % iconId, 0)
+        print "imgLen", len(img)
+
+    def fileConnection(self, port):
+        sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        sock.connect((self.config['ip'], port))
+        return sock.makefile()
 
     def fetchUserdetatilsByCldbid(self, cldbid):
         update = False

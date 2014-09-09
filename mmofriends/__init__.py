@@ -137,7 +137,7 @@ def show_network():
         abort(401)
     pass
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/Register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         valid = True
