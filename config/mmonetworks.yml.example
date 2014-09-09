@@ -6,8 +6,11 @@ TS3:
   serverid: 1
   username: serveradmin
   password: secret
+  icon: ts3.png
 Blizz:
   spikey: secret
   apisecret: secret
+  icon: battlenet.png
 Valve:
   apikey: secret
+  icon: steam.png
