@@ -71,6 +71,16 @@ MMONetworks = []
 def loadNetwork(network, shortName, longName):
     MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
 
+def fetchFriendsList():
+    retFriendsList = []
+    for network in MMONetworks:
+        (res, friendsList) = network.returnOnlineUserDetails()
+        if res:
+            retFriendsList += friendsList
+        else:
+            flash(friendsList)
+    return retFriendsList
+
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
@@ -86,37 +96,43 @@ def before_first_request():
 
     log.debug("Serving first request")
 
+@app.route('/About')
+def show_about():
+    return render_template('about.html')
+
 @app.route('/')
 def show_index():
-    for network in MMONetworks:
-        network.refresh()
-
-    friends = MMONetworks[0].returnOnlineUserDetails()
-    # MMONetworks[0].listOnlineClients()
-
-    print friends
-
     # users = MMOUser.query.all()
     # for user in users:
     #     print user
-    return render_template('index.html', friends = friends)
+    if session.get('logged_in'):
+        return render_template('index.html', friends = fetchFriendsList())
+    else:
+        return redirect(url_for('show_about'))
 
 @app.route('/Network/Show', methods = ['GET'])
 def show_network():
+    if not session.get('logged_in'):
+        abort(401)
     pass
 
 @app.route('/register', methods=['GET'])
 def register():
-    nick = request.args.get("nick")
-    test = MMOUser(nick)
-    db.session.add(test)
-    try:
-        db.session.commit()
-        flash("added %s" % nick)
-    except IntegrityError, e:
-        flash("error because: %s" % e)
-    return redirect(url_for('show_index'))
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            #and further checks for registration
+            nick = request.args.get("nick")
+            test = MMOUser(nick)
+            db.session.add(test)
+            try:
+                db.session.commit()
+                flash("added %s" % nick)
+                return redirect(url_for('show_index'))
 
+            except IntegrityError, e:
+                flash("error because: %s" % e)
+    
+    return render_template('register.html')
 
 @app.route('/Login', methods=['GET', 'POST'])
 def login():
@@ -166,4 +182,6 @@ def get_icon(networkId):
 
 @app.route('/ShowFriend')
 def show_friend(freiendID):
+    if not session.get('logged_in'):
+        abort(401)
     return redirect(url_for('show_index'))

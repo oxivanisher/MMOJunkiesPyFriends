@@ -102,23 +102,40 @@ class TS3Network(MMONetwork):
         self.onlineclients = {}
         self.clientDatabase = {}
 
+        self.connected = False
         self.connect()
         self.lastOnlineRefreshDate = 0
+
         self.refresh()
 
     # helper functions
     def connect(self):
-        self.log.info("Connecting to TS3 server")
-        self.server = ts3.TS3Server(self.config['ip'], self.config['port'])
-        self.server.login(self.config['username'], self.config['password'])
-        self.server.use(self.config['serverid'])
-        result = self.server.send_command('serverinfo')
-        for server in result.data:
-            if int(server['virtualserver_id']) == self.config['serverid']:
-                self.setNetworkMoreInfo(server['virtualserver_name'])
-                self.log.info("Connected to: %s" % self.moreInfo)
+        if not self.connected:
+            self.log.info("Connecting to TS3 server")
+            try:
+                self.server = ts3.TS3Server(self.config['ip'], self.config['port'])
+                self.server.login(self.config['username'], self.config['password'])
+                self.server.use(self.config['serverid'])
+
+                result = self.server.send_command('serverinfo')
+                for server in result.data:
+                    if int(server['virtualserver_id']) == self.config['serverid']:
+                        self.setNetworkMoreInfo(server['virtualserver_name'])
+                        self.log.info("Connected to: %s" % self.moreInfo)
+
+                self.connected = True
+            except ts3.ConnectionError as e:
+                self.connected = False
+                self.log.warning("TS3 Server connection error: %s" % e)
+                return False
+
+        return True
 
     def refresh(self):
+        if not self.connect():
+            self.log.warning("Not refreshing online clients because we are disconnected")
+            return False
+
         if self.lastOnlineRefreshDate > (time.time() - self.config['updateOnlineLock']):
             self.log.debug("Not refreshing online clients")
         else:
@@ -137,22 +154,25 @@ class TS3Network(MMONetwork):
                         'client_type': int(clients[client]['client_type'])
                     }
             self.log.info("Found %s online clients" % len(self.onlineclients))
+        return True
 
     # request from frontend
     def returnOnlineUserDetails(self):
-        self.refresh()
-        ret = []
-        for cldbid in self.onlineclients.keys():
-            # apperently currently not needed
-            # myRet = self.fetchUserdetatilsByCldbid(cldbid)
-            # if myRet:
-            ret.append({'networkId': self.myId,
-                        'networkName': self.longName,
-                        'networkMoreInfo': self.moreInfo,
-                        'id': 1234,
-                        'nick': self.onlineclients[cldbid]['client_nickname'],
-                        'moreInfo': "blah user comment"})
-        return ret
+        if self.refresh():
+            ret = []
+            for cldbid in self.onlineclients.keys():
+                # apperently currently not needed
+                # myRet = self.fetchUserdetatilsByCldbid(cldbid)
+                # if myRet:
+                ret.append({'networkId': self.myId,
+                            'networkName': self.longName,
+                            'networkMoreInfo': self.moreInfo,
+                            'id': 1234,
+                            'nick': self.onlineclients[cldbid]['client_nickname'],
+                            'moreInfo': "blah user comment"})
+            return (True, ret)
+        else:
+            return (False, "Unable to connect to TS3 server.")
 
     def fetchUserdetatilsByCldbid(self, cldbid):
         update = False

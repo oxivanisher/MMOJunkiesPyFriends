@@ -70,8 +70,11 @@
 			  <div class="nav-collapse collapse">
 				<ul class="nav">
 				  <li class="{% if url_for('show_index') == request.path %}active{% endif %}"><a href="{{ url_for('show_index') }}">Friends Index</a></li>
+				  <li class="{% if url_for('show_about') == request.path %}active{% endif %}"><a href="{{ url_for('show_about') }}">About</a></li>
 				  {% if session.logged_in %}
 				  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Admin</a></li>
+				  {% else %}
+				  <li class="{% if url_for('register') == request.path %}active{% endif %}"><a href="{{ url_for('register') }}">Register</a></li>
 				  {% endif %}
 				  <li class="{% if url_for('login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('logout') }}">Logout</a>{% else %}<a href="{{ url_for('login') }}">Login</a>{% endif %}</li>
 				</ul>
