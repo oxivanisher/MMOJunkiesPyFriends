@@ -4,6 +4,7 @@
 import logging
 import time
 import socket
+import os
 
 from mmofriends import db
 
@@ -113,6 +114,7 @@ class TS3Network(MMONetwork):
         self.connect()
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
+        self.serverIcon = None
 
         self.serverinfo = {}
 
@@ -138,15 +140,13 @@ class TS3Network(MMONetwork):
                 # get instanceinfo
                 # serverinstance_filetransfer_port=30033 !!
 
-                # VIRTUALSERVER_ICON_ID
-
                 result = self.server.send_command('serverinfo')
 
-                for server in result.data:
-                    if int(server['virtualserver_id']) == self.config['serverid']:
-                        self.serverinfo = server
-                        self.setNetworkMoreInfo(self.serverinfo['virtualserver_name'])
-                        print self.serverinfo['virtualserver_icon_id']
+                for serverData in result.data:
+                    if int(serverData['virtualserver_id']) == self.config['serverid']:
+                        self.serverIcon = serverData['virtualserver_icon_id']
+                        self.serverinfo = serverData
+                        self.setNetworkMoreInfo(serverData['virtualserver_name'])
                         self.log.info("Connected to: %s" % self.moreInfo)
 
                 self.connected = True
@@ -154,8 +154,23 @@ class TS3Network(MMONetwork):
                 self.connected = False
                 self.log.warning("TS3 Server connection error: %s" % e)
                 return False
-
+            except EOFError as e:
+                self.connected = False
+                self.log.warning("TS3 Server connection error: %s" % e)
+                return False
         return True
+
+    def cacheFiles(self):
+        if self.connect():
+            self.log.info("Caching server icon")
+            print self.serverIcon
+            print self.serverinfo
+            self.cacheIcon(self.serverIcon)
+
+            self.log.info("Caching channel icons")
+            result = self.server.send_command('channellist -icon')
+            for channel in result.data:
+                print channel
 
     def refresh(self):
         if not self.connect():
@@ -206,21 +221,26 @@ class TS3Network(MMONetwork):
         else:
             return (False, "Unable to connect to TS3 server.")
 
-    def getIcon(self, iconId):
-        iconId += 4294967296
-        message = self.requestFile("/icon_%s" % iconId, 0)
-        return message
+    def cacheIcon(self, iconId):
+        return self.cacheFile("/icon_%s" % (int(iconId) + 4294967296), 0)
 
     # file transfer methods
-    def requestFile(self, name, cid, cpw = "", seekpos = 0):
+    def cacheFile(self, name, cid, cpw = "", seekpos = 0):
         message = "No Message"
+
+        filename = name
+        if name[0] == "/":
+            filename = name[1:]
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/cache', filename)
+
         if seekpos == 0:
             self.log.info("Requesting file name: %s" % name)
             self.clientftfid += 1
 
-        #core/teamspeak/TSQuery.class.php:160
-        if self.refresh():
+        if os.path.isfile(outputFilePath):
+            return "File already in cache"
 
+        if self.refresh():
             response = self.server.send_command("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (self.clientftfid, name, cid, cpw, seekpos))
             fileinfo = response.data[0]
             print "response.data", fileinfo
@@ -231,22 +251,30 @@ class TS3Network(MMONetwork):
                 pass
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
+            self.log.debug("Saving file to: %s" % outputFilePath)
+            read_size = seekpos
+            block_size = 4096
+            output_file = open(outputFilePath,'ab')
+            try:
+                sock = socket.create_connection((self.config['ip'], fileinfo['port']))
+                sock.sendall(fileinfo['ftkey'])
+                while True:
+                    data = sock.recv(block_size)
+                    output_file.write(data)
+                    read_size += len(data)
+                    if not data:
+                        break
+            except OSError as err:
+                self.log.error("Filetransfer error: %s" % err)
+  
+            output_file.close()
 
-            downloaded = 0
-            download = ""
-            # get size from response!
-            while downloaded < int(fileinfo['size']) - seekpos:
-                content = self.fileConnection(int(fileinfo['port']))
-                downloaded += len(content)
-                download += content
-            return "File downloaded"
+            if read_size < int(fileinfo['size']):
+                self.log.warning("Filetransfer incomplete (%s/%s bytes) for ftkey: %s" % (read_size, fileinfo['size'], fileinfo['ftkey']))
+                return "Filetransfer incomplete"
+            else:
+                return True
         return "No connection to TS3 Server"
-
-    def fileConnection(self, port):
-        self.log.debug("Opening file connection to port: %s" % port)
-        sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        sock.connect((self.config['ip'], port))
-        return sock.makefile()
 
     def fetchUserdetatilsByCldbid(self, cldbid):
         update = False
