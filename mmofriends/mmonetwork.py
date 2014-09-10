@@ -155,7 +155,11 @@ class TS3Network(MMONetwork):
                 return False
             except EOFError as e:
                 self.connected = False
-                self.log.warning("TS3 Server connection error: %s" % e)
+                self.log.warning("TS3 Server connection error - EOFError: %s" % e)
+                return False
+            except KeyError as e:
+                self.connected = False
+                self.log.warning("TS3 Server connection error - KeyError: %s" % e)
                 return False
         return True
 
