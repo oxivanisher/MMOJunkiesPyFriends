@@ -4,4 +4,4 @@
 import datetime
 
 def timestampToString(ts):
-	return datetime.datetime.fromtimestamp(int(ts)).strftime('%s.%m.%Y %H:%M:%S')
+	return datetime.datetime.fromtimestamp(int(ts)).strftime('%d.%m.%Y %H:%M:%S')

@@ -116,7 +116,8 @@ class TS3Network(MMONetwork):
         self.onlineClients = {}
         self.clientDatabase = {}
         self.serverInfo = {}
-        self.channelList = {}
+        self.channelList = []
+        self.groupList = []
         self.server = None
 
         self.connected = False
@@ -188,6 +189,14 @@ class TS3Network(MMONetwork):
                 if not self.cacheIcon(self.onlineClients[client]['client_icon_id']):
                     break
 
+            self.log.info("Caching group icons")
+            for group in self.groupList:
+                self.log.debug("Caching file for group: %s" % group['name'])
+                if int(group['iconid']):
+                    if not self.cacheIcon(group['iconid']):
+                        break
+
+
     def refresh(self):
         if not self.connect():
             self.log.warning("Not refreshing online clients because we are disconnected")
@@ -227,6 +236,11 @@ class TS3Network(MMONetwork):
                     channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
                 self.channelList.append(channel)
 
+            # fetching groups
+            self.groupList = []
+            result = self.server.send_command('servergrouplist')
+            self.groupList = result.data
+
             self.log.info("Found %s online clients" % len(self.onlineClients))
         return True
 
@@ -244,6 +258,20 @@ class TS3Network(MMONetwork):
                 moreInfo.append("Created: %s" % timestampToString(myUserDetails['client_created']))
                 if myUserDetails['client_description']:
                     moreInfo.append("Description: %s" % myUserDetails['client_created'])
+
+                userGroups = []
+                userGroupIcon = 0
+                userGroupName = ""
+                for group in myUserDetails['groups']:
+                    for g in self.groupList:
+                        if g['sgid'] == group['sgid']:
+                            userGroupIcon = 'icon_' + g['iconid']
+                            self.cacheIcon(g['iconid'])
+                            print g['iconid']
+                    userGroups.append(group['name'])
+                    userGroupName = group['name']
+                moreInfo.append("Groups: %s" % ', '.join(userGroups))
+
                 # if admin
                 moreInfo.append("Last IP: %s" % myUserDetails['client_lastip'])
                 # {'client_total_bytes_downloaded': '366040', 'client_month_bytes_downloaded': '39211', 'client_database_id': '644', 'client_icon_id': '0', 'client_base64HashClientUID': 'niljclpbalpldpbecbdiemcdncjlglfbilemoloi', 'client_month_bytes_uploaded': '0', 'client_flag_avatar': None, 'client_nickname': 'EvilM0nkey', 'client_description': None, 'client_total_bytes_uploaded': '0'}
@@ -256,15 +284,18 @@ class TS3Network(MMONetwork):
                         if int(channel['cid']) == self.onlineClients[cldbid]['cid']:
                             channelName = channel['channel_name'].decode('utf-8')
                             channelIcon = channel['channel_icon_id']
+                            self.cacheIcon(channelIcon)
                 except IndexError:
                     pass
 
-                self.cacheIcon(channelIcon)
+                # FIXME residign for dynamic pairs <a>(img/title) and text</a>
                 ret.append({'networkId': self.myId,
                             'networkName': self.longName,
                             'networkMoreInfo': self.moreInfo,
                             'networkDetailInfo': channelName,
                             'id': 1234,
+                            'nickDeco': userGroupIcon,
+                            'nickDecoInfo': userGroupName,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
                             'moreInfo': ', '.join(moreInfo),
                             'cacheFile1': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
@@ -367,6 +398,11 @@ class TS3Network(MMONetwork):
             response = self.server.send_command('clientdbinfo cldbid=%s' % cldbid)
             response.data[0]
             self.clientDatabase[cldbid] = response.data[0]
+
+            self.log.debug("Fetching user group details for cldbid: %s" % cldbid)
+            response = self.server.send_command('servergroupsbyclientid cldbid=%s' % cldbid)
+            self.clientDatabase[cldbid]['groups'] = response.data
+
         else:
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
         return self.clientDatabase[cldbid]

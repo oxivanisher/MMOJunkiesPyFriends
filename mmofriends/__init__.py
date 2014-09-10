@@ -252,7 +252,7 @@ def get_avatar(friendId):
         if os.path.isfile(os.path.join(filePath, MMOFriends[friendId].avatar)):
             return send_from_directory(filePath, MMOFriends[friendId].avatar)
         else:
-            log.warning("Avatar not found: %s" % filePath)
+            log.warning("Avatar not found statis/avatar/%s" % MMOFriends[friendId].avatar)
     except IndexError:
         log.warning("Unknown ID for Avatar")
     abort(404)
@@ -264,7 +264,7 @@ def get_network_icon(networkId):
         if os.path.isfile(os.path.join(filePath, MMONetworks[networkId].icon)):
             return send_from_directory(filePath, MMONetworks[networkId].icon)
         else:
-            log.warning("NetworkIcon not found: %s" % filePath)
+            log.warning("NetworkIcon not found static/icon/%s" % MMONetworks[networkId].icon)
     except IndexError:
         log.warning("Unknown ID for NetworkIcon")
     abort(404)
@@ -276,7 +276,7 @@ def get_cached_file(cacheFile):
         if os.path.isfile(os.path.join(filePath, cacheFile)):
             return send_from_directory(filePath, cacheFile)
         else:
-            log.warning("CacheFile not found: %s" % filePath)
+            log.warning("CacheFile not found static/cache/%s" % cacheFile)
     except IndexError:
         log.warning("Unknown cacheFile in Cache")
     abort(404)

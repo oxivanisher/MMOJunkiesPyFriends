@@ -29,13 +29,17 @@
 					 title="{{ friend.networkMoreInfo }}"
 				 /><img class="icon"
 					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile2) }}"
-					 title="{{ friend.networkDetailInfo }}" />
+					 title="{{ friend.networkDetailInfo }}"
+				 />
 				{{ friend.networkDetailInfo }}
 				</a>
 			</td>
 			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.id) }}');"
 				onmouseout="hidePopup();"
-				onclick="document.location='{{ url_for('show_friend', friendId=friend.friendId) }}'">
+				onclick="document.location='{{ url_for('show_friend', friendId=friend.friendId) }}'"
+				/><img class="icon"
+					 src="{{ url_for('get_cached_file', cacheFile=friend.nickDeco) }}"
+					 title="{{ friend.nickDecoInfo }}" />
 				<a href="{{ url_for('show_friend', friendId=friend.id) }}">{{friend.nick}}</a></td>
 			<td>{{friend.moreInfo}}</td>
 		</tr>
