@@ -34,7 +34,6 @@ except ImportError:
 
 # setup flask app
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 db = SQLAlchemy(app)
 
@@ -65,6 +64,7 @@ with app.test_request_context():
 
 # initialize stuff
 app.config['networkConfig'] = YamlConfig("config/mmonetworks.yml").get_values()
+app.secret_key = app.config['APPSECRET']
 MMONetworks = []
 MyUser = None
 
@@ -141,7 +141,7 @@ def dev():
 
     # result = "nope nix"
     # result = MMONetworks[0].getIcon(-247099292)
-    result = MMONetworks[0].cacheFiles()
+    result = MMONetworks[0].test()
 
     return render_template('dev.html', result = result)
 
@@ -189,6 +189,11 @@ def register():
             newUser.name = request.form['name']
             newUser.website = request.form['website']
             newUser.setPassword(request.form['password'])
+            if request.form['nick'] == app.config['ROOTUSER']:
+                log.info("Registred root user: %s" % request.form['nick'])
+                newUser.admin = True
+                newUser.locked = False
+                newUser.veryfied = True
 
             db.session.add(newUser)
             try:
@@ -239,28 +244,40 @@ def logout():
     flash('Logged out')
     return redirect(url_for('login'))
 
-@app.route('/Avatar/<int:friendId>', methods = ['GET'])
+@app.route('/Img/Avatar/<int:friendId>', methods = ['GET'])
 def get_avatar(friendId):
     filePath = os.path.join(app.config['scriptPath'], 'static', 'avatar')
     try:
         if os.path.isfile(os.path.join(filePath, MMOFriends[friendId].avatar)):
             return send_from_directory(filePath, MMOFriends[friendId].avatar)
         else:
-            log.warning("Icon not found: %s" % filePath)
+            log.warning("Avatar not found: %s" % filePath)
     except IndexError:
-        log.warning("Unknown friend ID for avatar")
+        log.warning("Unknown ID for Avatar")
     abort(404)
 
-@app.route('/Icon/<int:networkId>', methods = ['GET'])
-def get_icon(networkId):
+@app.route('/Img/NetworkIcon/<int:networkId>', methods = ['GET'])
+def get_network_icon(networkId):
     filePath = os.path.join(app.config['scriptPath'], 'static', 'icon')
     try:
         if os.path.isfile(os.path.join(filePath, MMONetworks[networkId].icon)):
             return send_from_directory(filePath, MMONetworks[networkId].icon)
         else:
-            log.warning("Icon not found: %s" % filePath)
+            log.warning("NetworkIcon not found: %s" % filePath)
     except IndexError:
-        log.warning("Unknown network ID for icon")
+        log.warning("Unknown ID for NetworkIcon")
+    abort(404)
+
+@app.route('/Img/Cache/<cacheFile>', methods = ['GET'])
+def get_cached_file(cacheFile):
+    filePath = os.path.join(app.config['scriptPath'], 'static', 'cache')
+    try:
+        if os.path.isfile(os.path.join(filePath, cacheFile)):
+            return send_from_directory(filePath, cacheFile)
+        else:
+            log.warning("CacheFile not found: %s" % filePath)
+    except IndexError:
+        log.warning("Unknown cacheFile in Cache")
     abort(404)
 
 @app.route('/ShowFriend')

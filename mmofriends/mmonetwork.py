@@ -111,14 +111,16 @@ class TS3Network(MMONetwork):
         self.clientDatabase = {}
         self.serverInfo = {}
         self.channelList = {}
+        self.server = None
 
         self.connected = False
 
         self.lastOnlineRefreshDate = 0
-        self.clientftfid = int(time.time())
+        self.clientftfid = 0
 
         self.connect()
         self.refresh()
+        self.cacheFiles()
 
     # helper functions
     def connect(self):
@@ -140,7 +142,7 @@ class TS3Network(MMONetwork):
                 # get instanceinfo
                 # serverinstance_filetransfer_port=30033 !!
 
-                result = self.server.send_command('serverInfo')
+                result = self.server.send_command('serverinfo')
 
                 for serverData in result.data:
                     if int(serverData['virtualserver_id']) == self.config['serverid']:
@@ -166,11 +168,19 @@ class TS3Network(MMONetwork):
     def cacheFiles(self):
         if self.connect():
             self.log.info("Caching server icon")
-            self.cacheIcon(self.serverInfo['virtualserver_icon_id'])
+            self.cacheServerIcon(self.serverInfo['virtualserver_icon_id'])
 
             self.log.info("Caching channel icons")
             for channel in self.channelList:
-                self.cacheIcon(channel['channel_icon_id'])
+                self.log.debug("Caching file for channel: %s" % channel['channel_name'])
+                if not self.cacheIcon(channel['channel_icon_id']):
+                    break
+
+            self.log.info("Caching client icons")
+            for client in self.onlineClients.keys():
+                self.log.debug("Caching file for client: %s" % self.onlineClients[client]['client_nickname'])
+                if not self.cacheIcon(self.onlineClients[client]['client_icon_id']):
+                    break
 
     def refresh(self):
         if not self.connect():
@@ -182,7 +192,6 @@ class TS3Network(MMONetwork):
         else:
             self.lastOnlineRefreshDate = time.time()
             self.log.debug("Fetching online clients")
-            # clients = self.server.clientlist()
             response = self.server.send_command("clientlist -icon")
             self.onlineClients = {}
             clients = {}
@@ -192,6 +201,8 @@ class TS3Network(MMONetwork):
             # fetching clients
             for client in clients.keys():
                 # ignoring console users
+                # clientDetails = self.server.send_command('clientinfo clid=%s' % clients[client]['clid'])
+                # print clientDetails
                 if int(clients[client]['client_type']) != 1:
                     self.onlineClients[clients[client]['client_database_id']] = {
                         'client_database_id': int(clients[client]['client_database_id']),
@@ -203,8 +214,12 @@ class TS3Network(MMONetwork):
                     }
 
             # fetching channels
+            self.channelList = []
             result = self.server.send_command('channellist -icon')
-            self.channelList = result.data
+            for channel in result.data:
+                if int(channel['channel_icon_id']) < 0:
+                    channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
+                self.channelList.append(channel)
 
             self.log.info("Found %s online clients" % len(self.onlineClients))
         return True
@@ -217,31 +232,52 @@ class TS3Network(MMONetwork):
                 # apperently currently not needed
                 # myRet = self.fetchUserdetatilsByCldbid(cldbid)
                 # if myRet:
+                channelName = "Unknown"
+                channelIcon = None
+                try:
+                    for channel in self.channelList:
+                        if int(channel['cid']) == self.onlineClients[cldbid]['cid']:
+                            channelName = channel['channel_name'].decode('utf-8')
+                            channelIcon = channel['channel_icon_id']
+                except IndexError:
+                    pass
+
+                self.cacheIcon(channelIcon)
+
                 ret.append({'networkId': self.myId,
                             'networkName': self.longName,
-                            'networkMoreInfo': self.moreInfo,
+                            'networkMoreInfo': self.moreInfo + ': ' + channelName,
                             'id': 1234,
-                            'nick': self.onlineClients[cldbid]['client_nickname'],
-                            'moreInfo': "blah user comment"})
+                            'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
+                            'moreInfo': 'More blah info',
+                            'cacheFile1': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
+                            'cacheFile2': 'icon_' + channelIcon })
             return (True, ret)
         else:
             return (False, "Unable to connect to TS3 server.")
 
-    def cacheIcon(self, iconId):
-        return self.cacheFile("/icon_%s" % (int(iconId) + 4294967296), 0)
+    def cacheServerIcon(self, iconId):
+        self.cacheIcon((int(iconId) + 4294967296))
+
+    def cacheIcon(self, iconId, cid = 0):
+        if int(iconId) == 0:
+            self.log.debug("No icon available")
+            return True
+        else:
+            return self.cacheFile("/icon_%s" % int(iconId), cid)
 
     # file transfer methods
     def cacheFile(self, name, cid, cpw = "", seekpos = 0):
-        message = "No Message"
-
         filename = name
         if name[0] == "/":
             filename = name[1:]
         outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/cache', filename)
 
         if os.path.isfile(outputFilePath):
-            self.log.debug("Not fetching %s. Already cached." % (name))
-            return "File already in cache"
+            self.log.info("Not fetching %s. Already cached." % (name))
+            return False
+        else:
+            self.log.debug("File save path: %s" % outputFilePath)
 
         if seekpos == 0:
             self.log.info("Requesting file name: %s" % name)
@@ -250,21 +286,27 @@ class TS3Network(MMONetwork):
         if self.connect():
             try:
                 response = self.server.send_command("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (self.clientftfid, name, cid, cpw, seekpos))
-            except EOFError:
-                return "Unable to initialize filetransfer"
-
-            fileinfo = response.data[0]
-            print "response.data", fileinfo
+                fileinfo = response.data[0]
+            except EOFError as e:
+                self.connected = False
+                self.log.warning("Unable to initialize filetransfer: %s" % e)
+                return False
+            except KeyError as e:
+                self.connected = False
+                self.log.warning("Unable to initialize filetransfer: %s" % e)
+                return False
 
             try:
-                return fileinfo['msg']
+                self.log.warning("File request error: %s" % fileinfo['msg'])
+                return False
             except KeyError:
                 pass
 
             try:
                 fileinfo['port'], fileinfo['size'], fileinfo['ftkey']
             except KeyError:
-                return "No response recieved"
+                self.log.warning("No response recieved")
+                return False
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
             self.log.debug("Saving file to: %s" % outputFilePath)
@@ -289,10 +331,11 @@ class TS3Network(MMONetwork):
 
             if read_size < int(fileinfo['size']):
                 self.log.warning("Filetransfer incomplete (%s/%s bytes) for ftkey: %s" % (read_size, fileinfo['size'], fileinfo['ftkey']))
-                return "Filetransfer incomplete"
+                return False
             else:
                 return True
-        return "No connection to TS3 Server"
+        self.log.warning("No connection to TS3 Server")
+        return False
 
     def fetchUserdetatilsByCldbid(self, cldbid):
         update = False
@@ -310,3 +353,8 @@ class TS3Network(MMONetwork):
         else:
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
         return self.clientDatabase[cldbid]
+
+    def test(self):
+        result = "blah"
+        # result = self.server.send_command('ftgetfilelist cid=0 cpw= path=/')
+        return result

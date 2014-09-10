@@ -1,7 +1,6 @@
 DEBUG = True
-OUTPUTDIR = "output"
-USERNAME = "admin"
-PASSWORD = "changeme"
+ROOTUSER = "oxi"
+APPSECRET = '\x8a\xbc\x9e\xacuf\x07\xb2\xcc\x98\\w\xec\xbfo\xfa\xe8\x006\xecAY\x05\xde'
 EMAILTARGET = ['yourname@example.com']
 EMAILSERVER = "127.0.0.1"
 EMAILFROM = "yourname@example.com"

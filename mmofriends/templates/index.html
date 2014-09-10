@@ -22,11 +22,15 @@
 			<td onclick="document.location='{{ url_for('show_network', networkId=friend.networkId) }}'">
 				<a href="{{ url_for('show_network', networkId=friend.networkId) }}">
 				<img class="icon"
-					 src="{{ url_for('get_icon', networkId=friend.networkId) }}"
-					 title="{{friend.networkName}}: {{friend.networkMoreInfo}}" />
-				<img class="icon"
-					 src="{{ url_for('get_icon', networkId=friend.networkId) }}"
-					 title="{{friend.networkName}}: {{friend.networkMoreInfo}}" />
+					 src="{{ url_for('get_network_icon', networkId=friend.networkId) }}"
+					 title="{{ friend.networkName }}"
+				 /><img class="icon"
+					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile1) }}"
+					 title="{{ friend.networkMoreInfo }}"
+				 /><img class="icon"
+					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile2) }}"
+					 title="{{ friend.networkMoreInfo }}" />
+				{{ friend.networkMoreInfo }}
 				</a>
 			</td>
 			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.id) }}');"

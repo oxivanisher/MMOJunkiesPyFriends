@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 config/*.yml
 log/*.log
-static/cache/*
+mmofriends/static/cache/*
 .DS_Store
 
 # Editor excludes
