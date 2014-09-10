@@ -4,6 +4,7 @@ __pycache__/
 config/*.yml
 log/*.log
 static/cache/*
+.DS_Store
 
 # Editor excludes
 *.sublime-*
