@@ -139,7 +139,9 @@ def dev():
         log.warning("<%s> tried to access admin without permission!")
         abort(401)
 
-    result = MMONetworks[0].getIcon(-247099292)
+    # result = "nope nix"
+    # result = MMONetworks[0].getIcon(-247099292)
+    result = MMONetworks[0].cacheFiles()
 
     return render_template('dev.html', result = result)
 
