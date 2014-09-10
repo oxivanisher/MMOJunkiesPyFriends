@@ -5,6 +5,7 @@ import logging
 import time
 import hashlib
 
+from mmoutils import *
 from mmofriends import db
 
 class MMOUserLevel(object):

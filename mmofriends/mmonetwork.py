@@ -6,6 +6,7 @@ import time
 import socket
 import os
 
+from mmoutils import *
 from mmofriends import db
 
 try:
@@ -87,10 +88,15 @@ class MMONetwork(object):
         pass
 
     def getNetworkDetails(self):
-        return { 'networkId': self.myId,
-                 'networkShortName': config.shortName,
-                 'networkLongName': config.longName,
-                 'networkMoreInfo': self.moreInfo
+        return {'networkId': self.myId,
+                'networkName': self.longName,
+                'networkMoreInfo': self.moreInfo,
+                'networkDetailInfo': "networkDetailInfo",
+                'id': 1234,
+                'nick': "nick",
+                'moreInfo': ', '.join(["moreInfo"]),
+                'cacheFile1': '',
+                'cacheFile2': ''
                 }
 
     def setNetworkMoreInfo(self, moreInfo):
@@ -229,9 +235,20 @@ class TS3Network(MMONetwork):
         if self.refresh():
             ret = []
             for cldbid in self.onlineClients.keys():
-                # apperently currently not needed
-                # myRet = self.fetchUserdetatilsByCldbid(cldbid)
-                # if myRet:
+                # Get user details
+                myUserDetails = self.fetchUserdetatilsByCldbid(cldbid)
+
+                moreInfo = []
+                moreInfo.append("Last Conn: %s" % timestampToString(myUserDetails['client_lastconnected']))
+                moreInfo.append("Total Conn: %s" % myUserDetails['client_totalconnections'])
+                moreInfo.append("Created: %s" % timestampToString(myUserDetails['client_created']))
+                if myUserDetails['client_description']:
+                    moreInfo.append("Description: %s" % myUserDetails['client_created'])
+                # if admin
+                moreInfo.append("Last IP: %s" % myUserDetails['client_lastip'])
+                # {'client_total_bytes_downloaded': '366040', 'client_month_bytes_downloaded': '39211', 'client_database_id': '644', 'client_icon_id': '0', 'client_base64HashClientUID': 'niljclpbalpldpbecbdiemcdncjlglfbilemoloi', 'client_month_bytes_uploaded': '0', 'client_flag_avatar': None, 'client_nickname': 'EvilM0nkey', 'client_description': None, 'client_total_bytes_uploaded': '0'}
+
+                # Get channel details
                 channelName = "Unknown"
                 channelIcon = None
                 try:
@@ -243,13 +260,13 @@ class TS3Network(MMONetwork):
                     pass
 
                 self.cacheIcon(channelIcon)
-
                 ret.append({'networkId': self.myId,
                             'networkName': self.longName,
-                            'networkMoreInfo': self.moreInfo + ': ' + channelName,
+                            'networkMoreInfo': self.moreInfo,
+                            'networkDetailInfo': channelName,
                             'id': 1234,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                            'moreInfo': 'More blah info',
+                            'moreInfo': ', '.join(moreInfo),
                             'cacheFile1': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
                             'cacheFile2': 'icon_' + channelIcon })
             return (True, ret)

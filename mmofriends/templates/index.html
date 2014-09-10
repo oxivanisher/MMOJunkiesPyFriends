@@ -29,8 +29,8 @@
 					 title="{{ friend.networkMoreInfo }}"
 				 /><img class="icon"
 					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile2) }}"
-					 title="{{ friend.networkMoreInfo }}" />
-				{{ friend.networkMoreInfo }}
+					 title="{{ friend.networkDetailInfo }}" />
+				{{ friend.networkDetailInfo }}
 				</a>
 			</td>
 			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.id) }}');"

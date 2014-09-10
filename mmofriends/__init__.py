@@ -7,6 +7,7 @@ import os
 import logging
 
 from config import *
+from mmoutils import *
 
 # configure logging
 logging.basicConfig(filename='log/mmofriends.log', format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
