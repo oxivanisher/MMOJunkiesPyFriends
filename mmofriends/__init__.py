@@ -131,6 +131,18 @@ def admin():
     flash("admin page would be loading ^^")
     return redirect(url_for('index'))
 
+@app.route('/Dev')
+def dev():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    if not session.get('admin'):
+        log.warning("<%s> tried to access admin without permission!")
+        abort(401)
+
+    result = MMONetworks[0].getIcon(-247099292)
+
+    return render_template('dev.html', result = result)
+
 @app.route('/Network/Show', methods = ['GET'])
 def show_network():
     if not session.get('logged_in'):

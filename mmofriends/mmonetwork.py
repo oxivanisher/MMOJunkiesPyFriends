@@ -2,11 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import ts3
 import time
 import socket
 
 from mmofriends import db
+
+try:
+    import ts3
+except ImportError:
+    print "Please install PyTS3"
+    import sys
+    sys.exit(2)
 
 # base classes
 class MMONetworkConfig(object):
@@ -135,7 +141,7 @@ class TS3Network(MMONetwork):
                 # VIRTUALSERVER_ICON_ID
 
                 result = self.server.send_command('serverinfo')
-                print result.data
+
                 for server in result.data:
                     if int(server['virtualserver_id']) == self.config['serverid']:
                         self.serverinfo = server
@@ -200,32 +206,44 @@ class TS3Network(MMONetwork):
         else:
             return (False, "Unable to connect to TS3 server.")
 
-    def requestFile(self, clientftfid, name, cid, cpw = "", seekpos = 0):
+    def getIcon(self, iconId):
+        iconId += 4294967296
+        message = self.requestFile("/icon_%s" % iconId, 0)
+        return message
+
+    # file transfer methods
+    def requestFile(self, name, cid, cpw = "", seekpos = 0):
+        message = "No Message"
         if seekpos == 0:
+            self.log.info("Requesting file name: %s" % name)
             self.clientftfid += 1
 
         #core/teamspeak/TSQuery.class.php:160
         if self.refresh():
 
-            response = self.server.send_command("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (clientftfid, name, cid, cpw, seekpos))
-            print response
-            return
+            response = self.server.send_command("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (self.clientftfid, name, cid, cpw, seekpos))
+            fileinfo = response.data[0]
+            print "response.data", fileinfo
+
+            try:
+                return fileinfo['msg']
+            except KeyError:
+                pass
+
+            self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
+
             downloaded = 0
             download = ""
             # get size from response!
-            while downloaded < size - seek:
-                content = self.fileConnection(response.data['port'])
+            while downloaded < int(fileinfo['size']) - seekpos:
+                content = self.fileConnection(int(fileinfo['port']))
                 downloaded += len(content)
                 download += content
-            return download
-        pass
-
-    def getIcon(self, iconId):
-        iconId += 4294967296
-        img = self.requestFile("/icon_%s" % iconId, 0)
-        print "imgLen", len(img)
+            return "File downloaded"
+        return "No connection to TS3 Server"
 
     def fileConnection(self, port):
+        self.log.debug("Opening file connection to port: %s" % port)
         sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         sock.connect((self.config['ip'], port))
         return sock.makefile()

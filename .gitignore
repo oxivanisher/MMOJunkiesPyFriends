@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 config/*.yml
 log/*.log
+static/cache/*
 
 # Editor excludes
 *.sublime-*
