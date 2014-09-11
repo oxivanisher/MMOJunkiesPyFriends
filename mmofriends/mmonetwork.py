@@ -79,15 +79,8 @@ class MMONetwork(object):
         self.log.debug("Unlink network %s" % self.longName)
         pass
 
-    def listPartner(self, user):
+    def listPartners(self, user):
         self.log.debug("List all partners for given user")
-        pass
-
-    def getProducts(self):
-        self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
-        pass
-
-    def getNetworkDetails(self):
         return {'id': 1234,
                 'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
                 'moreInfo': ', '.join(moreInfo),
@@ -116,6 +109,10 @@ class MMONetwork(object):
                 }]
             }
 
+    def getProducts(self):
+        self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
+        pass
+
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo
 
@@ -125,6 +122,7 @@ class MMONetwork(object):
 # ts3 classes
 class TS3Network(MMONetwork):
 
+    # class overwrites
     def __init__(self, config, myId):
         super(TS3Network, self).__init__(config, myId)
 
@@ -142,91 +140,6 @@ class TS3Network(MMONetwork):
 
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
-
-        self.connect()
-        self.refresh()
-        self.cacheFiles()
-
-    # helper functions
-    def connect(self):
-        if not self.connected:
-            self.log.info("Connecting to TS3 server")
-
-            try:
-                self.server = ts3.TS3Server(self.config['ip'], self.config['port'])
-                if not self.server.login(self.config['username'], self.config['password']):
-                    self.log.warning("TS3 Server connection error: Unable to login")
-                    return False
-                if not self.server.use(self.config['serverid']):
-                    self.log.warning("TS3 Server connection error: Unable to use server %s" % self.config['serverid'])
-                    return False
-            except ts3.ConnectionError as e:
-                # self.connected = False
-                self.log.warning("TS3 Server connection error: %s" % e)
-                return False
-
-            result = self.sendCommand('serverinfo')
-            for serverData in result.data:
-                if int(serverData['virtualserver_id']) == self.config['serverid']:
-                    self.serverInfo = serverData
-                    self.setNetworkMoreInfo(serverData['virtualserver_name'])
-                    self.log.info("Connected to: %s" % self.moreInfo)
-
-            self.connected = True
-
-            # fetching channels
-            self.log.debug("Fetching channels")
-            self.channelList = []
-            result = self.sendCommand('channellist -icon')
-            for channel in result.data:
-                if int(channel['channel_icon_id']) < 0:
-                    channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
-                self.channelList.append(channel)
-
-            # fetching groups
-            self.log.debug("Fetching groups")
-            self.groupList = []
-            result = self.sendCommand('servergrouplist')
-            self.groupList = result.data
-
-        return True
-
-    def sendCommand(self, command):
-        self.log.debug("Sending command: %s" % command)
-        try:
-            return self.server.send_command(command)
-        except EOFError as e:
-            self.connected = False
-            self.log.warning("TS3 Server connection error - EOFError: %s" % e)
-            raise 
-        except KeyError as e:
-            self.connected = False
-            self.log.warning("TS3 Server connection error - KeyError: %s" % e)
-            return False
-
-    def cacheFiles(self):
-        if self.connect():
-            self.log.info("Caching server icon")
-            self.cacheServerIcon(self.serverInfo['virtualserver_icon_id'])
-
-            self.log.info("Caching channel icons")
-            for channel in self.channelList:
-                self.log.debug("Caching file for channel: %s" % channel['channel_name'])
-                if not self.cacheIcon(channel['channel_icon_id']):
-                    break
-
-            self.log.info("Caching client icons")
-            for client in self.onlineClients.keys():
-                self.log.debug("Caching file for client: %s" % self.onlineClients[client]['client_nickname'])
-                if not self.cacheIcon(self.onlineClients[client]['client_icon_id']):
-                    break
-
-            self.log.info("Caching group icons")
-            for group in self.groupList:
-                self.log.debug("Caching file for group: %s" % group['name'])
-                if int(group['iconid']):
-                    if not self.cacheIcon(group['iconid']):
-                        break
 
     def refresh(self):
         if not self.connect():
@@ -252,37 +165,40 @@ class TS3Network(MMONetwork):
             self.log.info("Found %s online clients" % len(self.onlineClients))
         return True
 
-    # request from frontend
-    def returnOnlineUserDetails(self):
+    def listPartners(self):
         if self.refresh():
             ret = []
             for cldbid in self.onlineClients.keys():
                 # Get user details
-                myUserDetails = self.fetchUserDetatilsByCldbid(cldbid)
+                self.fetchUserDetatilsByCldbid(cldbid)
                 self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
 
+                # self.clientDatabase[cldbid]
+
                 moreInfo = []
-                moreInfo.append("Last Conn: %s" % timestampToString(myUserDetails['client_lastconnected']))
-                moreInfo.append("Total Conn: %s" % myUserDetails['client_totalconnections'])
-                moreInfo.append("Created: %s" % timestampToString(myUserDetails['client_created']))
-                if myUserDetails['client_description']:
-                    moreInfo.append("Description: %s" % myUserDetails['client_created'])
+                try:
+                    moreInfo.append("Last Conn: %s" % timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
+                    moreInfo.append("Total Conn: %s" % self.clientDatabase[cldbid]['client_totalconnections'])
+                    moreInfo.append("Created: %s" % timestampToString(self.clientDatabase[cldbid]['client_created']))
+                    moreInfo.append("Description: %s" % self.clientDatabase[cldbid]['client_created'])
 
-                userGroups = []
-                userGroupIcon = 0
-                userGroupName = ""
-                for group in myUserDetails['groups']:
-                    for g in self.groupList:
-                        if g['sgid'] == group['sgid']:
-                            userGroupIcon = 'icon_' + g['iconid']
-                            self.cacheIcon(g['iconid'])
-                    userGroups.append(group['name'])
-                    userGroupName = group['name']
-                moreInfo.append("Groups: %s" % ', '.join(userGroups))
+                    userGroups = []
+                    userGroupIcon = 0
+                    userGroupName = ""
+                    for group in self.clientDatabase[cldbid]['groups']:
+                        for g in self.groupList:
+                            if g['sgid'] == group['sgid']:
+                                userGroupIcon = 'icon_' + g['iconid']
+                                self.cacheIcon(g['iconid'])
+                        userGroups.append(group['name'])
+                        userGroupName = group['name']
+                    moreInfo.append("Groups: %s" % ', '.join(userGroups))
 
-                # if admin
-                moreInfo.append("Last IP: %s" % myUserDetails['client_lastip'])
-                # {'client_total_bytes_downloaded': '366040', 'client_month_bytes_downloaded': '39211', 'client_database_id': '644', 'client_icon_id': '0', 'client_base64HashClientUID': 'niljclpbalpldpbecbdiemcdncjlglfbilemoloi', 'client_month_bytes_uploaded': '0', 'client_flag_avatar': None, 'client_nickname': 'EvilM0nkey', 'client_description': None, 'client_total_bytes_uploaded': '0'}
+                    # if admin
+                    moreInfo.append("Last IP: %s" % self.clientDatabase[cldbid]['client_lastip'])
+                    # {'client_total_bytes_downloaded': '366040', 'client_month_bytes_downloaded': '39211', 'client_database_id': '644', 'client_icon_id': '0', 'client_base64HashClientUID': 'niljclpbalpldpbecbdiemcdncjlglfbilemoloi', 'client_month_bytes_uploaded': '0', 'client_flag_avatar': None, 'client_nickname': 'EvilM0nkey', 'client_description': None, 'client_total_bytes_uploaded': '0'}
+                except KeyError:
+                    pass
 
                 # Get channel details
                 channelName = "Unknown"
@@ -296,11 +212,7 @@ class TS3Network(MMONetwork):
                 except IndexError:
                     pass
 
-                ret.append({'id': 1234,
-                            'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                            'moreInfo': ', '.join(moreInfo),
-                            'networkText': channelName,
-                            'networkImgs': [{
+                networkImgs = [{
                                 'type': 'network',
                                 'name': self.myId,
                                 'title': self.longName
@@ -308,43 +220,167 @@ class TS3Network(MMONetwork):
                                 'type': 'cache',
                                 'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
                                 'title': ', '.join(moreInfo)
-                            },{
-                                'type': 'cache',
-                                'name': 'icon_' + channelIcon,
-                                'title': channelName
-                            }],
-                            'friendImgs': [{
-                                'type': 'cache',
-                                'name': userGroupIcon,
-                                'title': userGroupName
-                            },{
-                                'type': 'cache',
-                                'name': userGroupIcon,
-                                'title': userGroupName
                             }]
+                if int(channelIcon) != 0:
+                    networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
+
+                friendImgs = []
+                if userGroupIcon != 'icon_0':
+                    friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
+
+# {
+#                                 'type': 'cache',
+#                                 'name': userGroupIcon,
+#                                 'title': userGroupName
+#                             }
+
+                ret.append({'id': 1234,
+                            'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
+                            'moreInfo': ', '.join(moreInfo),
+                            'networkText': channelName,
+                            'networkImgs': networkImgs,
+                            'friendImgs': friendImgs
                     })
             # info:
             # client_servergroups
             # self.channelList = []
             # self.groupList = []
-            print self.channelList[client_servergroups]
+            # print self.channelList[client_servergroups]
 
             return (True, ret)
         else:
             return (False, "Unable to connect to TS3 server.")
 
-    def cacheServerIcon(self, iconId):
-        self.cacheIcon((int(iconId) + 4294967296))
+    # helper methods
+    def connect(self):
+        if not self.connected:
+            self.log.info("Connecting to TS3 server")
 
-    def cacheIcon(self, iconId, cid = 0):
-        if int(iconId) == 0:
-            self.log.debug("No icon available because IconID is 0")
-            return True
+            try:
+                self.server = ts3.TS3Server(self.config['ip'], self.config['port'], self.config['serverid'])
+                if not self.server.is_connected():
+                    self.log.warning("TS3 Server connection error: Unable to open connection, probably banned!")
+                    return False
+                    
+                if not self.server.login(self.config['username'], self.config['password']):
+                    self.log.warning("TS3 Server connection error: Unable to login")
+                    return False
+
+            except ts3.ConnectionError as e:
+                self.log.warning("TS3 Server connection error: %s" % e)
+                return False
+            except EOFError as e:
+                self.log.warning("TS3 Server connection error: %s" % e)
+                return False
+
+            result = self.sendCommand('serverinfo')
+            for serverData in result.data:
+                if int(serverData['virtualserver_id']) == self.config['serverid']:
+                    self.serverInfo = serverData
+                    self.setNetworkMoreInfo(serverData['virtualserver_name'])
+                    self.log.info("Connected to: %s" % self.moreInfo)
+
+            self.connected = True
+
+            # fetching channels
+            self.log.debug("Fetching channels")
+            self.channelList = []
+            result = self.sendCommand('channellist -icon')
+            for channel in result.data:
+                try:
+                    if int(channel['channel_icon_id']) < 0:
+                        channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
+                except KeyError:
+                    channel['channel_icon_id'] = 0
+                self.channelList.append(channel)
+
+            # fetching groups
+            self.log.debug("Fetching groups")
+            self.groupList = []
+            result = self.sendCommand('servergrouplist')
+            self.groupList = result.data
+
+        return True
+
+    def sendCommand(self, command):
+        self.log.debug("Sending command: %s" % command)
+        try:
+            return self.server.send_command(command)
+        except EOFError as e:
+            self.connected = False
+            self.log.warning("TS3 Server connection error - EOFError: %s" % e)
+            return False
+        except KeyError as e:
+            self.connected = False
+            self.log.warning("TS3 Server connection error - KeyError: %s" % e)
+            return False
+
+    def fetchUserDetatilsByCldbid(self, cldbid):
+        updateUserDetails = False
+        try:
+            if self.clientDatabase[cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock']):
+                updateUserDetails = True
+        except KeyError:
+            updateUserDetails = True
+
+        if updateUserDetails:
+            self.clientDatabase[cldbid] = {}
+            self.log.debug("Fetching client db info for cldbid: %s" % cldbid)
+            response = self.sendCommand('clientdbinfo cldbid=%s' % cldbid)
+            if response:
+                self.clientDatabase[cldbid] = response.data[0]
+                self.clientDatabase[cldbid]['lastUpdateUserDetails'] = time.time()
+
         else:
-            return self.cacheFile("/icon_%s" % int(iconId), cid)
+            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+
+
+        updateUserGroupDetails = False
+        try:
+            if self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock']):
+                updateUserGroupDetails = True
+        except KeyError:
+            updateUserGroupDetails = True
+
+        if updateUserGroupDetails:
+            self.clientDatabase[cldbid]['groups'] = {}
+            self.log.debug("Fetching user group details for cldbid: %s" % cldbid)
+            response = self.sendCommand('servergroupsbyclientid cldbid=%s' % cldbid)
+            if response:
+                self.clientDatabase[cldbid]['groups'] = response.data
+                self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] = time.time()
+
+        else:
+            self.log.debug("Not fetching user group details for cldbid: %s" % cldbid)
+
+    def fetchUserInfo(self, clid, cldbid):
+        self.log.setLevel(logging.INFO)
+        updateUserInfo = False
+        try:
+            if self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock']):
+                updateUserInfo = True
+        except KeyError:
+            updateUserInfo = True
+
+        if updateUserInfo:
+            self.clientInfoDatabase[cldbid] = {}
+            self.log.debug("Fetching client info for clid: %s" % clid)
+            response = self.sendCommand('clientinfo clid=%s' % clid)
+            if response:
+                self.clientInfoDatabase[cldbid] = response.data[0]
+                self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] = time.time()
+
+        else:
+            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+
+    def test(self):
+        # result = "blah"
+        result = self.sendCommand('clientinfo clid=2')
+        return result.data
 
     # file transfer methods
     def cacheFile(self, name, cid, cpw = "", seekpos = 0):
+        self.log.setLevel(logging.INFO)
         filename = name
         if name[0] == "/":
             filename = name[1:]
@@ -405,63 +441,38 @@ class TS3Network(MMONetwork):
         self.log.warning("No connection to TS3 Server")
         return False
 
-    def fetchUserDetatilsByCldbid(self, cldbid):
-        updateUserDetails = False
-        try:
-            if self.clientDatabase[cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock']):
-                updateUserDetails = True
-        except KeyError:
-            updateUserDetails = True
-
-        if updateUserDetails:
-            print 'clientdbinfo cldbid=%s' % cldbid
-            return
-            self.log.debug("Fetching client db info for cldbid: %s" % cldbid)
-            response = self.sendCommand('clientdbinfo cldbid=%s' % cldbid)
-            self.clientDatabase[cldbid] = response.data[0]
-
-            self.clientDatabase[cldbid]['lastUpdateUserDetails'] = time.time()
+    def cacheIcon(self, iconId, cid = 0):
+        self.log.setLevel(logging.INFO)
+        if int(iconId) == 0:
+            self.log.debug("No icon available because IconID is 0")
+            return True
         else:
-            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+            return self.cacheFile("/icon_%s" % int(iconId), cid)
 
+    def cacheFiles(self):
+        self.log.setLevel(logging.INFO)
+        if self.connect():
+            self.log.info("Caching server icon")
+            self.cacheServerIcon(self.serverInfo['virtualserver_icon_id'])
 
-        updateUserGroupDetails = False
-        try:
-            if self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateOnlineLock']):
-                updateUserGroupDetails = True
-        except KeyError:
-            updateUserGroupDetails = True
+            self.log.info("Caching channel icons")
+            for channel in self.channelList:
+                self.log.debug("Caching file for channel: %s" % channel['channel_name'])
+                self.cacheIcon(channel['channel_icon_id'])
+                    # break
 
-        if updateUserGroupDetails:
-            self.log.debug("Fetching user group details for cldbid: %s" % cldbid)
-            response = self.sendCommand('servergroupsbyclientid cldbid=%s' % cldbid)
-            self.clientDatabase[cldbid]['groups'] = response.data
+            self.log.info("Caching client icons")
+            for client in self.onlineClients.keys():
+                self.log.debug("Caching file for client: %s" % self.onlineClients[client]['client_nickname'])
+                self.cacheIcon(self.onlineClients[client]['client_icon_id'])
+                    # break
 
-            self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] = time.time()
-        else:
-            self.log.debug("Not fetching user group details for cldbid: %s" % cldbid)
+            self.log.info("Caching group icons")
+            for group in self.groupList:
+                self.log.debug("Caching file for group: %s" % group['name'])
+                if int(group['iconid']):
+                    self.cacheIcon(group['iconid'])
+                        # break
 
-        return self.clientDatabase[cldbid]
-
-    def fetchUserInfo(self, clid, cldbid):
-        updateUserInfo = False
-        try:
-            if self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock']):
-                updateUserInfo = True
-        except KeyError:
-            updateUserInfo = True
-
-        if updateUserInfo:
-            self.log.debug("Fetching client info for clid: %s" % clid)
-            response = self.sendCommand('clientinfo clid=%s' % clid)
-            self.clientInfoDatabase[cldbid] = response.data[0]
-            print response.data[0]
-
-            self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] = time.time()
-        else:
-            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
-
-    def test(self):
-        # result = "blah"
-        result = self.sendCommand('clientinfo clid=2')
-        return result.data
+    def cacheServerIcon(self, iconId):
+        self.cacheIcon((int(iconId) + 4294967296))

@@ -76,7 +76,7 @@ MyUser = None
 def fetchFriendsList():
     retFriendsList = []
     for network in MMONetworks:
-        (res, friendsList) = network.returnOnlineUserDetails()
+        (res, friendsList) = network.listPartners()
         if res:
             retFriendsList += friendsList
         else:
@@ -92,16 +92,17 @@ def getUser(nick = None):
 # mmonetwork helpers
 def loadNetworks():
     for (myClass, myShortName, myLongName) in NetworksToLoad:
-        log.debug("Try loading MMONet: %s" % myLongName)
-        loadNetwork(myClass, myShortName, myLongName)
+        log.info("Trying to initialize MMONetwork: %s" % myLongName)
+        if loadNetwork(myClass, myShortName, myLongName):
+            NetworksToLoad.pop(NetworksToLoad.index((myClass, myShortName, myLongName)))
 
 def loadNetwork(network, shortName, longName):
     try:
         MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
-        NetworksToLoad.pop(network, shortName, longName)
-        log.debug("Loaded MMONet: %s" % myLongName)
+        return True
     except Exception as e:
-        flash("Unable to load network: %s" % longName)
+        flash("Unable to load network %s because: %s" % (longName, e))
+        return False
 
 # flask error handlers
 @app.errorhandler(404)
@@ -113,18 +114,9 @@ def not_found(error):
     return render_template('error.html', number = 401, message = "Unauthorized!"), 401
 
 # app routes
-@app.before_first_request
-def before_first_request():
-    log.debug("Before first request")
-    loadNetworks()
-
-    # load networks
-    # try:
-    #     loadNetwork(TS3Network, "TS3", "Team Speak 3")
-    # except Exception as e:
-    #     flash("Unable to load network: %s" % e)
-
-    log.debug("Serving first request")
+# @app.before_first_request
+# def before_first_request():
+#     pass
 
 @app.route('/About')
 def about():
