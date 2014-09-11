@@ -21,27 +21,24 @@
 		<tr>
 			<td onclick="document.location='{{ url_for('show_network', networkId=friend.networkId) }}'">
 				<a href="{{ url_for('show_network', networkId=friend.networkId) }}">
-				<img class="icon"
-					 src="{{ url_for('get_network_icon', networkId=friend.networkId) }}"
-					 title="{{ friend.networkName }}"
-				 /><img class="icon"
-					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile1) }}"
-					 title="{{ friend.networkMoreInfo }}"
-				 /><img class="icon"
-					 src="{{ url_for('get_cached_file', cacheFile=friend.cacheFile2) }}"
-					 title="{{ friend.networkDetailInfo }}"
-				 />
-				{{ friend.networkDetailInfo }}
-				</a>
+				{%- for img in friend.networkImgs -%}
+					<img class="icon"
+					 src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}"
+					 title="{{ img.title }}" />
+				{%- endfor -%}
+				{{ friend.networkText }}</a>
 			</td>
-			<td onmouseover="showPopup('{{ url_for('get_avatar', friendId=friend.id) }}');"
+			<td onmouseover="showPopup('{{ url_for('get_image', imgType=avatar, imgId=friend.avatar) }}');"
 				onmouseout="hidePopup();"
 				onclick="document.location='{{ url_for('show_friend', friendId=friend.friendId) }}'"
-				/><img class="icon"
-					 src="{{ url_for('get_cached_file', cacheFile=friend.nickDeco) }}"
-					 title="{{ friend.nickDecoInfo }}" />
-				<a href="{{ url_for('show_friend', friendId=friend.id) }}">{{friend.nick}}</a></td>
-			<td>{{friend.moreInfo}}</td>
+				/><a href="{{ url_for('show_friend', friendId=friend.id) }}">
+				{%- for img in friend.friendImgs -%}
+					<img class="icon"
+					 src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}"
+					 title="{{ img.title }}" />
+				{%- endfor -%}
+				{{ friend.nick }}</a></td>
+			<td>{{ friend.moreInfo }}</td>
 		</tr>
 	{% endfor %}
 	</tbody>

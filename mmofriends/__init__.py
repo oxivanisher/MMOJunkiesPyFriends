@@ -13,7 +13,7 @@ from mmoutils import *
 logging.basicConfig(filename='log/mmofriends.log', format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)-8s [%(name)s] %(message)s')
+formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 log = logging.getLogger(__name__)
@@ -66,13 +66,11 @@ with app.test_request_context():
 # initialize stuff
 app.config['networkConfig'] = YamlConfig("config/mmonetworks.yml").get_values()
 app.secret_key = app.config['APPSECRET']
+NetworksToLoad = [(TS3Network, "TS3", "Team Speak 3")]
 MMONetworks = []
 MyUser = None
 
 # helper methods
-def loadNetwork(network, shortName, longName):
-    MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
-
 def fetchFriendsList():
     retFriendsList = []
     for network in MMONetworks:
@@ -89,6 +87,20 @@ def getUser(nick = None):
             nick = session.get('nick')
         return MMOUser.query.filter_by(nick=nick).first()
 
+# mmonetwork helpers
+def loadNetworks():
+    for (myClass, myShortName, myLongName) in NetworksToLoad:
+        log.debug("Try loading MMONet: %s" % myLongName)
+        loadNetwork(myClass, myShortName, myLongName)
+
+def loadNetwork(network, shortName, longName):
+    try:
+        MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
+        NetworksToLoad.pop(network, shortName, longName)
+        log.debug("Loaded MMONet: %s" % myLongName)
+    except Exception as e:
+        flash("Unable to load network: %s" % longName)
+
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
@@ -102,9 +114,13 @@ def not_found(error):
 @app.before_first_request
 def before_first_request():
     log.debug("Before first request")
+    loadNetworks()
 
     # load networks
-    loadNetwork(TS3Network, "TS3", "Team Speak 3")
+    # try:
+    #     loadNetwork(TS3Network, "TS3", "Team Speak 3")
+    # except Exception as e:
+    #     flash("Unable to load network: %s" % e)
 
     log.debug("Serving first request")
 
@@ -114,6 +130,7 @@ def about():
 
 @app.route('/')
 def index():
+    loadNetworks()
     # users = MMOUser.query.all()
     # for user in users:
     #     print user
@@ -142,7 +159,10 @@ def dev():
 
     # result = "nope nix"
     # result = MMONetworks[0].getIcon(-247099292)
-    result = MMONetworks[0].test()
+    try:
+        result = MMONetworks[0].test()
+    except Exception as e:
+        result = e
 
     return render_template('dev.html', result = result)
 
@@ -245,40 +265,26 @@ def logout():
     flash('Logged out')
     return redirect(url_for('login'))
 
-@app.route('/Img/Avatar/<int:friendId>', methods = ['GET'])
-def get_avatar(friendId):
-    filePath = os.path.join(app.config['scriptPath'], 'static', 'avatar')
-    try:
-        if os.path.isfile(os.path.join(filePath, MMOFriends[friendId].avatar)):
-            return send_from_directory(filePath, MMOFriends[friendId].avatar)
-        else:
-            log.warning("Avatar not found statis/avatar/%s" % MMOFriends[friendId].avatar)
-    except IndexError:
-        log.warning("Unknown ID for Avatar")
-    abort(404)
+@app.route('/Img/<imgType>/<imgId>', methods = ['GET', 'POST'])
+def get_image(imgType, imgId):
+    filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
+    log.debug("Requesting img type <%s> id <%s>" % (imgType, imgId))
 
-@app.route('/Img/NetworkIcon/<int:networkId>', methods = ['GET'])
-def get_network_icon(networkId):
-    filePath = os.path.join(app.config['scriptPath'], 'static', 'icon')
     try:
-        if os.path.isfile(os.path.join(filePath, MMONetworks[networkId].icon)):
-            return send_from_directory(filePath, MMONetworks[networkId].icon)
-        else:
-            log.warning("NetworkIcon not found static/icon/%s" % MMONetworks[networkId].icon)
-    except IndexError:
-        log.warning("Unknown ID for NetworkIcon")
-    abort(404)
+        if imgType == 'avatar':
+            fileName = MMOFriends[int(imgId)].avatar
+        elif imgType == 'network':
+            fileName = MMONetworks[int(imgId)].icon
+        elif imgType == 'cache':
+            fileName = imgId
 
-@app.route('/Img/Cache/<cacheFile>', methods = ['GET'])
-def get_cached_file(cacheFile):
-    filePath = os.path.join(app.config['scriptPath'], 'static', 'cache')
-    try:
-        if os.path.isfile(os.path.join(filePath, cacheFile)):
-            return send_from_directory(filePath, cacheFile)
+        if os.path.isfile(os.path.join(filePath, fileName)):
+            return send_from_directory(filePath, fileName)
         else:
-            log.warning("CacheFile not found static/cache/%s" % cacheFile)
+            log.warning("Image not found: %s/%s" % (filePath, fileName))
+
     except IndexError:
-        log.warning("Unknown cacheFile in Cache")
+        log.warning("Unknown ID for img type %s: %s" % (imgType, imgId))
     abort(404)
 
 @app.route('/ShowFriend')
