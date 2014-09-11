@@ -138,17 +138,6 @@ class TS3Network(MMONetwork):
                 self.server.login(self.config['username'], self.config['password'])
                 self.server.use(self.config['serverid'])
 
-                # get server user groups
-                # result = self.server.send_command('servergrouplist')
-                # print result.data
-
-                # get channel list
-                # result = self.server.send_command('channellist -icon')
-                # print result.data
-
-                # get instanceinfo
-                # serverinstance_filetransfer_port=30033 !!
-
                 result = self.server.send_command('serverinfo')
 
                 for serverData in result.data:
@@ -170,6 +159,22 @@ class TS3Network(MMONetwork):
                 self.connected = False
                 self.log.warning("TS3 Server connection error - KeyError: %s" % e)
                 return False
+
+            # fetching channels
+            self.log.debug("Fetching channels")
+            self.channelList = []
+            result = self.server.send_command('channellist -icon')
+            for channel in result.data:
+                if int(channel['channel_icon_id']) < 0:
+                    channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
+                self.channelList.append(channel)
+
+            # fetching groups
+            self.log.debug("Fetching groups")
+            self.groupList = []
+            result = self.server.send_command('servergrouplist')
+            self.groupList = result.data
+
         return True
 
     def cacheFiles(self):
@@ -228,19 +233,6 @@ class TS3Network(MMONetwork):
                         'client_type': int(clients[client]['client_type'])
                     }
 
-            # fetching channels
-            self.channelList = []
-            result = self.server.send_command('channellist -icon')
-            for channel in result.data:
-                if int(channel['channel_icon_id']) < 0:
-                    channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
-                self.channelList.append(channel)
-
-            # fetching groups
-            self.groupList = []
-            result = self.server.send_command('servergrouplist')
-            self.groupList = result.data
-
             self.log.info("Found %s online clients" % len(self.onlineClients))
         return True
 
@@ -267,7 +259,6 @@ class TS3Network(MMONetwork):
                         if g['sgid'] == group['sgid']:
                             userGroupIcon = 'icon_' + g['iconid']
                             self.cacheIcon(g['iconid'])
-                            print g['iconid']
                     userGroups.append(group['name'])
                     userGroupName = group['name']
                 moreInfo.append("Groups: %s" % ', '.join(userGroups))
@@ -309,7 +300,7 @@ class TS3Network(MMONetwork):
 
     def cacheIcon(self, iconId, cid = 0):
         if int(iconId) == 0:
-            self.log.debug("No icon available")
+            self.log.debug("No icon available because IconID is 0")
             return True
         else:
             return self.cacheFile("/icon_%s" % int(iconId), cid)
@@ -322,13 +313,13 @@ class TS3Network(MMONetwork):
         outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/cache', filename)
 
         if os.path.isfile(outputFilePath):
-            self.log.info("Not fetching %s. Already cached." % (name))
+            self.log.debug("Not fetching %s. Already cached." % (name))
             return False
         else:
             self.log.debug("File save path: %s" % outputFilePath)
 
         if seekpos == 0:
-            self.log.info("Requesting file name: %s" % name)
+            self.log.debug("Requesting file name: %s" % name)
             self.clientftfid += 1
 
         if self.connect():
@@ -357,7 +348,7 @@ class TS3Network(MMONetwork):
                 return False
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
-            self.log.debug("Saving file to: %s" % outputFilePath)
+            self.log.info("Saving file to static/cache/%s" % filename)
             read_size = seekpos
             block_size = 4096
             output_file = open(outputFilePath,'ab')
@@ -386,25 +377,40 @@ class TS3Network(MMONetwork):
         return False
 
     def fetchUserdetatilsByCldbid(self, cldbid):
-        update = False
+        updateUserDetails = False
         try:
-            if self.clientDatabase[cldbid]['lastUpdateDate'] < (time.time() - self.config['updateLock']):
-                update = True
+            if self.clientDatabase[cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock']):
+                updateUserDetails = True
         except KeyError:
-            update = True
+            updateUserDetails = True
 
-        if update:
+        if updateUserDetails:
             self.log.debug("Fetching user details for cldbid: %s" % cldbid)
             response = self.server.send_command('clientdbinfo cldbid=%s' % cldbid)
             response.data[0]
             self.clientDatabase[cldbid] = response.data[0]
 
+            self.clientDatabase[cldbid]['lastUpdateUserDetails'] = time.time()
+        else:
+            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+
+
+        updateUserGroupDetails = False
+        try:
+            if self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateOnlineLock']):
+                updateUserGroupDetails = True
+        except KeyError:
+            updateUserGroupDetails = True
+
+        if updateUserGroupDetails:
             self.log.debug("Fetching user group details for cldbid: %s" % cldbid)
             response = self.server.send_command('servergroupsbyclientid cldbid=%s' % cldbid)
             self.clientDatabase[cldbid]['groups'] = response.data
 
+            self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] = time.time()
         else:
-            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+            self.log.debug("Not fetching user group details for cldbid: %s" % cldbid)
+
         return self.clientDatabase[cldbid]
 
     def test(self):
