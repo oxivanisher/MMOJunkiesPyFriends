@@ -271,6 +271,8 @@ def get_image(imgType, imgId):
             fileName = MMONetworks[int(imgId)].icon
         elif imgType == 'cache':
             fileName = imgId
+        elif imgType == 'flag':
+            fileName = imgId + '.png'
 
         if os.path.isfile(os.path.join(filePath, fileName)):
             return send_from_directory(filePath, fileName)

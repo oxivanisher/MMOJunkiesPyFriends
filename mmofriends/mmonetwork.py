@@ -5,6 +5,7 @@ import logging
 import time
 import socket
 import os
+import random
 
 from mmoutils import *
 from mmofriends import db
@@ -133,7 +134,8 @@ class TS3Network(MMONetwork):
         self.clientInfoDatabase = {}
         self.serverInfo = {}
         self.channelList = []
-        self.groupList = []
+        self.channelGroupList = {}
+        self.groupList = {}
         self.server = None
 
         self.connected = False
@@ -173,8 +175,6 @@ class TS3Network(MMONetwork):
                 self.fetchUserDetatilsByCldbid(cldbid)
                 self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
 
-                # self.clientDatabase[cldbid]
-
                 moreInfo = []
                 try:
                     moreInfo.append("Last Conn: %s" % timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
@@ -186,10 +186,10 @@ class TS3Network(MMONetwork):
                     userGroupIcon = 0
                     userGroupName = ""
                     for group in self.clientDatabase[cldbid]['groups']:
-                        for g in self.groupList:
-                            if g['sgid'] == group['sgid']:
-                                userGroupIcon = 'icon_' + g['iconid']
-                                self.cacheIcon(g['iconid'])
+                        for g in self.groupList.keys():
+                            if self.groupList[g]['sgid'] == group['sgid']:
+                                userGroupIcon = 'icon_' + self.groupList[g]['iconid']
+                                self.cacheIcon(self.groupList[g]['iconid'])
                         userGroups.append(group['name'])
                         userGroupName = group['name']
                     moreInfo.append("Groups: %s" % ', '.join(userGroups))
@@ -228,11 +228,14 @@ class TS3Network(MMONetwork):
                 if userGroupIcon != 'icon_0':
                     friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
-# {
-#                                 'type': 'cache',
-#                                 'name': userGroupIcon,
-#                                 'title': userGroupName
-#                             }
+                cgid = self.clientInfoDatabase[cldbid]['client_channel_group_id']
+                if int(self.channelGroupList[cgid]['iconid']) != 0:
+                    friendImgs.append({ 'type': 'cache', 'name': 'icon_' + self.channelGroupList[cgid]['iconid'], 'title': self.channelGroupList[cgid]['name'] })
+
+                if self.clientInfoDatabase[cldbid]['client_country']:
+                    friendImgs.append({ 'type': 'flag',
+                                        'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
+                                        'title': self.clientInfoDatabase[cldbid]['client_country'] })
 
                 ret.append({'id': 1234,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
@@ -241,11 +244,22 @@ class TS3Network(MMONetwork):
                             'networkImgs': networkImgs,
                             'friendImgs': friendImgs
                     })
-            # info:
-            # client_servergroups
-            # self.channelList = []
-            # self.groupList = []
-            # print self.channelList[client_servergroups]
+
+                # nice fields !
+                # print self.clientInfoDatabase[cldbid]['client_output_muted']
+                # print self.clientInfoDatabase[cldbid]['client_outputonly_muted']
+                # print self.clientInfoDatabase[cldbid]['client_input_muted']
+                # print self.clientInfoDatabase[cldbid]['client_away_message']
+                # print self.clientInfoDatabase[cldbid]['client_is_channel_commander']
+                # print self.clientInfoDatabase[cldbid]['client_is_recording']
+                # print self.clientInfoDatabase[cldbid]['client_is_talker']
+                # print self.clientInfoDatabase[cldbid]['client_away']
+                # print self.clientInfoDatabase[cldbid]['client_is_channel_commander']
+
+                # client avatar !
+                # print self.clientDatabase[cldbid]['client_flag_avatar'] #??
+                # if self.clientDatabase[cldbid]['client_flag_avatar']:
+                #     self.cacheFlagAvatar(self.clientDatabase[cldbid]['client_flag_avatar'])
 
             return (True, ret)
         else:
@@ -296,9 +310,17 @@ class TS3Network(MMONetwork):
 
             # fetching groups
             self.log.debug("Fetching groups")
-            self.groupList = []
+            self.groupList = {}
             result = self.sendCommand('servergrouplist')
-            self.groupList = result.data
+            for group in result.data:
+                self.groupList[group['sgid']] = group
+
+            # fetching channel groups
+            self.log.debug("Fetching channel groups")
+            self.channelGroupList = {}
+            result = self.sendCommand('channelgrouplist')
+            for group in result.data:
+                self.channelGroupList[group['cgid']] = group
 
         return True
 
@@ -318,7 +340,7 @@ class TS3Network(MMONetwork):
     def fetchUserDetatilsByCldbid(self, cldbid):
         updateUserDetails = False
         try:
-            if self.clientDatabase[cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock']):
+            if self.clientDatabase[cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
                 updateUserDetails = True
         except KeyError:
             updateUserDetails = True
@@ -337,7 +359,7 @@ class TS3Network(MMONetwork):
 
         updateUserGroupDetails = False
         try:
-            if self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock']):
+            if self.clientDatabase[cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
                 updateUserGroupDetails = True
         except KeyError:
             updateUserGroupDetails = True
@@ -357,7 +379,7 @@ class TS3Network(MMONetwork):
         self.log.setLevel(logging.INFO)
         updateUserInfo = False
         try:
-            if self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock']):
+            if self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
                 updateUserInfo = True
         except KeyError:
             updateUserInfo = True
@@ -453,6 +475,12 @@ class TS3Network(MMONetwork):
         else:
             return self.cacheFile("/icon_%s" % int(iconId), cid)
 
+    def cacheFlagAvatar(self, flagAvatarId, cid = 0):
+        # self.log.setLevel(logging.INFO)
+        # https://docs.planetteamspeak.com/ts3/php/framework/_client_8php_source.html
+        # https://docs.planetteamspeak.com/ts3/php/framework/class_team_speak3___node___client.html#a1c1b0fa71731df7ac3d4098b046938c7
+        return self.cacheFile("avatar_%s" % flagAvatarId, cid)
+
     def cacheFiles(self):
         self.log.setLevel(logging.INFO)
         if self.connect():
@@ -463,20 +491,17 @@ class TS3Network(MMONetwork):
             for channel in self.channelList:
                 self.log.debug("Caching file for channel: %s" % channel['channel_name'])
                 self.cacheIcon(channel['channel_icon_id'])
-                    # break
 
             self.log.info("Caching client icons")
             for client in self.onlineClients.keys():
                 self.log.debug("Caching file for client: %s" % self.onlineClients[client]['client_nickname'])
                 self.cacheIcon(self.onlineClients[client]['client_icon_id'])
-                    # break
 
             self.log.info("Caching group icons")
-            for group in self.groupList:
-                self.log.debug("Caching file for group: %s" % group['name'])
-                if int(group['iconid']):
-                    self.cacheIcon(group['iconid'])
-                        # break
+            for group in self.groupList.keys():
+                self.log.debug("Caching file for group: %s" % self.groupList[group]['name'])
+                if int(self.groupList[group]['iconid']):
+                    self.cacheIcon(self.groupList[group]['iconid'])
 
     def cacheServerIcon(self, iconId):
         self.cacheIcon((int(iconId) + 4294967296))
