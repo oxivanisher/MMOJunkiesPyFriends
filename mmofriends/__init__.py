@@ -65,7 +65,7 @@ with app.test_request_context():
     db.create_all()
 
 # initialize stuff
-app.config['networkConfig'] = YamlConfig("config/mmonetworks.yml").get_values()
+app.config['networkConfig'] = YamlConfig(os.path.join(os.path.dirname(os.path.realpath(__file__)), "config/mmonetworks.yml")).get_values()
 app.secret_key = app.config['APPSECRET']
 NetworksToLoad = [(TS3Network, "TS3", "Team Speak 3")]
 MMONetworks = []
