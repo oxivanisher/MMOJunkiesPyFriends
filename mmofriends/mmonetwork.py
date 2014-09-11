@@ -416,7 +416,11 @@ class TS3Network(MMONetwork):
             self.log.info("Saving file to static/cache/%s" % filename)
             read_size = seekpos
             block_size = 4096
-            output_file = open(outputFilePath,'ab')
+            try:
+                output_file = open(outputFilePath,'ab')
+            except IOError as e:
+                self.log.warning("Unable to open outputfile %s: %s" % (outputFilePath, e))
+                return False
             try:
                 sock = socket.create_connection((self.config['ip'], fileinfo['port']))
                 sock.sendall(fileinfo['ftkey'])
