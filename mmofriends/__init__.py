@@ -10,8 +10,8 @@ from config import *
 from mmoutils import *
 
 # configure logging
-logPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'log/mmofriends.log')
-logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
+#logPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'log/mmofriends.log')
+logging.basicConfig(filename='/tmp/mmofriends.log', format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
