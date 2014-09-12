@@ -76,7 +76,7 @@ MyUser = None
 def fetchFriendsList():
     retFriendsList = []
     for network in MMONetworks:
-        (res, friendsList) = network.listPartners()
+        (res, friendsList) = network.getPartners()
         if res:
             retFriendsList += friendsList
         else:
@@ -118,22 +118,29 @@ def not_found(error):
 # def before_first_request():
 #     pass
 
-@app.route('/About')
-def about():
-    return render_template('about.html')
-
+# main routes
 @app.route('/')
 def index():
+    if session.get('logged_in'):
+        return redirect(url_for('friends_list'))
+    return redirect(url_for('about'))
+
+@app.route('/Friends/List')
+def friends_list():
     loadNetworks()
     # users = MMOUser.query.all()
     # for user in users:
     #     print user
     if session.get('logged_in'):
-        return render_template('index.html', friends = fetchFriendsList())
+        return render_template('friends_list.html', friends = fetchFriendsList())
     else:
-        return redirect(url_for('about'))
+        abort(401)
 
-@app.route('/Admin')
+@app.route('/About')
+def about():
+    return render_template('about.html')
+
+@app.route('/Administration')
 def admin():
     if not session.get('logged_in'):
         abort(401)
@@ -141,9 +148,9 @@ def admin():
         log.warning("<%s> tried to access admin without permission!")
         abort(401)
     flash("admin page would be loading ^^")
-    return redirect(url_for('index'))
+    return redirect(url_for('about'))
 
-@app.route('/Dev')
+@app.route('/Development')
 def dev():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
@@ -160,14 +167,51 @@ def dev():
 
     return render_template('dev.html', result = result)
 
+@app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
+def get_image(imgType, imgId):
+    filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
+    log.debug("Requesting img type <%s> id <%s>" % (imgType, imgId))
+
+    try:
+        if imgType == 'avatar':
+            fileName = MMOFriends[int(imgId)].avatar
+        elif imgType == 'network':
+            fileName = MMONetworks[int(imgId)].icon
+        elif imgType == 'cache':
+            fileName = imgId
+        elif imgType == 'flag':
+            fileName = imgId + '.png'
+
+        if os.path.isfile(os.path.join(filePath, fileName)):
+            return send_from_directory(filePath, fileName)
+        else:
+            log.warning("Image not found: %s/%s" % (filePath, fileName))
+
+    except IndexError:
+        log.warning("Unknown ID for img type %s: %s" % (imgType, imgId))
+    abort(404)
+
+# network routes
 @app.route('/Network/Show', methods = ['GET'])
-def show_network():
+def network_show():
     if not session.get('logged_in'):
         abort(401)
     pass
 
-@app.route('/Register', methods=['GET', 'POST'])
-def register():
+@app.route('/Networks', methods=['GET', 'POST'])
+def networks():
+    if not session.get('logged_in'):
+        abort(401)
+    if request.method == 'POST':
+        pass
+        # form was submitted ...
+        # dolink
+    else:
+        return render_template('networks.html')
+
+# profile routes
+@app.route('/Profile/Register', methods=['GET', 'POST'])
+def profile_register():
     if request.method == 'POST':
         valid = True
         if request.form['nick'] and \
@@ -221,15 +265,15 @@ def register():
             except InterfaceError, e:
                 flash("SQL Alchemy InterfaceError %s" % e)
     
-    return render_template('register.html', values = request.form)
+    return render_template('profile_register.html', values = request.form)
 
-@app.route('/Profile', methods=['GET', 'POST'])
-def profile():
+@app.route('/Profile/Show', methods=['GET', 'POST'])
+def profile_show():
     flash("show profile, change template in the future")
-    return render_template('register.html', values = getUser())
+    return render_template('profile_register.html', values = getUser())
 
-@app.route('/Login', methods=['GET', 'POST'])
-def login():
+@app.route('/Profile/Login', methods=['GET', 'POST'])
+def profile_login():
     if request.method == 'POST':
         log.info("Trying to login user: %s" % request.form['nick'])
         myUser = False
@@ -249,42 +293,26 @@ def login():
         else:
             flash('Invalid login')                
 
-    return render_template('login.html')
+    return render_template('profile_login.html')
 
-@app.route('/Logout')
-def logout():
+@app.route('/Profile/Logout')
+def profile_logout():
     session.pop('logged_in', None)
     session.pop('nick', None)
     session.pop('admin', None)
     flash('Logged out')
-    return redirect(url_for('login'))
+    return redirect(url_for('profile_login'))
 
-@app.route('/Img/<imgType>/<imgId>', methods = ['GET', 'POST'])
-def get_image(imgType, imgId):
-    filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
-    log.debug("Requesting img type <%s> id <%s>" % (imgType, imgId))
-
-    try:
-        if imgType == 'avatar':
-            fileName = MMOFriends[int(imgId)].avatar
-        elif imgType == 'network':
-            fileName = MMONetworks[int(imgId)].icon
-        elif imgType == 'cache':
-            fileName = imgId
-        elif imgType == 'flag':
-            fileName = imgId + '.png'
-
-        if os.path.isfile(os.path.join(filePath, fileName)):
-            return send_from_directory(filePath, fileName)
-        else:
-            log.warning("Image not found: %s/%s" % (filePath, fileName))
-
-    except IndexError:
-        log.warning("Unknown ID for img type %s: %s" % (imgType, imgId))
-    abort(404)
-
-@app.route('/ShowFriend')
-def show_friend(freiendID):
+# partner routes
+@app.route('/Partner/Show')
+def partner_show(freiendID):
     if not session.get('logged_in'):
         abort(401)
     return redirect(url_for('index'))
+
+@app.route('/Partner/Details/<int:networkId>/<partnerId>', methods = ['GET', 'POST'])
+def partner_show_details(networkId, partnerId):
+    log.info("Trying to show partner details for networkId %s and partnerId %s" % (networkId, partnerId))
+    if not session.get('logged_in'):
+        abort(401)
+    return render_template('partner_details.html', details = MMONetworks[networkId].getPartnerDetails(partnerId))

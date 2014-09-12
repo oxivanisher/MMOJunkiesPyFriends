@@ -70,21 +70,20 @@ class MMONetwork(object):
 
     def refresh(self):
         self.log.debug("Refresh data from source")
-        pass
 
-    def link(self):
+    def showLinkHtml(self):
+        self.log.debug("Show linkHtml %s" % self.longName)
+
+    def doLink(self):
         self.log.debug("Link user to network %s" % self.longName)
-        pass
 
     def unlink(self):
         self.log.debug("Unlink network %s" % self.longName)
-        pass
 
     def listPartners(self, user):
         self.log.debug("List all partners for given user")
-        return {'id': 1234,
+        return {'id': 'someId',
                 'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                'moreInfo': ', '.join(moreInfo),
                 'networkText': channelName,
                 'networkImgs': [{
                     'type': 'network',
@@ -110,9 +109,21 @@ class MMONetwork(object):
                 }]
             }
 
+    def getPartnerDetails(self, partnerId):
+        self.log.debug("List partner details")
+
+    def setDetail(self, myList, key, value, flagsName = "Flags"):
+        if len(myList) == 0:
+            myList.append({'key': flagsName, 'value': ''})
+        if value == '1':
+            if len(myList[0]['value']) > 0:
+                myList[0]['value'] += ', '
+            myList[0]['value'] += key
+        elif value != '0' and value:
+            myList.append({'key': key, 'value': value})
+
     def getProducts(self):
         self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
-        pass
 
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo
@@ -156,8 +167,11 @@ class TS3Network(MMONetwork):
             response = self.sendCommand("clientlist -icon")
             self.onlineClients = {}
             clients = {}
-            for client in response.data:
-                clients[client['clid']] = client
+            try:
+                for client in response.data:
+                    clients[client['clid']] = client
+            except AttributeError:
+                return True
 
             for client in clients.keys():
                 # ignoring console users
@@ -167,21 +181,15 @@ class TS3Network(MMONetwork):
             self.log.info("Found %s online clients" % len(self.onlineClients))
         return True
 
-    def listPartners(self):
+    def getPartners(self):
         if self.refresh():
             ret = []
             for cldbid in self.onlineClients.keys():
-                # Get user details
+                # Refresh user details
                 self.fetchUserDetatilsByCldbid(cldbid)
                 self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
 
-                moreInfo = []
                 try:
-                    moreInfo.append("Last Conn: %s" % timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
-                    moreInfo.append("Total Conn: %s" % self.clientDatabase[cldbid]['client_totalconnections'])
-                    moreInfo.append("Created: %s" % timestampToString(self.clientDatabase[cldbid]['client_created']))
-                    moreInfo.append("Description: %s" % self.clientDatabase[cldbid]['client_created'])
-
                     userGroups = []
                     userGroupIcon = 0
                     userGroupName = ""
@@ -192,11 +200,6 @@ class TS3Network(MMONetwork):
                                 self.cacheIcon(self.groupList[g]['iconid'])
                         userGroups.append(group['name'])
                         userGroupName = group['name']
-                    moreInfo.append("Groups: %s" % ', '.join(userGroups))
-
-                    # if admin
-                    moreInfo.append("Last IP: %s" % self.clientDatabase[cldbid]['client_lastip'])
-                    # {'client_total_bytes_downloaded': '366040', 'client_month_bytes_downloaded': '39211', 'client_database_id': '644', 'client_icon_id': '0', 'client_base64HashClientUID': 'niljclpbalpldpbecbdiemcdncjlglfbilemoloi', 'client_month_bytes_uploaded': '0', 'client_flag_avatar': None, 'client_nickname': 'EvilM0nkey', 'client_description': None, 'client_total_bytes_uploaded': '0'}
                 except KeyError:
                     pass
 
@@ -219,7 +222,7 @@ class TS3Network(MMONetwork):
                             },{
                                 'type': 'cache',
                                 'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
-                                'title': ', '.join(moreInfo)
+                                'title': channelName
                             }]
                 if int(channelIcon) != 0:
                     networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
@@ -237,33 +240,72 @@ class TS3Network(MMONetwork):
                                         'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
                                         'title': self.clientInfoDatabase[cldbid]['client_country'] })
 
-                ret.append({'id': 1234,
+                ret.append({'id': cldbid,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                            'moreInfo': ', '.join(moreInfo),
                             'networkText': channelName,
+                            'networkId': self.myId,
                             'networkImgs': networkImgs,
                             'friendImgs': friendImgs
                     })
 
-                # nice fields !
-                # print self.clientInfoDatabase[cldbid]['client_output_muted']
-                # print self.clientInfoDatabase[cldbid]['client_outputonly_muted']
-                # print self.clientInfoDatabase[cldbid]['client_input_muted']
-                # print self.clientInfoDatabase[cldbid]['client_away_message']
-                # print self.clientInfoDatabase[cldbid]['client_is_channel_commander']
-                # print self.clientInfoDatabase[cldbid]['client_is_recording']
-                # print self.clientInfoDatabase[cldbid]['client_is_talker']
-                # print self.clientInfoDatabase[cldbid]['client_away']
-                # print self.clientInfoDatabase[cldbid]['client_is_channel_commander']
-
-                # client avatar !
-                # print self.clientDatabase[cldbid]['client_flag_avatar'] #??
-                # if self.clientDatabase[cldbid]['client_flag_avatar']:
-                #     self.cacheFlagAvatar(self.clientDatabase[cldbid]['client_flag_avatar'])
-
             return (True, ret)
         else:
             return (False, "Unable to connect to TS3 server.")
+
+    def getPartnerDetails(self, cldbid):
+        moreInfo = []
+        if self.refresh():
+            # Refresh user details
+            self.fetchUserDetatilsByCldbid(cldbid)
+            self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
+
+            try:
+                self.setDetail(moreInfo, "Description", self.clientDatabase[cldbid]['client_description'])
+
+                self.setDetail(moreInfo, "Is away", self.clientInfoDatabase[cldbid]['client_away'])
+                self.setDetail(moreInfo, "Away message", self.clientInfoDatabase[cldbid]['client_away_message'])
+
+                self.setDetail(moreInfo, "Created", timestampToString(self.clientDatabase[cldbid]['client_created']))
+                self.setDetail(moreInfo, "Last Connection", timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
+                self.setDetail(moreInfo, "Total Connections", self.clientDatabase[cldbid]['client_totalconnections'])
+
+                userGroups = []
+                userGroupIcon = 0
+                userGroupName = ""
+                for group in self.clientDatabase[cldbid]['groups']:
+                    for g in self.groupList.keys():
+                        if self.groupList[g]['sgid'] == group['sgid']:
+                            userGroupIcon = 'icon_' + self.groupList[g]['iconid']
+                            self.cacheIcon(self.groupList[g]['iconid'])
+                    userGroups.append(group['name'])
+                    userGroupName = group['name']
+                self.setDetail(moreInfo, "Server Groups", ', '.join(userGroups))
+                self.setDetail(moreInfo, "Channel Group", self.channelGroupList[self.clientInfoDatabase[cldbid]['client_channel_group_id']]['name'])
+
+                # if admin
+                self.setDetail(moreInfo, "Last IP", self.clientDatabase[cldbid]['client_lastip'])
+                self.setDetail(moreInfo, "Bytes uploaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_uploaded']))
+                self.setDetail(moreInfo, "Bytes downloaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_downloaded']))
+                self.setDetail(moreInfo, "Bytes uploaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_uploaded']))
+                self.setDetail(moreInfo, "Bytes downloaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_downloaded']))
+
+                self.setDetail(moreInfo, "Output muted", self.clientInfoDatabase[cldbid]['client_output_muted'])
+                self.setDetail(moreInfo, "Output only muted", self.clientInfoDatabase[cldbid]['client_outputonly_muted'])
+                self.setDetail(moreInfo, "Input muted", self.clientInfoDatabase[cldbid]['client_input_muted'])
+                self.setDetail(moreInfo, "Is channelcommander", self.clientInfoDatabase[cldbid]['client_is_channel_commander'])
+                self.setDetail(moreInfo, "Is recording", self.clientInfoDatabase[cldbid]['client_is_recording'])
+                self.setDetail(moreInfo, "Is talker", self.clientInfoDatabase[cldbid]['client_is_talker'])
+                self.setDetail(moreInfo, "Avatar magic", self.clientDatabase[cldbid]['client_flag_avatar'])
+
+            except KeyError:
+                pass
+        return moreInfo
+
+    def showLinkHtml(self):
+        self.log.debug("Show linkHtml %s" % self.longName)
+
+    def doLink(self):
+        self.log.debug("Link user to network %s" % self.longName)
 
     # helper methods
     def connect(self):

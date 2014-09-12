@@ -1,0 +1,10 @@
+<table class='table table-striped' id='dt_friendstable'>
+	<tbody>
+	{% for detail in details -%}
+		<tr>
+			<td>{{ detail.key }}</td>
+			<td>{{ detail.value }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>

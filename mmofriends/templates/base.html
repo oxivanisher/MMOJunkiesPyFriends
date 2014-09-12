@@ -46,18 +46,26 @@
 					}
 				});
 			});
-            function showPopup(imgSrc) {
+            function showImgPopup(imgSrc) {
             	$('img#popupimg').attr( "src", imgSrc );
-            	$("#popup").show();
+            	$("#imgpopup").show();
             }
-            function hidePopup() {
-            	$("#popup").hide();
+            function hideImgPopup() {
+            	$("#imgpopup").hide();
+            }
+            function showInfoPopup(infoContentURL) {
+            	$("#infopopup").load( infoContentURL );
+            	$("#infopopup").show();
+            }
+            function hideInfoPopup() {
+            	$("#infopopup").hide();
             }
 		</script>
 		{% endblock %}
 	</head>
 	<body>
-		<div><span id="popup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"><img id="popupimg" style="max-width:400px; max-height: 400px; width: auto;" src="" /></span></div>
+		<div><span id="imgpopup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"><img id="popupimg" style="max-width:400px; max-height: 400px; width: auto;" src="" /></span></div>
+		<div><span id="infopopup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"></span></div>
 		<div class="navbar navbar-inverse navbar-fixed-top">
 		  <div class="navbar-inner">
 			<div class="container">
@@ -69,18 +77,19 @@
 			  <a class="brand" href="{{ url_for('index') }}">MMOFriends</a>
 			  <div class="nav-collapse collapse">
 				<ul class="nav">
-				  <li class="{% if url_for('index') == request.path %}active{% endif %}"><a href="{{ url_for('index') }}">Friends Index</a></li>
-				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
-				  {% if session.logged_in %}
-				  <li class="{% if url_for('profile') == request.path %}active{% endif %}"><a href="{{ url_for('profile') }}">Profile</a></li>
-					{% if session.admin  %}
+				  {% if session.logged_in -%}
+				  <li class="{% if url_for('friends_list') == request.path %}active{% endif %}"><a href="{{ url_for('friends_list') }}">Friends</a></li>
+				  <li class="{% if url_for('networks') == request.path %}active{% endif %}"><a href="{{ url_for('networks') }}">Networks</a></li>
+				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Me</a></li>
+					{% if session.admin  -%}
 					  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
 					  <li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
-					{% endif %}
-				  {% else %}
-				  <li class="{% if url_for('register') == request.path %}active{% endif %}"><a href="{{ url_for('register') }}">Registration</a></li>
-				  {% endif %}
-				  <li class="{% if url_for('login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('logout') }}">Logout</a>{% else %}<a href="{{ url_for('login') }}">Login</a>{% endif %}</li>
+					{% endif -%}
+				  {% else -%}
+				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
+				  <li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
+				  {% endif -%}
+				  <li class="{% if url_for('profile_login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('profile_logout') }}">Logout</a>{% else %}<a href="{{ url_for('profile_login') }}">Login</a>{% endif %}</li>
 				</ul>
 			  </div><!--/.nav-collapse -->
 			</div>
