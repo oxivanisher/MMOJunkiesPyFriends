@@ -22,12 +22,6 @@
     background: url('../static/img/sort_desc_disabled.png') no-repeat center right;
 }
 
-.shadow {
-  -moz-box-shadow:    3px 3px 5px 6px #ccc;
-  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
-  box-shadow:         3px 3px 5px 6px #ccc;
-}
-
 /*.paging_full_numbers {
     width: 400px;
     height: 22px;

@@ -98,7 +98,7 @@ def loadNetworks():
 
 def loadNetwork(network, shortName, longName):
     try:
-        MMONetworks.append(network(MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
+        MMONetworks.append(network(app, MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
         return True
     except Exception as e:
         flash("Unable to load network %s because: %s" % (longName, e))
@@ -114,27 +114,16 @@ def not_found(error):
     return render_template('error.html', number = 401, message = "Unauthorized!"), 401
 
 # app routes
-# @app.before_first_request
-# def before_first_request():
-#     pass
+@app.before_first_request
+def before_first_request():
+    loadNetworks()
 
 # main routes
 @app.route('/')
 def index():
     if session.get('logged_in'):
-        return redirect(url_for('friends_list'))
+        return redirect(url_for('partner_list'))
     return redirect(url_for('about'))
-
-@app.route('/Friends/List')
-def friends_list():
-    loadNetworks()
-    # users = MMOUser.query.all()
-    # for user in users:
-    #     print user
-    if session.get('logged_in'):
-        return render_template('friends_list.html', friends = fetchFriendsList())
-    else:
-        abort(401)
 
 @app.route('/About')
 def about():
@@ -167,6 +156,7 @@ def dev():
 
     return render_template('dev.html', result = result)
 
+# support routes
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
 def get_image(imgType, imgId):
     filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
@@ -258,7 +248,7 @@ def profile_register():
             try:
                 db.session.commit()
                 flash("Please check your emails on %s" % newUser.email)
-                return redirect(url_for('login'))
+                return redirect(url_for('profile_login'))
 
             except IntegrityError, e:
                 flash("SQL Alchemy IntegrityError: %s" % e)
@@ -304,6 +294,16 @@ def profile_logout():
     return redirect(url_for('profile_login'))
 
 # partner routes
+@app.route('/Partner/List')
+def partner_list():
+    # users = MMOUser.query.all()
+    # for user in users:
+    #     print user
+    if session.get('logged_in'):
+        return render_template('partner_list.html', friends = fetchFriendsList())
+    else:
+        abort(401)
+
 @app.route('/Partner/Show')
 def partner_show(freiendID):
     if not session.get('logged_in'):

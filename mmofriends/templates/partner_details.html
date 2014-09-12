@@ -1,10 +1,24 @@
-<table class='table table-striped' id='dt_friendstable'>
+{% if details.avatar -%}
+	<img class="position_bottom_left partner_detail_avatar glow"
+				src="{{ url_for('get_image', imgType='cache', imgId=details.avatar) }}"
+				title="Avatar">
+{%- endif -%}
+<table class='table-striped'>
 	<tbody>
-	{% for detail in details -%}
+		{% if details.flags|length > 0 -%}
+		<tr>
+			<td colspan="2">Flags: {% for flag in details.flags -%}
+							{{ flag -}}
+							{% if not loop.last -%}, {% endif %}
+						{%- endfor -%}
+			</td>
+		</tr>
+		{%- endif %}
+		{% for detail in details.details -%}
 		<tr>
 			<td>{{ detail.key }}</td>
 			<td>{{ detail.value }}</td>
 		</tr>
-	{% endfor %}
+		{%- endfor -%}
 	</tbody>
 </table>

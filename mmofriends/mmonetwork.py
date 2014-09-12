@@ -8,7 +8,8 @@ import os
 import random
 
 from mmoutils import *
-from mmofriends import db
+from mmofriends import db, app
+from flask import current_app
 
 try:
     import ts3
@@ -45,9 +46,10 @@ class MMONetworkProduct(object):
 
 class MMONetwork(object):
 
-    def __init__(self, config, myId):
+    def __init__(self, app, config, myId):
         # loading config
         self.config = config.get()
+        self.app = app
 
         # setting variables
         self.longName = config.longName
@@ -112,15 +114,26 @@ class MMONetwork(object):
     def getPartnerDetails(self, partnerId):
         self.log.debug("List partner details")
 
-    def setDetail(self, myList, key, value, flagsName = "Flags"):
-        if len(myList) == 0:
-            myList.append({'key': flagsName, 'value': ''})
-        if value == '1':
-            if len(myList[0]['value']) > 0:
-                myList[0]['value'] += ', '
-            myList[0]['value'] += key
-        elif value != '0' and value:
-            myList.append({'key': key, 'value': value})
+    def setPartnerFlag(self, myDict, key, value):
+        try:
+            myDict['flags']
+        except KeyError:
+            myDict['flags'] = []
+        if value != '0' and value:
+            myDict['flags'].append(key)
+
+    def setPartnerDetail(self, myDict, key, value):
+        try:
+            myDict['details']
+        except KeyError:
+            myDict['details'] = []
+        if value != '0' and value:
+            myDict['details'].append({'key': key, 'value': value})
+
+    def setPartnerAvatar(self, myDict, avatarName):
+        if avatarName[0] == '/':
+            avatarName = avatarName[1:]
+        myDict['avatar'] = avatarName
 
     def getProducts(self):
         self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
@@ -135,8 +148,8 @@ class MMONetwork(object):
 class TS3Network(MMONetwork):
 
     # class overwrites
-    def __init__(self, config, myId):
-        super(TS3Network, self).__init__(config, myId)
+    def __init__(self, app, config, myId):
+        super(TS3Network, self).__init__(app, config, myId)
 
         self.description = "Team Speak 3 is like skype for gamers."
 
@@ -253,21 +266,25 @@ class TS3Network(MMONetwork):
             return (False, "Unable to connect to TS3 server.")
 
     def getPartnerDetails(self, cldbid):
-        moreInfo = []
+        moreInfo = {}
         if self.refresh():
             # Refresh user details
             self.fetchUserDetatilsByCldbid(cldbid)
             self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
 
             try:
-                self.setDetail(moreInfo, "Description", self.clientDatabase[cldbid]['client_description'])
+                #fetch avatar
+                if self.clientDatabase[cldbid]['client_flag_avatar']:
+                    avatar = "/avatar_%s" % self.clientDatabase[cldbid]['client_base64HashClientUID']
+                    self.cacheFile(avatar)
+                    self.setPartnerAvatar(moreInfo, avatar)
 
-                self.setDetail(moreInfo, "Is away", self.clientInfoDatabase[cldbid]['client_away'])
-                self.setDetail(moreInfo, "Away message", self.clientInfoDatabase[cldbid]['client_away_message'])
-
-                self.setDetail(moreInfo, "Created", timestampToString(self.clientDatabase[cldbid]['client_created']))
-                self.setDetail(moreInfo, "Last Connection", timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
-                self.setDetail(moreInfo, "Total Connections", self.clientDatabase[cldbid]['client_totalconnections'])
+                self.setPartnerDetail(moreInfo, "Description", self.clientDatabase[cldbid]['client_description'])
+                self.setPartnerFlag(moreInfo, "Away", self.clientInfoDatabase[cldbid]['client_away'])
+                self.setPartnerDetail(moreInfo, "Away message", self.clientInfoDatabase[cldbid]['client_away_message'])
+                self.setPartnerDetail(moreInfo, "Created", timestampToString(self.clientDatabase[cldbid]['client_created']))
+                self.setPartnerDetail(moreInfo, "Last Connection", timestampToString(self.clientDatabase[cldbid]['client_lastconnected']))
+                self.setPartnerDetail(moreInfo, "Total Connections", self.clientDatabase[cldbid]['client_totalconnections'])
 
                 userGroups = []
                 userGroupIcon = 0
@@ -279,23 +296,22 @@ class TS3Network(MMONetwork):
                             self.cacheIcon(self.groupList[g]['iconid'])
                     userGroups.append(group['name'])
                     userGroupName = group['name']
-                self.setDetail(moreInfo, "Server Groups", ', '.join(userGroups))
-                self.setDetail(moreInfo, "Channel Group", self.channelGroupList[self.clientInfoDatabase[cldbid]['client_channel_group_id']]['name'])
+                self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
+                self.setPartnerDetail(moreInfo, "Channel Group", self.channelGroupList[self.clientInfoDatabase[cldbid]['client_channel_group_id']]['name'])
 
-                # if admin
-                self.setDetail(moreInfo, "Last IP", self.clientDatabase[cldbid]['client_lastip'])
-                self.setDetail(moreInfo, "Bytes uploaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_uploaded']))
-                self.setDetail(moreInfo, "Bytes downloaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_downloaded']))
-                self.setDetail(moreInfo, "Bytes uploaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_uploaded']))
-                self.setDetail(moreInfo, "Bytes downloaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_downloaded']))
+                # if admin FIXME
+                self.setPartnerDetail(moreInfo, "Last IP", self.clientDatabase[cldbid]['client_lastip'])
+                self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_downloaded']))
+                self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_downloaded']))
 
-                self.setDetail(moreInfo, "Output muted", self.clientInfoDatabase[cldbid]['client_output_muted'])
-                self.setDetail(moreInfo, "Output only muted", self.clientInfoDatabase[cldbid]['client_outputonly_muted'])
-                self.setDetail(moreInfo, "Input muted", self.clientInfoDatabase[cldbid]['client_input_muted'])
-                self.setDetail(moreInfo, "Is channelcommander", self.clientInfoDatabase[cldbid]['client_is_channel_commander'])
-                self.setDetail(moreInfo, "Is recording", self.clientInfoDatabase[cldbid]['client_is_recording'])
-                self.setDetail(moreInfo, "Is talker", self.clientInfoDatabase[cldbid]['client_is_talker'])
-                self.setDetail(moreInfo, "Avatar magic", self.clientDatabase[cldbid]['client_flag_avatar'])
+                self.setPartnerFlag(moreInfo, "Output muted", self.clientInfoDatabase[cldbid]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, "Output only muted", self.clientInfoDatabase[cldbid]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, "Input muted", self.clientInfoDatabase[cldbid]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, "Is channelcommander", self.clientInfoDatabase[cldbid]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, "Is recording", self.clientInfoDatabase[cldbid]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, "Is talker", self.clientInfoDatabase[cldbid]['client_is_talker'])
 
             except KeyError:
                 pass
@@ -439,11 +455,16 @@ class TS3Network(MMONetwork):
 
     def test(self):
         # result = "blah"
-        result = self.sendCommand('clientinfo clid=2')
-        return result.data
+        # result = self.sendCommand('clientinfo clid=2')
+        # result = current_app.session.get('nick')
+        # with current_app.test_request_context():
+            # result = session.get('logged_in')
+        # result = self.app.session.get('nick')
+        result = self.app.config['networkConfig']
+        return result
 
     # file transfer methods
-    def cacheFile(self, name, cid, cpw = "", seekpos = 0):
+    def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):
         self.log.setLevel(logging.INFO)
         filename = name
         if name[0] == "/":

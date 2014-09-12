@@ -64,8 +64,8 @@
 		{% endblock %}
 	</head>
 	<body>
-		<div><span id="imgpopup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"><img id="popupimg" style="max-width:400px; max-height: 400px; width: auto;" src="" /></span></div>
-		<div><span id="infopopup" style="position: fixed; bottom: 30px; right: 10px; display:none;" class="shadow"></span></div>
+		<div><span id="imgpopup" class="position_bottom_left glow" style="display: none;"><img id="popupimg" src="" /></span></div>
+		<div><span id="infopopup" class="position_bottom_right glow" style="display: none;"></span></div>
 		<div class="navbar navbar-inverse navbar-fixed-top">
 		  <div class="navbar-inner">
 			<div class="container">
@@ -78,7 +78,7 @@
 			  <div class="nav-collapse collapse">
 				<ul class="nav">
 				  {% if session.logged_in -%}
-				  <li class="{% if url_for('friends_list') == request.path %}active{% endif %}"><a href="{{ url_for('friends_list') }}">Friends</a></li>
+				  <li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}">Friends</a></li>
 				  <li class="{% if url_for('networks') == request.path %}active{% endif %}"><a href="{{ url_for('networks') }}">Networks</a></li>
 				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Me</a></li>
 					{% if session.admin  -%}

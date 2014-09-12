@@ -1,7 +1,40 @@
-.icon {
+.shadow {
+  -moz-box-shadow:    3px 3px 4px 3px #ccc;
+  -webkit-box-shadow: 3px 3px 4px 3px #ccc;
+  box-shadow:         3px 3px 4px 3px #ccc;
+}
+
+.glow {
+  border:1px solid #fafafa;
+  -webkit-box-shadow:0 0 6px #007eff;
+  -moz-box-shadow:0 0 5px #007eff;
+  box-shadow:0 0 5px #007eff;
+  outline: none;
+}
+
+.partner_list_icon {
     /*display: block;*/
     max-width:18px;
     max-height:18px;
     width: auto;
     height: auto;
+}
+
+.partner_detail_avatar {
+    max-width:300px;
+    max-height:300px;
+    width: auto;
+    height: auto;
+}
+
+.position_bottom_right {
+	position: fixed;
+	bottom: 30px;
+	right: 10px;
+}
+
+.position_bottom_left {
+    position: fixed;
+    bottom: 30px;
+    left: 10px;
 }

@@ -21,7 +21,7 @@
 				onmouseout="hideInfoPopup();" onclick="document.location='{{ url_for('network_show', networkId=friend.networkId) }}'">
 				<a href="{{ url_for('network_show', networkId=friend.networkId) }}">
 				{%- for img in friend.networkImgs -%}
-					<img class="icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
+					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
 				{%- endfor %}
 				{{ friend.networkText }}</a>
 			</td>
@@ -29,7 +29,7 @@
 				onmouseout="hideInfoPopup();" onclick="document.location='{{ url_for('partner_show', friendId=friend.friendId) }}'"
 				/><a href="{{ url_for('partner_show', friendId=friend.id) }}">
 				{%- for img in friend.friendImgs -%}
-					<img class="icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
+					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
 				{%- endfor %}
 				{{ friend.nick }}</a></td>
 		</tr>
