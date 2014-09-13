@@ -7,7 +7,7 @@ import os
 import logging
 
 from config import *
-from mmoutils import *
+from mmobase.mmoutils import *
 log = getLogger(level=logging.DEBUG)
 
 # flask imports
