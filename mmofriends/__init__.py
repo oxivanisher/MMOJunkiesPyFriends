@@ -6,8 +6,13 @@ import sys
 import os
 import logging
 
-from config import *
+from mmobase.mmonetwork import *
+from mmobase.mmouser import *
 from mmobase.mmoutils import *
+from mmobase.ts3mmonetwork import *
+# import mmobase
+# from mmobase.config import *
+# from mmobase.mmoutils import *
 log = getLogger(level=logging.DEBUG)
 
 # flask imports
@@ -49,8 +54,8 @@ if not app.debug:
     app.logger.addHandler(mail_handler)
 
 with app.test_request_context():
-    from mmonetwork import *
-    from mmouser import *
+    # from mmonetwork import *
+    # from mmouser import *
     db.create_all()
 
 # initialize stuff
@@ -72,7 +77,7 @@ def fetchFriendsList():
 def loadNetworks():
     for shortName in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][shortName]
-        log.info("Trying to initialize MMONetwork: %s" % network['longName'])
+        log.info("Trying to initialize MMONetwork: %s (%s)" % (network['longName'], shortName))
         try:
             MMONetworks[shortName] = eval(network['class'])(app, session, shortName)
             log.info("Initialization of %s completed" % network['longName'])

@@ -7,8 +7,11 @@ import socket
 import os
 import random
 
-from mmofriends import db, app
 from flask import current_app
+from mmoutils import *
+from flask.ext.sqlalchemy import SQLAlchemy
+# from mmofriends import db, app
+db = SQLAlchemy()
 
 class MMONetworkProduct(object):
 

@@ -7,9 +7,15 @@ import socket
 import os
 import random
 
-from mmoutils import *
-from mmofriends import db, app
+# from mmoutils import *
+# from mmofriends import db, app
+# from flask import current_app
 from flask import current_app
+from mmonetwork import *
+from mmoutils import *
+from flask.ext.sqlalchemy import SQLAlchemy
+# from mmofriends import db, app
+db = SQLAlchemy()
 
 try:
     import ts3
@@ -343,7 +349,7 @@ class TS3Network(MMONetwork):
         filename = name
         if name[0] == "/":
             filename = name[1:]
-        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/cache', filename)
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', filename)
 
         if os.path.isfile(outputFilePath):
             self.log.debug("Not fetching %s. Already cached." % (name))
