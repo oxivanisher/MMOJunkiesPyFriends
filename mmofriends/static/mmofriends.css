@@ -14,10 +14,11 @@
 
 .partner_list_icon {
     /*display: block;*/
-    max-width:18px;
-    max-height:18px;
+    max-width:16px;
+    max-height:16px;
     width: auto;
     height: auto;
+    margin-right: 2px;
 }
 
 .partner_detail_avatar {

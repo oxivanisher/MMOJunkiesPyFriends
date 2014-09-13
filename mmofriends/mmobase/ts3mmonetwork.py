@@ -18,138 +18,11 @@ except ImportError:
     import sys
     sys.exit(2)
 
-# base classes
-class MMONetworkConfig(object):
-
-    def __init__(self, config = {}, shortName = None, longName = None):
-        self.log = logging.getLogger(__name__ + ".cfg")
-        self.longName = longName
-        self.shortName = shortName
-        self.log.debug("Initializing MMONetwork config: %s" % self.longName)
-        self.config = config[shortName]
-
-    def get(self):
-        self.log.debug("Returning MMONetwork config: %s" % self.longName)
-        return self.config
-
-class MMONetworkProduct(object):
-
-    def __init__(self, name):
-        self.log = logging.getLogger(__name__)
-        self.log.debug("Initializing MMONetwork product %s" % name)
-        self.name = name
-        self.fields = []
-
-    def addField(self, name, comment = "", fieldType = str):
-        self.log.debug("Add a field with name, comment and fieldType")
-        self.fields.append((name, fieldType))
-
-class MMONetwork(object):
-
-    def __init__(self, app, config, myId):
-        # loading config
-        self.config = config.get()
-        self.app = app
-
-        # setting variables
-        self.longName = config.longName
-        self.shortName = config.shortName
-        self.icon = self.config['icon']
-
-        self.log = logging.getLogger(__name__ + "." + self.shortName.lower())
-        self.log.debug("Initializing MMONetwork: %s" % self.longName)
-
-        self.comment = "Unset"
-        self.description = "Unset"
-        self.moreInfo = 'NoMoreInfo'
-        self.lastRefreshDate = 0
-        self.hidden = False
-        self.myId = myId
-
-        self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
-
-        self.log.info("Initialized network: %s (%s)" % (self.longName, self.shortName))
-
-    def refresh(self):
-        self.log.debug("Refresh data from source")
-
-    def showLinkHtml(self):
-        self.log.debug("Show linkHtml %s" % self.longName)
-
-    def doLink(self):
-        self.log.debug("Link user to network %s" % self.longName)
-
-    def unlink(self):
-        self.log.debug("Unlink network %s" % self.longName)
-
-    def listPartners(self, user):
-        self.log.debug("List all partners for given user")
-        return {'id': 'someId',
-                'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                'networkText': channelName,
-                'networkImgs': [{
-                    'type': 'network',
-                    'name': self.myId,
-                    'title': self.longName
-                },{
-                    'type': 'cache',
-                    'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
-                    'title': ', '.join(moreInfo)
-                },{
-                    'type': 'cache',
-                    'name': 'icon_' + channelIcon,
-                    'title': channelName
-                }],
-                'friendImgs': [{
-                    'type': 'cache',
-                    'name': userGroupIcon,
-                    'title': userGroupName
-                },{
-                    'type': 'cache',
-                    'name': userGroupIcon,
-                    'title': userGroupName
-                }]
-            }
-
-    def getPartnerDetails(self, partnerId):
-        self.log.debug("List partner details")
-
-    def setPartnerFlag(self, myDict, key, value):
-        try:
-            myDict['flags']
-        except KeyError:
-            myDict['flags'] = []
-        if value != '0' and value:
-            myDict['flags'].append(key)
-
-    def setPartnerDetail(self, myDict, key, value):
-        try:
-            myDict['details']
-        except KeyError:
-            myDict['details'] = []
-        if value != '0' and value:
-            myDict['details'].append({'key': key, 'value': value})
-
-    def setPartnerAvatar(self, myDict, avatarName):
-        if avatarName[0] == '/':
-            avatarName = avatarName[1:]
-        myDict['avatar'] = avatarName
-
-    def getProducts(self):
-        self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
-
-    def setNetworkMoreInfo(self, moreInfo):
-        self.moreInfo = moreInfo
-
-    def setNetworkComment(self, comment):
-        self.comment = comment
-
-# ts3 classes
 class TS3Network(MMONetwork):
 
     # class overwrites
-    def __init__(self, app, config, myId):
-        super(TS3Network, self).__init__(app, config, myId)
+    def __init__(self, app, session, shortName):
+        super(TS3Network, self).__init__(app, session, shortName)
 
         self.description = "Team Speak 3 is like skype for gamers."
 
@@ -166,6 +39,8 @@ class TS3Network(MMONetwork):
 
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
+
+        self.cacheFiles()
 
     def refresh(self):
         if not self.connect():
@@ -230,7 +105,7 @@ class TS3Network(MMONetwork):
 
                 networkImgs = [{
                                 'type': 'network',
-                                'name': self.myId,
+                                'name': self.shortName,
                                 'title': self.longName
                             },{
                                 'type': 'cache',
@@ -241,6 +116,11 @@ class TS3Network(MMONetwork):
                     networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
 
                 friendImgs = []
+                if self.clientInfoDatabase[cldbid]['client_country']:
+                    friendImgs.append({ 'type': 'flag',
+                                        'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
+                                        'title': self.clientInfoDatabase[cldbid]['client_country'] })
+
                 if userGroupIcon != 'icon_0':
                     friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
@@ -248,15 +128,10 @@ class TS3Network(MMONetwork):
                 if int(self.channelGroupList[cgid]['iconid']) != 0:
                     friendImgs.append({ 'type': 'cache', 'name': 'icon_' + self.channelGroupList[cgid]['iconid'], 'title': self.channelGroupList[cgid]['name'] })
 
-                if self.clientInfoDatabase[cldbid]['client_country']:
-                    friendImgs.append({ 'type': 'flag',
-                                        'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
-                                        'title': self.clientInfoDatabase[cldbid]['client_country'] })
-
                 ret.append({'id': cldbid,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
                             'networkText': channelName,
-                            'networkId': self.myId,
+                            'networkId': self.shortName,
                             'networkImgs': networkImgs,
                             'friendImgs': friendImgs
                     })
@@ -454,14 +329,13 @@ class TS3Network(MMONetwork):
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
 
     def test(self):
-        # result = "blah"
-        # result = self.sendCommand('clientinfo clid=2')
         # result = current_app.session.get('nick')
-        # with current_app.test_request_context():
-            # result = session.get('logged_in')
+        # with self.app.test_request_context():
+        #     result = session.get('logged_in')
         # result = self.app.session.get('nick')
-        result = self.app.config['networkConfig']
-        return result
+        # session = scoped_session(sessionmaker()) 
+        # result = self.app.config['networkConfig']
+        return self.session.get('nick')
 
     # file transfer methods
     def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):

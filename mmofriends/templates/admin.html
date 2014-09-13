@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-	<h3>Admin</h3>
-	<ul>
-		<li>ToDo!</li>
-	</ul>
-	<form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-		<dl>
-			<dt>Upload ZIP File:
-			<dd><input type="file" name="file">
-			<dd><input type="Submit" value="Upload">
-		</dl>
-	</form>
+<h3>Loaded Networks</h3>
+<table class='table-striped'>
+	<thead>
+		<tr>
+			<th>Class Name</th>
+			<th>Short Name</th>
+			<th>Long Name</th>
+			<th>More Info</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for net in infos.loadedNets %}
+		<tr>
+			<td>{{ net.className }}</td>
+			<td>{{ net.shortName }}</td>
+			<td>{{ net.longName }}</td>
+			<td>{{ net.moreInfo }}</td>
+			<td>{{ net.description }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 {% endblock %}

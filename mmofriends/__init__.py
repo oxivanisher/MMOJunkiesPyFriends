@@ -8,17 +8,7 @@ import logging
 
 from config import *
 from mmoutils import *
-
-# configure logging
-myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
-logPath = os.path.join(myPath, 'log/mmofriends.log')
-logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
-console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
-console.setFormatter(formatter)
-logging.getLogger('').addHandler(console)
-log = logging.getLogger(__name__)
+log = getLogger(level=logging.DEBUG)
 
 # flask imports
 try:
@@ -59,8 +49,6 @@ if not app.debug:
     app.logger.addHandler(mail_handler)
 
 with app.test_request_context():
-    # finally loading mmofriends
-    # from mmobase import *
     from mmonetwork import *
     from mmouser import *
     db.create_all()
@@ -68,41 +56,38 @@ with app.test_request_context():
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 app.secret_key = app.config['APPSECRET']
-NetworksToLoad = [(TS3Network, "TS3", "Team Speak 3")]
-MMONetworks = []
-MyUser = None
+MMONetworks = {}
 
 # helper methods
 def fetchFriendsList():
     retFriendsList = []
-    for network in MMONetworks:
-        (res, friendsList) = network.getPartners()
+    for shortName in MMONetworks.keys():
+        (res, friendsList) = MMONetworks[shortName].getPartners()
         if res:
             retFriendsList += friendsList
         else:
             flash(friendsList)
     return retFriendsList
 
+def loadNetworks():
+    for shortName in app.config['networkConfig'].keys():
+        network = app.config['networkConfig'][shortName]
+        log.info("Trying to initialize MMONetwork: %s" % network['longName'])
+        try:
+            MMONetworks[shortName] = eval(network['class'])(app, session, shortName)
+            log.info("Initialization of %s completed" % network['longName'])
+        except Exception as e:
+            log.error("Unable to initialize MMONetwork %s because: %s" % (network['longName'], e))
+
 def getUser(nick = None):
     with app.test_request_context():
         if not nick:
             nick = session.get('nick')
-        return MMOUser.query.filter_by(nick=nick).first()
-
-# mmonetwork helpers
-def loadNetworks():
-    for (myClass, myShortName, myLongName) in NetworksToLoad:
-        log.info("Trying to initialize MMONetwork: %s" % myLongName)
-        if loadNetwork(myClass, myShortName, myLongName):
-            NetworksToLoad.pop(NetworksToLoad.index((myClass, myShortName, myLongName)))
-
-def loadNetwork(network, shortName, longName):
-    try:
-        MMONetworks.append(network(app, MMONetworkConfig(app.config['networkConfig'], shortName, longName), len(MMONetworks)))
-        return True
-    except Exception as e:
-        flash("Unable to load network %s because: %s" % (longName, e))
-        return False
+        ret = MMOUser.query.filter_by(nick=nick).first()
+        if ret:
+            return ret
+        else:
+            return False
 
 # flask error handlers
 @app.errorhandler(404)
@@ -136,8 +121,19 @@ def admin():
     if not session.get('admin'):
         log.warning("<%s> tried to access admin without permission!")
         abort(401)
-    flash("admin page would be loading ^^")
-    return redirect(url_for('about'))
+
+    loadedNets = []
+    for shortName in MMONetworks.keys():
+        network = MMONetworks[shortName]
+        loadedNets.append({ 'shortName': shortName,
+                            'longName': network.longName,
+                            'className': network.__class__.__name__,
+                            'moreInfo': network.moreInfo,
+                            'description': network.description })
+
+    infos = {}
+    infos['loadedNets'] = loadedNets
+    return render_template('admin.html', infos = infos)
 
 @app.route('/Development')
 def dev():
@@ -150,7 +146,7 @@ def dev():
     # result = "nope nix"
     # result = MMONetworks[0].getIcon(-247099292)
     try:
-        result = MMONetworks[0].test()
+        result = MMONetworks['TS3'].test()
     except Exception as e:
         result = e
 
@@ -166,7 +162,7 @@ def get_image(imgType, imgId):
         if imgType == 'avatar':
             fileName = MMOFriends[int(imgId)].avatar
         elif imgType == 'network':
-            fileName = MMONetworks[int(imgId)].icon
+            fileName = MMONetworks[imgId].icon
         elif imgType == 'cache':
             fileName = imgId
         elif imgType == 'flag':
@@ -276,12 +272,14 @@ def profile_login():
                 session['logged_in'] = True
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
+                session['logindate'] = time.time()
                 flash('Welcome %s' % myUser.nick)
                 return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)
+                flash('Invalid login')               
         else:
-            flash('Invalid login')                
+            flash('Invalid login')
 
     return render_template('profile_login.html')
 
@@ -310,7 +308,7 @@ def partner_show(freiendID):
         abort(401)
     return redirect(url_for('index'))
 
-@app.route('/Partner/Details/<int:networkId>/<partnerId>', methods = ['GET', 'POST'])
+@app.route('/Partner/Details/<networkId>/<partnerId>', methods = ['GET', 'POST'])
 def partner_show_details(networkId, partnerId):
     log.info("Trying to show partner details for networkId %s and partnerId %s" % (networkId, partnerId))
     if not session.get('logged_in'):
