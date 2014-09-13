@@ -1,21 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
 import time
 import socket
 import os
 import random
 
-# from mmoutils import *
-# from mmofriends import db, app
-# from flask import current_app
-from flask import current_app
+from mmofriends import db
 from mmonetwork import *
 from mmoutils import *
-from flask.ext.sqlalchemy import SQLAlchemy
-# from mmofriends import db, app
-db = SQLAlchemy()
 
 try:
     import ts3
@@ -72,7 +65,7 @@ class TS3Network(MMONetwork):
                 if int(clients[client]['client_type']) != 1:
                     self.onlineClients[clients[client]['client_database_id']] = clients[client]
 
-            self.log.info("Found %s online clients" % len(self.onlineClients))
+            self.log.info("Found %s online client(s)" % len(self.onlineClients))
         return True
 
     def getPartners(self):
@@ -198,16 +191,36 @@ class TS3Network(MMONetwork):
                 pass
         return moreInfo
 
-    def showLinkHtml(self):
+    def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.longName)
+        self.refresh()
+        
+        htmlFields = {}
+        htmlFields['dropdown'] = []
+        for cldbid in self.onlineClients.keys():
+            #FIXME exclude already linked cldbid's
+            htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
 
-    def doLink(self):
-        self.log.debug("Link user to network %s" % self.longName)
+        return htmlFields
+
+    def doLink(self, userId):
+        self.log.debug("Link user %s to network %s" % (userId, self.longName))
+        self.session[self.shortName + 'doLinkKey'] = "%06d" % (random.randint(1, 999999))
+        message = "Your MMOfriends key is: %s" % self.session[self.shortName + 'doLinkKey']
+        self.server.clientpoke(self.onlineClients[userId]['clid'], message)
+        return "Please enter the number you recieved via teamspeak"
+
+    def finalizeLink(self, userKey):
+        self.log.debug("Finalize user link to network %s" % self.longName)
+        if self.session[self.shortName + 'doLinkKey'] == userKey:
+            return "Success"
+        else:
+            return "Fail"
 
     # helper methods
     def connect(self):
         if not self.connected:
-            self.log.info("Connecting to TS3 server")
+            self.log.debug("Connecting to TS3 server")
 
             try:
                 self.server = ts3.TS3Server(self.config['ip'], self.config['port'], self.config['serverid'])
@@ -315,7 +328,6 @@ class TS3Network(MMONetwork):
             self.log.debug("Not fetching user group details for cldbid: %s" % cldbid)
 
     def fetchUserInfo(self, clid, cldbid):
-        self.log.setLevel(logging.INFO)
         updateUserInfo = False
         try:
             if self.clientInfoDatabase[cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
@@ -345,7 +357,6 @@ class TS3Network(MMONetwork):
 
     # file transfer methods
     def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):
-        self.log.setLevel(logging.INFO)
         filename = name
         if name[0] == "/":
             filename = name[1:]
@@ -411,7 +422,6 @@ class TS3Network(MMONetwork):
         return False
 
     def cacheIcon(self, iconId, cid = 0):
-        self.log.setLevel(logging.INFO)
         if int(iconId) == 0:
             self.log.debug("No icon available because IconID is 0")
             return True
@@ -419,28 +429,26 @@ class TS3Network(MMONetwork):
             return self.cacheFile("/icon_%s" % int(iconId), cid)
 
     def cacheFlagAvatar(self, flagAvatarId, cid = 0):
-        # self.log.setLevel(logging.INFO)
         # https://docs.planetteamspeak.com/ts3/php/framework/_client_8php_source.html
         # https://docs.planetteamspeak.com/ts3/php/framework/class_team_speak3___node___client.html#a1c1b0fa71731df7ac3d4098b046938c7
         return self.cacheFile("avatar_%s" % flagAvatarId, cid)
 
     def cacheFiles(self):
-        self.log.setLevel(logging.INFO)
         if self.connect():
-            self.log.info("Caching server icon")
+            self.log.debug("Caching server icon")
             self.cacheServerIcon(self.serverInfo['virtualserver_icon_id'])
 
-            self.log.info("Caching channel icons")
+            self.log.debug("Caching channel icons")
             for channel in self.channelList:
                 self.log.debug("Caching file for channel: %s" % channel['channel_name'])
                 self.cacheIcon(channel['channel_icon_id'])
 
-            self.log.info("Caching client icons")
+            self.log.debug("Caching client icons")
             for client in self.onlineClients.keys():
                 self.log.debug("Caching file for client: %s" % self.onlineClients[client]['client_nickname'])
                 self.cacheIcon(self.onlineClients[client]['client_icon_id'])
 
-            self.log.info("Caching group icons")
+            self.log.debug("Caching group icons")
             for group in self.groupList.keys():
                 self.log.debug("Caching file for group: %s" % self.groupList[group]['name'])
                 if int(self.groupList[group]['iconid']):

@@ -39,9 +39,8 @@ class MMONetwork(object):
         self.icon = self.config['icon']
 
         self.log = logging.getLogger(__name__ + "." + self.shortName.lower())
-        self.log.debug("Initializing MMONetwork: %s" % self.longName)
+        self.log.info("Initializing MMONetwork %s (%s)" % (self.longName, self.shortName))
 
-        self.comment = "Unset"
         self.description = "Unset"
         self.moreInfo = 'NoMoreInfo'
         self.lastRefreshDate = 0
@@ -49,16 +48,21 @@ class MMONetwork(object):
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
-        self.log.info("Initialized network: %s (%s)" % (self.longName, self.shortName))
+    def setLogLevel(self, level):
+        self.log.info("Setting loglevel to %s" % level)
+        self.log.setLevel(level)
 
     def refresh(self):
         self.log.debug("Refresh data from source")
 
-    def showLinkHtml(self):
+    def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.longName)
 
-    def doLink(self):
+    def doLink(self, userId):
         self.log.debug("Link user to network %s" % self.longName)
+
+    def finalizeLink(self, userKey):
+        self.log.debug("Finalize user link to network %s" % self.longName)
 
     def unlink(self):
         self.log.debug("Unlink network %s" % self.longName)
@@ -121,6 +125,3 @@ class MMONetwork(object):
 
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo
-
-    def setNetworkComment(self, comment):
-        self.comment = comment

@@ -10,10 +10,7 @@ from mmobase.mmonetwork import *
 from mmobase.mmouser import *
 from mmobase.mmoutils import *
 from mmobase.ts3mmonetwork import *
-# import mmobase
-# from mmobase.config import *
-# from mmobase.mmoutils import *
-log = getLogger(level=logging.DEBUG)
+log = getLogger(level=logging.INFO)
 
 # flask imports
 try:
@@ -25,7 +22,6 @@ except ImportError:
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
     from sqlalchemy.exc import IntegrityError, InterfaceError
-
 except ImportError:
     log.error("Please install the sqlalchemy extension for flask")
     sys.exit(2)
@@ -33,7 +29,6 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
-db = SQLAlchemy(app)
 
 try:
     os.environ['MMOFRIENDS_CFG']
@@ -53,15 +48,17 @@ if not app.debug:
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 
-with app.test_request_context():
-    # from mmonetwork import *
-    # from mmouser import *
-    db.create_all()
-
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 app.secret_key = app.config['APPSECRET']
 MMONetworks = {}
+
+# initialize database
+db = SQLAlchemy(app)
+with app.test_request_context():
+    from mmobase.mmonetwork import *
+    from mmobase.mmouser import *
+    db.create_all()
 
 # helper methods
 def fetchFriendsList():
@@ -77,10 +74,11 @@ def fetchFriendsList():
 def loadNetworks():
     for shortName in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][shortName]
-        log.info("Trying to initialize MMONetwork: %s (%s)" % (network['longName'], shortName))
+        log.info("Trying to initialize MMONetwork %s (%s)" % (network['longName'], shortName))
         try:
             MMONetworks[shortName] = eval(network['class'])(app, session, shortName)
-            log.info("Initialization of %s completed" % network['longName'])
+            log.info("Initialization of MMONetwork %s (%s) completed" % (network['longName'], shortName))
+            MMONetworks[shortName].setLogLevel(logging.INFO)
         except Exception as e:
             log.error("Unable to initialize MMONetwork %s because: %s" % (network['longName'], e))
 
@@ -212,15 +210,35 @@ def network_show(networkId):
     pass
 
 @app.route('/Network/Link', methods=['GET', 'POST'])
-def network_list():
+def network_link():
     if not session.get('logged_in'):
         abort(401)
     if request.method == 'POST':
-        pass
-        # form was submitted ...
-        # dolink
+        net = MMONetworks[request.form['shortName']]
+        if request.form['do'] == 'link':
+            doLinkReturn = MMONetworks[request.form['shortName']].doLink(request.form['id'])
+            return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
+                                                                        'shortName': net.shortName,
+                                                                        'longName': net.longName,
+                                                                        'moreInfo': net.moreInfo})
+        if request.form['do'] == 'finalize':
+            finalizeLinkReturn = MMONetworks[request.form['shortName']].finalizeLink(request.form['userKey'])
+            return render_template('network_link.html', finalizeLinkReturn = {'finalizeLinkReturn':finalizeLinkReturn,
+                                                                              'shortName': net.shortName,
+                                                                              'longName': net.longName,
+                                                                              'moreInfo': net.moreInfo})
+        else:
+            abort(404)
     else:
-        return render_template('network_list.html')
+        linkData = []
+        for netKey in MMONetworks.keys():
+            net = MMONetworks[netKey]
+            linkData.append({ 'longName': net.longName,
+                              'shortName': net.shortName,
+                              'description': net.description,
+                              'moreInfo': net.moreInfo,
+                              'linkData': net.getLinkHtml() })
+        return render_template('network_link.html', linkData = linkData)
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])

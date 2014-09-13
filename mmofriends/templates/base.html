@@ -79,7 +79,7 @@
 				<ul class="nav">
 				  {% if session.logged_in -%}
 				  <li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}">Friends</a></li>
-				  <li class="{% if url_for('network_list') == request.path %}active{% endif %}"><a href="{{ url_for('network_list') }}">Networks</a></li>
+				  <li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}">Networks</a></li>
 				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Me</a></li>
 					{% if session.admin  -%}
 					  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>

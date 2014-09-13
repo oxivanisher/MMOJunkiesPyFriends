@@ -6,9 +6,7 @@ import time
 import hashlib
 
 from mmoutils import *
-from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
-# from mmofriends import db
+from mmofriends import db
 
 class MMOUserLevel(object):
 
