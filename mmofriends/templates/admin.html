@@ -5,9 +5,9 @@
 <table class='table-striped'>
 	<thead>
 		<tr>
-			<th>Class Name</th>
-			<th>Short Name</th>
-			<th>Long Name</th>
+			<th>Class</th>
+			<th>Short</th>
+			<th>Long</th>
 			<th>More Info</th>
 			<th>Description</th>
 		</tr>
@@ -20,6 +20,33 @@
 			<td>{{ net.longName }}</td>
 			<td>{{ net.moreInfo }}</td>
 			<td>{{ net.description }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<h3>Registred Users</h3>
+<table class='table-striped'>
+	<thead>
+		<tr>
+			<th>Nick</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Website</th>
+			<th>Admin</th>
+			<th>Locked</th>
+			<th>Veryfied</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in infos.registredUsers %}
+		<tr>
+			<td>{{ user.nick }}</td>
+			<td>{{ user.name }}</td>
+			<td>{{ user.email }}</td>
+			<td>{{ user.website }}</td>
+			<td>{{ user.admin }}</td>
+			<td>{{ user.locked }}</td>
+			<td>{{ user.veryfied }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

@@ -38,7 +38,7 @@ class MMOUser(db.Model):
         self.joinedDate = int(time.time())
         self.lastLoginDate = 0
         self.lastRefreshDate = 0
-        self.admin = True
+        self.admin = False
         self.locked = True
         self.veryfied = False
         self.load()

@@ -174,12 +174,12 @@ class TS3Network(MMONetwork):
                 self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
                 self.setPartnerDetail(moreInfo, "Channel Group", self.channelGroupList[self.clientInfoDatabase[cldbid]['client_channel_group_id']]['name'])
 
-                # if admin FIXME
-                self.setPartnerDetail(moreInfo, "Last IP", self.clientDatabase[cldbid]['client_lastip'])
-                self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_uploaded']))
-                self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_downloaded']))
-                self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_uploaded']))
-                self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_downloaded']))
+                if self.session.get('admin'):
+                    self.setPartnerDetail(moreInfo, "Last IP", self.clientDatabase[cldbid]['client_lastip'])
+                    self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_uploaded']))
+                    self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.clientDatabase[cldbid]['client_month_bytes_downloaded']))
+                    self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_uploaded']))
+                    self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.clientDatabase[cldbid]['client_total_bytes_downloaded']))
 
                 self.setPartnerFlag(moreInfo, "Output muted", self.clientInfoDatabase[cldbid]['client_output_muted'])
                 self.setPartnerFlag(moreInfo, "Output only muted", self.clientInfoDatabase[cldbid]['client_outputonly_muted'])

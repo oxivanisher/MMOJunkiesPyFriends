@@ -131,8 +131,30 @@ def admin():
                             'moreInfo': network.moreInfo,
                             'description': network.description })
 
+    loadedNets = []
+    for shortName in MMONetworks.keys():
+        network = MMONetworks[shortName]
+        loadedNets.append({ 'shortName': shortName,
+                            'longName': network.longName,
+                            'className': network.__class__.__name__,
+                            'moreInfo': network.moreInfo,
+                            'description': network.description })
+    registredUsers = []
+
+    with app.test_request_context():
+        users = MMOUser.query.all()
+        for user in users:
+            registredUsers.append({ 'nick': user.nick,
+                                    'name': user.name,
+                                    'email': user.email,
+                                    'website': user.website,
+                                    'admin': user.admin,
+                                    'locked': user.locked,
+                                    'veryfied': user.veryfied })
+
     infos = {}
     infos['loadedNets'] = loadedNets
+    infos['registredUsers'] = registredUsers
     return render_template('admin.html', infos = infos)
 
 @app.route('/Development')
@@ -178,14 +200,14 @@ def get_image(imgType, imgId):
     abort(404)
 
 # network routes
-@app.route('/Network/Show', methods = ['GET'])
-def network_show():
+@app.route('/Network/Show/<networkId>', methods = ['GET'])
+def network_show(networkId):
     if not session.get('logged_in'):
         abort(401)
     pass
 
-@app.route('/Networks', methods=['GET', 'POST'])
-def networks():
+@app.route('/Network/Link', methods=['GET', 'POST'])
+def network_list():
     if not session.get('logged_in'):
         abort(401)
     if request.method == 'POST':
@@ -193,7 +215,7 @@ def networks():
         # form was submitted ...
         # dolink
     else:
-        return render_template('networks.html')
+        return render_template('network_list.html')
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])
@@ -288,6 +310,7 @@ def profile_logout():
     session.pop('logged_in', None)
     session.pop('nick', None)
     session.pop('admin', None)
+    session.pop('logindate', None)
     flash('Logged out')
     return redirect(url_for('profile_login'))
 
