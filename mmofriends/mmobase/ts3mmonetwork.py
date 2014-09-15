@@ -351,12 +351,11 @@ class TS3Network(MMONetwork):
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
 
     def test(self):
-        # result = current_app.session.get('nick')
-        # with self.app.test_request_context():
-        #     result = session.get('logged_in')
-        # result = self.app.session.get('nick')
-        # session = scoped_session(sessionmaker()) 
-        # result = self.app.config['networkConfig']
+        # fetching all clients: clientdblist -count (-> count=199)
+        # clientdblist len() -> clientdblist start=COUNT
+        # until end
+        # error id=1281 msg=database empty result set
+
         return self.session.get('nick')
 
     # file transfer methods
