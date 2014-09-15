@@ -16,15 +16,15 @@
 	</form>
 {% else %}
 <table>
-	{% for net in linkData %}
+	{% for net in linkNetwork %}
 	<tr>
 		<td style="vertical-align: top;">
-			<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="network_list_icon" title="{{ net.name }}" />
+			<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.name }}" />
 		</td>
 		<td style="vertical-align: top;">
 			<h3>{{ net.name }}: {{ net.moreInfo }}</h3>
 			{{ net.description }}
-			{%- if net.linkData.dropdown -%}
+			{%- if net.linkNetwork.dropdown -%}
 				<table>
 					<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 						<input type="hidden" name="do" value="link" />
@@ -32,7 +32,7 @@
 						<tr>
 							<td style="vertical-align: top;">
 								<select name="id">
-								{%- for entry in net.linkData.dropdown|sort(attribute='name') %}
+								{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
 									<option value="{{ entry.value }}">{{ entry.name }}</option>
 								{%- endfor %}
 								</select>
@@ -49,7 +49,15 @@
 	{% endfor %}
 </table>
 {% endif %}
+{% if linkNetwork %}
 <br />
 <h2>Linked Networks</h2>
-bla bla bla
+<ul>
+{% for net in linkedNetworks %}
+<li><img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}"
+		 class="linked_network_list_icon" title="{{ net.name }}"
+		 />{{ net.name }}: {{ net.moreInfo }} since {{ net.linked_date }}</li>
+{% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

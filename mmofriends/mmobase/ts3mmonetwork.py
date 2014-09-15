@@ -197,22 +197,26 @@ class TS3Network(MMONetwork):
         
         htmlFields = {}
         htmlFields['dropdown'] = []
+        currentLinks = []
+        for link in self.getNetworkLinks():
+            currentLinks.append(link['network_data'])
         for cldbid in self.onlineClients.keys():
-            #FIXME exclude already linked cldbid's
-            htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
-
+            if cldbid not in currentLinks:
+                htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
         return htmlFields
 
     def doLink(self, userId):
         self.log.debug("Link user %s to network %s" % (userId, self.name))
-        self.session[self.handle + 'doLinkKey'] = "%06d" % (random.randint(1, 999999))
-        message = "Your MMOfriends key is: %s" % self.session[self.handle + 'doLinkKey']
+        self.session[self.handle]['doLinkKey'] = "%06d" % (random.randint(1, 999999))
+        self.session[self.handle]['cldbid'] = userId
+        message = "Your MMOfriends key is: %s" % self.session[self.handle]['doLinkKey']
         self.server.clientpoke(self.onlineClients[userId]['clid'], message)
         return "Please enter the number you recieved via teamspeak"
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
-        if self.session[self.handle + 'doLinkKey'] == userKey:
+        if self.session[self.handle]['doLinkKey'] == userKey:
+            self.saveLink(self.session[self.handle]['cldbid'])
             return "Success"
         else:
             return "Fail"

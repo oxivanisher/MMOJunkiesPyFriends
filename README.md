@@ -52,3 +52,12 @@ git submodule foreach git pull
 
 # useful links:
 http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045
+
+# flask tutorial: Sign in with Steam ID
+http://flask.pocoo.org/snippets/42/
+
+# Ideas:
+- make a comment on all sites (logged in) to the dev
+- make network inking with a dialog popup and finally reload the page
+- admin methods in networks
+- statistic and/or ranking feature (lol, starcraft, ...)

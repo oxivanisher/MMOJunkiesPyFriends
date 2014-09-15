@@ -6,8 +6,8 @@ import sys
 import os
 import logging
 
-from mmobase.mmonetwork import *
 from mmobase.mmouser import *
+from mmobase.mmonetwork import *
 from mmobase.mmoutils import *
 from mmobase.ts3mmonetwork import *
 log = getLogger(level=logging.INFO)
@@ -56,8 +56,8 @@ MMONetworks = {}
 # initialize database
 db = SQLAlchemy(app)
 with app.test_request_context():
-    from mmobase.mmonetwork import *
     from mmobase.mmouser import *
+    from mmobase.mmonetwork import *
     db.create_all()
 
 # helper methods
@@ -91,6 +91,13 @@ def getUser(nick = None):
             return ret
         else:
             return False
+
+def fetchNetworkLinks(userId):
+    with app.test_request_context():
+        session['netLinks'] = {}
+        for net in MMONetworks.keys():
+            session['netLinks'][net] = MMONetworks[net].getNetworkLinks(userId)
+        return session['netLinks']
 
 # flask error handlers
 @app.errorhandler(404)
@@ -213,6 +220,7 @@ def network_show(networkId):
 def network_link():
     if not session.get('logged_in'):
         abort(401)
+
     if request.method == 'POST':
         net = MMONetworks[request.form['handle']]
         if request.form['do'] == 'link':
@@ -230,16 +238,29 @@ def network_link():
         else:
             abort(404)
     else:
-        linkData = []
+        linkedNetworks = []
+        fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
+        for net in fetchNetworkLinksData:
+            netInfo = MMONetworks[net]
+            for link in fetchNetworkLinksData[net]:
+                print "link", link
+                linkedNetworks.append({'name': netInfo.name,
+                                       'moreInfo': netInfo.moreInfo,
+                                       'id': netInfo.handle,
+                                       'icon': netInfo.icon,
+                                       'network_data': link['network_data'],
+                                       'linked_date': timestampToString(link['linked_date']) })
+
+        linkNetwork = []
         for netKey in MMONetworks.keys():
             net = MMONetworks[netKey]
-            linkData.append({ 'id': netKey,
+            linkNetwork.append({ 'id': netKey,
                               'name': net.name,
                               'handle': net.handle,
                               'description': net.description,
                               'moreInfo': net.moreInfo,
-                              'linkData': net.getLinkHtml() })
-        return render_template('network_link.html', linkData = linkData)
+                              'linkNetwork': net.getLinkHtml() })
+        return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])
@@ -316,6 +337,7 @@ def profile_login():
             if myUser.checkPassword(request.form['password']):
                 log.info("<%s> logged in" % myUser.nick)
                 session['logged_in'] = True
+                session['userid'] = myUser.id
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()

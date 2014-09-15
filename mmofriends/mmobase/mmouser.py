@@ -4,15 +4,41 @@
 import logging
 import time
 import hashlib
+import time
 
 from mmoutils import *
-from mmofriends import db
+from flask.ext.sqlalchemy import SQLAlchemy
+# from mmofriends import db, app
+db = SQLAlchemy()
 
 class MMOUserLevel(object):
 
     pass
 
+class MMONetLink(db.Model):
+    __tablename__ = 'mmonetlink'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('mmouser.id'))
+    user = db.relationship('MMOUser', backref=db.backref('links', lazy='dynamic'))
+    network_handle = db.Column(db.String(20))
+    network_data = db.Column(db.String(200))
+    linked_date = db.Column(db.Integer)
+
+    def __init__(self, user_id, network_handle, network_data = "", linked_date = 0):
+        self.user_id = user_id
+        self.network_handle = network_handle
+        self.network_data = network_data
+        if not linked_date:
+            linked_date = int(time.time())
+        self.linked_date = linked_date
+
+    def __repr__(self):
+        return '<MMONetLink %r>' % self.id
+
 class MMOUser(db.Model):
+    __tablename__ = 'mmouser'
+
     id = db.Column(db.Integer, primary_key=True)
     nick = db.Column(db.String(20), unique=True)
     name = db.Column(db.String(20), unique=False)
@@ -43,8 +69,8 @@ class MMOUser(db.Model):
         self.veryfied = False
         self.load()
 
-    # def __repr__(self):
-    #     return '<MMOUser %r>' % self.nick
+    def __repr__(self):
+        return '<MMOUser %r>' % self.nick
 
     def load(self):
         self.log = logging.getLogger(__name__)

@@ -9,9 +9,8 @@ import random
 
 from flask import current_app
 from mmoutils import *
-from flask.ext.sqlalchemy import SQLAlchemy
-# from mmofriends import db, app
-db = SQLAlchemy()
+from mmouser import *
+from mmofriends import db
 
 class MMONetworkProduct(object):
 
@@ -33,6 +32,7 @@ class MMONetwork(object):
         self.session = session
         self.handle = handle
         self.config = self.app.config['networkConfig'][handle]
+        self.session[self.handle] = {}
 
         # setting variables
         self.name = self.config['name']
@@ -63,6 +63,24 @@ class MMONetwork(object):
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
+
+    def saveLink(self, network_data):
+        self.log.debug("Saving network link for user %s" % (self.session['nick']))
+        netLink = MMONetLink(self.session['userid'], self.handle, network_data)
+        db.session.add(netLink)
+        db.session.commit()
+
+    def getNetworkLinks(self, userId = None):
+        netLinks = []
+        if userId:
+            self.log.debug("Loading network links for userId %s" % (userId))
+            for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
+                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id})
+        else:
+            self.log.debug("Loading all network links")
+            for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
+                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id})
+        return netLinks
 
     def unlink(self):
         self.log.debug("Unlink network %s" % self.name)
