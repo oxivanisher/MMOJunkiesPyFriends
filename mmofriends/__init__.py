@@ -243,7 +243,6 @@ def network_link():
         for net in fetchNetworkLinksData:
             netInfo = MMONetworks[net]
             for link in fetchNetworkLinksData[net]:
-                print "link", link
                 linkedNetworks.append({'name': netInfo.name,
                                        'moreInfo': netInfo.moreInfo,
                                        'id': netInfo.handle,
