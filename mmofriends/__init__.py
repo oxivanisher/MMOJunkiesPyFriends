@@ -124,7 +124,7 @@ def index():
 def about():
     return render_template('about.html')
 
-@app.route('/Administration')
+@app.route('/Administration/')
 def admin():
     if not session.get('logged_in'):
         abort(401)
@@ -216,6 +216,13 @@ def network_show(networkId):
         abort(401)
     pass
 
+@app.route('/Network/Admin/<networkHandle>', methods = ['GET'])
+def network_admin(networkHandle):
+    if not session.get('logged_in'):
+        abort(401)
+    if session.get('admin'):
+        return MMONetworks[networkHandle].admin()
+
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
     if not session.get('logged_in'):
@@ -263,12 +270,12 @@ def network_link():
                               'linkNetwork': net.getLinkHtml() })
         return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
 
-@app.route('/Network/Unlink/<netHandler>/<netLinkId>', methods=['GET'])
-def network_unlink(netHandler, netLinkId):
+@app.route('/Network/Unlink/<netHandle>/<netLinkId>', methods=['GET'])
+def network_unlink(netHandle, netLinkId):
     if not session.get('logged_in'):
         abort(401)
     if request.method == 'GET':
-        if MMONetworks[netHandler].unlink(session.get('userid'), netLinkId):
+        if MMONetworks[netHandle].unlink(session.get('userid'), netLinkId):
             flash('Removed link')
         else:
             flash('Unable to remove link')

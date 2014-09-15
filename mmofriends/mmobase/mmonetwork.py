@@ -151,3 +151,6 @@ class MMONetwork(object):
 
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo
+
+    def admin(self):
+        self.log.debug("Loading admin stuff")

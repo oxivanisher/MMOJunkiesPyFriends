@@ -18,12 +18,13 @@
 			<td>{{ net.className }}</td>
 			<td>{{ net.handle }}</td>
 			<td>{{ net.name }}</td>
-			<td>{{ net.moreInfo }}</td>
+			<td><a href="{{ url_for('network_admin', networkHandle=net.handle) }}">{{ net.moreInfo }}</a></td>
 			<td>{{ net.description }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
+<br />
 <h3>Registred Users</h3>
 <table class='table-striped'>
 	<thead>

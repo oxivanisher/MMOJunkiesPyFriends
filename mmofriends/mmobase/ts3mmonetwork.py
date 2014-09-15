@@ -40,6 +40,7 @@ class TS3Network(MMONetwork):
         self.clientftfid = 0
 
         self.cacheFiles()
+        self.cacheAvailableClients()
 
     def refresh(self):
         if not self.connect():
@@ -351,12 +352,21 @@ class TS3Network(MMONetwork):
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
 
     def test(self):
-        # fetching all clients: clientdblist -count (-> count=199)
-        # clientdblist len() -> clientdblist start=COUNT
-        # until end
-        # error id=1281 msg=database empty result set
+        return "Test ok"
 
-        return self.session.get('nick')
+    def cacheAvailableClients(self):
+        clientNum = 0
+        clientTot = int(self.sendCommand('clientdblist -count').data[0]['count'])
+        allClients = []
+        while clientNum < clientTot:
+            self.log.debug("Fetching all clients, starting at: %s" % clientNum)
+            newClients = self.sendCommand('clientdblist start=%s' % clientNum).data
+            clientNum += len(newClients)
+            allClients += newClients
+        for client in allClients:
+            self.clientDatabase[client['cldbid']] = client
+        self.log.info("Fetched all client database. %s clients in total." % clientNum)
+        # return "all clients fetched: %s" % len(allClients)
 
     # file transfer methods
     def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):
@@ -459,3 +469,7 @@ class TS3Network(MMONetwork):
 
     def cacheServerIcon(self, iconId):
         self.cacheIcon((int(iconId) + 4294967296))
+
+    def admin(self):
+        self.log.debug("Admin: Returning client database")
+        return self.clientDatabase
