@@ -245,9 +245,10 @@ def network_link():
             for link in fetchNetworkLinksData[net]:
                 linkedNetworks.append({'name': netInfo.name,
                                        'moreInfo': netInfo.moreInfo,
-                                       'id': netInfo.handle,
+                                       'handle': netInfo.handle,
                                        'icon': netInfo.icon,
                                        'network_data': link['network_data'],
+                                       'linkId': link['id'],
                                        'linked_date': timestampToString(link['linked_date']) })
 
         linkNetwork = []
@@ -260,6 +261,17 @@ def network_link():
                               'moreInfo': net.moreInfo,
                               'linkNetwork': net.getLinkHtml() })
         return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
+
+@app.route('/Network/Unlink/<netHandler>/<netLinkId>', methods=['GET'])
+def network_unlink(netHandler, netLinkId):
+    if not session.get('logged_in'):
+        abort(401)
+    if request.method == 'GET':
+        if MMONetworks[netHandler].unlink(session.get('userid'), netLinkId):
+            flash('Removed link')
+        else:
+            flash('Unable to remove link')
+    return redirect(url_for('network_link'))
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])

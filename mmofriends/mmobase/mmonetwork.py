@@ -75,15 +75,23 @@ class MMONetwork(object):
         if userId:
             self.log.debug("Loading network links for userId %s" % (userId))
             for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
-                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id})
+                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         else:
             self.log.debug("Loading all network links")
             for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
-                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id})
+                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         return netLinks
 
-    def unlink(self):
-        self.log.debug("Unlink network %s" % self.name)
+    def unlink(self, user_id, netLinkId):
+        try:
+            link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
+            db.session.delete(link)
+            db.session.flush()
+            self.log.info("Unlinked network with userid %s and netLinkId %s" % (user_id, netLinkId))
+            return True
+        except Exception as e:
+            self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
+            return False
 
     def listPartners(self, user):
         self.log.debug("List all partners for given user")
