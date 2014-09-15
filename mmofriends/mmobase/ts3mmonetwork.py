@@ -217,9 +217,9 @@ class TS3Network(MMONetwork):
         self.log.debug("Finalize user link to network %s" % self.name)
         if self.session[self.handle]['doLinkKey'] == userKey:
             self.saveLink(self.session[self.handle]['cldbid'])
-            return "Success"
+            return True
         else:
-            return "Fail"
+            return False
 
     # helper methods
     def connect(self):

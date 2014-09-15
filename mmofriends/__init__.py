@@ -229,12 +229,13 @@ def network_link():
                                                                         'handle': net.handle,
                                                                         'name': net.name,
                                                                         'moreInfo': net.moreInfo})
-        if request.form['do'] == 'finalize':
-            finalizeLinkReturn = MMONetworks[request.form['handle']].finalizeLink(request.form['userKey'])
-            return render_template('network_link.html', finalizeLinkReturn = {'finalizeLinkReturn':finalizeLinkReturn,
-                                                                              'handle': net.handle,
-                                                                              'name': net.name,
-                                                                              'moreInfo': net.moreInfo})
+        elif request.form['do'] == 'finalize':
+            if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
+                flash('Successfully linked to network %s' % net.moreInfo)
+                return redirect(url_for('network_link'))
+            else:
+                flash('Unable to link network %s. Please try again.' % net.moreInfo)
+                return redirect(url_for('network_link'))
         else:
             abort(404)
     else:
