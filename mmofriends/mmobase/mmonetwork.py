@@ -27,19 +27,19 @@ class MMONetworkProduct(object):
 
 class MMONetwork(object):
 
-    def __init__(self, app, session, shortName):
+    def __init__(self, app, session, handle):
         # loading config
         self.app = app
         self.session = session
-        self.shortName = shortName
-        self.config = self.app.config['networkConfig'][shortName]
+        self.handle = handle
+        self.config = self.app.config['networkConfig'][handle]
 
         # setting variables
-        self.longName = self.config['longName']
+        self.name = self.config['name']
         self.icon = self.config['icon']
 
-        self.log = logging.getLogger(__name__ + "." + self.shortName.lower())
-        self.log.info("Initializing MMONetwork %s (%s)" % (self.longName, self.shortName))
+        self.log = logging.getLogger(__name__ + "." + self.handle.lower())
+        self.log.info("Initializing MMONetwork %s (%s)" % (self.name, self.handle))
 
         self.description = "Unset"
         self.moreInfo = 'NoMoreInfo'
@@ -56,16 +56,16 @@ class MMONetwork(object):
         self.log.debug("Refresh data from source")
 
     def getLinkHtml(self):
-        self.log.debug("Show linkHtml %s" % self.longName)
+        self.log.debug("Show linkHtml %s" % self.name)
 
     def doLink(self, userId):
-        self.log.debug("Link user to network %s" % self.longName)
+        self.log.debug("Link user %s to network %s" % (userId, self.name))
 
     def finalizeLink(self, userKey):
-        self.log.debug("Finalize user link to network %s" % self.longName)
+        self.log.debug("Finalize user link to network %s" % self.name)
 
     def unlink(self):
-        self.log.debug("Unlink network %s" % self.longName)
+        self.log.debug("Unlink network %s" % self.name)
 
     def listPartners(self, user):
         self.log.debug("List all partners for given user")
@@ -74,8 +74,8 @@ class MMONetwork(object):
                 'networkText': channelName,
                 'networkImgs': [{
                     'type': 'network',
-                    'name': self.shortName,
-                    'title': self.longName
+                    'name': self.handle,
+                    'title': self.name
                 },{
                     'type': 'cache',
                     'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
@@ -121,7 +121,7 @@ class MMONetwork(object):
         myDict['avatar'] = avatarName
 
     def getProducts(self):
-        self.log.debug("MMONetwork %s: Fetching products" % self.shortName)
+        self.log.debug("MMONetwork %s: Fetching products" % self.handle)
 
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo

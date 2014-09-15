@@ -63,8 +63,8 @@ with app.test_request_context():
 # helper methods
 def fetchFriendsList():
     retFriendsList = []
-    for shortName in MMONetworks.keys():
-        (res, friendsList) = MMONetworks[shortName].getPartners()
+    for handle in MMONetworks.keys():
+        (res, friendsList) = MMONetworks[handle].getPartners()
         if res:
             retFriendsList += friendsList
         else:
@@ -72,15 +72,15 @@ def fetchFriendsList():
     return retFriendsList
 
 def loadNetworks():
-    for shortName in app.config['networkConfig'].keys():
-        network = app.config['networkConfig'][shortName]
-        log.info("Trying to initialize MMONetwork %s (%s)" % (network['longName'], shortName))
+    for handle in app.config['networkConfig'].keys():
+        network = app.config['networkConfig'][handle]
+        log.info("Trying to initialize MMONetwork %s (%s)" % (network['name'], handle))
         try:
-            MMONetworks[shortName] = eval(network['class'])(app, session, shortName)
-            log.info("Initialization of MMONetwork %s (%s) completed" % (network['longName'], shortName))
-            MMONetworks[shortName].setLogLevel(logging.INFO)
+            MMONetworks[handle] = eval(network['class'])(app, session, handle)
+            log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
+            MMONetworks[handle].setLogLevel(logging.INFO)
         except Exception as e:
-            log.error("Unable to initialize MMONetwork %s because: %s" % (network['longName'], e))
+            log.error("Unable to initialize MMONetwork %s because: %s" % (network['name'], e))
 
 def getUser(nick = None):
     with app.test_request_context():
@@ -126,19 +126,19 @@ def admin():
         abort(401)
 
     loadedNets = []
-    for shortName in MMONetworks.keys():
-        network = MMONetworks[shortName]
-        loadedNets.append({ 'shortName': shortName,
-                            'longName': network.longName,
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        loadedNets.append({ 'handle': handle,
+                            'name': network.name,
                             'className': network.__class__.__name__,
                             'moreInfo': network.moreInfo,
                             'description': network.description })
 
     loadedNets = []
-    for shortName in MMONetworks.keys():
-        network = MMONetworks[shortName]
-        loadedNets.append({ 'shortName': shortName,
-                            'longName': network.longName,
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        loadedNets.append({ 'handle': handle,
+                            'name': network.name,
                             'className': network.__class__.__name__,
                             'moreInfo': network.moreInfo,
                             'description': network.description })
@@ -214,18 +214,18 @@ def network_link():
     if not session.get('logged_in'):
         abort(401)
     if request.method == 'POST':
-        net = MMONetworks[request.form['shortName']]
+        net = MMONetworks[request.form['handle']]
         if request.form['do'] == 'link':
-            doLinkReturn = MMONetworks[request.form['shortName']].doLink(request.form['id'])
+            doLinkReturn = MMONetworks[request.form['handle']].doLink(request.form['id'])
             return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
-                                                                        'shortName': net.shortName,
-                                                                        'longName': net.longName,
+                                                                        'handle': net.handle,
+                                                                        'name': net.name,
                                                                         'moreInfo': net.moreInfo})
         if request.form['do'] == 'finalize':
-            finalizeLinkReturn = MMONetworks[request.form['shortName']].finalizeLink(request.form['userKey'])
+            finalizeLinkReturn = MMONetworks[request.form['handle']].finalizeLink(request.form['userKey'])
             return render_template('network_link.html', finalizeLinkReturn = {'finalizeLinkReturn':finalizeLinkReturn,
-                                                                              'shortName': net.shortName,
-                                                                              'longName': net.longName,
+                                                                              'handle': net.handle,
+                                                                              'name': net.name,
                                                                               'moreInfo': net.moreInfo})
         else:
             abort(404)
@@ -233,8 +233,9 @@ def network_link():
         linkData = []
         for netKey in MMONetworks.keys():
             net = MMONetworks[netKey]
-            linkData.append({ 'longName': net.longName,
-                              'shortName': net.shortName,
+            linkData.append({ 'id': netKey,
+                              'name': net.name,
+                              'handle': net.handle,
                               'description': net.description,
                               'moreInfo': net.moreInfo,
                               'linkData': net.getLinkHtml() })

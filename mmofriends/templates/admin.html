@@ -6,8 +6,8 @@
 	<thead>
 		<tr>
 			<th>Class</th>
-			<th>Short</th>
-			<th>Long</th>
+			<th>Handle</th>
+			<th>Name</th>
 			<th>More Info</th>
 			<th>Description</th>
 		</tr>
@@ -16,8 +16,8 @@
 		{% for net in infos.loadedNets %}
 		<tr>
 			<td>{{ net.className }}</td>
-			<td>{{ net.shortName }}</td>
-			<td>{{ net.longName }}</td>
+			<td>{{ net.handle }}</td>
+			<td>{{ net.name }}</td>
 			<td>{{ net.moreInfo }}</td>
 			<td>{{ net.description }}</td>
 		</tr>

@@ -69,9 +69,9 @@ class MMOBase(object):
         self.log.debug("Refresh all users where needed if not forced")
         pass
 
-    def loadNetwork(self, shortName, longName):
-        self.log.debug("Loading MMONetwork: %s" % longName)
-        self.networks.append(TS3Network(MMONetworkConfig(self.networkConfig, shortName, longName)))
+    def loadNetwork(self, handle, name):
+        self.log.debug("Loading MMONetwork: %s" % name)
+        self.networks.append(TS3Network(MMONetworkConfig(self.networkConfig, handle, name)))
 
     def loadNetworks(self):
         self.log.debug("Loading all MMONetworks")

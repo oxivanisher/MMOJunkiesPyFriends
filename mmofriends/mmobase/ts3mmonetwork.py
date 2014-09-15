@@ -20,8 +20,8 @@ except ImportError:
 class TS3Network(MMONetwork):
 
     # class overwrites
-    def __init__(self, app, session, shortName):
-        super(TS3Network, self).__init__(app, session, shortName)
+    def __init__(self, app, session, handle):
+        super(TS3Network, self).__init__(app, session, handle)
 
         self.description = "Team Speak 3 is like skype for gamers."
 
@@ -104,8 +104,8 @@ class TS3Network(MMONetwork):
 
                 networkImgs = [{
                                 'type': 'network',
-                                'name': self.shortName,
-                                'title': self.longName
+                                'name': self.handle,
+                                'title': self.name
                             },{
                                 'type': 'cache',
                                 'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
@@ -130,7 +130,7 @@ class TS3Network(MMONetwork):
                 ret.append({'id': cldbid,
                             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
                             'networkText': channelName,
-                            'networkId': self.shortName,
+                            'networkId': self.handle,
                             'networkImgs': networkImgs,
                             'friendImgs': friendImgs
                     })
@@ -192,7 +192,7 @@ class TS3Network(MMONetwork):
         return moreInfo
 
     def getLinkHtml(self):
-        self.log.debug("Show linkHtml %s" % self.longName)
+        self.log.debug("Show linkHtml %s" % self.name)
         self.refresh()
         
         htmlFields = {}
@@ -204,15 +204,15 @@ class TS3Network(MMONetwork):
         return htmlFields
 
     def doLink(self, userId):
-        self.log.debug("Link user %s to network %s" % (userId, self.longName))
-        self.session[self.shortName + 'doLinkKey'] = "%06d" % (random.randint(1, 999999))
-        message = "Your MMOfriends key is: %s" % self.session[self.shortName + 'doLinkKey']
+        self.log.debug("Link user %s to network %s" % (userId, self.name))
+        self.session[self.handle + 'doLinkKey'] = "%06d" % (random.randint(1, 999999))
+        message = "Your MMOfriends key is: %s" % self.session[self.handle + 'doLinkKey']
         self.server.clientpoke(self.onlineClients[userId]['clid'], message)
         return "Please enter the number you recieved via teamspeak"
 
     def finalizeLink(self, userKey):
-        self.log.debug("Finalize user link to network %s" % self.longName)
-        if self.session[self.shortName + 'doLinkKey'] == userKey:
+        self.log.debug("Finalize user link to network %s" % self.name)
+        if self.session[self.handle + 'doLinkKey'] == userKey:
             return "Success"
         else:
             return "Fail"

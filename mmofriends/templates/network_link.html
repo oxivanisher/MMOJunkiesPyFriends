@@ -3,37 +3,53 @@
 {% block content %}
 <h2>Link Network</h2>
 {% if finalizeLinkReturn %}
-	<h3>{{ finalizeLinkReturn.longName }}: {{ finalizeLinkReturn.moreInfo }}</h3>
+	<h3>{{ finalizeLinkReturn.name }}: {{ finalizeLinkReturn.moreInfo }}</h3>
 	<strong>{{ finalizeLinkReturn.finalizeLinkReturn }}</strong>
 {% elif doLinkReturn %}
-	<h3>{{ doLinkReturn.longName }}: {{ doLinkReturn.moreInfo }}</h3>
+	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 		<input type="hidden" name="do" value="finalize" />
-		<input type="hidden" name="shortName" value="{{ doLinkReturn.shortName }}" />
+		<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
 		<input type="text" name="userKey" />
 		<input type="submit" />
 	</form>
 {% else %}
+<table>
 	{% for net in linkData %}
-		<h3>{{ net.longName }}: {{ net.moreInfo }}</h3>
-		{{ net.description }}
-		<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
-			<input type="hidden" name="do" value="link" />
-			<input type="hidden" name="shortName" value="{{ net.shortName }}" />
-			{% if net.linkData.dropdown %}
-				<select name="id">
-				{% for entry in net.linkData.dropdown -%}
-					<option value="{{ entry.value }}">{{ entry.name }}</option>
-				{% endfor %}
-				</select>
-			{% endif %}
-			<br />
-			<input type="submit" />
-		</form>
+	<tr>
+		<td style="vertical-align: top;">
+			<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="network_list_icon" title="{{ net.name }}" />
+		</td>
+		<td style="vertical-align: top;">
+			<h3>{{ net.name }}: {{ net.moreInfo }}</h3>
+			{{ net.description }}
+			{%- if net.linkData.dropdown -%}
+				<table>
+					<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
+						<input type="hidden" name="do" value="link" />
+						<input type="hidden" name="handle" value="{{ net.handle }}" />
+						<tr>
+							<td style="vertical-align: top;">
+								<select name="id">
+								{%- for entry in net.linkData.dropdown|sort(attribute='name') %}
+									<option value="{{ entry.value }}">{{ entry.name }}</option>
+								{%- endfor %}
+								</select>
+							</td>
+							<td style="vertical-align: top;">
+								<input type="submit" />
+							</td>
+						</tr>
+					</form>
+				</table>
+			{%- endif -%}
+		</td>
+	</tr>
 	{% endfor %}
+</table>
 {% endif %}
-
+<br />
 <h2>Linked Networks</h2>
 bla bla bla
 {% endblock %}
