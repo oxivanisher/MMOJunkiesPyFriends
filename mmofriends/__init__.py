@@ -344,8 +344,12 @@ def profile_register():
             db.session.add(newUser)
             try:
                 db.session.commit()
-                send_email(newUser.email, "" % newUser.veryfied)
-                flash("Please check your emails on %s" % newUser.email)
+                actUrl = "http://localhost" + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
+                print "actUrl", actUrl
+                if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
+                    flash("Please check your emails on %s" % newUser.email)
+                else:
+                    flash("Error sending the email to you.")
                 return redirect(url_for('profile_login'))
 
             except IntegrityError, e:

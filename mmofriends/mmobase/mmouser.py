@@ -47,7 +47,7 @@ class MMOUser(db.Model):
     name = db.Column(db.String(20), unique=False)
     email = db.Column(db.String(120), unique=True)
     website = db.Column(db.String(120), unique=False)
-    password = db.Column(db.String(20), unique=False)
+    password = db.Column(db.String(512), unique=False)
     joinedDate = db.Column(db.Integer, unique=False)
     lastLoginDate = db.Column(db.Integer, unique=False)
     lastRefreshDate = db.Column(db.Integer, unique=False)

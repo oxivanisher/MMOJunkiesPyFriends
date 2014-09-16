@@ -96,18 +96,19 @@ def load_file(app, msgRoot, filename):
     msgImage.add_header('Content-ID', '<' + os.path.splitext(filename)[0] + '@mmofriends.local>')
     msgRoot.attach(msgImage)
 
-def send_email(app, msgto, msgsubject, msgname):
+def send_email(app, msgto, msgsubject, msgtext):
     try:
         msgRoot = MIMEMultipart('related', type="text/html")
-        msgRoot['Subject'] = app.config['EMAIL_SUBJECT']
-        msgRoot['From'] = app.config['EMAIL_MSGFROM']
+        msgRoot['Subject'] = msgsubject
+        msgRoot['From'] = app.config['EMAILFROM']
         msgRoot['To'] = msgto
         msgRoot.preamble = 'This is a multi-part message in MIME format.'
-        msgRoot.add_header('reply-to', app.config['EMAIL_REPLYTO'])
+        if len(app.config['EMAILREPLYTO']):
+            msgRoot.add_header('reply-to', app.config['EMAILREPLYTO'])
         msgAlternative = MIMEMultipart('alternative')
         msgRoot.attach(msgAlternative)
 
-        msgtext = u"""<html>
+        htmltext = u"""<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>%s</title>
@@ -135,16 +136,19 @@ def send_email(app, msgto, msgsubject, msgname):
                 height: 150px;
                 z-index:2;
             } 
-            #
+            #content {
+                top: 160px;
+                position: absolute;
+            }
         </style>
     </head>
     <body>
         <div id="background">
-            <div id="logo"><img src="cid:logo@mmofriends.local"></div>
-            <div ig="content">%s</div>
+            <div id="logo"><img src="cid:email_header@mmofriends.local"></div>
+            <div id="content">%s</div>
         </div>
-   </body>
-   </html>""" % (app.config['EMAIL_SUBJECT'], msgtext.replace('\n', '<br />').encode('ascii', 'xmlcharrefreplace'))
+    </body>
+    </html>""" % (msgsubject, msgtext.replace('\n', '<br />').encode('ascii', 'xmlcharrefreplace'))
 
         newplaintext = ""
         for line in msgtext.split("\n"):
@@ -158,7 +162,9 @@ def send_email(app, msgto, msgsubject, msgname):
         load_file(app, msgRoot, 'email_header.png')
 
         s = smtplib.SMTP(app.config['EMAILSERVER'])
-        s.sendmail(app.config['EMAIL_MSGFROM'], msgto, msgRoot.as_string())
+        if len(app.config['EMAILLOGIN']) and len(app.config['EMAILPASSWORD']):
+            s.login(app.config['EMAILLOGIN'], app.config['EMAILPASSWORD'])
+        s.sendmail(app.config['EMAILFROM'], msgto, msgRoot.as_string())
         s.quit()
         return True
     except Exception as e:
