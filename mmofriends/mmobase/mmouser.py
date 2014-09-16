@@ -5,6 +5,8 @@ import logging
 import time
 import hashlib
 import time
+import string
+import random
 
 from mmoutils import *
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -36,6 +38,7 @@ class MMONetLink(db.Model):
     def __repr__(self):
         return '<MMONetLink %r>' % self.id
 
+
 class MMOUser(db.Model):
     __tablename__ = 'mmouser'
 
@@ -48,6 +51,7 @@ class MMOUser(db.Model):
     joinedDate = db.Column(db.Integer, unique=False)
     lastLoginDate = db.Column(db.Integer, unique=False)
     lastRefreshDate = db.Column(db.Integer, unique=False)
+    verifyKey = db.Column(db.String(32), unique=False)
     admin = db.Column(db.Boolean)
     locked = db.Column(db.Boolean)
     veryfied = db.Column(db.Boolean)
@@ -67,6 +71,7 @@ class MMOUser(db.Model):
         self.admin = False
         self.locked = True
         self.veryfied = False
+        self.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
         self.load()
 
     def __repr__(self):
@@ -83,6 +88,14 @@ class MMOUser(db.Model):
     def unlock(self):
         self.log.debug("Unlock MMOUser %s" % self.getDisplayName())
         self.locked = False
+
+    def verify(self, key):
+        if key == self.verifyKey:
+            self.veryfied = True
+            self.locked = False
+            return True
+        else:
+            return False
 
     def refreshNetworks(self):
         self.log.debug("Refresh MMONetwork for MMOUser %s" % self.getDisplayName())

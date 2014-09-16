@@ -208,6 +208,7 @@ class TS3Network(MMONetwork):
 
     def doLink(self, userId):
         self.log.debug("Link user %s to network %s" % (userId, self.name))
+        self.refresh()
         self.session[self.handle]['doLinkKey'] = "%06d" % (random.randint(1, 999999))
         self.session[self.handle]['cldbid'] = userId
         message = "Your MMOfriends key is: %s" % self.session[self.handle]['doLinkKey']
@@ -216,6 +217,7 @@ class TS3Network(MMONetwork):
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
+        self.refresh()
         if self.session[self.handle]['doLinkKey'] == userKey:
             self.saveLink(self.session[self.handle]['cldbid'])
             return True
@@ -472,4 +474,5 @@ class TS3Network(MMONetwork):
 
     def admin(self):
         self.log.debug("Admin: Returning client database")
+        self.refresh()
         return self.clientDatabase

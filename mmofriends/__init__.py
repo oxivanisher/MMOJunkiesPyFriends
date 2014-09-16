@@ -82,11 +82,21 @@ def loadNetworks():
         except Exception as e:
             log.error("Unable to initialize MMONetwork %s because: %s" % (network['name'], e))
 
-def getUser(nick = None):
+def getUserByNick(nick = None):
     with app.test_request_context():
         if not nick:
             nick = session.get('nick')
-        ret = MMOUser.query.filter_by(nick=nick).first()
+        ret = MMOUser.query.filter(MMOUser.nick.ilike(nick)).first()
+        if ret:
+            return ret
+        else:
+            return False
+
+def getUserById(userId = None):
+    with app.test_request_context():
+        if not userId:
+            userId = session.get('userid')
+        ret = MMOUser.query.filter_by(id=userId).first()
         if ret:
             return ret
         else:
@@ -112,6 +122,10 @@ def not_found(error):
 @app.before_first_request
 def before_first_request():
     loadNetworks()
+
+@app.before_request
+def before_request():
+    pass
 
 # main routes
 @app.route('/')
@@ -342,18 +356,37 @@ def profile_register():
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show():
     flash("show profile, change template in the future")
-    return render_template('profile_register.html', values = getUser())
+    return render_template('profile_register.html', values = getUserById())
+
+@app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
+def profile_verify(userId, verifyKey):
+    log.info("Verify userid %s" % userId)
+    verifyUser = getUserById(userId)
+    if verifyUser.verify(verifyKey):
+        db.session.add(verifyUser)
+        db.session.commit()
+        flash("Verification ok. Please log in.")
+        return redirect(url_for('profile_login'))
+    else:
+        flash("Verification NOT ok. Please try again.")
+    return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
 def profile_login():
     if request.method == 'POST':
         log.info("Trying to login user: %s" % request.form['nick'])
         myUser = False
-        myUser = getUser(request.form['nick'])
+        myUser = getUserByNick(request.form['nick'])
 
         if myUser:
             myUser.load()
-            if myUser.checkPassword(request.form['password']):
+            if not myUser.veryfied:
+                flash("User not yet veryfied. Please check your email for the unlock key.")
+                return redirect(url_for('index'))
+            elif myUser.locked:
+                flash("User locked. Please contact an administrator.")
+                return redirect(url_for('index'))
+            elif myUser.checkPassword(request.form['password']):
                 log.info("<%s> logged in" % myUser.nick)
                 session['logged_in'] = True
                 session['userid'] = myUser.id
