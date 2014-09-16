@@ -329,6 +329,7 @@ def profile_register():
             db.session.add(newUser)
             try:
                 db.session.commit()
+                send_email(newUser.email, "" % newUser.veryfied)
                 flash("Please check your emails on %s" % newUser.email)
                 return redirect(url_for('profile_login'))
 
