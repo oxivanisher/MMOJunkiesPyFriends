@@ -193,7 +193,7 @@ def dev():
     # result = "nope nix"
     # result = MMONetworks[0].getIcon(-247099292)
     try:
-        result = MMONetworks['TS3'].test()
+        result = MMONetworks['Valve'].test()
     except Exception as e:
         result = e
 
@@ -344,8 +344,7 @@ def profile_register():
             db.session.add(newUser)
             try:
                 db.session.commit()
-                actUrl = "http://localhost" + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
-                print "actUrl", actUrl
+                actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
                     flash("Please check your emails on %s" % newUser.email)
                 else:
