@@ -10,6 +10,7 @@ from mmobase.mmouser import *
 from mmobase.mmonetwork import *
 from mmobase.mmoutils import *
 from mmobase.ts3mmonetwork import *
+from mmobase.valvenetwork import *
 log = getLogger(level=logging.INFO)
 
 # flask imports
