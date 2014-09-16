@@ -1,6 +1,6 @@
 TS3:
+  name: Team Speak 3
   class: TS3Network
-  longName: Team Speak 3
   updateLock: 60
   updateOnlineLock: 5
   ip: 127.0.0.1
@@ -10,13 +10,13 @@ TS3:
   password: secret
   icon: ts3.png
 Blizz:
+  name: Battle.Net
   class: BlizzNetwork
-  longName: Battle.Net
   spikey: secret
   apisecret: secret
   icon: battlenet.png
 Valve:
+  name: Steam from Valve
   class: ValveNetwork
-  longName: Steam from Valve
   apikey: secret
   icon: steam.png
