@@ -93,7 +93,7 @@ class MMONetwork(object):
             self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
             return False
 
-    def getPartners(self, user):
+    def getPartners(self):
         self.log.debug("List all partners for given user")
         return {'id': 'someId',
                 'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
