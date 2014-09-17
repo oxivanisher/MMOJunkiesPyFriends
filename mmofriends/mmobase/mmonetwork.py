@@ -95,32 +95,32 @@ class MMONetwork(object):
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
-        return {'id': 'someId',
-                'nick': 'nickName',
-                'networkText': 'Product',
-                'networkImgs': [{
-                    'type': 'network',
-                    'name': self.handle,
-                    'title': self.name
-                },{
-                    'type': 'cache',
-                    'name': 'gameIconPath',
-                    'title': 'gameName'
-                },{
-                    'type': 'cache',
-                    'name': 'mapIconPath',
-                    'title': 'mapName'
-                }],
-                'friendImgs': [{
-                    'type': 'cache',
-                    'name': 'rankIconPath',
-                    'title': 'rankIcon'
-                },{
-                    'type': 'cache',
-                    'name': 'someImagePath',
-                    'title': 'someImage'
-                }]
-            }
+        return ( True, {'id': 'someId',
+                        'nick': 'nickName',
+                        'networkText': 'Product',
+                        'networkImgs': [{
+                            'type': 'network',
+                            'name': self.handle,
+                            'title': self.name
+                        },{
+                            'type': 'cache',
+                            'name': 'gameIconPath',
+                            'title': 'gameName'
+                        },{
+                            'type': 'cache',
+                            'name': 'mapIconPath',
+                            'title': 'mapName'
+                        }],
+                        'friendImgs': [{
+                            'type': 'cache',
+                            'name': 'rankIconPath',
+                            'title': 'rankIcon'
+                        },{
+                            'type': 'cache',
+                            'name': 'someImagePath',
+                            'title': 'someImage'
+                        }]
+                    })
 
     def getPartnerDetails(self, partnerId):
         self.log.debug("List partner details")
