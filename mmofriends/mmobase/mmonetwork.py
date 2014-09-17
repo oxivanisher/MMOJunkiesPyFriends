@@ -95,6 +95,7 @@ class MMONetwork(object):
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
+        return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
                         'nick': 'nickName',
                         'networkText': 'Product',
