@@ -27,27 +27,6 @@ http://jquery.com/
 http://jqueryui.com/
 http://getbootstrap.com/
 
-Notes:
-	Ts3 Console:
-		- clientlist [-uid] [-away] [-voice] [-times] [-groups] [-info] [-icon] [-country]
-		- clientfind pattern={clientName}
-		- clientinfo clid={clientID} 
-
-		- clientdblist [start={offset}] [duration={limit}] [-count]
-		- clientpoke clid={clientID}… msg={text}
-		- clientdbfind pattern={clientName|clientUID} [-uid]
-		- clientdbedit cldbid={clientDBID} [client_properties…]
-		- clientdbdelete cldbid={clientDBID}
-		- clientkick clid={clientID}… reasonid={4|5} [reasonmsg={text}]
-
-		- sendtextmessage targetmode={1-3} target={serverID|channelID|clientID} msg={text}
-
-	Targetmodes:
-		1: target is a client
-		2: target is a channel
-		3: target is a virtual serve
-
-
 git submodule foreach git pull
 
 # useful links:

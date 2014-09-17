@@ -67,6 +67,9 @@ app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], 
 app.secret_key = app.config['APPSECRET']
 MMONetworks = {}
 
+# jinja2 methods
+app.jinja_env.globals.update(timestampToString=timestampToString)
+
 # initialize database
 db = SQLAlchemy(app)
 with app.test_request_context():
@@ -145,7 +148,10 @@ def before_first_request():
 
 @app.before_request
 def before_request():
-    pass
+    try:
+        session['requests'] += 1
+    except KeyError:
+        pass
 
 # main routes
 @app.route('/')
@@ -251,7 +257,7 @@ def network_show(networkId):
         abort(401)
     pass
 
-@app.route('/Network/Admin/<networkHandle>', methods = ['GET'])
+@app.route('/Network/Administration/<networkHandle>', methods = ['GET'])
 def network_admin(networkHandle):
     if not session.get('logged_in'):
         abort(401)
@@ -418,6 +424,7 @@ def profile_login():
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
+                session['requests'] = 0
                 return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)

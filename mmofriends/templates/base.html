@@ -80,15 +80,20 @@
 				  {% if session.logged_in -%}
 				  <li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}">Friends</a></li>
 				  <li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}">Networks</a></li>
-				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Me</a></li>
+				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Me</a></li>
 					{% if session.admin  -%}
-					  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
-					  <li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
+					  <li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <span class="caret"></span></a>
+	         			  <ul class="dropdown-menu" role="menu">
+							  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
+							  <li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
+						  </ul>
+					  </li>
 					{% endif -%}
 				  {% else -%}
-				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
 				  <li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
 				  {% endif -%}
+				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
 				  <li class="{% if url_for('profile_login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('profile_logout') }}">Logout {% if session.nick %}{{ session.nick }}{% endif %}</a>{% else %}<a href="{{ url_for('profile_login') }}">Login</a>{% endif %}</li>
 				</ul>
 			  </div><!--/.nav-collapse -->
