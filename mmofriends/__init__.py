@@ -51,7 +51,7 @@ except RuntimeError as e:
 
 if not app.debug:
     from logging.handlers import SMTPHandler
-    mail_handler = SMTPHandler(app.config['EMAILSERVER'], app.config['EMAILFROM'], ADMINS, current_app.name + ' failed!')
+    mail_handler = SMTPHandler(app.config['EMAILSERVER'], app.config['EMAILFROM'], app.config['ADMINS'], current_app.name + ' failed!')
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 

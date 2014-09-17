@@ -1,7 +1,7 @@
 DEBUG = True
 ROOTUSER = "oxi"
 APPSECRET = '\x8a\xbc\x9e\xacuf\x07\xb2\xcc\x98\\w\xec\xbfo\xfa\xe8\x006\xecAY\x05\xde'
-EMAILTARGET = ['yourname@example.com']
+ADMINS = ['yourname@example.com']
 WEBURL = "http://localhost:5000"
 EMAILSERVER = "127.0.0.1"
 EMAILFROM = "yourname@example.com"
