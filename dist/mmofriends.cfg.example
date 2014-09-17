@@ -9,4 +9,6 @@ EMAILREPLYTO = ""
 EMAILLOGIN = ""
 EMAILPASSWORD = ""
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmofriends.db'
+TWITTERURL = ""
+TWITTERWIDGETID = ""
 #with mysql: SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/mmofriends'

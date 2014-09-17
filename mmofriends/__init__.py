@@ -6,6 +6,7 @@ import sys
 import os
 import logging
 
+
 from mmobase.mmouser import *
 from mmobase.mmonetwork import *
 from mmobase.mmoutils import *
@@ -32,6 +33,12 @@ try:
 except ImportError:
     log.error("Please install the openid extension for flask")
     sys.exit(2)
+
+# try:
+#     import twitter
+# except ImportError:
+#     log.error("Please install python-twitter")
+#     sys.exit(2)
 
 # setup flask app
 app = Flask(__name__)
@@ -66,6 +73,12 @@ with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
     db.create_all()
+
+# initialize twitter api for news
+# api = twitter.Api(consumer_key='bAngUFXT9c5FCRFkfQZjqAqJT',
+#                   consumer_secret='0Lfi8jMiNb5fQeeLRh9exAwM3UarVdS6o3bg16GlrK6xXRFcOp',
+#                   access_token_key='',
+#                   access_token_secret='')
 
 # helper methods
 def fetchFriendsList():
@@ -143,7 +156,8 @@ def index():
 
 @app.route('/About')
 def about():
-    return render_template('about.html')
+    twitterData = {'widgetUrl': app.config['TWITTERURL'], 'widgetId': app.config['TWITTERWIDGETID']}
+    return render_template('about.html', twitter = twitterData)
 
 @app.route('/Administration/')
 def admin():
