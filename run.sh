@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ORIGDIR=$(pwd)
 
 # Cleaning old .pyc files to not run into the "importing seems to work" trap again!
-find ${DIR} -name *.pyc -exec rm {} \;
+find ${DIR} -name "*.pyc" -exec rm {} \;
 
 # Changing to the root path of th application.
 cd ${DIR}
