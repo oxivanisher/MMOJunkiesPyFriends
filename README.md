@@ -55,6 +55,7 @@ http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue
 
 # flask tutorial: Sign in with Steam ID
 http://flask.pocoo.org/snippets/42/
+#  pip install Flask-OpenID
 
 # Ideas:
 - make a comment on all sites (logged in) to the dev

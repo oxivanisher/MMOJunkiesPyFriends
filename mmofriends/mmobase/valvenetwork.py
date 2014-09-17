@@ -13,12 +13,12 @@ from mmouser import *
 from mmonetwork import *
 from mmofriends import db
 
-try:
-    from steamapi import *
-except ImportError:
-    print "Please install steamapi (https://github.com/smiley/steamapi)"
-    import sys
-    sys.exit(2)
+# try:
+#     from steamapi import *
+# except ImportError:
+#     print "Please install steamapi (https://github.com/smiley/steamapi)"
+#     import sys
+#     sys.exit(2)
 
 class ValveNetwork(MMONetwork):
 
@@ -26,24 +26,25 @@ class ValveNetwork(MMONetwork):
         super(ValveNetwork, self).__init__(app, session, handle)
 
     def test(self):
-        name = "oxivanisher"
-        try:
-            core.APIConnection(api_key=self.config['apikey'])
-            try:
-                steam_user = user.SteamUser(userid=int(name))
-            except ValueError: # Not an ID, but a vanity URL.
-                steam_user = user.SteamUser(userurl=name)
-            name = steam_user.name
-            content = "Your real name is {0}. You have {1} friends and {2} games.".format(steam_user.real_name,
-                                                                                      len(steam_user.friends),
-                                                                                      len(steam_user.games))
-            img = steam_user.avatar
-        except Exception as ex:
-            # We might not have permission to the user's friends list or games, so just carry on with a blank message.
-            content = None
-            img = None
+        # name = "oxivanisher"
+        # try:
+        #     core.APIConnection(api_key=self.config['apikey'])
+        #     try:
+        #         steam_user = user.SteamUser(userid=int(name))
+        #     except ValueError: # Not an ID, but a vanity URL.
+        #         steam_user = user.SteamUser(userurl=name)
+        #     name = steam_user.name
+        #     content = "Your real name is {0}. You have {1} friends and {2} games.".format(steam_user.real_name,
+        #                                                                               len(steam_user.friends),
+        #                                                                               len(steam_user.games))
+        #     img = steam_user.avatar
+        # except Exception as ex:
+        #     # We might not have permission to the user's friends list or games, so just carry on with a blank message.
+        #     content = None
+        #     img = None
 
-        return content
+        # return content
+        return "okies"
 
     # def setLogLevel(self, level):
     #     self.log.info("Setting loglevel to %s" % level)

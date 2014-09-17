@@ -27,6 +27,12 @@ except ImportError:
     log.error("Please install the sqlalchemy extension for flask")
     sys.exit(2)
 
+try:
+    from flask.ext.openid import OpenID
+except ImportError:
+    log.error("Please install the openid extension for flask")
+    sys.exit(2)
+
 # setup flask app
 app = Flask(__name__)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
