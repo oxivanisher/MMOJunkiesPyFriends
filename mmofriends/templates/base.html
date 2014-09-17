@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		{% block head %}
+		{%- block head %}
 		<title>{% block title %}{% endblock %}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="MMOJunkies Friends">
@@ -61,7 +61,7 @@
             	$("#infopopup").hide();
             }
 		</script>
-		{% endblock %}
+		{%- endblock %}
 	</head>
 	<body>
 		<div><span id="imgpopup" class="position_bottom_left glow" style="display: none;"><img id="popupimg" src="" /></span></div>
@@ -89,30 +89,27 @@
 				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
 				  <li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
 				  {% endif -%}
-				  <li class="{% if url_for('profile_login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('profile_logout') }}">Logout</a>{% else %}<a href="{{ url_for('profile_login') }}">Login</a>{% endif %}</li>
+				  <li class="{% if url_for('profile_login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('profile_logout') }}">Logout {% if session.nick %}{{ session.nick }}{% endif %}</a>{% else %}<a href="{{ url_for('profile_login') }}">Login</a>{% endif %}</li>
 				</ul>
 			  </div><!--/.nav-collapse -->
 			</div>
 		  </div>
 		</div>
-
 		<div class="container">
-			{% block content %}{% endblock %}
+			{%- block content %}{% endblock -%}
 		</div>
-
-			{% with messages = get_flashed_messages() %}
-			{% if messages %}
+			{%- with messages = get_flashed_messages() %}
+			{%- if messages %}
 				<div id="dialog" title="Info">
 				<ul>
-				{% for message in messages %}
+				{%- for message in messages %}
 					<p>{{ message }}</p>
-				{% endfor %}
+				{% endfor -%}
 				</ul>
 				</div>
-			{% endif %}
-		{% endwith %}
-
-		{% block footer %}
+			{% endif -%}
+		{% endwith -%}
+		{%- block footer -%}
 		<div class="bottombar">
 			<div class="fill">
 				<div class="container">
@@ -120,6 +117,6 @@
 				</div>
 			</div>
 		</div>
-		{% endblock %}
+		{%- endblock %}
 		</body>
 </html>

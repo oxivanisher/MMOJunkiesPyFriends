@@ -88,7 +88,7 @@ def fetchFriendsList():
         if res:
             retFriendsList += friendsList
         else:
-            flash(friendsList)
+            flash(("%s: " % MMONetworks[handle].name) + friendsList)
     return retFriendsList
 
 def loadNetworks():
@@ -366,7 +366,7 @@ def profile_register():
                 db.session.commit()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
-                    flash("Please check your emails on %s" % newUser.email)
+                    flash("Please check your mails at %s" % newUser.email)
                 else:
                     flash("Error sending the email to you.")
                 return redirect(url_for('profile_login'))
