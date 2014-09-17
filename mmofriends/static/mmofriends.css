@@ -1,3 +1,5 @@
+body { padding-bottom: 22px; }
+
 .shadow {
   -moz-box-shadow:  3px 3px 4px 3px #ccc;
   -webkit-box-shadow: 3px 3px 4px 3px #ccc;

@@ -23,11 +23,6 @@
 		<link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" />
 		<link href="{{ url_for('static', filename='mmofriends.css') }}" rel="stylesheet" media="all" type="text/css" />
 
-		<style>
-		  body {
-			padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-		  }
-		</style>
 		<script>
 			$(function() {
 				$( "#dialog" ).dialog({
@@ -66,40 +61,54 @@
 	<body>
 		<div><span id="imgpopup" class="position_bottom_left glow" style="display: none;"><img id="popupimg" src="" /></span></div>
 		<div><span id="infopopup" class="position_bottom_right glow" style="display: none;"></span></div>
-		<div class="navbar navbar-inverse navbar-fixed-top">
-		  <div class="navbar-inner">
-			<div class="container">
-			  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			  </button>
-			  <a class="brand" href="{{ url_for('index') }}">MMOFriends</a>
-			  <div class="nav-collapse collapse">
-				<ul class="nav">
-				  {% if session.logged_in -%}
-				  <li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}">Friends</a></li>
-				  <li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}">Networks</a></li>
-				  <li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Me</a></li>
-					{% if session.admin  -%}
-					  <li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <span class="caret"></span></a>
-	         			  <ul class="dropdown-menu" role="menu">
-							  <li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
-							  <li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
-						  </ul>
-					  </li>
+		<nav class="navbar navbar-inverse" role="navigation">
+			<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				 	<span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+				    </button>
+				    <a class="navbar-brand" href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> MMOFriends</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						{% if session.logged_in -%}
+						<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Friends</a></li>
+						<li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
+					    {% else -%}
+		 				<li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
+		 				<li><a href="{{ url_for('profile_login') }}">Login</a></li>
+						{% endif -%}
+						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+					</ul>
+					{% if session.logged_in -%}
+					<ul class="nav navbar-nav navbar-right">
+						{% if session.admin  -%}
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Administration <span class="caret"></span></a>
+		         				<ul class="dropdown-menu" role="menu">
+									<li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
+									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
+								</ul>
+							</li>
+						{% endif -%}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
+	         				<ul class="dropdown-menu" role="menu">
+								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Profile</a></li>
+								<li><a href="{{ url_for('profile_logout') }}">Logout</a></li>
+							</ul>
+						</li>
+					</ul>
 					{% endif -%}
-				  {% else -%}
-				  <li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
-				  {% endif -%}
-				  <li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}">About</a></li>
-				  <li class="{% if url_for('profile_login') == request.path %}active{% endif %}">{% if session.logged_in %}<a href="{{ url_for('profile_logout') }}">Logout {% if session.nick %}{{ session.nick }}{% endif %}</a>{% else %}<a href="{{ url_for('profile_login') }}">Login</a>{% endif %}</li>
-				</ul>
-			  </div><!--/.nav-collapse -->
-			</div>
-		  </div>
-		</div>
+				</div><!-- /.navbar-collapse -->
+			</div><!-- /.container-fluid -->
+		</nav>
 		<div class="container">
 			{%- block content %}{% endblock -%}
 		</div>

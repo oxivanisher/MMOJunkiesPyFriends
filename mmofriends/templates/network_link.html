@@ -28,7 +28,7 @@
 							<input type="hidden" name="handle" value="{{ net.handle }}" />
 							<tr>
 								<td style="vertical-align: top;">
-									<select name="id">
+									<select class="form-control" name="id">
 									{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
 										<option value="{{ entry.value }}">{{ entry.name }}</option>
 									{%- endfor %}
