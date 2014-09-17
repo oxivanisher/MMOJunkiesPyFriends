@@ -418,7 +418,6 @@ def profile_login():
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
-                flash('Welcome %s' % myUser.nick)
                 return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)
@@ -434,7 +433,6 @@ def profile_logout():
     session.pop('nick', None)
     session.pop('admin', None)
     session.pop('logindate', None)
-    flash('Logged out')
     return redirect(url_for('profile_login'))
 
 # partner routes

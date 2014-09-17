@@ -1,18 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}About{% endblock %}
 {% block content %}
-<table>
-	<tr>
-		<td style="vertical-align: top;">
-			<h2>About</h2>
-			What is this all about. But please <a href="{{ url_for('profile_register') }}">register</a>.
-		</td>
-		{%- if twitter %}
-		<td style="vertical-align: top;">
-			<a class="twitter-timeline" href="{{ twitter.widgetUrl }}" data-widget-id="{{ twitter.widgetId }}">Tweets von https://twitter.com/realMMOJunkies/lists/news</a>
-			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-		</td>
-		{% endif -%}
-	</tr>
-</table>
+<h2>About</h2>
+What is this all about. But please <a href="{{ url_for('profile_register') }}">register</a>.
+{%- if config.TWITTERURL and config.TWITTERWIDGETID %}
+<div class="twitter_news">
+<a class="twitter-timeline" href="{{ config.TWITTERURL }}" data-widget-id="{{ config.TWITTERWIDGETID }}">&nbsp;</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
+{% endif -%}
 {% endblock %}
