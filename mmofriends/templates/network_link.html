@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<h2>Link Network</h2>
+<h3>Link Network</h3>
 {% if doLinkReturn %}
-	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h3>
+	<h4>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h4>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 		<input type="hidden" name="do" value="finalize" />
@@ -40,7 +40,9 @@
 							</tr>
 						</form>
 					</table>
-				{%- endif -%}
+				{%- elif net.linkNetwork.oid -%}
+					<a href="{{ url_for('oid_login', netHandle=net.handle) }}">{{ net.linkNetwork.oid.image }} {{ net.linkNetwork.oid.comment }}</a>
+        		{% endif %}
 			</td>
 		</tr>
 		{% endif %}

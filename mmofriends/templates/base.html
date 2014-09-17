@@ -80,32 +80,33 @@
 						{% if session.logged_in -%}
 						<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Friends</a></li>
 						<li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
-					    {% else -%}
-		 				<li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}">Registration</a></li>
-		 				<li><a href="{{ url_for('profile_login') }}">Login</a></li>
 						{% endif -%}
 						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
 					</ul>
-					{% if session.logged_in -%}
 					<ul class="nav navbar-nav navbar-right">
+					{% if session.logged_in -%}
 						{% if session.admin  -%}
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Administration <span class="caret"></span></a>
 		         				<ul class="dropdown-menu" role="menu">
-									<li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}">Administration</a></li>
-									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}">Dev Tools</a></li>
+									<li class="{% if url_for('admin') == request.path %}active{% endif %}"><a href="{{ url_for('admin') }}"><span class="glyphicon glyphicon-cog"></span> Administration</a></li>
+									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}"><span class="glyphicon glyphicon-wrench"></span> Dev Tools</a></li>
 								</ul>
 							</li>
 						{% endif -%}
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu">
-								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}">Profile</a></li>
-								<li><a href="{{ url_for('profile_logout') }}">Logout</a></li>
+								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+								<li class="divider"></li>
+								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 							</ul>
 						</li>
-					</ul>
+					{% else %}
+						<li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}"><span class="glyphicon glyphicon-user"></span> Registration</a></li>
+						<li><a href="{{ url_for('profile_login') }}"><span class="glyphicon glyphicon-off"></span> Login</a></li>
 					{% endif -%}
+					</ul>
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->
 		</nav>

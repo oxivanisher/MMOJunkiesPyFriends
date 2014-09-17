@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<h2>Dev Tools Output</h2>
-<pre>{{ result }}</pre>
+<h3>Dev Test Output</h3>
+{% for net in result %}
+<h4>{{ net.handle }}</h4>
+<pre>{{ net.result }}</pre>
+{% endfor %}
 {% endblock %}

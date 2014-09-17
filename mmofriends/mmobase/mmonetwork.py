@@ -6,6 +6,7 @@ import time
 import socket
 import os
 import random
+import atexit
 
 from flask import current_app
 from mmoutils import *
@@ -32,7 +33,6 @@ class MMONetwork(object):
         self.session = session
         self.handle = handle
         self.config = self.app.config['networkConfig'][handle]
-        self.session[self.handle] = {}
 
         # setting variables
         self.name = self.config['name']
@@ -43,8 +43,14 @@ class MMONetwork(object):
 
         self.description = "Unset"
         self.moreInfo = 'NoMoreInfo'
+        self.varsToSave = []
         self.lastRefreshDate = 0
-        self.hidden = False
+
+        self.session[self.handle] = {}
+
+        # self.hidden = False
+
+        # atexit.register(self.saveAtExit)
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
@@ -70,6 +76,10 @@ class MMONetwork(object):
         db.session.add(netLink)
         db.session.commit()
 
+    def loadLinks(self, userId):
+        self.log.debug("Load links template method for user %s in network %s" % (userId, self.name))
+        pass
+
     def getNetworkLinks(self, userId = None):
         netLinks = []
         if userId:
@@ -86,6 +96,7 @@ class MMONetwork(object):
         try:
             link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
             db.session.delete(link)
+            db.session.commit()
             db.session.flush()
             self.log.info("Unlinked network with userid %s and netLinkId %s" % (user_id, netLinkId))
             return True
@@ -98,6 +109,7 @@ class MMONetwork(object):
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
                         'nick': 'nickName',
+                        'networkId': self.handle,
                         'networkText': 'Product',
                         'networkImgs': [{
                             'type': 'network',
@@ -155,3 +167,32 @@ class MMONetwork(object):
 
     def admin(self):
         self.log.debug("Loading admin stuff")
+
+    def getSessionValue(self, name):
+        try:
+            return self.session[self.handle][name]
+        except KeyError:
+            self.session[self.handle] = {}
+            return None
+
+    def setSessionValue(self, name, value):
+        try:
+            self.session[self.handle][name] = value
+        except Exception, e:
+            self.session[self.handle] = {}
+            self.session[self.handle][name] = value
+
+    # saver and loader methods
+    # def registerToAutosaveAndLoad(self, var, fileName, default):
+    #     self.log.debug("Registring %s to save on exit." % fileName)
+    #     self.varsToSave.append((var, fileName, default))
+
+    # def loadFromSave(self):
+    #     self.log.debug("MMONetwork loading data from file")
+    #     for var, fileName, default in self.varsToSave:
+    #         var = loadJSON(self.handle, fileName, default)
+
+    # def saveAtExit(self):
+    #     self.log.debug("MMONetwork saving data on exit")
+    #     for var, fileName, default in self.varsToSave:
+    #         saveJSON(self.handle, fileName, var)

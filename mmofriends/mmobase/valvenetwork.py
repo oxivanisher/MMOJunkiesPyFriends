@@ -6,6 +6,9 @@ import time
 import socket
 import os
 import random
+import urllib2
+import urllib
+import re
 
 from flask import current_app
 from mmoutils import *
@@ -13,142 +16,186 @@ from mmouser import *
 from mmonetwork import *
 from mmofriends import db
 
-# try:
-#     from steamapi import *
-# except ImportError:
-#     print "Please install steamapi (https://github.com/smiley/steamapi)"
-#     import sys
-#     sys.exit(2)
+try:
+    from steamapi import *
+except ImportError:
+    print "Please install steamapi (https://github.com/smiley/steamapi)"
+    import sys
+    sys.exit(2)
 
 class ValveNetwork(MMONetwork):
 
     def __init__(self, app, session, handle):
         super(ValveNetwork, self).__init__(app, session, handle)
 
-    def test(self):
-        # name = "oxivanisher"
-        # try:
-        #     core.APIConnection(api_key=self.config['apikey'])
-        #     try:
-        #         steam_user = user.SteamUser(userid=int(name))
-        #     except ValueError: # Not an ID, but a vanity URL.
-        #         steam_user = user.SteamUser(userurl=name)
-        #     name = steam_user.name
-        #     content = "Your real name is {0}. You have {1} friends and {2} games.".format(steam_user.real_name,
-        #                                                                               len(steam_user.friends),
-        #                                                                               len(steam_user.games))
-        #     img = steam_user.avatar
-        # except Exception as ex:
-        #     # We might not have permission to the user's friends list or games, so just carry on with a blank message.
-        #     content = None
-        #     img = None
+        self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
+        self.description = "Steam network from Valve"
 
-        # return content
-        return "okies"
+        try:
+            core.APIConnection(api_key=self.config['apikey'])
+        except Exception as e:
+            self.log.warning("Unable to set apikey")
 
-    # def setLogLevel(self, level):
-    #     self.log.info("Setting loglevel to %s" % level)
-    #     self.log.setLevel(level)
+        self.steamData = {}
 
-    # def refresh(self):
-    #     self.log.debug("Refresh data from source")
+        # activate debug while development
+        self.setLogLevel(logging.DEBUG)
 
-    # def getLinkHtml(self):
-    #     self.log.debug("Show linkHtml %s" % self.name)
+    # helper methods
+    def get_steam_userinfo(self, steam_id):
+        options = {
+            'key': self.config['apikey'],
+            'steamids': steam_id
+        }
+        url = 'http://api.steampowered.com/ISteamUser/' \
+              'GetPlayerSummaries/v0001/?%s' % urllib.urlencode(options)
+        rv = json.load(urllib2.urlopen(url))
+        return rv['response']['players']['player'][0] or {}
 
-    # def doLink(self, userId):
-    #     self.log.debug("Link user %s to network %s" % (userId, self.name))
+    def cacheFile(self, url):
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
 
-    # def finalizeLink(self, userKey):
-    #     self.log.debug("Finalize user link to network %s" % self.name)
+        if os.path.isfile(outputFilePath):
+            self.log.debug("Not downloading %s" % url)
+        else:
+            self.log.info("Downloading %s" % url)
 
-    # def saveLink(self, network_data):
-    #     self.log.debug("Saving network link for user %s" % (self.session['nick']))
-    #     netLink = MMONetLink(self.session['userid'], self.handle, network_data)
-    #     db.session.add(netLink)
-    #     db.session.commit()
+            avatarFile = urllib.URLopener()
+            avatarFile.retrieve(url, outputFilePath)
+        return True
 
-    # def getNetworkLinks(self, userId = None):
-    #     netLinks = []
-    #     if userId:
-    #         self.log.debug("Loading network links for userId %s" % (userId))
-    #         for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
-    #             netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
-    #     else:
-    #         self.log.debug("Loading all network links")
-    #         for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
-    #             netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
-    #     return netLinks
+    # oid methods
+    def oid_login(self, oid):
+        self.log.debug("OID Login")
+        if self.session.get[self.handle]['steamId'] is not None:
+            self.log.debug("SteamId found")
+            return (True, oid.get_next_url())
 
-    # def unlink(self, user_id, netLinkId):
-    #     try:
-    #         link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
-    #         db.session.delete(link)
-    #         db.session.flush()
-    #         self.log.info("Unlinked network with userid %s and netLinkId %s" % (user_id, netLinkId))
-    #         return True
-    #     except Exception as e:
-    #         self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
-    #         return False
+        self.log.debug("No steamId found")
+        return (False, oid.try_login('http://steamcommunity.com/openid'))
 
-    # def listPartners(self, user):
-    #     self.log.debug("List all partners for given user")
-    #     return {'id': 'someId',
-    #             'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-    #             'networkText': channelName,
-    #             'networkImgs': [{
-    #                 'type': 'network',
-    #                 'name': self.handle,
-    #                 'title': self.name
-    #             },{
-    #                 'type': 'cache',
-    #                 'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
-    #                 'title': ', '.join(moreInfo)
-    #             },{
-    #                 'type': 'cache',
-    #                 'name': 'icon_' + channelIcon,
-    #                 'title': channelName
-    #             }],
-    #             'friendImgs': [{
-    #                 'type': 'cache',
-    #                 'name': userGroupIcon,
-    #                 'title': userGroupName
-    #             },{
-    #                 'type': 'cache',
-    #                 'name': userGroupIcon,
-    #                 'title': userGroupName
-    #             }]
-    #         }
+    def oid_logout(self, oid):
+        self.log.debug("OID Logout")
+        return oid.get_next_url()
 
-    # def getPartnerDetails(self, partnerId):
-    #     self.log.debug("List partner details")
+    def oid_create_or_login(self, oid, resp):
+        self.log.debug("OID create_or_login")
+        match = self.steam_id_re.search(resp.identity_url)
+        self.setSessionValue('steamId', match.group(1))
+        steamdata = self.get_steam_userinfo(self.getSessionValue('steamId'))
+        self.steamData[self.getSessionValue('steamId')] = steamdata
+        self.saveLink(self.getSessionValue('steamId'))
+        return ('You are logged in to Steam as %s (%s)' % (steamdata['personaname'], steamdata['realname']), oid.get_next_url())
 
-    # def setPartnerFlag(self, myDict, key, value):
-    #     try:
-    #         myDict['flags']
-    #     except KeyError:
-    #         myDict['flags'] = []
-    #     if value != '0' and value:
-    #         myDict['flags'].append(key)
+    # overwritten class methods
+    def getLinkHtml(self):
+        self.log.debug("Show linkHtml %s" % self.name)
+        htmlFields = {}
+        if not self.getSessionValue('steamId'):
+            htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "someImg.png"}
+        return htmlFields
 
-    # def setPartnerDetail(self, myDict, key, value):
-    #     try:
-    #         myDict['details']
-    #     except KeyError:
-    #         myDict['details'] = []
-    #     if value != '0' and value:
-    #         myDict['details'].append({'key': key, 'value': value})
+    def loadLinks(self, userId):
+        self.log.debug("Loading user links for userId %s" % userId)
+        self.setSessionValue('steamId', None)
+        for link in self.getNetworkLinks(userId):
+            self.setSessionValue('steamId', link['network_data'])
 
-    # def setPartnerAvatar(self, myDict, avatarName):
-    #     if avatarName[0] == '/':
-    #         avatarName = avatarName[1:]
-    #     myDict['avatar'] = avatarName
+    def devTest(self):
+        # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
+        ret = []
+        print self.getSteamUser(self.getSessionValue('steamId')).friends
+        return "steamId: %s" % self.getSessionValue('steamId')
 
-    # def getProducts(self):
-    #     self.log.debug("MMONetwork %s: Fetching products" % self.handle)
+    def getPartners(self):
+        self.log.debug("List all partners for given user")
+        result = []
+        try:
+            for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
+                self.cacheFile(friend.avatar)
+                self.cacheFile(friend.avatar_full)
+                friendImgs = []
+                try:
+                    friendImgs.append({
+                                    'type': 'flag',
+                                    'name': friend.country_code.lower(),
+                                    'title': friend.country_code
+                                    })
+                except Exception:
+                    pass
+
+                friendImgs.append({
+                                    'type': 'cache',
+                                    'name': friend.avatar.split('/')[-1],
+                                    'title': friend.real_name
+                                })
+
+
+                result.append({ 'id': friend.steamid,
+                                'nick': friend.name,
+                                'networkId': self.handle,
+                                'networkText': self.name,
+                                'networkImgs': [{
+                                    'type': 'network',
+                                    'name': self.handle,
+                                    'title': self.name
+                                }],
+                                'friendImgs': friendImgs
+                            })
+            return (True, result)
+        except Exception as e:
+            self.log.warning("Unable to connect to Steam Network: %s" % e)
+            return (False, "Unable to connect to Steam Network: %s" % e)
+
+    def getPartnerDetails(self, partnerId):
+        self.log.debug("List partner details")
+        steam_user = self.getSteamUser(partnerId)
+        moreInfo = {}
+
+        avatar = steam_user.avatar_full.split('/')[-1]
+
+        self.setPartnerAvatar(moreInfo, avatar)
+
+        self.setPartnerDetail(moreInfo, "Country Code", steam_user.country_code)
+        # self.setPartnerDetail(moreInfo, "Created", steam_user.time_created)
+        self.setPartnerDetail(moreInfo, "Last Logoff", steam_user.last_logoff)
+        self.setPartnerDetail(moreInfo, "Profile URL", steam_user.profile_url)
+        self.setPartnerDetail(moreInfo, "Online/Offline", steam_user.state)
+        self.setPartnerDetail(moreInfo, "Level", steam_user.level)
+        self.setPartnerDetail(moreInfo, "XP", steam_user.xp)
+        # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
+        # self.setPartnerDetail(moreInfo, "Recently Played", steam_user.recently_played)
+        # self.setPartnerDetail(moreInfo, "Games", steam_user.games)
+        # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
+
+
+        if steam_user.group:
+            self.setPartnerDetail(moreInfo, "Primary Group", steam_user.group.guid)
+
+        # groups = []
+        # for group in steam_user.groups:
+        #     group.append(group.guid)
+        # self.setPartnerDetail(moreInfo, "Groups", ', '.join(groups))
+
+        if steam_user.currently_playing:
+            self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
+
+        if self.session.get('admin'):
+            self.setPartnerDetail(moreInfo, "Steam ID", steam_user.steamid)
+            self.setPartnerDetail(moreInfo, "Real Name", steam_user.real_name)
+
+        return moreInfo
 
     # def setNetworkMoreInfo(self, moreInfo):
     #     self.moreInfo = moreInfo
 
-    # def admin(self):
-    #     self.log.debug("Loading admin stuff")
+    def admin(self):
+        self.log.debug("Loading admin stuff")
+
+    # steam methods
+    def getSteamUser(self, name):
+        try:
+            steam_user = user.SteamUser(userid=int(name))
+        except ValueError: # Not an ID, but a vanity URL.
+            steam_user = user.SteamUser(userurl=name)
+        return steam_user        

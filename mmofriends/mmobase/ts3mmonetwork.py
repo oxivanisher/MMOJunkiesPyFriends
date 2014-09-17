@@ -39,8 +39,9 @@ class TS3Network(MMONetwork):
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
 
-        self.cacheFiles()
-        self.cacheAvailableClients()
+        self.onlineClients = {}
+        self.clientDatabase = {}
+        self.clientInfoDatabase = {}
 
     def refresh(self):
         if not self.connect():
@@ -209,20 +210,26 @@ class TS3Network(MMONetwork):
     def doLink(self, userId):
         self.log.debug("Link user %s to network %s" % (userId, self.name))
         self.refresh()
-        self.session[self.handle]['doLinkKey'] = "%06d" % (random.randint(1, 999999))
-        self.session[self.handle]['cldbid'] = userId
-        message = "Your MMOfriends key is: %s" % self.session[self.handle]['doLinkKey']
+        self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
+        self.setSessionValue('cldbid', userId)
+        message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
         self.server.clientpoke(self.onlineClients[userId]['clid'], message)
         return "Please enter the number you recieved via teamspeak"
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
         self.refresh()
-        if self.session[self.handle]['doLinkKey'] == userKey:
-            self.saveLink(self.session[self.handle]['cldbid'])
+        if self.getSessionValue('doLinkKey') == userKey:
+            self.saveLink(self.getSessionValue('cldbid'))
             return True
         else:
             return False
+
+    def loadLinks(self, userId):
+        self.log.debug("Loading user links for userId %s" % userId)
+        self.setSessionValue('userId', None)
+        for link in self.getNetworkLinks(userId):
+            self.setSessionValue('cldbid', link['network_data'])
 
     # helper methods
     def connect(self):
@@ -353,8 +360,11 @@ class TS3Network(MMONetwork):
         else:
             self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
 
-    def test(self):
-        return "Test ok"
+    def devTest(self):
+        try:
+            return "cldbid: %s" % self.getSessionValue('cldbid')
+        except Exception as e:
+            return "%s" % e
 
     def cacheAvailableClients(self):
         clientNum = 0
@@ -474,5 +484,14 @@ class TS3Network(MMONetwork):
 
     def admin(self):
         self.log.debug("Admin: Returning client database")
+        # add method to refetch all clients from server!
+        self.cacheAvailableClients()
+        self.cacheFiles()
         self.refresh()
         return self.clientDatabase
+
+    # def saveAtExit(self):
+    #     self.loadFromSave()
+        # self.onlineClients = {}
+        # self.clientDatabase = {}
+        # self.clientInfoDatabase = {}

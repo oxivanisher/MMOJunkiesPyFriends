@@ -43,6 +43,7 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
+app.config['startupDate'] = time.time()
 
 try:
     os.environ['MMOFRIENDS_CFG']
@@ -76,6 +77,7 @@ with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
     db.create_all()
+    oid = OpenID(app)
 
 # initialize twitter api for news
 # api = twitter.Api(consumer_key='bAngUFXT9c5FCRFkfQZjqAqJT',
@@ -218,12 +220,16 @@ def dev():
 
     # result = "nope nix"
     # result = MMONetworks[0].getIcon(-247099292)
-    try:
-        result = MMONetworks['Valve'].test()
-    except Exception as e:
-        result = e
+    ret = []
+    for net in MMONetworks.keys():
+        try:
+            result = MMONetworks[net].devTest()
+        except Exception as e:
+            result = e
 
-    return render_template('dev.html', result = result)
+        ret.append({'handle': net, 'result': result})
+
+    return render_template('dev.html', result = ret)
 
 # support routes
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
@@ -321,6 +327,35 @@ def network_unlink(netHandle, netLinkId):
         else:
             flash('Unable to remove link')
     return redirect(url_for('network_link'))
+
+# openid methods
+@app.route('/Network/OID/Login/<netHandle>')
+@oid.loginhandler
+def oid_login(netHandle):
+    log.debug("OpenID login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    session['OIDAuthInProgress'] = netHandle
+    (doRedirect, retValue) = MMONetworks[netHandle].oid_login(oid)
+    if doRedirect:
+        log.info("OID redirecting to: %s" % retValue)
+        return redirect(retValue)
+    else:
+        log.info("OID not redirecting...")
+        return retValue
+
+@app.route('/Network/OID/Logout')
+def oid_logout():
+    log.debug("OpenID logout from user %s" % (session['nick']))
+    netHandle = session.get('OIDAuthInProgress')
+    return redirect(MMONetworks[netHandle].oid_logout(oid))
+
+@oid.after_login
+def oid_create_or_login(resp):
+    log.debug("OpenID create_or_login from user %s" % (session['nick']))
+    netHandle = session.get('OIDAuthInProgress')
+    flashMessage, returnUrl = MMONetworks[netHandle].oid_create_or_login(oid, resp)
+    session.pop('OIDAuthInProgress')
+    flash(flashMessage)
+    return redirect(returnUrl)
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])
@@ -425,6 +460,12 @@ def profile_login():
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
                 session['requests'] = 0
+                
+                #loading network links:
+                for net in MMONetworks.keys():
+                    log.debug("Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
+                    MMONetworks[net].loadLinks(myUser.id)
+
                 return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)
@@ -440,6 +481,7 @@ def profile_logout():
     session.pop('nick', None)
     session.pop('admin', None)
     session.pop('logindate', None)
+    session.clear()
     return redirect(url_for('profile_login'))
 
 # partner routes

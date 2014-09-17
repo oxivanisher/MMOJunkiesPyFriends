@@ -2,13 +2,14 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 <h3>Session Stats</h3>
-<table class='table-striped'>
+<table class='table-striped' style='width: 100%;'>
 <tr><td>Session Requests</td><td>{{ session.requests }}</td></tr>
 <tr><td>Session Login Date</td><td>{{ timestampToString(session.logindate) }}</td></tr>
+<tr><td>Application Startup Date</td><td>{{ timestampToString(config.startupDate) }}</td></tr>
 </table>
 </ul>
 <h3>Loaded Networks</h3>
-<table class='table-striped'>
+<table class='table-striped' style='width: 100%;'>
 	<thead>
 		<tr>
 			<th>Icon</th>
@@ -34,7 +35,7 @@
 </table>
 <br />
 <h3>Registred Users</h3>
-<table class='table-striped'>
+<table class='table-striped' style='width: 100%;'>
 	<thead>
 		<tr>
 			<th>Nick</th>
