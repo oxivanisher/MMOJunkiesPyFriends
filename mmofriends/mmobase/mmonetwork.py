@@ -96,29 +96,29 @@ class MMONetwork(object):
     def getPartners(self):
         self.log.debug("List all partners for given user")
         return {'id': 'someId',
-                'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
-                'networkText': channelName,
+                'nick': 'nickName',
+                'networkText': 'Product',
                 'networkImgs': [{
                     'type': 'network',
                     'name': self.handle,
                     'title': self.name
                 },{
                     'type': 'cache',
-                    'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
-                    'title': ', '.join(moreInfo)
+                    'name': 'gameIconPath',
+                    'title': 'gameName'
                 },{
                     'type': 'cache',
-                    'name': 'icon_' + channelIcon,
-                    'title': channelName
+                    'name': 'mapIconPath',
+                    'title': 'mapName'
                 }],
                 'friendImgs': [{
                     'type': 'cache',
-                    'name': userGroupIcon,
-                    'title': userGroupName
+                    'name': 'rankIconPath',
+                    'title': 'rankIcon'
                 },{
                     'type': 'cache',
-                    'name': userGroupIcon,
-                    'title': userGroupName
+                    'name': 'someImagePath',
+                    'title': 'someImage'
                 }]
             }
 
