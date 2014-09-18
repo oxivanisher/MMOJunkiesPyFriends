@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<h2>Profile for {{ networkname }}</h2>
+{% if partner.avatar -%}
+	<img class="position_bottom_left partner_detail_avatar glow"
+				src="{{ url_for('get_image', imgType='cache', imgId=partner.avatar) }}"
+				title="Avatar">
+{%- endif -%}
+<table class='table-striped'>
+	<tbody>
+		{% if partner.flags|length > 0 -%}
+		<tr>
+			<td colspan="2">Flags: {% for flag in partner.flags -%}
+							{{ flag -}}
+							{% if not loop.last -%}, {% endif %}
+						{%- endfor -%}
+			</td>
+		</tr>
+		{%- endif %}
+		{% for detail in partner.details -%}
+		<tr>
+			<td>{{ detail.key }}</td>
+			<td>{{ detail.value }}</td>
+		</tr>
+		{%- endfor -%}
+	</tbody>
+</table>
+{% endblock %}

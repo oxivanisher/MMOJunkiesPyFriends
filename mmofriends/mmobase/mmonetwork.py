@@ -109,7 +109,8 @@ class MMONetwork(object):
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
                         'nick': 'nickName',
-                        'networkId': self.handle,
+                        'state': 'State',
+                        'netHandle': self.handle,
                         'networkText': 'Product',
                         'networkImgs': [{
                             'type': 'network',

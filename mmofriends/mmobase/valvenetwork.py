@@ -3,7 +3,6 @@
 
 import logging
 import time
-import socket
 import os
 import random
 import urllib2
@@ -135,7 +134,10 @@ class ValveNetwork(MMONetwork):
 
                 result.append({ 'id': friend.steamid,
                                 'nick': friend.name,
-                                'networkId': self.handle,
+                                'state': friend.state,
+                                # 'state': OnlineState(friend.state),
+                                # state() == OnlineState.OFFLINE
+                                'netHandle': self.handle,
                                 'networkText': self.name,
                                 'networkImgs': [{
                                     'type': 'network',
@@ -166,8 +168,17 @@ class ValveNetwork(MMONetwork):
         self.setPartnerDetail(moreInfo, "Level", steam_user.level)
         self.setPartnerDetail(moreInfo, "XP", steam_user.xp)
         # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
-        # self.setPartnerDetail(moreInfo, "Recently Played", steam_user.recently_played)
-        # self.setPartnerDetail(moreInfo, "Games", steam_user.games)
+
+        recent = []
+        for game in steam_user.recently_played:
+            recent.append(game.name)
+        self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(recent))
+        
+        games = []
+        for game in steam_user.games:
+            games.append(game.name)
+        self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
+        
         # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
 
 

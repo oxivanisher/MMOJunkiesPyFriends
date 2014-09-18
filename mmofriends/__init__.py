@@ -12,6 +12,7 @@ from mmobase.mmonetwork import *
 from mmobase.mmoutils import *
 from mmobase.ts3mmonetwork import *
 from mmobase.valvenetwork import *
+from mmobase.blizznetwork import *
 log = getLogger(level=logging.INFO)
 
 # flask imports
@@ -107,7 +108,7 @@ def loadNetworks():
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
                 log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
-                MMONetworks[handle].setLogLevel(logging.DEBUG)
+                MMONetworks[handle].setLogLevel(logging.INFO)
                 log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
@@ -272,8 +273,8 @@ def get_image(imgType, imgId):
     abort(404)
 
 # network routes
-@app.route('/Network/Show/<networkId>', methods = ['GET'])
-def network_show(networkId):
+@app.route('/Network/Show/<netHandle>', methods = ['GET'])
+def network_show(netHandle):
     if not session.get('logged_in'):
         abort(401)
     pass
@@ -324,12 +325,13 @@ def network_link():
         linkNetwork = []
         for netKey in MMONetworks.keys():
             net = MMONetworks[netKey]
-            linkNetwork.append({ 'id': netKey,
-                              'name': net.name,
-                              'handle': net.handle,
-                              'description': net.description,
-                              'moreInfo': net.moreInfo,
-                              'linkNetwork': net.getLinkHtml() })
+            if net.getLinkHtml():
+                linkNetwork.append({ 'id': netKey,
+                                  'name': net.name,
+                                  'handle': net.handle,
+                                  'description': net.description,
+                                  'moreInfo': net.moreInfo,
+                                  'linkNetwork': net.getLinkHtml() })
         return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
 
 @app.route('/Network/Unlink/<netHandle>/<netLinkId>', methods=['GET'])
@@ -513,15 +515,16 @@ def partner_list():
     else:
         abort(401)
 
-@app.route('/Partner/Show')
-def partner_show(freiendID):
+@app.route('/Partner/Show/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
+def partner_show(netHandle, partnerId):
     if not session.get('logged_in'):
         abort(401)
-    return redirect(url_for('index'))
+    return render_template('partner_show.html', partner = MMONetworks[netHandle].getPartnerDetails(partnerId),
+                                                networkname = MMONetworks[netHandle].name)
 
-@app.route('/Partner/Details/<networkId>/<partnerId>', methods = ['GET', 'POST'])
-def partner_show_details(networkId, partnerId):
-    log.info("Trying to show partner details for networkId %s and partnerId %s" % (networkId, partnerId))
+@app.route('/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
+def partner_details(netHandle, partnerId):
+    log.info("Trying to show partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
     if not session.get('logged_in'):
         abort(401)
-    return render_template('partner_details.html', details = MMONetworks[networkId].getPartnerDetails(partnerId))
+    return render_template('partner_details.html', details = MMONetworks[netHandle].getPartnerDetails(partnerId))

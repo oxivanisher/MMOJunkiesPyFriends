@@ -39,7 +39,6 @@ class TS3Network(MMONetwork):
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
 
-        self.onlineClients = {}
         self.clientDatabase = {}
         self.clientInfoDatabase = {}
 
@@ -77,7 +76,10 @@ class TS3Network(MMONetwork):
             for cldbid in self.clientDatabase.keys():
                 # Refresh user details
                 self.fetchUserDetatilsByCldbid(cldbid)
-                self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
+                try:
+                    self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
+                except KeyError:
+                    pass
 
                 try:
                     userGroups = []
@@ -94,7 +96,7 @@ class TS3Network(MMONetwork):
                     pass
 
                 # Get channel details
-                channelName = "Unknown"
+                channelName = "Offline"
                 channelIcon = None
                 try:
                     for channel in self.channelList:
@@ -102,7 +104,7 @@ class TS3Network(MMONetwork):
                             channelName = channel['channel_name'].decode('utf-8')
                             channelIcon = channel['channel_icon_id']
                             self.cacheIcon(channelIcon)
-                except IndexError:
+                except (IndexError, KeyError):
                     pass
 
                 networkImgs = [{
@@ -114,26 +116,46 @@ class TS3Network(MMONetwork):
                                 'name': 'icon_' + str(int(self.serverInfo['virtualserver_icon_id']) + 4294967296),
                                 'title': channelName
                             }]
-                if int(channelIcon) != 0:
-                    networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
+                try:
+                    if int(channelIcon) != 0:
+                        networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
+                except TypeError:
+                    pass
 
                 friendImgs = []
-                if self.clientInfoDatabase[cldbid]['client_country']:
-                    friendImgs.append({ 'type': 'flag',
-                                        'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
-                                        'title': self.clientInfoDatabase[cldbid]['client_country'] })
+                try:
+                    if self.clientInfoDatabase[cldbid]['client_country']:
+                        friendImgs.append({ 'type': 'flag',
+                                            'name': self.clientInfoDatabase[cldbid]['client_country'].lower(),
+                                            'title': self.clientInfoDatabase[cldbid]['client_country'] })
+                except KeyError:
+                    pass
 
                 if userGroupIcon != 'icon_0':
                     friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
-                cgid = self.clientInfoDatabase[cldbid]['client_channel_group_id']
-                if int(self.channelGroupList[cgid]['iconid']) != 0:
-                    friendImgs.append({ 'type': 'cache', 'name': 'icon_' + self.channelGroupList[cgid]['iconid'], 'title': self.channelGroupList[cgid]['name'] })
+                try:
+                    cgid = self.clientInfoDatabase[cldbid]['client_channel_group_id']
+                    if int(self.channelGroupList[cgid]['iconid']) != 0:
+                        friendImgs.append({ 'type': 'cache', 'name': 'icon_' + self.channelGroupList[cgid]['iconid'], 'title': self.channelGroupList[cgid]['name'] })
+                except KeyError:
+                    pass
+
+                try:
+                    nick = self.onlineClients[cldbid]['client_nickname'].decode('utf-8')
+                except KeyError:
+                    nick = self.clientDatabase[cldbid]['client_nickname'].decode('utf-8')
+
+                if cldbid in self.onlineClients:
+                    state = "Online"
+                else:
+                    state = "Offline"
 
                 ret.append({'id': cldbid,
-                            'nick': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'),
+                            'nick': nick,
+                            'state': state,
                             'networkText': channelName,
-                            'networkId': self.handle,
+                            'netHandle': self.handle,
                             'networkImgs': networkImgs,
                             'friendImgs': friendImgs
                     })
@@ -147,7 +169,11 @@ class TS3Network(MMONetwork):
         if self.refresh():
             # Refresh user details
             self.fetchUserDetatilsByCldbid(cldbid)
-            self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
+
+            try:
+                self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
+            except KeyError:
+                pass
 
             try:
                 #fetch avatar
@@ -199,9 +225,9 @@ class TS3Network(MMONetwork):
         self.refresh()
         
         htmlFields = {}
-        htmlFields['dropdown'] = []
-        currentLinks = []
         if not self.getSessionValue('cldbid'):
+            htmlFields['dropdown'] = []
+            currentLinks = []
             for link in self.getNetworkLinks():
                 currentLinks.append(link['network_data'])
             for cldbid in self.onlineClients.keys():
@@ -489,7 +515,8 @@ class TS3Network(MMONetwork):
         self.cacheIcon((int(iconId) + 4294967296))
 
     def prepareForFirstRequest(self):
-        self.log.debug("Running prepareForFirstRequest. This might take a while!")
+        self.log.warning("Running prepareForFirstRequest. This might take a while!")
+        self.connect()
         self.cacheAvailableClients()
         self.cacheFiles()
         self.refresh()

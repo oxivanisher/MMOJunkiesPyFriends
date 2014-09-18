@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 
 from mmofriends import app
-app.run(use_reloader=False)
+app.run(use_reloader=False, ssl_context='adhoc')

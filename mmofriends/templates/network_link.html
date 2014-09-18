@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<h3>Link Network</h3>
 {% if doLinkReturn %}
-	<h4>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h4>
+	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 		<input type="hidden" name="do" value="finalize" />
@@ -12,46 +11,51 @@
 		<button class="btn btn-default" type="submit">submit</button>
 	</form>
 {% else %}
-<table>
-	{% for net in linkNetwork %}
-		{% if net.linkNetwork %}
-		<tr>
-			<td style="vertical-align: top;">
-				<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.description }}" />
-			</td>
-			<td style="vertical-align: top;">
-				<h3>{{ net.name }}: {{ net.moreInfo }}</h3>
-				{%- if net.linkNetwork.dropdown -%}
-					<table>
-						<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
-							<input type="hidden" name="do" value="link" />
-							<input type="hidden" name="handle" value="{{ net.handle }}" />
-							<tr>
-								<td style="vertical-align: top;">
-									<select class="form-control" name="id">
-									{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
-										<option value="{{ entry.value }}">{{ entry.name }}</option>
-									{%- endfor %}
-									</select>
-								</td>
-								<td style="vertical-align: top;">
-									<button class="btn btn-default" type="submit">submit</button>
-								</td>
-							</tr>
-						</form>
-					</table>
-				{%- elif net.linkNetwork.oid -%}
-					<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
-        		{% endif %}
-			</td>
-		</tr>
-		{% endif %}
-	{% endfor %}
-</table>
+	{% if linkNetwork|count %}
+	<h3>Link Network</h3>
+	<table>
+		{% for net in linkNetwork %}
+			{% if net.linkNetwork %}
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.description }}" />
+				</td>
+				<td style="vertical-align: top;">
+					<h4>{{ net.name }}: {{ net.moreInfo }}</h4>
+					{%- if net.linkNetwork.dropdown -%}
+						<table>
+							<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
+								<input type="hidden" name="do" value="link" />
+								<input type="hidden" name="handle" value="{{ net.handle }}" />
+								<tr>
+									<td style="vertical-align: top;">
+										<select class="form-control" name="id">
+										{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
+											<option value="{{ entry.value }}">{{ entry.name }}</option>
+										{%- endfor %}
+										</select>
+									</td>
+									<td style="vertical-align: top;">
+										<button class="btn btn-default" type="submit">submit</button>
+									</td>
+								</tr>
+							</form>
+						</table>
+					{%- elif net.linkNetwork.oid -%}
+						<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
+					{%- elif net.linkNetwork.link -%}
+						<a href="{{ net.linkNetwork.link.url }}"><img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/> {{ net.linkNetwork.link.comment }}</a>
+	        		{% endif %}
+				</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+	{%- endif %}
 {%- endif %}
 {%- if linkedNetworks %}
 <br />
-<h2>Linked Networks</h2>
+<h3>Linked Networks</h3>
 <ul>
 {% for net in linkedNetworks %}
 <li><a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}"
