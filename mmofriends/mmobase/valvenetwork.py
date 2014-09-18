@@ -32,11 +32,12 @@ class ValveNetwork(MMONetwork):
         self.description = "Steam network from Valve"
 
         try:
+            # core.APIConnection(api_key=self.config['apikey'], precache=True)
             core.APIConnection(api_key=self.config['apikey'])
         except Exception as e:
             self.log.warning("Unable to set apikey")
 
-        self.steamData = {}
+        # self.steamData = {}
 
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
@@ -67,7 +68,7 @@ class ValveNetwork(MMONetwork):
     # oid methods
     def oid_login(self, oid):
         self.log.debug("OID Login")
-        if self.session.get[self.handle]['steamId'] is not None:
+        if self.getSessionValue('steamId'):
             self.log.debug("SteamId found")
             return (True, oid.get_next_url())
 
@@ -83,9 +84,10 @@ class ValveNetwork(MMONetwork):
         match = self.steam_id_re.search(resp.identity_url)
         self.setSessionValue('steamId', match.group(1))
         steamdata = self.get_steam_userinfo(self.getSessionValue('steamId'))
-        self.steamData[self.getSessionValue('steamId')] = steamdata
+        # self.steamData[self.getSessionValue('steamId')] = steamdata
         self.saveLink(self.getSessionValue('steamId'))
         return ('You are logged in to Steam as %s (%s)' % (steamdata['personaname'], steamdata['realname']), oid.get_next_url())
+        # return ('You are logged in to Steam as %s (%s)' % (steamdata['personaname'], steamdata['realname']), oid.get_next_url())
 
     # overwritten class methods
     def getLinkHtml(self):
@@ -109,43 +111,47 @@ class ValveNetwork(MMONetwork):
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
-        result = []
-        try:
-            for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
-                self.cacheFile(friend.avatar)
-                self.cacheFile(friend.avatar_full)
-                friendImgs = []
-                try:
+        if self.getSessionValue('steamId'):
+            result = []
+            try:
+                for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
+                    self.getPartnerDetails(friend.steamid)
+                    self.cacheFile(friend.avatar)
+                    self.cacheFile(friend.avatar_full)
+                    friendImgs = []
+                    try:
+                        friendImgs.append({
+                                        'type': 'flag',
+                                        'name': friend.country_code.lower(),
+                                        'title': friend.country_code
+                                        })
+                    except Exception:
+                        pass
+
                     friendImgs.append({
-                                    'type': 'flag',
-                                    'name': friend.country_code.lower(),
-                                    'title': friend.country_code
+                                        'type': 'cache',
+                                        'name': friend.avatar.split('/')[-1],
+                                        'title': friend.real_name
                                     })
-                except Exception:
-                    pass
 
-                friendImgs.append({
-                                    'type': 'cache',
-                                    'name': friend.avatar.split('/')[-1],
-                                    'title': friend.real_name
+
+                    result.append({ 'id': friend.steamid,
+                                    'nick': friend.name,
+                                    'networkId': self.handle,
+                                    'networkText': self.name,
+                                    'networkImgs': [{
+                                        'type': 'network',
+                                        'name': self.handle,
+                                        'title': self.name
+                                    }],
+                                    'friendImgs': friendImgs
                                 })
-
-
-                result.append({ 'id': friend.steamid,
-                                'nick': friend.name,
-                                'networkId': self.handle,
-                                'networkText': self.name,
-                                'networkImgs': [{
-                                    'type': 'network',
-                                    'name': self.handle,
-                                    'title': self.name
-                                }],
-                                'friendImgs': friendImgs
-                            })
-            return (True, result)
-        except Exception as e:
-            self.log.warning("Unable to connect to Steam Network: %s" % e)
-            return (False, "Unable to connect to Steam Network: %s" % e)
+                return (True, result)
+            except Exception as e:
+                self.log.warning("Unable to connect to Steam Network: %s" % e)
+                return (False, "Unable to connect to Steam Network: %s" % e)
+        else:
+            return (True, {})
 
     def getPartnerDetails(self, partnerId):
         self.log.debug("List partner details")
