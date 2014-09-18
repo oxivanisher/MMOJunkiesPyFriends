@@ -67,8 +67,7 @@ class ValveNetwork(MMONetwork):
     # oid methods
     def oid_login(self, oid):
         self.log.debug("OID Login")
-
-        if self.getSessionValue('steamId'):
+        if self.getSessionValue('steamId') is not None:
             self.log.debug("SteamId found")
             return (True, oid.get_next_url())
 
@@ -111,44 +110,43 @@ class ValveNetwork(MMONetwork):
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
+        if not self.getSessionValue('steamId'):
+            return (False, False)
         if self.getSessionValue('steamId'):
             result = []
-            try:
-                for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
-                    self.getPartnerDetails(friend.steamid)
-                    self.cacheFile(friend.avatar)
-                    self.cacheFile(friend.avatar_full)
-                    friendImgs = []
-                    try:
-                        friendImgs.append({
-                                        'type': 'flag',
-                                        'name': friend.country_code.lower(),
-                                        'title': friend.country_code
-                                        })
-                    except Exception:
-                        pass
-
+            # try:
+            for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
+                self.getPartnerDetails(friend.steamid)
+                self.cacheFile(friend.avatar)
+                self.cacheFile(friend.avatar_full)
+                friendImgs = []
+                try:
                     friendImgs.append({
-                                        'type': 'cache',
-                                        'name': friend.avatar.split('/')[-1],
-                                        'title': friend.real_name
+                                    'type': 'flag',
+                                    'name': friend.country_code.lower(),
+                                    'title': friend.country_code
                                     })
+                except Exception:
+                    pass
 
-                    result.append({ 'id': friend.steamid,
-                                    'nick': friend.name,
-                                    'networkId': self.handle,
-                                    'networkText': self.name,
-                                    'networkImgs': [{
-                                        'type': 'network',
-                                        'name': self.handle,
-                                        'title': self.name
-                                    }],
-                                    'friendImgs': friendImgs
-                                })
-                return (True, result)
-            except Exception as e:
-                self.log.warning("Unable to connect to Steam Network: %s" % e)
-                return (False, "Unable to connect to Steam Network: %s" % e)
+                result.append({ 'id': friend.steamid,
+                                'nick': friend.name,
+                                'state': friend.state,
+                                # 'state': OnlineState(friend.state),
+                                # state() == OnlineState.OFFLINE
+                                'netHandle': self.handle,
+                                'networkText': self.name,
+                                'networkImgs': [{
+                                    'type': 'network',
+                                    'name': self.handle,
+                                    'title': self.name
+                                }],
+                                'friendImgs': friendImgs
+                            })
+            return (True, result)
+            # except Exception as e:
+            #     self.log.warning("Unable to connect to Steam Network: %s" % e)
+            #     return (False, "Unable to connect to Steam Network: %s" % e)
         else:
             return (True, {})
 
@@ -170,18 +168,23 @@ class ValveNetwork(MMONetwork):
         self.setPartnerDetail(moreInfo, "XP", steam_user.xp)
         # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
 
-        recent = []
-        for game in steam_user.recently_played:
-            recent.append(game.name)
-        self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(recent))
+        try:
+            recent = []
+            for game in steam_user.recently_played:
+                recent.append(game.name)
+            self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(recent))
+        except TypeError:
+            pass
         
-        games = []
-        for game in steam_user.games:
-            games.append(game.name)
-        self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
+        try:
+            games = []
+            for game in steam_user.games:
+                games.append(game.name)
+            self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
+        except TypeError:
+            pass
         
         # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
-
 
         if steam_user.group:
             self.setPartnerDetail(moreInfo, "Primary Group", steam_user.group.guid)
