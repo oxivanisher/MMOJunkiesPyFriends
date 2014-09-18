@@ -67,7 +67,7 @@ class ValveNetwork(MMONetwork):
     # oid methods
     def oid_login(self, oid):
         self.log.debug("OID Login")
-        if self.session.get[self.handle]['steamId'] is not None:
+        if self.getSessionValue('steamId') is not None:
             self.log.debug("SteamId found")
             return (True, oid.get_next_url())
 
@@ -92,7 +92,7 @@ class ValveNetwork(MMONetwork):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
         if not self.getSessionValue('steamId'):
-            htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "someImg.png"}
+            htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "//steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png"}
         return htmlFields
 
     def loadLinks(self, userId):
@@ -109,6 +109,8 @@ class ValveNetwork(MMONetwork):
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
+        if not self.getSessionValue('steamId'):
+            return (False, False)
         result = []
         try:
             for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:

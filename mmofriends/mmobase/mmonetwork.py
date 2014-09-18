@@ -182,6 +182,15 @@ class MMONetwork(object):
             self.session[self.handle] = {}
             self.session[self.handle][name] = value
 
+    def loadNetworkToSession(self):
+        if not self.getSessionValue('loaded'):
+            self.log.info("Loading MMONetwork to session")
+            self.loadLinks(self.session.get('userid'))
+            self.setSessionValue('loaded', True)
+
+    def prepareForFirstRequest(self):
+        self.log.debug("Prepare for first request.")
+
     # saver and loader methods
     # def registerToAutosaveAndLoad(self, var, fileName, default):
     #     self.log.debug("Registring %s to save on exit." % fileName)

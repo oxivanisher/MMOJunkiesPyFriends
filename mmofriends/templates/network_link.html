@@ -41,7 +41,7 @@
 						</form>
 					</table>
 				{%- elif net.linkNetwork.oid -%}
-					<a href="{{ url_for('oid_login', netHandle=net.handle) }}">{{ net.linkNetwork.oid.image }} {{ net.linkNetwork.oid.comment }}</a>
+					<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
         		{% endif %}
 			</td>
 		</tr>

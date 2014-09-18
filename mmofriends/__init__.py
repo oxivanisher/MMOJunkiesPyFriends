@@ -91,21 +91,32 @@ def fetchFriendsList():
     for handle in MMONetworks.keys():
         (res, friendsList) = MMONetworks[handle].getPartners()
         if res:
+            # yes, we are getting friends
             retFriendsList += friendsList
         else:
-            flash(("%s: " % MMONetworks[handle].name) + friendsList)
+            if friendsList:
+                # yes, we are getting a error message
+                flash(("%s: " % MMONetworks[handle].name) + friendsList)
     return retFriendsList
 
 def loadNetworks():
     for handle in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][handle]
         log.info("Trying to initialize MMONetwork %s (%s)" % (network['name'], handle))
-        try:
-            MMONetworks[handle] = eval(network['class'])(app, session, handle)
-            log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
-            MMONetworks[handle].setLogLevel(logging.INFO)
-        except Exception as e:
-            log.error("Unable to initialize MMONetwork %s because: %s" % (network['name'], e))
+        if network['active']:
+            try:
+                MMONetworks[handle] = eval(network['class'])(app, session, handle)
+                log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
+                MMONetworks[handle].setLogLevel(logging.DEBUG)
+                log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
+                MMONetworks[handle].prepareForFirstRequest()
+            except Exception as e:
+                message = "Unable to initialize MMONetwork %s because: %s" % (network['name'], e)
+                if session.get('admin'):
+                    flash(message)
+                log.error(message)
+        else:
+            log.info("MMONetwork %s (%s) is deactivated" % (network['name'], handle))
 
 def getUserByNick(nick = None):
     with app.test_request_context():
@@ -154,6 +165,10 @@ def before_request():
         session['requests'] += 1
     except KeyError:
         pass
+
+    if session.get('logged_in'):
+        for handle in MMONetworks.keys():
+            MMONetworks[handle].loadNetworkToSession()
 
 # main routes
 @app.route('/')
@@ -429,9 +444,12 @@ def profile_verify(userId, verifyKey):
     log.info("Verify userid %s" % userId)
     verifyUser = getUserById(userId)
     if verifyUser.verify(verifyKey):
-        db.session.add(verifyUser)
-        db.session.commit()
-        flash("Verification ok. Please log in.")
+        if verifyUser.veryfied:
+            flash("Already veryfied. Please log in.")
+        else:
+            db.session.add(verifyUser)
+            db.session.commit()
+            flash("Verification ok. Please log in.")
         return redirect(url_for('profile_login'))
     else:
         flash("Verification NOT ok. Please try again.")
@@ -464,7 +482,7 @@ def profile_login():
                 #loading network links:
                 for net in MMONetworks.keys():
                     log.debug("Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
-                    MMONetworks[net].loadLinks(myUser.id)
+                    MMONetworks[net].loadNetworkToSession()
 
                 return redirect(url_for('index'))                
             else:

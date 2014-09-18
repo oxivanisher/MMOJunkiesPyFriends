@@ -73,7 +73,8 @@ class TS3Network(MMONetwork):
     def getPartners(self):
         if self.refresh():
             ret = []
-            for cldbid in self.onlineClients.keys():
+            # for cldbid in self.onlineClients.keys():
+            for cldbid in self.clientDatabase.keys():
                 # Refresh user details
                 self.fetchUserDetatilsByCldbid(cldbid)
                 self.fetchUserInfo(self.onlineClients[cldbid]['clid'], cldbid)
@@ -200,11 +201,12 @@ class TS3Network(MMONetwork):
         htmlFields = {}
         htmlFields['dropdown'] = []
         currentLinks = []
-        for link in self.getNetworkLinks():
-            currentLinks.append(link['network_data'])
-        for cldbid in self.onlineClients.keys():
-            if cldbid not in currentLinks:
-                htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
+        if not self.getSessionValue('cldbid'):
+            for link in self.getNetworkLinks():
+                currentLinks.append(link['network_data'])
+            for cldbid in self.onlineClients.keys():
+                if cldbid not in currentLinks:
+                    htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
         return htmlFields
 
     def doLink(self, userId):
@@ -301,6 +303,10 @@ class TS3Network(MMONetwork):
         except KeyError as e:
             self.connected = False
             self.log.warning("TS3 Server connection error - KeyError: %s" % e)
+            return False
+        except Exception as e:
+            self.connected = False
+            self.log.warning("TS3 Server connection error - Exception: %s" % e)
             return False
 
     def fetchUserDetatilsByCldbid(self, cldbid):
@@ -481,6 +487,12 @@ class TS3Network(MMONetwork):
 
     def cacheServerIcon(self, iconId):
         self.cacheIcon((int(iconId) + 4294967296))
+
+    def prepareForFirstRequest(self):
+        self.log.debug("Running prepareForFirstRequest. This might take a while!")
+        self.cacheAvailableClients()
+        self.cacheFiles()
+        self.refresh()
 
     def admin(self):
         self.log.debug("Admin: Returning client database")
