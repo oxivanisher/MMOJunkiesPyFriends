@@ -129,6 +129,12 @@ class ValveNetwork(MMONetwork):
                 except Exception:
                     pass
 
+                friendImgs.append({
+                                    'type': 'cache',
+                                    'name': friend.avatar.split('/')[-1],
+                                    'title': friend.real_name
+                                })
+
                 result.append({ 'id': friend.steamid,
                                 'nick': friend.name,
                                 'state': friend.state,
