@@ -42,3 +42,5 @@ http://flask.pocoo.org/snippets/42/
 - make network inking with a dialog popup and finally reload the page
 - admin methods in networks
 - statistic and/or ranking feature (lol, starcraft, ...)
+¨
+# todo stoef
