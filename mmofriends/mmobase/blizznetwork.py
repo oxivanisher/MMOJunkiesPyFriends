@@ -34,15 +34,31 @@ class BlizzNetwork(MMONetwork):
         # self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
         self.description = "Battle.Net from Blizzard Entertainment"
 
-        # try:
-        #     core.APIConnection(api_key=self.config['apikey'])
-        # except Exception as e:
-        #     self.log.warning("Unable to set apikey")
-
-        # self.steamData = {}
-
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
+
+    # Oauth2 helper
+    def requestAccessTokenUrl(self):
+        battleNet = OAuth2Service(
+            client_id=self.config['apikey'],
+            client_secret=self.config['apisecret'],
+            authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
+            access_token_url='https://%s.battle.net/oauth/token' % self.config['region'],)
+        # params = {'redirect_uri': 'https://dev.battle.net/',
+        params = {'redirect_uri': 'https://localhost:5000/Network/OID/Login/Blizz',
+                  'response_type': 'code'}
+        return battleNet.get_authorize_url(**params)
+
+    # Query Blizzard
+    def queryBlizz(self, what):
+        # Account requests
+        # https://eu.api.battle.net/account/user/id
+        # https://eu.api.battle.net/account/user/battletag
+
+        # wow profile data:
+        # https://eu.api.battle.net/wow/user/characters?locale=en_GB&access_token=38jm5m7mdeuc6a6ed35yakxp
+
+        # 'scope': 'wow.profile',
 
     # overwritten class methods
     def getLinkHtml(self):
@@ -53,6 +69,8 @@ class BlizzNetwork(MMONetwork):
         # https://us.api.battle.net/wow/realm/status?apikey=<key>
         # https://us.api.battle.net/sc2/data/achievements?apikey=<key>
         # https://us.api.battle.net/d3/data/follower/templar?apikey=<key>
+
+        # http://us.battle.net/en/forum/topic/13979047915#1
 
         # battleNet = OAuth2Service(
         #     client_id=self.config['apikey'],
@@ -66,25 +84,21 @@ class BlizzNetwork(MMONetwork):
 
         # https://github.com/litl/rauth/blob/master/rauth/service.py
 
-        battleNet = OAuth2Service(
-            client_id=self.config['apikey'],
-            client_secret=self.config['apisecret'],
-            authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
-            access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
-        params = {'redirect_uri': 'https://dev.battle.net/',
-                  'response_type': 'code'}
+
         # url = service.get_authorize_url(**params)
 
         htmlFields = {}
-        if not self.getSessionValue('client_id'):
-            htmlFields['link'] = {'comment': "Click to login with Battle.Net.", 'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'], 'url': battleNet.get_authorize_url(**params)}
+        if not self.getSessionValue('code'):
+            htmlFields['link'] = {'comment': "Click to login with Battle.Net.",
+                                  'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'],
+                                  'url': self.requestAccessTokenUrl()}
         return htmlFields
 
     # helper methods
     # def get_steam_userinfo(self, steam_id):
     #     options = {
     #         'key': self.config['apikey'],
-    #         'client_ids': steam_id
+    #         'codes': steam_id
     #     }
     #     url = 'http://api.steampowered.com/ISteamUser/' \
     #           'GetPlayerSummaries/v0001/?%s' % urllib.urlencode(options)
@@ -104,13 +118,15 @@ class BlizzNetwork(MMONetwork):
     #     return True
 
     # oid methods
-    # def oid_login(self, oid):
-    #     self.log.debug("OID Login")
-    #     if self.getSessionValue('client_id') is not None:
-    #         self.log.debug("client_id found")
-    #         return (True, oid.get_next_url())
+    def oid2_login(self, code):
+        self.log.debug("OID2 Login, recieved new code")
+        self.saveLink(code)
+        if self.getSessionValue('code') is not None:
+            self.log.debug("code found")
+        return True
 
-    #     self.log.debug("No client_id found")
+
+    #     self.log.debug("No code found")
     #     return (False, oid.try_login('https://%s.battle.net/oauth/authorize' % self.config['region']))
 
     # def oid_logout(self, oid):
@@ -121,30 +137,30 @@ class BlizzNetwork(MMONetwork):
     #     self.log.debug("OID create_or_login")
     #     print resp
     #     # match = self.steam_id_re.search(resp.identity_url)
-    #     # self.setSessionValue('client_id', match.group(1))
+    #     # self.setSessionValue('code', match.group(1))
 
-    #     # self.saveLink(self.getSessionValue('client_id'))
+    #     # self.saveLink(self.getSessionValue('code'))
     #     return ('You are logged in to Battle.Net as %s (%s)' % ('blah', 'blubber'), oid.get_next_url())
 
     def loadLinks(self, userId):
         self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue('client_id', None)
+        self.setSessionValue('code', None)
         for link in self.getNetworkLinks(userId):
-            self.setSessionValue('client_id', link['network_data'])
+            self.setSessionValue('code', link['network_data'])
 
     def devTest(self):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         ret = []
-        print self.getSteamUser(self.getSessionValue('client_id')).friends
-        return "client_id: %s" % self.getSessionValue('client_id')
+        print self.getSessionValue('code')
+        return "code: %s" % self.getSessionValue('code')
 
     # def getPartners(self):
     #     self.log.debug("List all partners for given user")
-    #     if not self.getSessionValue('client_id'):
+    #     if not self.getSessionValue('code'):
     #         return (False, False)
     #     result = []
     #     try:
-    #         for friend in self.getSteamUser(self.getSessionValue('client_id')).friends:
+    #         for friend in self.getSteamUser(self.getSessionValue('code')).friends:
     #             self.cacheFile(friend.avatar)
     #             self.cacheFile(friend.avatar_full)
     #             friendImgs = []
@@ -164,7 +180,7 @@ class BlizzNetwork(MMONetwork):
     #                             })
 
 
-    #             result.append({ 'id': friend.client_id,
+    #             result.append({ 'id': friend.code,
     #                             'nick': friend.name,
     #                             'state': friend.state,
     #                             # 'state': OnlineState(friend.state),
@@ -225,7 +241,7 @@ class BlizzNetwork(MMONetwork):
     #         self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
 
     #     if self.session.get('admin'):
-    #         self.setPartnerDetail(moreInfo, "Steam ID", steam_user.client_id)
+    #         self.setPartnerDetail(moreInfo, "Steam ID", steam_user.code)
     #         self.setPartnerDetail(moreInfo, "Real Name", steam_user.real_name)
 
     #     return moreInfo

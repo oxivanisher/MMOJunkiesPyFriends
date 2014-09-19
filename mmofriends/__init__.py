@@ -359,6 +359,18 @@ def oid_login(netHandle):
         log.info("OID not redirecting...")
         return retValue
 
+@app.route('/Network/OID2/Login/<netHandle>', methods=['GET', 'POST'])
+def oid2_login(netHandle):
+    log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    session['OIDAuthInProgress'] = netHandle
+    if MMONetworks[netHandle].oid2_login(request.args.get("code")):
+        log.info("Oauth2 authentication successfull")
+        flash("Oauth2 authentication successfull")
+    else:
+        log.info("Oauth2 authentication NOT successfull")
+        flash("Oauth2 authentication NOT successfull")
+    return redirect(url_for('index'))
+
 @app.route('/Network/OID/Logout')
 def oid_logout():
     log.debug("OpenID logout from user %s" % (session['nick']))

@@ -104,8 +104,6 @@ class ValveNetwork(MMONetwork):
 
     def devTest(self):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
-        ret = []
-        print self.getSteamUser(self.getSessionValue('steamId')).friends
         return "steamId: %s" % self.getSessionValue('steamId')
 
     def getPartners(self):
