@@ -51,6 +51,7 @@ class BlizzNetwork(MMONetwork):
 
     # Query Blizzard
     def queryBlizz(self, what):
+        pass
         # Account requests
         # https://eu.api.battle.net/account/user/id
         # https://eu.api.battle.net/account/user/battletag
