@@ -45,7 +45,7 @@ class BlizzNetwork(MMONetwork):
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'],)
         # params = {'redirect_uri': 'https://dev.battle.net/',
-        params = {'redirect_uri': 'https://localhost:5000/Network/OID/Login/Blizz',
+        params = {'redirect_uri': 'https://localhost:5000/Network/OID2/Login/Blizz',
                   'response_type': 'code'}
         return battleNet.get_authorize_url(**params)
 
