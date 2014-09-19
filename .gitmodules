@@ -4,3 +4,6 @@
 [submodule "libs/steamapi"]
 	path = libs/steamapi
 	url = git@github.com:smiley/steamapi.git
+[submodule "libs/rauth"]
+	path = libs/rauth
+	url = git@github.com:litl/rauth.git
