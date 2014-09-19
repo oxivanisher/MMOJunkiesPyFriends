@@ -85,7 +85,17 @@ class ValveNetwork(MMONetwork):
         steamdata = self.get_steam_userinfo(self.getSessionValue('steamId'))
         # self.steamData[self.getSessionValue('steamId')] = steamdata
         self.saveLink(self.getSessionValue('steamId'))
-        return ('You are logged in to Steam as %s (%s)' % (steamdata['personaname'], steamdata['realname']), oid.get_next_url())
+        try:
+            shownName = steamdata['personaname']
+        except KeyError:
+            shownName = steamdata['name']
+
+        try:
+            additionalName = steamdata['realname']
+        except KeyError:
+            additionalName = ""
+
+        return ('You are logged in to Steam as %s (%s)' % (shownName, additionalName), oid.get_next_url())
         # return ('You are logged in to Steam as %s (%s)' % (steamdata['personaname'], steamdata['realname']), oid.get_next_url())
 
     # overwritten class methods
