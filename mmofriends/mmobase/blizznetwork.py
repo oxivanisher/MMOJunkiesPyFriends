@@ -166,14 +166,14 @@ class BlizzNetwork(MMONetwork):
 
         self.log.debug("Checking for missing Blizzard Wow Data Resources.")
         for entry in self.wowDataResourcesList.keys():
-            if len(self.wowDataResourcesList[entry]) == 0:
+            if entry not in self.wowDataResources.keys():
                 location = self.baseUrl + self.wowDataResourcesList[entry]
                 self.log.debug("Fetching %s from %s" % (entry, location))
                 self.wowDataResources[entry] = requests.get(location, params=payload).json()
 
         self.log.debug("Checking for missing Blizzard SC2 Data Resources.")
         for entry in self.sc2DataResourcesList.keys():
-            if len(self.sc2DataResourcesList[entry]) == 0:
+            if entry not in self.sc2DataResources:
                 location = self.baseUrl + self.sc2DataResourcesList[entry]
                 self.log.debug("Fetching %s from %s" % (entry, location))
                 self.sc2DataResources[entry] = requests.get(location, params=payload).json()
@@ -189,6 +189,7 @@ class BlizzNetwork(MMONetwork):
         except KeyError:
             pass
 
+        self.saveAllData()
         return (True, r)
 
     # def cacheFile(self, url):

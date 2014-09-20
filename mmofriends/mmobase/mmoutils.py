@@ -12,6 +12,7 @@ import cgi
 import textwrap
 import time
 import smtplib
+import gzip
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -175,9 +176,9 @@ def send_email(app, msgto, msgsubject, msgtext):
 # save / load
 def saveJSON(netHandle, fileName, content):
     """Saves the given content to the given filename as JSON"""
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
     try:
-        file = open(dstfile, 'w')
+        file = gzip.open(dstfile, 'w')
         file.write(json.dumps(content))
         file.close()
         return True
@@ -186,9 +187,9 @@ def saveJSON(netHandle, fileName, content):
 
 def loadJSON(netHandle, fileName, default):
     """Loads content from the given filename as JSON. If no file could be read, it returns the default."""
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
     try:
-        file = open(dstfile, 'r')
+        file = gzip.open(dstfile, 'r')
         # self.cron_list = self.utils.convert_from_unicode(json.loads(file.read()))
         values = json.loads(file.read())
         file.close()
