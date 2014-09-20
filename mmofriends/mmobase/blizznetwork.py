@@ -141,7 +141,7 @@ class BlizzNetwork(MMONetwork):
 
         # fetching d3 profile
         try:
-            result, data = self.queryBlizzardApi('/d3/profile/%s/' % battletag)
+            result, data = self.queryBlizzardApi('/d3/profile/%s/' % battletag.replace('#', '-'))
             if result:
                 self.d3DataResources['profiles'][self.session['userid']] = data
         except Exception:
@@ -164,14 +164,12 @@ class BlizzNetwork(MMONetwork):
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
 
-        self.log.debug("Checking for missing Blizzard Wow Data Resources.")
         for entry in self.wowDataResourcesList.keys():
             if entry not in self.wowDataResources.keys():
                 location = self.baseUrl + self.wowDataResourcesList[entry]
                 self.log.debug("Fetching %s from %s" % (entry, location))
                 self.wowDataResources[entry] = requests.get(location, params=payload).json()
 
-        self.log.debug("Checking for missing Blizzard SC2 Data Resources.")
         for entry in self.sc2DataResourcesList.keys():
             if entry not in self.sc2DataResources:
                 location = self.baseUrl + self.sc2DataResourcesList[entry]
