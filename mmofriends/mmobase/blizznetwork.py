@@ -38,20 +38,55 @@ class BlizzNetwork(MMONetwork):
         self.setLogLevel(logging.DEBUG)
         self.battleNet = None
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
+        self.locale = 'en_US'
 
-        self.blizzWowDataResourcesList = {
+        # things to fetch from blizzard
+        self.loadAllData()
+        if len(self.dataResources) == 0:
+            self.dataResources['battletags'] = {}
+
+        self.wowDataResourcesList = {
             'battlegroups': "/wow/data/battlegroups/",
             'character_races': "/wow/data/character/races",
             'character_classes': "/wow/data/character/classes",
             'character_achievements': "/wow/data/character/achievements",
             'guild_rewards': "/wow/data/guild/rewards",
             'guild_perks': "/wow/data/guild/perks",
-            'guild_achievments': "/wow/data/guild/achievments",
+            'guild_achievements': "/wow/data/guild/achievements",
             'item_classes': "/wow/data/item/classes",
             'talents': "/wow/data/talents",
             'pet_types': "/wow/data/pet/types"
         }
-        self.blizzWowDataResources = {}
+        # self.wowDataResources = {}
+        if len(self.wowDataResources) == 0:
+            self.wowDataResources['user_characters'] = {}
+        
+        # self.d3DataResources = {}
+        if len(self.d3DataResources) == 0:
+            self.d3DataResources['profiles'] = {}
+
+        # self.sc2DataResources = {}
+        self.sc2DataResourcesList = {
+            'achievements': "/sc2/data/achievements",
+            'rewards': "/sc2/data/rewards"
+        }
+        if len(self.sc2DataResources) == 0:
+            self.sc2DataResources['profiles'] = {}
+
+    # save data to file!!
+    def saveAllData(self):
+        self.log.debug("Saving Battle.net data to files")
+        saveJSON(self.handle, 'general', self.dataResources)
+        saveJSON(self.handle, 'wow', self.wowDataResources)
+        saveJSON(self.handle, 'd3', self.d3DataResources)
+        saveJSON(self.handle, 'sc2', self.sc2DataResources)
+
+    def loadAllData(self):
+        self.log.debug("Loading Battle.net data from files")
+        self.dataResources = loadJSON(self.handle, 'general', {})
+        self.wowDataResources = loadJSON(self.handle, 'wow', {})
+        self.d3DataResources = loadJSON(self.handle, 'd3', {})
+        self.sc2DataResources = loadJSON(self.handle, 'sc2', {})
 
     # overwritten class methods
     def getLinkHtml(self):
@@ -91,21 +126,57 @@ class BlizzNetwork(MMONetwork):
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
 
+        # fetching battle tag
         result, data = self.queryBlizzardApi('/account/user/battletag')
-        return data['battletag']
+        battletag = data['battletag']
+        self.dataResources['battletags'][self.session['userid']] = battletag
+
+        # fetching wow chars
+        try:
+            result, data = self.queryBlizzardApi('/wow/user/characters')
+            if result:
+                self.wowDataResources['user_characters'][self.session['userid']] = data
+        except Exception:
+            pass
+
+        # fetching d3 profile
+        try:
+            result, data = self.queryBlizzardApi('/d3/profile/%s/' % battletag)
+            if result:
+                self.d3DataResources['profiles'][self.session['userid']] = data
+        except Exception:
+            pass
+
+        # fetching sc2 
+        try:
+            result, data = self.queryBlizzardApi('/sc2/profile/user')
+            if result:
+                self.sc2DataResources['profiles'][self.session['userid']] = data
+        except Exception:
+            pass
+
+        self.saveAllData()
+        return battletag
 
     # Query Blizzard
     def queryBlizzardApi(self, what):
         payload = {'access_token': self.getSessionValue(self.linkIdName),
                    'apikey': self.config['apikey'],
-                   'locale': 'en_US'}
+                   'locale': self.locale}
 
         self.log.debug("Checking for missing Blizzard Wow Data Resources.")
-        for entry in self.blizzWowDataResourcesList.keys():
-            if len(self.blizzWowDataResourcesList[entry]) == 0:
-                location = self.baseUrl + self.blizzWowDataResourcesList[entry]
+        for entry in self.wowDataResourcesList.keys():
+            if len(self.wowDataResourcesList[entry]) == 0:
+                location = self.baseUrl + self.wowDataResourcesList[entry]
                 self.log.debug("Fetching %s from %s" % (entry, location))
-                self.blizzWowDataResources[entry] = requests.get(location, params=payload).json()
+                self.wowDataResources[entry] = requests.get(location, params=payload).json()
+
+        self.log.debug("Checking for missing Blizzard SC2 Data Resources.")
+        for entry in self.sc2DataResourcesList.keys():
+            if len(self.sc2DataResourcesList[entry]) == 0:
+                location = self.baseUrl + self.sc2DataResourcesList[entry]
+                self.log.debug("Fetching %s from %s" % (entry, location))
+                self.sc2DataResources[entry] = requests.get(location, params=payload).json()
            
         self.log.debug("Query Blizzard API for %s" % what)
         r = requests.get(self.baseUrl + what, params=payload).json()
@@ -152,8 +223,8 @@ class BlizzNetwork(MMONetwork):
             response = "Error: %s" % respt
         ret.append("Profile Data:\n%s" % response)
 
-        for entry in self.blizzWowDataResources.keys():
-            ret.append("\n%s %s:\n%s" % (entry, len(self.blizzWowDataResources[entry]), self.blizzWowDataResources[entry]))
+        for entry in self.wowDataResources.keys():
+            ret.append("\n%s %s:\n%s" % (entry, len(self.wowDataResources[entry]), self.wowDataResources[entry]))
 
         ret.append("access_token: %s" % self.getSessionValue(self.linkIdName))
         return '\n'.join(ret)
