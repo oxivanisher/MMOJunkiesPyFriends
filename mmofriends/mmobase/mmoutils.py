@@ -175,7 +175,7 @@ def send_email(app, msgto, msgsubject, msgtext):
 # save / load
 def saveJSON(netHandle, fileName, content):
     """Saves the given content to the given filename as JSON"""
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'db', netHandle + '_' + fileName + '.json')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json')
     try:
         file = open(dstfile, 'w')
         file.write(json.dumps(content))
@@ -186,7 +186,7 @@ def saveJSON(netHandle, fileName, content):
 
 def loadJSON(netHandle, fileName, default):
     """Loads content from the given filename as JSON. If no file could be read, it returns the default."""
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'db', netHandle + '_' + fileName + '.json')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json')
     try:
         file = open(dstfile, 'r')
         # self.cron_list = self.utils.convert_from_unicode(json.loads(file.read()))
