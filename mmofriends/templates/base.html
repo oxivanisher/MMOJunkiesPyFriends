@@ -13,14 +13,13 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
 		<!-- <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" /> -->
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.css') }}" rel="stylesheet" />
-		
-		<script src="{{ url_for('static', filename='jquery/jquery.dataTables.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='jquery/jquery-ui.structure.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='jquery/jquery-ui.theme.min.js') }}"></script>
+		<link href="{{ url_for('static', filename='jquery/jquery-ui.structure.min.css') }}" rel="stylesheet" />
+		<link href="{{ url_for('static', filename='jquery/jquery-ui.theme.min.css') }}" rel="stylesheet" />
 
 		<link href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}" rel="stylesheet" media="screen">
 		<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
 		
+		<script src="{{ url_for('static', filename='jquery/jquery.dataTables.min.js') }}"></script>
 		<link href="{{ url_for('static', filename='friendstable.css') }}" rel="stylesheet" media="all" type="text/css" />
 		<script src="{{ url_for('static', filename='friendstable.js') }}"></script>
 		<!-- <link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" /> -->
@@ -28,7 +27,7 @@
 
 		<script>
 			$(function() {
-				$( "#flashDialogSucccess" ).dialog({
+				$( "#flashDialogSuccess" ).dialog({
 					autoOpen: true,
 					dialogClass: 'success',
 					modal: true,
