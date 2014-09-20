@@ -33,6 +33,7 @@ class TS3Network(MMONetwork):
         self.channelGroupList = {}
         self.groupList = {}
         self.server = None
+        # self.linkIdName = 'cldbid'
 
         self.connected = False
 
@@ -225,7 +226,7 @@ class TS3Network(MMONetwork):
         self.refresh()
         
         htmlFields = {}
-        if not self.getSessionValue('cldbid'):
+        if not self.getSessionValue(self.linkIdName):
             htmlFields['dropdown'] = []
             currentLinks = []
             for link in self.getNetworkLinks():
@@ -239,7 +240,7 @@ class TS3Network(MMONetwork):
         self.log.debug("Link user %s to network %s" % (userId, self.name))
         self.refresh()
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
-        self.setSessionValue('cldbid', userId)
+        self.setSessionValue(self.linkIdName, userId)
         message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
         self.server.clientpoke(self.onlineClients[userId]['clid'], message)
         return "Please enter the number you recieved via teamspeak"
@@ -248,7 +249,7 @@ class TS3Network(MMONetwork):
         self.log.debug("Finalize user link to network %s" % self.name)
         self.refresh()
         if self.getSessionValue('doLinkKey') == userKey:
-            self.saveLink(self.getSessionValue('cldbid'))
+            self.saveLink(self.getSessionValue(self.linkIdName))
             return True
         else:
             return False
@@ -257,7 +258,7 @@ class TS3Network(MMONetwork):
         self.log.debug("Loading user links for userId %s" % userId)
         self.setSessionValue('userId', None)
         for link in self.getNetworkLinks(userId):
-            self.setSessionValue('cldbid', link['network_data'])
+            self.setSessionValue(self.linkIdName, link['network_data'])
 
     # helper methods
     def connect(self):
@@ -394,7 +395,7 @@ class TS3Network(MMONetwork):
 
     def devTest(self):
         try:
-            return "cldbid: %s" % self.getSessionValue('cldbid')
+            return "cldbid: %s" % self.getSessionValue(self.linkIdName)
         except Exception as e:
             return "%s" % e
 

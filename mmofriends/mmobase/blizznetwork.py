@@ -33,6 +33,7 @@ class BlizzNetwork(MMONetwork):
 
         # self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
         self.description = "Battle.Net from Blizzard Entertainment"
+        # self.linkIdName = 'code'
 
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
@@ -89,7 +90,7 @@ class BlizzNetwork(MMONetwork):
         # url = service.get_authorize_url(**params)
 
         htmlFields = {}
-        if not self.getSessionValue('code'):
+        if not self.getSessionValue(self.linkIdName):
             htmlFields['link'] = {'comment': "Click to login with Battle.Net.",
                                   'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'],
                                   'url': self.requestAccessTokenUrl()}
@@ -122,7 +123,7 @@ class BlizzNetwork(MMONetwork):
     def oid2_login(self, code):
         self.log.debug("OID2 Login, recieved new code")
         self.saveLink(code)
-        if self.getSessionValue('code') is not None:
+        if self.getSessionValue(self.linkIdName) is not None:
             self.log.debug("code found")
         return True
 
@@ -145,23 +146,23 @@ class BlizzNetwork(MMONetwork):
 
     def loadLinks(self, userId):
         self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue('code', None)
+        self.setSessionValue(self.linkIdName, None)
         for link in self.getNetworkLinks(userId):
-            self.setSessionValue('code', link['network_data'])
+            self.setSessionValue(self.linkIdName, link['network_data'])
 
     def devTest(self):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         ret = []
-        print self.getSessionValue('code')
-        return "code: %s" % self.getSessionValue('code')
+        print self.getSessionValue(self.linkIdName)
+        return "code: %s" % self.getSessionValue(self.linkIdName)
 
     # def getPartners(self):
     #     self.log.debug("List all partners for given user")
-    #     if not self.getSessionValue('code'):
+    #     if not self.getSessionValue(self.linkIdName):
     #         return (False, False)
     #     result = []
     #     try:
-    #         for friend in self.getSteamUser(self.getSessionValue('code')).friends:
+    #         for friend in self.getSteamUser(self.getSessionValue(self.linkIdName)).friends:
     #             self.cacheFile(friend.avatar)
     #             self.cacheFile(friend.avatar_full)
     #             friendImgs = []

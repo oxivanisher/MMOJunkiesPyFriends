@@ -37,6 +37,7 @@ class MMONetwork(object):
         # setting variables
         self.name = self.config['name']
         self.icon = self.config['icon']
+        self.linkIdName = 'userToken'
 
         self.log = logging.getLogger(__name__ + "." + self.handle.lower())
         self.log.info("Initializing MMONetwork %s (%s)" % (self.name, self.handle))
@@ -95,6 +96,7 @@ class MMONetwork(object):
     def unlink(self, user_id, netLinkId):
         try:
             link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
+            self.setSessionValue(self.linkIdName, None)
             db.session.delete(link)
             db.session.commit()
             db.session.flush()

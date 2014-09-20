@@ -29,6 +29,7 @@ class ValveNetwork(MMONetwork):
 
         self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
         self.description = "Steam network from Valve"
+        # self.linkIdName = 'steamId'
 
         try:
             # core.APIConnection(api_key=self.config['apikey'], precache=True)
@@ -67,7 +68,7 @@ class ValveNetwork(MMONetwork):
     # oid methods
     def oid_login(self, oid):
         self.log.debug("OID Login")
-        if self.getSessionValue('steamId') is not None:
+        if self.getSessionValue(self.linkIdName) is not None:
             self.log.debug("SteamId found")
             return (True, oid.get_next_url())
 
@@ -81,10 +82,10 @@ class ValveNetwork(MMONetwork):
     def oid_create_or_login(self, oid, resp):
         self.log.debug("OID create_or_login")
         match = self.steam_id_re.search(resp.identity_url)
-        self.setSessionValue('steamId', match.group(1))
-        steamdata = self.get_steam_userinfo(self.getSessionValue('steamId'))
-        # self.steamData[self.getSessionValue('steamId')] = steamdata
-        self.saveLink(self.getSessionValue('steamId'))
+        self.setSessionValue(self.linkIdName, match.group(1))
+        steamdata = self.get_steam_userinfo(self.getSessionValue(self.linkIdName))
+        # self.steamData[self.getSessionValue(self.linkIdName)] = steamdata
+        self.saveLink(self.getSessionValue(self.linkIdName))
         try:
             shownName = steamdata['personaname']
         except KeyError:
@@ -102,28 +103,28 @@ class ValveNetwork(MMONetwork):
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
-        if not self.getSessionValue('steamId'):
+        if not self.getSessionValue(self.linkIdName):
             htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "//steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png"}
         return htmlFields
 
     def loadLinks(self, userId):
         self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue('steamId', None)
+        self.setSessionValue(self.linkIdName, None)
         for link in self.getNetworkLinks(userId):
-            self.setSessionValue('steamId', link['network_data'])
+            self.setSessionValue(self.linkIdName, link['network_data'])
 
     def devTest(self):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
-        return "steamId: %s" % self.getSessionValue('steamId')
+        return "steamId: %s" % self.getSessionValue(self.linkIdName)
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
-        if not self.getSessionValue('steamId'):
+        if not self.getSessionValue(self.linkIdName):
             return (False, False)
-        if self.getSessionValue('steamId'):
+        if self.getSessionValue(self.linkIdName):
             result = []
             # try:
-            for friend in self.getSteamUser(self.getSessionValue('steamId')).friends:
+            for friend in self.getSteamUser(self.getSessionValue(self.linkIdName)).friends:
                 self.getPartnerDetails(friend.steamid)
                 self.cacheFile(friend.avatar)
                 self.cacheFile(friend.avatar_full)
@@ -229,4 +230,6 @@ class ValveNetwork(MMONetwork):
             steam_user = user.SteamUser(userid=int(name))
         except ValueError: # Not an ID, but a vanity URL.
             steam_user = user.SteamUser(userurl=name)
+        except APIUnauthorized:
+            return False
         return steam_user        
