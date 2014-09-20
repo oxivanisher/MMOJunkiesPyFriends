@@ -123,8 +123,7 @@ class BlizzNetwork(MMONetwork):
     def oid2_login(self, code):
         self.log.debug("OID2 Login, recieved new code")
         self.saveLink(code)
-        if self.getSessionValue(self.linkIdName) is not None:
-            self.log.debug("code found")
+        self.setSessionValue(self.linkIdName, code)
         return True
 
 

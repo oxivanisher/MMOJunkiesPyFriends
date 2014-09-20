@@ -345,7 +345,7 @@ def network_unlink(netHandle, netLinkId):
             flash('Unable to remove link to %s' % MMONetworks[netHandle].name, 'error')
     return redirect(url_for('network_link'))
 
-# openid methods
+# oid methods
 @app.route('/Network/OID/Login/<netHandle>')
 @oid.loginhandler
 def oid_login(netHandle):
@@ -358,18 +358,6 @@ def oid_login(netHandle):
     else:
         log.info("OID not redirecting...")
         return retValue
-
-@app.route('/Network/OID2/Login/<netHandle>', methods=['GET', 'POST'])
-def oid2_login(netHandle):
-    log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
-    session['OIDAuthInProgress'] = netHandle
-    if MMONetworks[netHandle].oid2_login(request.args.get("code")):
-        log.info("Oauth2 authentication successfull")
-        flash("Oauth2 authentication successfull", 'success')
-    else:
-        log.info("Oauth2 authentication NOT successfull")
-        flash("Oauth2 authentication NOT successfull", 'error')
-    return redirect(url_for('index'))
 
 @app.route('/Network/OID/Logout')
 def oid_logout():
@@ -385,6 +373,18 @@ def oid_create_or_login(resp):
     session.pop('OIDAuthInProgress')
     flash(flashMessage, 'success')
     return redirect(returnUrl)
+
+# oauth2 methods
+@app.route('/Network/OID2/Login/<netHandle>', methods=['GET', 'POST'])
+def oid2_login(netHandle):
+    log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    if MMONetworks[netHandle].oid2_login(request.args.get("code")):
+        log.info("Oauth2 authentication successfull")
+        flash("Oauth2 authentication successfull", 'success')
+    else:
+        log.info("Oauth2 authentication NOT successfull")
+        flash("Oauth2 authentication NOT successfull", 'error')
+    return redirect(url_for('network_link'))
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])

@@ -76,6 +76,7 @@ class MMONetwork(object):
         netLink = MMONetLink(self.session['userid'], self.handle, network_data)
         db.session.add(netLink)
         db.session.commit()
+        db.session.flush()
 
     def loadLinks(self, userId):
         self.log.debug("Load links template method for user %s in network %s" % (userId, self.name))
