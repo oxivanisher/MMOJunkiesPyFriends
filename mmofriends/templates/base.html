@@ -28,15 +28,45 @@
 
 		<script>
 			$(function() {
-				$( "#dialog" ).dialog({
+				$( "#flashDialogSucccess" ).dialog({
 					autoOpen: true,
 					dialogClass: 'success',
+					modal: true,
+					open: function(event, ui) {
+						setTimeout(function(){
+						$('#dialog').dialog('close');                
+						}, 5000);
+					},
+					buttons: {
+						Close: function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+				$( "#flashDialogError" ).dialog({
+					autoOpen: true,
+					dialogClass: 'error',
 					modal: true,
 					// open: function(event, ui) {
 					// 	setTimeout(function(){
 					// 	$('#dialog').dialog('close');                
 					// 	}, 3000);
 					// },
+					buttons: {
+						Close: function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+				$( "#flashDialogInfo" ).dialog({
+					autoOpen: true,
+					dialogClass: 'info',
+					modal: true,
+					open: function(event, ui) {
+						setTimeout(function(){
+						$('#dialog').dialog('close');                
+						}, 5000);
+					},
 					buttons: {
 						Close: function() {
 							$(this).dialog("close");
@@ -116,9 +146,31 @@
 		<div class="container">
 			{%- block content %}{% endblock -%}
 		</div>
-			{%- with messages = get_flashed_messages() %}
+		{%- with messages = get_flashed_messages(category_filter=["success"]) %}
 			{%- if messages %}
-				<div id="dialog" title="Info">
+				<div id="flashDialogSuccess" title="Success message">
+				<ul>
+				{%- for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor -%}
+				</ul>
+				</div>
+			{% endif -%}
+		{% endwith -%}
+		{%- with messages = get_flashed_messages(category_filter=["error"]) %}
+			{%- if messages %}
+				<div id="flashDialogError" title="Error message">
+				<ul>
+				{%- for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor -%}
+				</ul>
+				</div>
+			{% endif -%}
+		{% endwith -%}
+		{%- with messages = get_flashed_messages(category_filter=["info"]) %}
+			{%- if messages %}
+				<div id="flashDialogInfo" title="Info message">
 				<ul>
 				{%- for message in messages %}
 					<p>{{ message }}</p>

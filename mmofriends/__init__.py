@@ -97,7 +97,7 @@ def fetchFriendsList():
         else:
             if friendsList:
                 # yes, we are getting a error message
-                flash(("%s: " % MMONetworks[handle].name) + friendsList)
+                flash(("%s: " % MMONetworks[handle].name) + friendsList, 'error')
     return retFriendsList
 
 def loadNetworks():
@@ -114,7 +114,7 @@ def loadNetworks():
             except Exception as e:
                 message = "Unable to initialize MMONetwork %s because: %s" % (network['name'], e)
                 if session.get('admin'):
-                    flash(message)
+                    flash(message, 'error')
                 log.error(message)
         else:
             log.info("MMONetwork %s (%s) is deactivated" % (network['name'], handle))
@@ -301,10 +301,10 @@ def network_link():
                                                                         'moreInfo': net.moreInfo})
         elif request.form['do'] == 'finalize':
             if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
-                flash('Successfully linked to network %s' % net.moreInfo)
+                flash('Successfully linked to network %s' % net.moreInfo, 'success')
                 return redirect(url_for('network_link'))
             else:
-                flash('Unable to link network %s. Please try again.' % net.moreInfo)
+                flash('Unable to link network %s. Please try again.' % net.moreInfo, 'error')
                 return redirect(url_for('network_link'))
         else:
             abort(404)
@@ -340,9 +340,9 @@ def network_unlink(netHandle, netLinkId):
         abort(401)
     if request.method == 'GET':
         if MMONetworks[netHandle].unlink(session.get('userid'), netLinkId):
-            flash('Removed link')
+            flash('Removed link to %s' % MMONetworks[netHandle].name, 'info')
         else:
-            flash('Unable to remove link')
+            flash('Unable to remove link to %s' % MMONetworks[netHandle].name, 'error')
     return redirect(url_for('network_link'))
 
 # openid methods
@@ -365,10 +365,10 @@ def oid2_login(netHandle):
     session['OIDAuthInProgress'] = netHandle
     if MMONetworks[netHandle].oid2_login(request.args.get("code")):
         log.info("Oauth2 authentication successfull")
-        flash("Oauth2 authentication successfull")
+        flash("Oauth2 authentication successfull", 'success')
     else:
         log.info("Oauth2 authentication NOT successfull")
-        flash("Oauth2 authentication NOT successfull")
+        flash("Oauth2 authentication NOT successfull", 'error')
     return redirect(url_for('index'))
 
 @app.route('/Network/OID/Logout')
@@ -383,7 +383,7 @@ def oid_create_or_login(resp):
     netHandle = session.get('OIDAuthInProgress')
     flashMessage, returnUrl = MMONetworks[netHandle].oid_create_or_login(oid, resp)
     session.pop('OIDAuthInProgress')
-    flash(flashMessage)
+    flash(flashMessage, 'success')
     return redirect(returnUrl)
 
 # profile routes
@@ -397,15 +397,15 @@ def profile_register():
             request.form['email']:
 
             if request.form['password'] != request.form['password2']:
-                flash("Passwords do not match!")
+                flash("Passwords do not match!", 'error')
                 valid = False
 
             if len(request.form['nick']) < 3:
-                flash("Nickname is too short")
+                flash("Nickname is too short", 'error')
                 valid = False
 
             if len(request.form['password']) < 8:
-                flash("Password is too short")
+                flash("Password is too short", 'error')
                 valid = False
 
 
@@ -417,7 +417,7 @@ def profile_register():
 
         else:
             valid = False
-            flash("Please fill out all the fields!")
+            flash("Please fill out all the fields!", 'error')
 
         if valid:
             newUser = MMOUser(request.form['nick'])
@@ -436,21 +436,21 @@ def profile_register():
                 db.session.commit()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
-                    flash("Please check your mails at %s" % newUser.email)
+                    flash("Please check your mails at %s" % newUser.email, 'info')
                 else:
-                    flash("Error sending the email to you.")
+                    flash("Error sending the email to you.", 'error')
                 return redirect(url_for('profile_login'))
 
             except IntegrityError, e:
-                flash("SQL Alchemy IntegrityError: %s" % e)
+                flash("SQL Alchemy IntegrityError: %s" % e, 'error')
             except InterfaceError, e:
-                flash("SQL Alchemy InterfaceError %s" % e)
+                flash("SQL Alchemy InterfaceError %s" % e, 'error')
     
     return render_template('profile_register.html', values = request.form)
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show():
-    flash("show profile, change template in the future")
+    flash("show profile, change template in the future", 'info')
     return render_template('profile_register.html', values = getUserById())
 
 @app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
@@ -459,14 +459,14 @@ def profile_verify(userId, verifyKey):
     verifyUser = getUserById(userId)
     if verifyUser.verify(verifyKey):
         if verifyUser.veryfied:
-            flash("Already veryfied. Please log in.")
+            flash("Already veryfied. Please log in.", 'info')
         else:
             db.session.add(verifyUser)
             db.session.commit()
-            flash("Verification ok. Please log in.")
+            flash("Verification ok. Please log in.", 'success')
         return redirect(url_for('profile_login'))
     else:
-        flash("Verification NOT ok. Please try again.")
+        flash("Verification NOT ok. Please try again.", 'error')
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
@@ -479,10 +479,10 @@ def profile_login():
         if myUser:
             myUser.load()
             if not myUser.veryfied:
-                flash("User not yet veryfied. Please check your email for the unlock key.")
+                flash("User not yet veryfied. Please check your email for the unlock key.", 'info')
                 return redirect(url_for('index'))
             elif myUser.locked:
-                flash("User locked. Please contact an administrator.")
+                flash("User locked. Please contact an administrator.", 'info')
                 return redirect(url_for('index'))
             elif myUser.checkPassword(request.form['password']):
                 log.info("<%s> logged in" % myUser.nick)
@@ -501,9 +501,9 @@ def profile_login():
                 return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)
-                flash('Invalid login')               
+                flash('Invalid login', 'error')
         else:
-            flash('Invalid login')
+            flash('Invalid login', 'error')
 
     return render_template('profile_login.html')
 
