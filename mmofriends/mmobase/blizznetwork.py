@@ -46,7 +46,7 @@ class BlizzNetwork(MMONetwork):
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'],)
         # params = {'redirect_uri': 'https://dev.battle.net/',
-        params = {'redirect_uri': 'https://localhost:5000/Network/OID2/Login/Blizz',
+        params = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
                   'response_type': 'code'}
         return battleNet.get_authorize_url(**params)
 
@@ -120,8 +120,8 @@ class BlizzNetwork(MMONetwork):
     #     return True
 
     # oid methods
-    def oid2_login(self, code):
-        self.log.debug("OID2 Login, recieved new code")
+    def oauth2_login(self, code):
+        self.log.debug("Oauth2 Login, recieved new code")
         self.saveLink(code)
         self.setSessionValue(self.linkIdName, code)
         return True
