@@ -79,8 +79,10 @@ class MMONetwork(object):
         db.session.flush()
 
     def loadLinks(self, userId):
-        self.log.debug("Load links template method for user %s in network %s" % (userId, self.name))
-        pass
+        self.log.debug("Loading user links for userId %s" % userId)
+        self.setSessionValue(self.linkIdName, None)
+        for link in self.getNetworkLinks(userId):
+            self.setSessionValue(self.linkIdName, link['network_data'])
 
     def getNetworkLinks(self, userId = None):
         netLinks = []

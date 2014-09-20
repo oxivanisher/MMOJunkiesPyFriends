@@ -107,12 +107,6 @@ class ValveNetwork(MMONetwork):
             htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "//steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png"}
         return htmlFields
 
-    def loadLinks(self, userId):
-        self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue(self.linkIdName, None)
-        for link in self.getNetworkLinks(userId):
-            self.setSessionValue(self.linkIdName, link['network_data'])
-
     def devTest(self):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         return "steamId: %s" % self.getSessionValue(self.linkIdName)

@@ -9,6 +9,9 @@ import logging
 import time
 import os
 import random
+import json
+import requests
+
 # import urllib2
 # import urllib
 # import re
@@ -31,81 +34,91 @@ class BlizzNetwork(MMONetwork):
     def __init__(self, app, session, handle):
         super(BlizzNetwork, self).__init__(app, session, handle)
 
-        # self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
         self.description = "Battle.Net from Blizzard Entertainment"
-        # self.linkIdName = 'code'
-
-        # activate debug while development
         self.setLogLevel(logging.DEBUG)
+        self.battleNet = None
+        self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
 
-    # Oauth2 helper
-    def requestAccessTokenUrl(self):
-        battleNet = OAuth2Service(
-            client_id=self.config['apikey'],
-            client_secret=self.config['apisecret'],
-            authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
-            access_token_url='https://%s.battle.net/oauth/token' % self.config['region'],)
-        # params = {'redirect_uri': 'https://dev.battle.net/',
-        params = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
-                  'response_type': 'code'}
-        return battleNet.get_authorize_url(**params)
-
-    # Query Blizzard
-    def queryBlizz(self, what):
-        pass
-        # Account requests
-        # https://eu.api.battle.net/account/user/id
-        # https://eu.api.battle.net/account/user/battletag
-
-        # wow profile data:
-        # https://eu.api.battle.net/wow/user/characters?locale=en_GB&access_token=38jm5m7mdeuc6a6ed35yakxp
-
-        # 'scope': 'wow.profile',
+        self.blizzWowDataResourcesList = {
+            'battlegroups': "/wow/data/battlegroups/",
+            'character_races': "/wow/data/character/races",
+            'character_classes': "/wow/data/character/classes",
+            'character_achievements': "/wow/data/character/achievements",
+            'guild_rewards': "/wow/data/guild/rewards",
+            'guild_perks': "/wow/data/guild/perks",
+            'guild_achievments': "/wow/data/guild/achievments",
+            'item_classes': "/wow/data/item/classes",
+            'talents': "/wow/data/talents",
+            'pet_types': "/wow/data/pet/types"
+        }
+        self.blizzWowDataResources = {}
 
     # overwritten class methods
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
 
-        # https://github.com/litl/rauth/blob/master/examples/github-cli.py
-
-        # https://us.api.battle.net/wow/realm/status?apikey=<key>
-        # https://us.api.battle.net/sc2/data/achievements?apikey=<key>
-        # https://us.api.battle.net/d3/data/follower/templar?apikey=<key>
-
-        # http://us.battle.net/en/forum/topic/13979047915#1
-
-        # battleNet = OAuth2Service(
-        #     client_id=self.config['apikey'],
-        #     client_secret=self.config['apisecret'],
-        #     name='battleNet',
-        #     authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
-        #     access_token_url='https://%s.battle.net/oauth/token' % self.config['region'],
-        #     base_url='https://eu.api.battle.net/',
-        #     redirect_uri='https://localhost:5000',
-        #     response_type='code')
-
-        # https://github.com/litl/rauth/blob/master/rauth/service.py
-
-
-        # url = service.get_authorize_url(**params)
-
         htmlFields = {}
         if not self.getSessionValue(self.linkIdName):
             htmlFields['link'] = {'comment': "Click to login with Battle.Net.",
                                   'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'],
-                                  'url': self.requestAccessTokenUrl()}
+                                  'url': self.requestAuthorizationUrl()}
         return htmlFields
 
-    # helper methods
-    # def get_steam_userinfo(self, steam_id):
-    #     options = {
-    #         'key': self.config['apikey'],
-    #         'codes': steam_id
-    #     }
-    #     url = 'http://api.steampowered.com/ISteamUser/' \
-    #           'GetPlayerSummaries/v0001/?%s' % urllib.urlencode(options)
-    #     rv = json.load(urllib2.urlopen(url))
-    #     return rv['response']['players']['player'][0] or {}
+    # Oauth2 helper
+    def requestAuthorizationUrl(self):
+        self.log.debug("Generating Authorization Url")
+        self.battleNet = OAuth2Service(
+            base_url=self.baseUrl,
+            client_id=self.config['apikey'],
+            client_secret=self.config['apisecret'],
+            authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
+            access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
+        # params = {'redirect_uri': 'https://dev.battle.net/',
+        params = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
+                  'response_type': 'code'}
+        return self.battleNet.get_authorize_url(**params)
+
+    def requestAccessToken(self, code):
+        self.log.debug("Requesting Access Token")
+
+        data = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
+                'scope': 'wow.profile sc2.profile',
+                'grant_type': 'authorization_code',
+                'code': code}
+
+        access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
+        self.log.debug("Oauth2 Login successful, recieved new access_token")
+        self.saveLink(access_token)
+        self.setSessionValue(self.linkIdName, access_token)
+
+        result, data = self.queryBlizzardApi('/account/user/battletag')
+        return data['battletag']
+
+    # Query Blizzard
+    def queryBlizzardApi(self, what):
+        payload = {'access_token': self.getSessionValue(self.linkIdName),
+                   'apikey': self.config['apikey'],
+                   'locale': 'en_US'}
+
+        self.log.debug("Checking for missing Blizzard Wow Data Resources.")
+        for entry in self.blizzWowDataResourcesList.keys():
+            if len(self.blizzWowDataResourcesList[entry]) == 0:
+                location = self.baseUrl + self.blizzWowDataResourcesList[entry]
+                self.log.debug("Fetching %s from %s" % (entry, location))
+                self.blizzWowDataResources[entry] = requests.get(location, params=payload).json()
+           
+        self.log.debug("Query Blizzard API for %s" % what)
+        r = requests.get(self.baseUrl + what, params=payload).json()
+        
+        try:
+            if r['code'] == 403:
+                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=self.getSessionValue(self.linkIdName)).first()
+                self.unlink(self.session['userid'], link.id)
+                return (False, r['detail'])
+        except KeyError:
+            pass
+
+        return (True, r)
 
     # def cacheFile(self, url):
     #     outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
@@ -119,41 +132,31 @@ class BlizzNetwork(MMONetwork):
     #         avatarFile.retrieve(url, outputFilePath)
     #     return True
 
-    # oid methods
-    def oauth2_login(self, code):
-        self.log.debug("Oauth2 Login, recieved new code")
-        self.saveLink(code)
-        self.setSessionValue(self.linkIdName, code)
-        return True
-
 
     #     self.log.debug("No code found")
     #     return (False, oid.try_login('https://%s.battle.net/oauth/authorize' % self.config['region']))
 
-    # def oid_logout(self, oid):
-    #     self.log.debug("OID Logout")
-    #     return oid.get_next_url()
-
-    # def oid_create_or_login(self, oid, resp):
-    #     self.log.debug("OID create_or_login")
-    #     print resp
-    #     # match = self.steam_id_re.search(resp.identity_url)
-    #     # self.setSessionValue('code', match.group(1))
-
-    #     # self.saveLink(self.getSessionValue('code'))
-    #     return ('You are logged in to Battle.Net as %s (%s)' % ('blah', 'blubber'), oid.get_next_url())
-
-    def loadLinks(self, userId):
-        self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue(self.linkIdName, None)
-        for link in self.getNetworkLinks(userId):
-            self.setSessionValue(self.linkIdName, link['network_data'])
-
     def devTest(self):
-        # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         ret = []
-        print self.getSessionValue(self.linkIdName)
-        return "code: %s" % self.getSessionValue(self.linkIdName)
+        respv, respt = self.queryBlizzardApi('/account/user/battletag')
+        if respv:
+            response = respt['battletag']
+        else:
+            response = "Error: %s" % respt
+        ret.append("Battletag: %s" + response)
+
+        respv, respt = self.queryBlizzardApi('/wow/user/characters')
+        if respv:
+            response = str(respt)
+        else:
+            response = "Error: %s" % respt
+        ret.append("Profile Data:\n%s" % response)
+
+        for entry in self.blizzWowDataResources.keys():
+            ret.append("\n%s %s:\n%s" % (entry, len(self.blizzWowDataResources[entry]), self.blizzWowDataResources[entry]))
+
+        ret.append("access_token: %s" % self.getSessionValue(self.linkIdName))
+        return '\n'.join(ret)
 
     # def getPartners(self):
     #     self.log.debug("List all partners for given user")
@@ -252,11 +255,3 @@ class BlizzNetwork(MMONetwork):
 
     # def admin(self):
     #     self.log.debug("Loading admin stuff")
-
-    # # steam methods
-    # def getSteamUser(self, name):
-    #     try:
-    #         steam_user = user.SteamUser(userid=int(name))
-    #     except ValueError: # Not an ID, but a vanity URL.
-    #         steam_user = user.SteamUser(userurl=name)
-    #     return steam_user        

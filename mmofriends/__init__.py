@@ -108,8 +108,8 @@ def loadNetworks():
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
                 log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
-                MMONetworks[handle].setLogLevel(logging.INFO)
-                log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
+                # MMONetworks[handle].setLogLevel(logging.INFO)
+                # log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
                 message = "Unable to initialize MMONetwork %s because: %s" % (network['name'], e)
@@ -233,18 +233,13 @@ def dev():
     if not session.get('admin'):
         log.warning("<%s> tried to access admin without permission!")
         abort(401)
-
-    # result = "nope nix"
-    # result = MMONetworks[0].getIcon(-247099292)
     ret = []
-    for net in MMONetworks.keys():
+    for handle in MMONetworks.keys():
         try:
-            result = MMONetworks[net].devTest()
+            result = MMONetworks[handle].devTest()
         except Exception as e:
             result = e
-
-        ret.append({'handle': net, 'result': result})
-
+        ret.append({'handle': handle, 'result': result})
     return render_template('dev.html', result = ret)
 
 # support routes
@@ -378,12 +373,15 @@ def oid_create_or_login(resp):
 @app.route('/Network/Oauth2/Login/<netHandle>', methods=['GET', 'POST'])
 def oauth2_login(netHandle):
     log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
-    if MMONetworks[netHandle].oauth2_login(request.args.get("code")):
-        log.info("Oauth2 authentication successfull")
-        flash("Oauth2 authentication successfull", 'success')
+    name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
+    if name:
+        message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
+        log.info(message)
+        flash(message, 'success')
     else:
-        log.info("Oauth2 authentication NOT successfull")
-        flash("Oauth2 authentication NOT successfull", 'error')
+        message = "Authentication with %s  NOT successfull" % MMONetworks[netHandle].name
+        log.warning(message)
+        flash(message, 'error')
     return redirect(url_for('network_link'))
 
 # profile routes

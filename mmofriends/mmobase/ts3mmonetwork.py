@@ -254,12 +254,6 @@ class TS3Network(MMONetwork):
         else:
             return False
 
-    def loadLinks(self, userId):
-        self.log.debug("Loading user links for userId %s" % userId)
-        self.setSessionValue('userId', None)
-        for link in self.getNetworkLinks(userId):
-            self.setSessionValue(self.linkIdName, link['network_data'])
-
     # helper methods
     def connect(self):
         if not self.connected:
