@@ -115,6 +115,8 @@ class BlizzNetwork(MMONetwork):
         return self.battleNet.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
+        if not self.battleNet:
+            self.requestAuthorizationUrl()
         self.log.debug("Requesting Access Token")
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
@@ -154,6 +156,8 @@ class BlizzNetwork(MMONetwork):
 
     # Query Blizzard
     def queryBlizzardApi(self, what):
+        if not self.battleNet:
+            self.requestAuthorizationUrl()
         payload = {'access_token': self.getSessionValue(self.linkIdName),
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
