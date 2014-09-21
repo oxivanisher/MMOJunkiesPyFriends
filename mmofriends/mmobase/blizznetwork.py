@@ -328,7 +328,7 @@ class BlizzNetwork(MMONetwork):
                                     'title': self.name
                                 },{
                                     'type': 'product',
-                                    'name': 'sc2',
+                                    'name': 'starcraft2',
                                     'title': product
                                 }],
                                 'friendImgs': friendImgs
