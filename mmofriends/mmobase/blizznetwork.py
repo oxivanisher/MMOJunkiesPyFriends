@@ -128,14 +128,16 @@ class BlizzNetwork(MMONetwork):
 
         # fetching battle tag
         result, data = self.queryBlizzardApi('/account/user/battletag')
-        battletag = data['battletag']
-        self.dataResources['battletags'][self.session['userid']] = battletag
+        # battletag = data['battletag']
+        self.dataResources['battletags'][self.session['userid']] = data
+        self.dataResources['battletags'][self.session['userid']]['mmolastupdate'] = int(time.time())
 
         # fetching wow chars
         try:
             result, data = self.queryBlizzardApi('/wow/user/characters')
             if result:
                 self.wowDataResources['user_characters'][self.session['userid']] = data
+                self.wowDataResources['user_characters'][self.session['userid']]['mmolastupdate'] = int(time.time())
         except Exception:
             pass
 
@@ -144,6 +146,7 @@ class BlizzNetwork(MMONetwork):
             result, data = self.queryBlizzardApi('/d3/profile/%s/' % battletag.replace('#', '-'))
             if result:
                 self.d3DataResources['profiles'][self.session['userid']] = data
+                self.d3DataResources['profiles'][self.session['userid']]['mmolastupdate'] = int(time.time())
         except Exception:
             pass
 
@@ -152,11 +155,12 @@ class BlizzNetwork(MMONetwork):
             result, data = self.queryBlizzardApi('/sc2/profile/user')
             if result:
                 self.sc2DataResources['profiles'][self.session['userid']] = data
+                self.sc2DataResources['profiles'][self.session['userid']]['mmolastupdate'] = int(time.time())
         except Exception:
             pass
 
         self.saveAllData()
-        return battletag
+        return self.dataResources['battletags'][self.session['userid']]['battletag']
 
     # Query Blizzard
     def queryBlizzardApi(self, what):
@@ -165,17 +169,21 @@ class BlizzNetwork(MMONetwork):
                    'locale': self.locale}
 
         for entry in self.wowDataResourcesList.keys():
-            if entry not in self.wowDataResources.keys():
-                location = self.baseUrl + self.wowDataResourcesList[entry]
-                self.log.debug("Fetching %s from %s" % (entry, location))
-                self.wowDataResources[entry] = requests.get(location, params=payload).json()
+            self.updateResource(self.wowDataResources, entry, self.baseUrl + self.wowDataResourcesList[entry])
+            # if entry not in self.wowDataResources.keys() or self.wowDataResources[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
+            #     location = self.baseUrl + self.wowDataResourcesList[entry]
+            #     self.log.debug("Fetching %s from %s" % (entry, location))
+            #     self.wowDataResources[entry] = requests.get(location, params=payload).json()
+            #     self.wowDataResources[entry]['mmolastupdate'] = int(time.time())
 
         for entry in self.sc2DataResourcesList.keys():
-            if entry not in self.sc2DataResources:
-                location = self.baseUrl + self.sc2DataResourcesList[entry]
-                self.log.debug("Fetching %s from %s" % (entry, location))
-                self.sc2DataResources[entry] = requests.get(location, params=payload).json()
-           
+            self.updateResource(self.sc2DataResources, entry, self.baseUrl + self.sc2DataResourcesList[entry])
+            # if entry not in self.sc2DataResources or self.sc2DataResources[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
+            #     location = self.baseUrl + self.sc2DataResourcesList[entry]
+            #     self.log.debug("Fetching %s from %s" % (entry, location))
+            #     self.sc2DataResources[entry] = requests.get(location, params=payload).json()
+            #     self.sc2DataResources[entry]['mmolastupdate'] = int(time.time())
+
         self.log.debug("Query Blizzard API for %s" % what)
         r = requests.get(self.baseUrl + what, params=payload).json()
         
@@ -189,6 +197,15 @@ class BlizzNetwork(MMONetwork):
 
         self.saveAllData()
         return (True, r)
+
+    def updateResource(self, resource, entry, location):
+        payload = {'access_token': self.getSessionValue(self.linkIdName),
+                   'apikey': self.config['apikey'],
+                   'locale': self.locale}
+        if entry not in resource or resource[entry]['mmolastupdate']  < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
+            self.log.debug("Fetching %s from %s" % (entry, location))
+            resource[entry] = requests.get(location, params=payload).json()
+            resource[entry]['mmolastupdate'] = int(time.time())
 
     # def cacheFile(self, url):
     #     outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
