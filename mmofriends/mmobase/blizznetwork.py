@@ -342,7 +342,7 @@ class BlizzNetwork(MMONetwork):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            message = "Unable to connect to Network: %s %s, %s, %s" % (exc_type, e, fname, exc_tb.tb_lineno )
+            message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
             self.log.warning(message)
             return (False, message)
 
