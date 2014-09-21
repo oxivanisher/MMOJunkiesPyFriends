@@ -313,7 +313,7 @@ class BlizzNetwork(MMONetwork):
                         friendImgs.append({
                                             'type': 'cache',
                                             'name': self.cacheFile(character['avatar']['url']),
-                                            'title': character['displayName']
+                                            'title': "[%s]" % character['clanTag'] + character['displayName']
                                         })
 
                 result.append({ 'id': userid,
