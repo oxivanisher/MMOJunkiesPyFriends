@@ -178,7 +178,7 @@ def saveJSON(netHandle, fileName, content):
     """Saves the given content to the given filename as JSON"""
     log = getLogger()
     dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
-    log.debug("Writing file: %s" % s)
+    log.debug("Writing file: %s" % dstfile)
     try:
         file = gzip.open(dstfile, 'w')
         file.write(json.dumps(content))
@@ -191,7 +191,7 @@ def loadJSON(netHandle, fileName, default):
     """Loads content from the given filename as JSON. If no file could be read, it returns the default."""
     log = getLogger()
     dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
-    log.debug("Loading from: %s" % s)
+    log.debug("Loading from: %s" % dstfile)
     try:
         file = gzip.open(dstfile, 'r')
         # self.cron_list = self.utils.convert_from_unicode(json.loads(file.read()))
