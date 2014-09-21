@@ -135,9 +135,9 @@ class BlizzNetwork(MMONetwork):
         self.updateResource(self.dataResources['battletags'], self.session['userid'], '/account/user/battletag')
         
         # fetching wow chars
-        if 'profiles' not in self.wowDataResources:
-            self.wowDataResources['profiles'] = {}
-        self.updateResource(self.wowDataResources['profiles'], self.session['userid'], '/wow/user/characters')
+        if 'user_characters' not in self.wowDataResources:
+            self.wowDataResources['user_characters'] = {}
+        self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
 
         # fetching d3 profile
         if 'profiles' not in self.d3DataResources:
@@ -280,10 +280,10 @@ class BlizzNetwork(MMONetwork):
 
         try:
             # FIXME exclude myself ...
-            for userid in self.wowDataResources['profiles'].keys():
+            for userid in self.wowDataResources['user_characters'].keys():
                 friendImgs = []
                 product = 'World of Warcraft'
-                for char in self.wowDataResources['profiles'][userid]['characters']:
+                for char in self.wowDataResources['user_characters'][userid]['characters']:
                     # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
                     friendImgs.append({
                                         'type': 'cache',
@@ -342,7 +342,7 @@ class BlizzNetwork(MMONetwork):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            self.log.warning("Unable to connect to Network: %s, %s, %s" % (exc_type, fname, exc_tb.tb_lineno))
+            self.log.warning("Unable to connect to Network: %s, %s, %s" % (exc_type, fname, exc_tb.tb_lineno ))
             return (False, "Unable to connect to Network: %s, %s, %s" % (exc_type, fname, exc_tb.tb_lineno))
 
     # def getPartnerDetails(self, partnerId):
