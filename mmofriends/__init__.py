@@ -457,7 +457,9 @@ def profile_show():
 def profile_verify(userId, verifyKey):
     log.info("Verify userid %s" % userId)
     verifyUser = getUserById(userId)
-    if verifyUser.verify(verifyKey):
+    if not verifyUser:
+        flash("User not found to verify.")
+    elif verifyUser.verify(verifyKey):
         if verifyUser.veryfied:
             flash("Already veryfied. Please log in.", 'info')
         else:

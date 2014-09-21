@@ -110,14 +110,14 @@ class BlizzNetwork(MMONetwork):
             client_secret=self.config['apisecret'],
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
-        params = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
+        params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                   'response_type': 'code'}
         return self.battleNet.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
         self.log.debug("Requesting Access Token")
 
-        data = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
+        data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
                 'grant_type': 'authorization_code',
                 'code': code}
