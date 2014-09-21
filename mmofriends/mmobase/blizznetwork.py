@@ -11,6 +11,7 @@ import os
 import random
 import json
 import requests
+import urllib
 
 # import urllib2
 # import urllib
@@ -38,6 +39,7 @@ class BlizzNetwork(MMONetwork):
         self.setLogLevel(logging.DEBUG)
         self.battleNet = None
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
+        self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
 
         # things to fetch from blizzard
@@ -108,7 +110,6 @@ class BlizzNetwork(MMONetwork):
             client_secret=self.config['apisecret'],
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
-        # params = {'redirect_uri': 'https://dev.battle.net/',
         params = {'redirect_uri': 'https://localhost:5000/Network/Oauth2/Login/Blizz',
                   'response_type': 'code'}
         return self.battleNet.get_authorize_url(**params)
@@ -127,37 +128,26 @@ class BlizzNetwork(MMONetwork):
         self.setSessionValue(self.linkIdName, access_token)
 
         # fetching battle tag
-        result, data = self.queryBlizzardApi('/account/user/battletag')
-        # battletag = data['battletag']
-        self.dataResources['battletags'][self.session['userid']] = data
-        self.dataResources['battletags'][self.session['userid']]['mmolastupdate'] = int(time.time())
-
+        if 'battletags' not in self.dataResources:
+            self.dataResources['battletags'] = {}
+        self.updateResource(self.dataResources['battletags'], self.session['userid'], '/account/user/battletag')
+        
         # fetching wow chars
-        try:
-            result, data = self.queryBlizzardApi('/wow/user/characters')
-            if result:
-                self.wowDataResources['user_characters'][self.session['userid']] = data
-                self.wowDataResources['user_characters'][self.session['userid']]['mmolastupdate'] = int(time.time())
-        except Exception:
-            pass
+        if 'profiles' not in self.wowDataResources:
+            self.wowDataResources['profiles'] = {}
+        self.updateResource(self.wowDataResources['profiles'], self.session['userid'], '/wow/user/characters')
 
         # fetching d3 profile
-        try:
-            result, data = self.queryBlizzardApi('/d3/profile/%s/' % battletag.replace('#', '-'))
-            if result:
-                self.d3DataResources['profiles'][self.session['userid']] = data
-                self.d3DataResources['profiles'][self.session['userid']]['mmolastupdate'] = int(time.time())
-        except Exception:
-            pass
+        if 'profiles' not in self.d3DataResources:
+            self.d3DataResources['profiles'] = {}
+        self.updateResource(self.d3DataResources['profiles'],
+                            self.session['userid'],
+                            '/d3/profile/%s/' % self.dataResources['battletags'][self.session['userid']]['battletag'].replace('#', '-'))
 
         # fetching sc2 
-        try:
-            result, data = self.queryBlizzardApi('/sc2/profile/user')
-            if result:
-                self.sc2DataResources['profiles'][self.session['userid']] = data
-                self.sc2DataResources['profiles'][self.session['userid']]['mmolastupdate'] = int(time.time())
-        except Exception:
-            pass
+        if 'profiles' not in self.sc2DataResources:
+            self.sc2DataResources['profiles'] = {}
+        self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
 
         self.saveAllData()
         return self.dataResources['battletags'][self.session['userid']]['battletag']
@@ -169,20 +159,10 @@ class BlizzNetwork(MMONetwork):
                    'locale': self.locale}
 
         for entry in self.wowDataResourcesList.keys():
-            self.updateResource(self.wowDataResources, entry, self.baseUrl + self.wowDataResourcesList[entry])
-            # if entry not in self.wowDataResources.keys() or self.wowDataResources[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
-            #     location = self.baseUrl + self.wowDataResourcesList[entry]
-            #     self.log.debug("Fetching %s from %s" % (entry, location))
-            #     self.wowDataResources[entry] = requests.get(location, params=payload).json()
-            #     self.wowDataResources[entry]['mmolastupdate'] = int(time.time())
+            self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
 
         for entry in self.sc2DataResourcesList.keys():
-            self.updateResource(self.sc2DataResources, entry, self.baseUrl + self.sc2DataResourcesList[entry])
-            # if entry not in self.sc2DataResources or self.sc2DataResources[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 10)):
-            #     location = self.baseUrl + self.sc2DataResourcesList[entry]
-            #     self.log.debug("Fetching %s from %s" % (entry, location))
-            #     self.sc2DataResources[entry] = requests.get(location, params=payload).json()
-            #     self.sc2DataResources[entry]['mmolastupdate'] = int(time.time())
+            self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
 
         self.log.debug("Query Blizzard API for %s" % what)
         r = requests.get(self.baseUrl + what, params=payload).json()
@@ -204,33 +184,67 @@ class BlizzNetwork(MMONetwork):
                    'locale': self.locale}
         if entry not in resource or resource[entry]['mmolastupdate']  < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
             self.log.debug("Fetching %s from %s" % (entry, location))
-            resource[entry] = requests.get(location, params=payload).json()
+            resource[entry] = requests.get(self.baseUrl + location, params=payload).json()
             resource[entry]['mmolastupdate'] = int(time.time())
 
-    # def cacheFile(self, url):
-    #     outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
+    def cacheAvatarFile(self, origUrl, race, gender):
+        avatarUrl = None
 
-    #     if os.path.isfile(outputFilePath):
-    #         self.log.debug("Not downloading %s" % url)
-    #     else:
-    #         self.log.info("Downloading %s" % url)
+        # missing (oxivanisher)
+        # api: internal-record-3679/184/109895608-avatar.jpg
+        # http://eu.battle.net/static-render/eu/internal-record-3679/184/109895608-avatar.jpg?alt=wow/static/images/2d/avatar/4-0.jpg
+        # to
+        # http://eu.battle.net/wow/static/images/2d/avatar/4-0.jpg
 
-    #         avatarFile = urllib.URLopener()
-    #         avatarFile.retrieve(url, outputFilePath)
-    #     return True
+        # existing (cernunnos)
+        # api: thrall/156/74806172-avatar.jpg
+        # http://eu.battle.net/static-render/eu/thrall/156/74806172-avatar.jpg
+        # http://eu.battle.net/static-render/eu/thrall/156/74806172-avatar.jpg?alt=wow/static/images/2d/avatar/6-0.jpg
+          # http://eu.battle.net/static-render/eu/azshara/56/94830136-avatar.jpg?alt=wow/static/images/2d/avatar/2-0.jpg
 
+        # FIXME against bug http://us.battle.net/en/forum/topic/14525622754 !
+        if 'internal-record' in origUrl or 'azshara' in origUrl or 'arthas' in origUrl or 'dethecus' in origUrl:
+            # http://eu.battle.net/wow/static/images/2d/avatar/4-0.jpg
+            tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)
+            savePath = tmpUrl.replace('/', '-')
+            avatarUrl = self.avatarUrl + tmpUrl
+            self.log.debug("Found non existing avatar url")
 
-    #     self.log.debug("No code found")
-    #     return (False, oid.try_login('https://%s.battle.net/oauth/authorize' % self.config['region']))
+        else:
+            savePath = origUrl.replace('/', '-')
+            avatarUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + origUrl
+            self.log.debug("Downloading existing avatar url")
+
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', savePath)
+        if os.path.isfile(outputFilePath):
+            self.log.debug("Not downloading %s, it already exists" % savePath)
+        else:
+            self.log.info("Downloading %s to %s" % (avatarUrl, savePath))
+            avatarFile = urllib.URLopener()
+            try:
+                avatarFile.retrieve(avatarUrl, outputFilePath)
+            except Exception:
+                self.log.warning("Not existing avatar (BUG: http://us.battle.net/en/forum/topic/14525622754)! Force fetching general avatar.")
+                savePath = self.cacheAvatarFile('internal-record', race, gender)
+
+        return savePath
 
     def devTest(self):
         ret = []
-        respv, respt = self.queryBlizzardApi('/account/user/battletag')
-        if respv:
-            response = respt['battletag']
-        else:
-            response = "Error: %s" % respt
-        ret.append("Battletag: %s" + response)
+
+        for userid in self.wowDataResources['profiles'].keys():
+            ret.append("userid: %s" % userid)
+            for char in self.wowDataResources['profiles'][userid]['characters']:
+                # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
+                ret.append(" - char: %s <img src='%s' />" % (char['name'], self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender'])))
+                # ret.append(" - thumbnail: %s" % (self.avatarUrl + char['thumbnail']))
+
+        # respv, respt = self.queryBlizzardApi('/account/user/battletag')
+        # if respv:
+        #     response = respt['battletag']
+        # else:
+        #     response = "Error: %s" % respt
+        # ret.append("Battletag: %s" + response)
 
         respv, respt = self.queryBlizzardApi('/wow/user/characters')
         if respv:
@@ -239,10 +253,10 @@ class BlizzNetwork(MMONetwork):
             response = "Error: %s" % respt
         ret.append("Profile Data:\n%s" % response)
 
-        for entry in self.wowDataResources.keys():
-            ret.append("\n%s %s:\n%s" % (entry, len(self.wowDataResources[entry]), self.wowDataResources[entry]))
+        # for entry in self.wowDataResources.keys():
+        #     ret.append("\n%s %s:\n%s" % (entry, len(self.wowDataResources[entry]), self.wowDataResources[entry]))
 
-        ret.append("access_token: %s" % self.getSessionValue(self.linkIdName))
+        # ret.append("access_token: %s" % self.getSessionValue(self.linkIdName))
         return '\n'.join(ret)
 
     # def getPartners(self):
