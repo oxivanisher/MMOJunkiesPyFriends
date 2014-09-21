@@ -53,18 +53,6 @@ class ValveNetwork(MMONetwork):
         rv = json.load(urllib2.urlopen(url))
         return rv['response']['players']['player'][0] or {}
 
-    def cacheFile(self, url):
-        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
-
-        if os.path.isfile(outputFilePath):
-            self.log.debug("Not downloading %s" % url)
-        else:
-            self.log.info("Downloading %s" % url)
-
-            avatarFile = urllib.URLopener()
-            avatarFile.retrieve(url, outputFilePath)
-        return True
-
     # oid methods
     def oid_login(self, oid):
         self.log.debug("OID Login")

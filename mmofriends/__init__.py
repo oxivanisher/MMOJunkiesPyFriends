@@ -257,6 +257,8 @@ def get_image(imgType, imgId):
             fileName = imgId
         elif imgType == 'flag':
             fileName = imgId + '.png'
+        elif imgType == 'product':
+            fileName = imgId + '.png'
 
         if os.path.isfile(os.path.join(filePath, fileName)):
             return send_from_directory(filePath, fileName)
