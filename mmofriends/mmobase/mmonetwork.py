@@ -7,6 +7,7 @@ import socket
 import os
 import random
 import atexit
+import urllib
 
 from flask import current_app
 from mmoutils import *
