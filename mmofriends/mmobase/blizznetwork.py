@@ -309,9 +309,9 @@ class BlizzNetwork(MMONetwork):
                                 'friendImgs': friendImgs
                             })
 
-                friendImgs = []
                 product = 'Starcraft 2'
-                for userid in self.sc2DataResources['profiles']:
+                for userid in self.sc2DataResources['profiles'].keys():
+                    friendImgs = []
                     for character in self.sc2DataResources['profiles'][userid]['characters']:
                         # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
                         friendImgs.append({
@@ -320,24 +320,23 @@ class BlizzNetwork(MMONetwork):
                                             'title': "[%s] %s" % (character['clanTag'], character['displayName'])
                                         })
 
-                result.append({ 'id': userid,
-                                'nick': self.dataResources['battletags'][userid]['battletag'],
-                                'state': 'bla bla',
-                                # 'state': OnlineState(friend.state),
-                                'netHandle': self.handle,
-                                'networkText': product,
-                                'networkImgs': [{
-                                    'type': 'network',
-                                    'name': self.handle,
-                                    'title': self.name
-                                },{
-                                    'type': 'product',
-                                    'name': 'starcraft2',
-                                    'title': product
-                                }],
-                                'friendImgs': friendImgs
-                            })
-
+                    result.append({ 'id': userid,
+                                    'nick': self.dataResources['battletags'][userid]['battletag'],
+                                    'state': 'bla bla',
+                                    # 'state': OnlineState(friend.state),
+                                    'netHandle': self.handle,
+                                    'networkText': product,
+                                    'networkImgs': [{
+                                        'type': 'network',
+                                        'name': self.handle,
+                                        'title': self.name
+                                    },{
+                                        'type': 'product',
+                                        'name': 'starcraft2',
+                                        'title': product
+                                    }],
+                                    'friendImgs': friendImgs
+                                })
 
             return (True, result)
         except Exception as e:
