@@ -340,8 +340,9 @@ class BlizzNetwork(MMONetwork):
 
             return (True, result)
         except Exception as e:
-            self.log.warning("Unable to connect to Network %s: %s" % (self.name, e))
-            return (False, "Unable to connect to Network %s: %s" % (self.name, e))
+            type, value, traceback = sys.exc_info()
+            self.log.warning("Unable to connect to Network: %s" % (e))
+            return (False, "Unable to connect to Network: %s, %s, %s, %s" % (e, type, value, traceback))
 
     # def getPartnerDetails(self, partnerId):
     #     self.log.debug("List partner details")
