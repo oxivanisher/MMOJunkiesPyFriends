@@ -16,7 +16,7 @@ Blizz:
   active: True
   #3days
   updateLock: 259200
-  spikey: secret
+  apikey: secret
   apisecret: secret
   icon: battlenet.png
 Valve:
