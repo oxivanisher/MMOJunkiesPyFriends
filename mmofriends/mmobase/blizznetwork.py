@@ -79,7 +79,6 @@ class BlizzNetwork(MMONetwork):
 
         # setup batttleNet service
         self.battleNet = OAuth2Service(
-            base_url=self.baseUrl,
             client_id=self.config['apikey'],
             client_secret=self.config['apisecret'],
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
@@ -103,12 +102,12 @@ class BlizzNetwork(MMONetwork):
     # overwritten class methods
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
-
         htmlFields = {}
         if not self.getSessionValue(self.linkIdName):
             htmlFields['link'] = {'comment': "Click to login with Battle.Net.",
                                   'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'],
                                   'url': self.requestAuthorizationUrl()}
+        # print "url", self.requestAuthorizationUrl()
         return htmlFields
 
     # Oauth2 helper
@@ -130,6 +129,7 @@ class BlizzNetwork(MMONetwork):
                 'code': code}
 
         access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
+        # print "access_token", access_token
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
@@ -229,6 +229,7 @@ class BlizzNetwork(MMONetwork):
           # http://eu.battle.net/static-render/eu/azshara/56/94830136-avatar.jpg?alt=wow/static/images/2d/avatar/2-0.jpg
 
         # FIXME against bug http://us.battle.net/en/forum/topic/14525622754 !
+        # FIXME bug 2 http://us.battle.net/en/forum/topic/14525912884 !
         if 'internal-record' in origUrl or 'azshara' in origUrl or 'arthas' in origUrl or 'dethecus' in origUrl:
             # http://eu.battle.net/wow/static/images/2d/avatar/4-0.jpg
             tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)

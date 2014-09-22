@@ -398,7 +398,10 @@ def oid_create_or_login(resp):
 @app.route('/Network/Oauth2/Login/<netHandle>', methods=['GET', 'POST'])
 def oauth2_login(netHandle):
     log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    # print "request.args", request.args
+    # print "code", request.args.get("code")
     name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
+    # print "name", name
     if name:
         message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
         log.info(message)
