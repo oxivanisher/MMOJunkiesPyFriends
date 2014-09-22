@@ -113,6 +113,7 @@ class BlizzNetwork(MMONetwork):
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
+        self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
         params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                   'response_type': 'code'}
         self.log.debug("Generating Authorization Url")
@@ -121,7 +122,7 @@ class BlizzNetwork(MMONetwork):
     def requestAccessToken(self, code):
         # if not self.battleNet:
         #     self.requestAuthorizationUrl()
-        self.log.debug("Requesting Access Token")
+        self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
@@ -129,7 +130,7 @@ class BlizzNetwork(MMONetwork):
                 'code': code}
 
         access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
-        self.log.debug("Oauth2 Login successful, recieved new access_token")
+        self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
         self.updateResources()
@@ -169,11 +170,11 @@ class BlizzNetwork(MMONetwork):
         #     self.requestAuthorizationUrl()
 
 
-        for entry in self.wowDataResourcesList.keys():
-            self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
+        # for entry in self.wowDataResourcesList.keys():
+        #     self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
 
-        for entry in self.sc2DataResourcesList.keys():
-            self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
+        # for entry in self.sc2DataResourcesList.keys():
+        #     self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
 
 
         self.log.debug("Query Blizzard API for %s" % what)
@@ -196,13 +197,21 @@ class BlizzNetwork(MMONetwork):
         return (True, r)
 
     def updateResource(self, resource, entry, location):
+        self.log.debug("Updating resources")
         payload = {'access_token': self.getSessionValue(self.linkIdName),
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
         if entry not in resource or resource[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
-            self.log.debug("Fetching %s from %s" % (entry, location))
-            resource[entry] = requests.get(self.baseUrl + location, params=payload).json()
-            resource[entry]['mmolastupdate'] = int(time.time())
+            # r = requests.get(self.baseUrl + location, params=payload).json()
+            # resource[entry] = r
+
+            (resValue, resData)  = self.queryBlizzardApi(location)
+            if resValue:
+                resource[entry] = resData
+                resource[entry]['mmolastupdate'] = int(time.time())
+                self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resource[entry])))
+            else:
+                self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
 
     def cacheAvatarFile(self, origUrl, race, gender):
         avatarUrl = None
