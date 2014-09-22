@@ -167,9 +167,7 @@ class BlizzNetwork(MMONetwork):
     def queryBlizzardApi(self, what):
         # if not self.battleNet:
         #     self.requestAuthorizationUrl()
-        payload = {'access_token': self.getSessionValue(self.linkIdName),
-                   'apikey': self.config['apikey'],
-                   'locale': self.locale}
+
 
         for entry in self.wowDataResourcesList.keys():
             self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
@@ -177,14 +175,20 @@ class BlizzNetwork(MMONetwork):
         for entry in self.sc2DataResourcesList.keys():
             self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
 
+
         self.log.debug("Query Blizzard API for %s" % what)
+        payload = {'access_token': self.getSessionValue(self.linkIdName),
+                   'apikey': self.config['apikey'],
+                   'locale': self.locale}
         r = requests.get(self.baseUrl + what, params=payload).json()
-        
+     
         try:
             if r['code'] == 403:
                 link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=self.getSessionValue(self.linkIdName)).first()
                 self.unlink(self.session['userid'], link.id)
                 return (False, r['detail'])
+            elif 'error' in r.keys():
+                return (False, r['error_description'])
         except KeyError:
             pass
 
