@@ -48,6 +48,7 @@ app.config['startupDate'] = time.time()
 
 try:
     os.environ['MMOFRIENDS_CFG']
+    log.info("Loading config from: %s" % os.environ['MMOFRIENDS_CFG'])
 except KeyError:
     log.warning("Loading config from dist/mmofriends.cfg.example becuase MMOFRIENDS_CFG environment variable is not set.")
     os.environ['MMOFRIENDS_CFG'] = "../dist/mmofriends.cfg.example"
