@@ -47,6 +47,7 @@ class MMONetwork(object):
         self.moreInfo = 'NoMoreInfo'
         self.varsToSave = []
         self.lastRefreshDate = 0
+        self.adminMethods = []
 
         self.session[self.handle] = {}
 

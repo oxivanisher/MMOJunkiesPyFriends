@@ -43,6 +43,9 @@ class TS3Network(MMONetwork):
         self.clientDatabase = {}
         self.clientInfoDatabase = {}
 
+        self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
+        self.adminMethods.append((self.cacheFiles, 'Cache files'))
+
     def refresh(self):
         if not self.connect():
             self.log.warning("Not refreshing online clients because we are disconnected")

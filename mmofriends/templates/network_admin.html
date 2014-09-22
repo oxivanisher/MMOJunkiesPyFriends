@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+{% if result %}
+<h3>Output of: {{ result.methodName }}</h3>
+<pre>{{ result.methodResult }}</pre>
+{% endif %}
+<h3>Administrative Network Tasks</h3>
+{% for net in networks %}
+	<h4>{{ net.name }}</h4>
+	<ul>
+	{% for method in net.methods %}
+		<li><a href="{{ url_for('network_admin_do', networkHandle=net.handle, index=method.index) }}" title="{{ method.name }}">{{ method.name }}</a></li>
+	{% endfor %}
+	</ul>
+{% endfor %}
+{% endblock %}

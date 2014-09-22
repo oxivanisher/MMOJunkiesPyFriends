@@ -75,6 +75,8 @@ class BlizzNetwork(MMONetwork):
         if len(self.sc2DataResources) == 0:
             self.sc2DataResources['profiles'] = {}
 
+        self.adminMethods.append((self.updateResources, 'Recache resources'))
+
     # save data to file!!
     def saveAllData(self):
         self.log.debug("Saving Battle.net data to files")
@@ -128,7 +130,10 @@ class BlizzNetwork(MMONetwork):
         self.log.debug("Oauth2 Login successful, recieved new access_token")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
+        self.updateResources()
+        return self.dataResources['battletags'][self.session['userid']]['battletag']
 
+    def updateResources(self):
         # fetching battle tag
         if 'battletags' not in self.dataResources:
             self.dataResources['battletags'] = {}
@@ -150,9 +155,8 @@ class BlizzNetwork(MMONetwork):
         if 'profiles' not in self.sc2DataResources:
             self.sc2DataResources['profiles'] = {}
         self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
-
         self.saveAllData()
-        return self.dataResources['battletags'][self.session['userid']]['battletag']
+
 
     # Query Blizzard
     def queryBlizzardApi(self, what):

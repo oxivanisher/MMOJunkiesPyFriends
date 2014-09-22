@@ -146,6 +146,18 @@ def fetchNetworkLinks(userId):
             session['netLinks'][net] = MMONetworks[net].getNetworkLinks(userId)
         return session['netLinks']
 
+def getAdminMethods():
+    nets = []
+    for net in MMONetworks.keys():
+        adminMethods = []
+        for (method, methodName) in MMONetworks[net].adminMethods:
+            adminMethods.append({'name': methodName,
+                                 'index': MMONetworks[net].adminMethods.index((method, methodName))})
+        nets.append({'handle': MMONetworks[net].handle,
+                     'name': MMONetworks[net].name,
+                     'methods': adminMethods})
+    return nets
+
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
@@ -182,49 +194,6 @@ def index():
 def about():
     twitterData = {'widgetUrl': app.config['TWITTERURL'], 'widgetId': app.config['TWITTERWIDGETID']}
     return render_template('about.html', twitter = twitterData)
-
-@app.route('/Administration/')
-def admin():
-    if not session.get('logged_in'):
-        abort(401)
-    if not session.get('admin'):
-        log.warning("<%s> tried to access admin without permission!")
-        abort(401)
-
-    loadedNets = []
-    for handle in MMONetworks.keys():
-        network = MMONetworks[handle]
-        loadedNets.append({ 'handle': handle,
-                            'name': network.name,
-                            'className': network.__class__.__name__,
-                            'moreInfo': network.moreInfo,
-                            'description': network.description })
-
-    loadedNets = []
-    for handle in MMONetworks.keys():
-        network = MMONetworks[handle]
-        loadedNets.append({ 'handle': handle,
-                            'name': network.name,
-                            'className': network.__class__.__name__,
-                            'moreInfo': network.moreInfo,
-                            'description': network.description })
-    registredUsers = []
-
-    with app.test_request_context():
-        users = MMOUser.query.all()
-        for user in users:
-            registredUsers.append({ 'nick': user.nick,
-                                    'name': user.name,
-                                    'email': user.email,
-                                    'website': user.website,
-                                    'admin': user.admin,
-                                    'locked': user.locked,
-                                    'veryfied': user.veryfied })
-
-    infos = {}
-    infos['loadedNets'] = loadedNets
-    infos['registredUsers'] = registredUsers
-    return render_template('admin.html', infos = infos)
 
 @app.route('/Development')
 def dev():
@@ -269,6 +238,51 @@ def get_image(imgType, imgId):
         log.warning("Unknown ID for img type %s: %s" % (imgType, imgId))
     abort(404)
 
+# admin routes
+
+@app.route('/Administration/Status')
+def admin_status():
+    if not session.get('logged_in'):
+        abort(401)
+    if not session.get('admin'):
+        log.warning("<%s> tried to access admin without permission!")
+        abort(401)
+
+    loadedNets = []
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        loadedNets.append({ 'handle': handle,
+                            'name': network.name,
+                            'className': network.__class__.__name__,
+                            'moreInfo': network.moreInfo,
+                            'description': network.description })
+
+    loadedNets = []
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        loadedNets.append({ 'handle': handle,
+                            'name': network.name,
+                            'className': network.__class__.__name__,
+                            'moreInfo': network.moreInfo,
+                            'description': network.description })
+    registredUsers = []
+
+    with app.test_request_context():
+        users = MMOUser.query.all()
+        for user in users:
+            registredUsers.append({ 'nick': user.nick,
+                                    'name': user.name,
+                                    'email': user.email,
+                                    'website': user.website,
+                                    'admin': user.admin,
+                                    'locked': user.locked,
+                                    'veryfied': user.veryfied })
+
+    infos = {}
+    infos['loadedNets'] = loadedNets
+    infos['registredUsers'] = registredUsers
+    return render_template('admin_status.html', infos = infos)
+
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
 def network_show(netHandle):
@@ -276,12 +290,20 @@ def network_show(netHandle):
         abort(401)
     pass
 
-@app.route('/Network/Administration/<networkHandle>', methods = ['GET'])
-def network_admin(networkHandle):
-    if not session.get('logged_in'):
-        abort(401)
-    if session.get('admin'):
-        return MMONetworks[networkHandle].admin()
+@app.route('/Network/Administration', methods = ['GET'])
+def network_admin():
+    if session.get('logged_in') and session.get('admin'):
+        return render_template('network_admin.html', networks = getAdminMethods())
+    abort(401)
+
+@app.route('/Network/Administration/<networkHandle>/<int:index>', methods = ['GET'])
+def network_admin_do(networkHandle, index):
+    if session.get('logged_in') and session.get('admin'):
+        ret = {}
+        (method, ret['methodName']) = MMONetworks[networkHandle].adminMethods[index]
+        ret['methodResult'] = method()
+        return render_template('network_admin.html', networks = getAdminMethods(), result = ret)
+    abort(401)
 
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
