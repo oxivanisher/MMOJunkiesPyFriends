@@ -84,8 +84,6 @@ class BlizzNetwork(MMONetwork):
             client_secret=self.config['apisecret'],
             authorize_url='https://%s.battle.net/oauth/authorize' % self.config['region'],
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
-        params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
-                  'response_type': 'code'}
 
     # save data to file!!
     def saveAllData(self):
@@ -115,6 +113,8 @@ class BlizzNetwork(MMONetwork):
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
+        params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
+                  'response_type': 'code'}
         self.log.debug("Generating Authorization Url")
         return self.battleNet.get_authorize_url(**params)
 
