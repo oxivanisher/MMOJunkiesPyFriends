@@ -142,13 +142,13 @@ class BlizzNetwork(MMONetwork):
         # fetching wow chars
         if 'user_characters' not in self.wowDataResources:
             self.wowDataResources['user_characters'] = {}
-            self.wowDataResources['mmolastupdate'] = 0
+            self.wowDataResources['user_characters']['mmolastupdate'] = 0
         self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
 
         # fetching d3 profile
         if 'profiles' not in self.d3DataResources:
             self.d3DataResources['profiles'] = {}
-            self.d3DataResources['profiles'] = 0
+            self.d3DataResources['profiles']['mmolastupdate'] = 0
         self.updateResource(self.d3DataResources['profiles'],
                             self.session['userid'],
                             '/d3/profile/%s/' % self.dataResources['battletags'][self.session['userid']]['battletag'].replace('#', '-'))
@@ -156,7 +156,7 @@ class BlizzNetwork(MMONetwork):
         # fetching sc2 
         if 'profiles' not in self.sc2DataResources:
             self.sc2DataResources['profiles'] = {}
-            self.sc2DataResources['profiles'] = 0
+            self.sc2DataResources['profiles']['mmolastupdate'] = 0
         self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
         self.saveAllData()
 
