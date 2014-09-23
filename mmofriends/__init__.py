@@ -491,15 +491,14 @@ def profile_verify(userId, verifyKey):
     if not verifyUser:
         flash("User not found to verify.")
     elif verifyUser.verify(verifyKey):
+        db.session.add(verifyUser)
+        db.session.commit()
+
         if verifyUser.veryfied:
-            flash("Already veryfied. Please log in.", 'info')
-        else:
-            db.session.add(verifyUser)
-            db.session.commit()
             flash("Verification ok. Please log in.", 'success')
-        return redirect(url_for('profile_login'))
-    else:
-        flash("Verification NOT ok. Please try again.", 'error')
+            return redirect(url_for('profile_login'))
+        else:
+            flash("Verification NOT ok. Please try again.", 'error')
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
