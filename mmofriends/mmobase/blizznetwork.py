@@ -43,38 +43,55 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
 
         # things to fetch from blizzard
-        self.loadAllData()
-        if len(self.dataResources) == 0:
-            self.dataResources['battletags'] = {}
+
+        # load caches
+        # self.getCache('battletags')
+        # self.getCache('wowProfiles')
+        # self.getCache('d3Profiles')
+        # self.getCache('sc2Profiles')
+
+        # if 'user_characters' not in self.cache['wowDataResources'].keys():
+        #     self.cache['wowDataResources']['user_characters'] = {}
+
+        # if 'profiles' not in self.cache['d3DataResources'].keys():
+        #     self.cache['d3DataResources']['profiles'] = {}
+
+        # if 'profiles' not in self.cache['sc2DataResources'].keys():
+        #     self.cache['sc2DataResources']['profiles'] = {}
+
+        # self.loadAllData()
+        # if len(self.dataResources) == 0:
+        #     self.dataResources['battletags'] = {}
 
         self.wowDataResourcesList = {
-            'battlegroups': "/wow/data/battlegroups/",
-            'character_races': "/wow/data/character/races",
-            'character_classes': "/wow/data/character/classes",
-            'character_achievements': "/wow/data/character/achievements",
-            'guild_rewards': "/wow/data/guild/rewards",
-            'guild_perks': "/wow/data/guild/perks",
-            'guild_achievements': "/wow/data/guild/achievements",
-            'item_classes': "/wow/data/item/classes",
-            'talents': "/wow/data/talents",
-            'pet_types': "/wow/data/pet/types"
+            'wowBattlegroups': "/wow/data/battlegroups/",
+            'wowCharacter_races': "/wow/data/character/races",
+            'wowCharacter_classes': "/wow/data/character/classes",
+            'wowCharacter_achievements': "/wow/data/character/achievements",
+            'wowGuild_rewards': "/wow/data/guild/rewards",
+            'wowGuild_perks': "/wow/data/guild/perks",
+            'wowGuild_achievements': "/wow/data/guild/achievements",
+            'wowItem_classes': "/wow/data/item/classes",
+            'wowTalents': "/wow/data/talents",
+            'wowPettypes': "/wow/data/pet/types"
         }
         # self.wowDataResources = {}
-        if len(self.wowDataResources) == 0:
-            self.wowDataResources['user_characters'] = {}
+        # if len(self.wowDataResources) == 0:
+        #     self.wowDataResources['user_characters'] = {}
         
         # self.d3DataResources = {}
-        if len(self.d3DataResources) == 0:
-            self.d3DataResources['profiles'] = {}
+        # if len(self.d3DataResources) == 0:
+        #     self.d3DataResources['profiles'] = {}
 
         # self.sc2DataResources = {}
         self.sc2DataResourcesList = {
-            'achievements': "/sc2/data/achievements",
-            'rewards': "/sc2/data/rewards"
+            'sc2achievements': "/sc2/data/achievements",
+            'sc2rewards': "/sc2/data/rewards"
         }
-        if len(self.sc2DataResources) == 0:
-            self.sc2DataResources['profiles'] = {}
+        # if len(self.sc2DataResources) == 0:
+        #     self.sc2DataResources['profiles'] = {}
 
+        # admin methods
         self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
@@ -86,19 +103,19 @@ class BlizzNetwork(MMONetwork):
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
 
     # save data to file!!
-    def saveAllData(self):
-        self.log.debug("Saving Battle.net data to files")
-        saveJSON(self.handle, 'general', self.dataResources)
-        saveJSON(self.handle, 'wow', self.wowDataResources)
-        saveJSON(self.handle, 'd3', self.d3DataResources)
-        saveJSON(self.handle, 'sc2', self.sc2DataResources)
+    # def saveAllData(self):
+    #     self.log.debug("Saving Battle.net data to files")
+    #     saveJSON(self.handle, 'general', self.dataResources)
+    #     saveJSON(self.handle, 'wow', self.wowDataResources)
+    #     saveJSON(self.handle, 'd3', self.d3DataResources)
+    #     saveJSON(self.handle, 'sc2', self.sc2DataResources)
 
-    def loadAllData(self):
-        self.log.debug("Loading Battle.net data from files")
-        self.dataResources = loadJSON(self.handle, 'general', {})
-        self.wowDataResources = loadJSON(self.handle, 'wow', {})
-        self.d3DataResources = loadJSON(self.handle, 'd3', {})
-        self.sc2DataResources = loadJSON(self.handle, 'sc2', {})
+    # def loadAllData(self):
+    #     self.log.debug("Loading Battle.net data from files")
+    #     self.dataResources = loadJSON(self.handle, 'general', {})
+    #     self.wowDataResources = loadJSON(self.handle, 'wow', {})
+    #     self.d3DataResources = loadJSON(self.handle, 'd3', {})
+    #     self.sc2DataResources = loadJSON(self.handle, 'sc2', {})
 
     # overwritten class methods
     def getLinkHtml(self):
@@ -137,81 +154,122 @@ class BlizzNetwork(MMONetwork):
         self.setSessionValue(self.linkIdName, access_token)
         self.updateBaseResources(False)
         self.updateUserResources()
-        return self.dataResources['battletags'][self.session['userid']]['battletag']
+        return self.cache['battletags'][self.session['userid']]
 
     # update resource helpers
     def updateBaseResources(self, force = True):
         if force:
             for entry in self.wowDataResourcesList.keys():
-                self.wowDataResources[entry]['mmolastupdate'] = 0
+                # self.wowDataResources[entry]['mmolastupdate'] = 0
+                self.cache[entry]['mmolastupdate'] = 0
 
             for entry in self.sc2DataResourcesList.keys():
-                self.sc2DataResources[entry]['mmolastupdate'] = 0
+                # self.sc2DataResources[entry]['mmolastupdate'] = 0
+                self.cache[entry]['mmolastupdate'] = 0
 
         for entry in self.wowDataResourcesList.keys():
-            self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
+            # self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
+            self.updateResource(entry, self.wowDataResourcesList[entry])
 
         for entry in self.sc2DataResourcesList.keys():
-            self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
+            # self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
+            self.updateResource(entry, self.sc2DataResourcesList[entry])
 
-        self.saveAllData()
+        # self.saveAllData()
         return (True, "All resources updated")
 
     def updateUserResources(self):
         # fetching battle tag
-        if 'battletags' not in self.dataResources.keys():
-            self.dataResources['battletags'][self.session['userid']] = {}
-        (retValue, retMessage) = self.updateResource(self.dataResources['battletags'], self.session['userid'], '/account/user/battletag')
+        self.getCache('battletags')
+        # print "battletags", self.cache['battletags']
+        # if 'battletags' not in self.dataResources.keys():
+            # self.dataResources['battletags'][self.session['userid']] = {}
+        # (retValue, retMessage) = self.updateResource('battletags', self.session['userid'], '/account/user/battletag')
+        (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag')
+        # print "battletags", self.cache['battletags']
         if not retValue:
             return (False, retMessage)
+        self.cache['battletags'][self.session['userid']] = retMessage['battletag']
+        self.setCache('battletags')
+
 
         # fetching wow chars
-        if 'user_characters' not in self.wowDataResources.keys():
-            self.wowDataResources['user_characters'] = {}
-            self.wowDataResources['user_characters'][self.session['userid']]['mmolastupdate'] = 0
-        (retValue, retMessage) = self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
+        # if 'user_characters' not in self.wowDataResources.keys():
+        #     self.wowDataResources['user_characters'] = {}
+        #     self.wowDataResources['user_characters'][self.session['userid']]['mmolastupdate'] = 0
+        # (retValue, retMessage) = self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
+        self.getCache('wowProfiles')
+        (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters')
         if not retValue:
             return (False, retMessage)
+        # if 'user_characters' not in self.cache['wowDataResources'].keys():
+        #     self.cache['wowDataResources']['user_characters'] = {}
+        # self.cache['wowDataResources']['user_characters'][self.session['userid']] = retMessage
+        self.cache['wowProfiles'][self.session['userid']] = retMessage
+        self.setCache('wowProfiles')
 
         # fetching d3 profile
-        if 'profiles' not in self.d3DataResources.keys():
-            self.d3DataResources['profiles'] = {}
-            self.d3DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
-        (retValue, retMessage) = self.updateResource(self.d3DataResources['profiles'],
-                            self.session['userid'],
-                            '/d3/profile/%s/' % self.dataResources['battletags'][self.session['userid']]['battletag'].replace('#', '-'))
+        # if 'profiles' not in self.d3DataResources.keys():
+        #     self.d3DataResources['profiles'] = {}
+        #     self.d3DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
+        #     (retValue, retMessage) = self.updateResource(self.d3DataResources['profiles'],
+        #                     self.session['userid'],
+        #                     '/d3/profile/%s/' % self.dataResources['battletags'][self.session['userid']]['battletag'].replace('#', '-'))
+        self.getCache('d3Profiles')
+        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][self.session['userid']].replace('#', '-'))
         if not retValue:
             return (False, retMessage)
+        # if 'profiles' not in self.cache['d3DataResources'].keys():
+        #     self.cache['d3DataResources']['profiles'] = {}
+        # self.cache['d3Profiles']['profiles'][self.session['userid']] = retMessage
+        self.cache['d3Profiles'][self.session['userid']] = retMessage
+        self.setCache('d3Profiles')
 
-        # fetching sc2 
-        if 'profiles' not in self.sc2DataResources.keys():
-            self.sc2DataResources['profiles'] = {}
-            self.sc2DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
-        (retValue, retMessage) = self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
+        # fetching sc2
+        # if 'profiles' not in self.sc2DataResources.keys():
+        #     self.sc2DataResources['profiles'] = {}
+        #     self.sc2DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
+        # (retValue, retMessage) = self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
+        self.getCache('sc2Profiles')
+        (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user')
         if not retValue:
             return (False, retMessage)
+        # if 'profiles' not in self.cache['sc2DataResources'].keys():
+        #     self.cache['sc2DataResources']['profiles'] = {}
+        # self.cache['sc2DataResources']['profiles'][self.session['userid']] = retMessage
+        self.cache['sc2Profiles'][self.session['userid']] = retMessage
+        self.setCache('sc2Profiles')
 
-        self.saveAllData()
+        # self.saveAllData()
         return (True, "All resources updated")
 
-    def updateResource(self, resource, entry, location):
+    def updateResource(self, entry, location):
         self.log.debug("Updating resource from %s" % (location))
-        payload = {'access_token': self.getSessionValue(self.linkIdName),
-                   'apikey': self.config['apikey'],
-                   'locale': self.locale}
-        if entry not in resource or resource[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
-            # r = requests.get(self.baseUrl + location, params=payload).json()
-            # resource[entry] = r
-
+        self.getCache(entry)
+        if 'mmolastupdate' not in self.cache[entry] or self.cache[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
             (resValue, resData)  = self.queryBlizzardApi(location)
             if resValue:
-                resource[entry] = resData
-                resource[entry]['mmolastupdate'] = int(time.time())
-                self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resource[entry])))
+                self.cache[entry] = resData
+                self.cache[entry]['mmolastupdate'] = int(time.time())
+                self.setCache(entry)
+                self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resData)))
             else:
                 self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
                 return (False, resData)
         return (True, "Resource updated from %s" % location)
+
+    # def updateResource(self, resource, entry, location):
+    #     self.log.debug("Updating resource from %s" % (location))
+    #     if entry not in resource or resource[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
+    #         (resValue, resData)  = self.queryBlizzardApi(location)
+    #         if resValue:
+    #             resource[entry] = resData
+    #             resource[entry]['mmolastupdate'] = int(time.time())
+    #             self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resource[entry])))
+    #         else:
+    #             self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
+    #             return (False, resData)
+    #     return (True, "Resource updated from %s" % location)
 
     # Query Blizzard
     def queryBlizzardApi(self, what):
@@ -237,7 +295,7 @@ class BlizzNetwork(MMONetwork):
         except Exception as e:
             self.log.warning("Please handle exception %s on in queryBlizzardApi!" % e)
 
-        self.saveAllData()
+        # self.saveAllData()
         return (True, r)
 
     def cacheAvatarFile(self, origUrl, race, gender):
@@ -328,12 +386,15 @@ class BlizzNetwork(MMONetwork):
             return (False, False)
         result = []
 
+        self.getCache('battletags')
+
         try:
             # FIXME exclude myself ...
-            for userid in self.wowDataResources['user_characters'].keys():
+            self.getCache('wowProfiles')
+            for userid in self.cache['wowProfiles'].keys():
                 friendImgs = []
                 product = 'World of Warcraft'
-                for char in self.wowDataResources['user_characters'][userid]['characters']:
+                for char in self.cache['wowProfiles'][userid]['characters']:
                     # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
                     friendImgs.append({
                                         'type': 'cache',
@@ -342,7 +403,7 @@ class BlizzNetwork(MMONetwork):
                                     })
 
                 result.append({ 'id': userid,
-                                'nick': self.dataResources['battletags'][userid]['battletag'],
+                                'nick': self.cache['battletags'][userid],
                                 'state': 'bla bla',
                                 # 'state': OnlineState(friend.state),
                                 'netHandle': self.handle,
@@ -360,9 +421,10 @@ class BlizzNetwork(MMONetwork):
                             })
 
                 product = 'Starcraft 2'
-                for userid in self.sc2DataResources['profiles'].keys():
+                self.getCache('sc2Profiles')
+                for userid in self.cache['sc2Profiles'].keys():
                     friendImgs = []
-                    for character in self.sc2DataResources['profiles'][userid]['characters']:
+                    for character in self.cache['sc2Profiles'][userid]['characters']:
                         # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
                         print "character['avatar']['url']", character['avatar']['url']
                         friendImgs.append({
@@ -372,7 +434,7 @@ class BlizzNetwork(MMONetwork):
                                         })
 
                     result.append({ 'id': userid,
-                                    'nick': self.dataResources['battletags'][userid]['battletag'],
+                                    'nick': self.cache['battletags'][userid],
                                     'state': 'bla bla',
                                     # 'state': OnlineState(friend.state),
                                     'netHandle': self.handle,

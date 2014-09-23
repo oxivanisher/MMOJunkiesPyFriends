@@ -8,6 +8,7 @@ import os
 import random
 import atexit
 import urllib
+import json
 
 from flask import current_app
 from mmoutils import *
@@ -25,6 +26,30 @@ class MMONetworkProduct(object):
     def addField(self, name, comment = "", fieldType = str):
         self.log.debug("Add a field with name, comment and fieldType")
         self.fields.append((name, fieldType))
+
+class MMONetworkCache(db.Model):
+    __tablename__ = 'mmonetcache'
+
+    id = db.Column(db.Integer, primary_key=True)
+    network_handle = db.Column(db.String(20))
+    entry_name = db.Column(db.String(20))
+    last_update = db.Column(db.Integer)
+    cache_data = db.Column(db.Text)
+
+    def __init__(self, network_handle, entry_name, cache_data = ""):
+        self.network_handle = network_handle
+        self.entry_name = entry_name
+        self.last_update = 0
+        self.cache_data = cache_data
+
+    def __repr__(self):
+        return '<MMONetCache %r>' % self.id
+
+    def get(self):
+        return json.loads(self.cache_data)
+
+    def set(self, cache_data):
+        self.cache_data = json.dumps(cache_data)
 
 class MMONetwork(object):
 
@@ -48,8 +73,7 @@ class MMONetwork(object):
         self.varsToSave = []
         self.lastRefreshDate = 0
         self.adminMethods = []
-
-        self.session[self.handle] = {}
+        self.cache = {}
 
         # self.hidden = False
 
@@ -212,6 +236,28 @@ class MMONetwork(object):
             avatarFile = urllib.URLopener()
             avatarFile.retrieve(url, outputFilePath)
         return newUrl
+
+    def getCache(self, name):
+        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        if ret:
+            self.log.debug("Loading cache %s from database" % name)
+            self.cache[name] = json.loads(ret.cache_data)
+        else:
+            self.log.debug("Setting up new cache named %s" % name)
+            self.cache[name] = {}
+
+    def setCache(self, name):
+        self.log.debug("Saving cache named %s" % name)
+        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        if ret:
+            ret.set(self.cache[name])
+        else:
+            ret = MMONetworkCache(self.handle, name)
+            ret.set(self.cache[name])
+
+        db.session.add(ret)
+        db.session.commit()
+        
 
     # saver and loader methods
     # def registerToAutosaveAndLoad(self, var, fileName, default):
