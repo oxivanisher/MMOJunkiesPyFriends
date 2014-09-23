@@ -491,9 +491,6 @@ def profile_verify(userId, verifyKey):
     if not verifyUser:
         flash("User not found to verify.")
     elif verifyUser.verify(verifyKey):
-        db.session.add(verifyUser)
-        db.session.commit()
-
         if verifyUser.veryfied:
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))

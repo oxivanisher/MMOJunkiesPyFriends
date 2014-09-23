@@ -84,15 +84,21 @@ class MMOUser(db.Model):
     def lock(self):
         self.log.debug("Lock MMOUser %s" % self.getDisplayName())
         self.locked = True
-
+        db.session.add(self)
+        db.session.commit()
+        
     def unlock(self):
         self.log.debug("Unlock MMOUser %s" % self.getDisplayName())
         self.locked = False
+        db.session.add(self)
+        db.session.commit()
 
     def verify(self, key):
         if key == self.verifyKey:
             self.veryfied = True
             self.locked = False
+            db.session.add(self)
+            db.session.commit()
             return True
         else:
             return False
