@@ -177,7 +177,7 @@ def send_email(app, msgto, msgsubject, msgtext):
 def saveJSON(netHandle, fileName, content):
     """Saves the given content to the given filename as JSON"""
     # log = getLogger()
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gz')
     # log.info("Writing file: %s" % dstfile)
     try:
         file = gzip.open(dstfile, 'w')
@@ -190,7 +190,7 @@ def saveJSON(netHandle, fileName, content):
 def loadJSON(netHandle, fileName, default):
     """Loads content from the given filename as JSON. If no file could be read, it returns the default."""
     # log = getLogger()
-    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gzip')
+    dstfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../db', netHandle + '_' + fileName + '.json.gz')
     # log.info("Loading from: %s" % dstfile)
     try:
         file = gzip.open(dstfile, 'r')
