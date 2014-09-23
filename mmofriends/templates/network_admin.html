@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if result %}
-<h3>Output of: {{ result.methodName }}</h3>
+<h3>Output of {{ result.networkName }}: {{ result.methodName }}</h3>
 <pre>{{ result.methodResult }}</pre>
 {% endif %}
 <h3>Administrative Network Tasks</h3>

@@ -200,7 +200,9 @@ class MMONetwork(object):
         self.log.debug("Prepare for first request.")
 
     def cacheFile(self, url):
-        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
+        newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', newUrl)
+        # outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
 
         if os.path.isfile(outputFilePath):
             self.log.debug("Not downloading %s" % url)
@@ -209,7 +211,7 @@ class MMONetwork(object):
 
             avatarFile = urllib.URLopener()
             avatarFile.retrieve(url, outputFilePath)
-        return True
+        return newUrl
 
     # saver and loader methods
     # def registerToAutosaveAndLoad(self, var, fileName, default):

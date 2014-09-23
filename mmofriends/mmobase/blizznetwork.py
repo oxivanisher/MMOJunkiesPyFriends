@@ -75,7 +75,8 @@ class BlizzNetwork(MMONetwork):
         if len(self.sc2DataResources) == 0:
             self.sc2DataResources['profiles'] = {}
 
-        self.adminMethods.append((self.updateResources, 'Recache resources'))
+        self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
+        self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
         # setup batttleNet service
         self.battleNet = OAuth2Service(
@@ -114,6 +115,7 @@ class BlizzNetwork(MMONetwork):
     def requestAuthorizationUrl(self):
         self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
         params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
+                  'scope': 'wow.profile sc2.profile',
                   'response_type': 'code'}
         self.log.debug("Generating Authorization Url")
         return self.battleNet.get_authorize_url(**params)
@@ -133,71 +135,67 @@ class BlizzNetwork(MMONetwork):
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
-        self.updateResources()
+        self.updateBaseResources(False)
+        self.updateUserResources()
         return self.dataResources['battletags'][self.session['userid']]['battletag']
 
-    def updateResources(self):
+    # update resource helpers
+    def updateBaseResources(self, force = True):
+        if force:
+            for entry in self.wowDataResourcesList.keys():
+                self.wowDataResources[entry]['mmolastupdate'] = 0
+
+            for entry in self.sc2DataResourcesList.keys():
+                self.sc2DataResources[entry]['mmolastupdate'] = 0
+
+        for entry in self.wowDataResourcesList.keys():
+            self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
+
+        for entry in self.sc2DataResourcesList.keys():
+            self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
+
+        self.saveAllData()
+        return (True, "All resources updated")
+
+    def updateUserResources(self):
         # fetching battle tag
-        if 'battletags' not in self.dataResources:
-            self.dataResources['battletags'] = {}
-        self.updateResource(self.dataResources['battletags'], self.session['userid'], '/account/user/battletag')
-        
+        if 'battletags' not in self.dataResources.keys():
+            self.dataResources['battletags'][self.session['userid']] = {}
+        (retValue, retMessage) = self.updateResource(self.dataResources['battletags'], self.session['userid'], '/account/user/battletag')
+        if not retValue:
+            return (False, retMessage)
+
         # fetching wow chars
-        if 'user_characters' not in self.wowDataResources:
+        if 'user_characters' not in self.wowDataResources.keys():
             self.wowDataResources['user_characters'] = {}
-            self.wowDataResources['user_characters']['mmolastupdate'] = 0
-        self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
+            self.wowDataResources['user_characters'][self.session['userid']]['mmolastupdate'] = 0
+        (retValue, retMessage) = self.updateResource(self.wowDataResources['user_characters'], self.session['userid'], '/wow/user/characters')
+        if not retValue:
+            return (False, retMessage)
 
         # fetching d3 profile
-        if 'profiles' not in self.d3DataResources:
+        if 'profiles' not in self.d3DataResources.keys():
             self.d3DataResources['profiles'] = {}
-            self.d3DataResources['profiles']['mmolastupdate'] = 0
-        self.updateResource(self.d3DataResources['profiles'],
+            self.d3DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
+        (retValue, retMessage) = self.updateResource(self.d3DataResources['profiles'],
                             self.session['userid'],
                             '/d3/profile/%s/' % self.dataResources['battletags'][self.session['userid']]['battletag'].replace('#', '-'))
+        if not retValue:
+            return (False, retMessage)
 
         # fetching sc2 
-        if 'profiles' not in self.sc2DataResources:
+        if 'profiles' not in self.sc2DataResources.keys():
             self.sc2DataResources['profiles'] = {}
-            self.sc2DataResources['profiles']['mmolastupdate'] = 0
-        self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
-        self.saveAllData()
-
-
-    # Query Blizzard
-    def queryBlizzardApi(self, what):
-        # if not self.battleNet:
-        #     self.requestAuthorizationUrl()
-
-
-        # for entry in self.wowDataResourcesList.keys():
-        #     self.updateResource(self.wowDataResources, entry, self.wowDataResourcesList[entry])
-
-        # for entry in self.sc2DataResourcesList.keys():
-        #     self.updateResource(self.sc2DataResources, entry, self.sc2DataResourcesList[entry])
-
-
-        self.log.debug("Query Blizzard API for %s" % what)
-        payload = {'access_token': self.getSessionValue(self.linkIdName),
-                   'apikey': self.config['apikey'],
-                   'locale': self.locale}
-        r = requests.get(self.baseUrl + what, params=payload).json()
-     
-        try:
-            if r['code'] == 403:
-                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=self.getSessionValue(self.linkIdName)).first()
-                self.unlink(self.session['userid'], link.id)
-                return (False, r['detail'])
-            elif 'error' in r.keys():
-                return (False, r['error_description'])
-        except KeyError:
-            pass
+            self.sc2DataResources['profiles'][self.session['userid']]['mmolastupdate'] = 0
+        (retValue, retMessage) = self.updateResource(self.sc2DataResources['profiles'], self.session['userid'], '/sc2/profile/user')
+        if not retValue:
+            return (False, retMessage)
 
         self.saveAllData()
-        return (True, r)
+        return (True, "All resources updated")
 
     def updateResource(self, resource, entry, location):
-        self.log.debug("Updating resources")
+        self.log.debug("Updating resource from %s" % (location))
         payload = {'access_token': self.getSessionValue(self.linkIdName),
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
@@ -212,6 +210,35 @@ class BlizzNetwork(MMONetwork):
                 self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resource[entry])))
             else:
                 self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
+                return (False, resData)
+        return (True, "Resource updated from %s" % location)
+
+    # Query Blizzard
+    def queryBlizzardApi(self, what):
+        self.log.debug("Query Blizzard API for %s" % what)
+        payload = {'access_token': self.getSessionValue(self.linkIdName),
+                   'apikey': self.config['apikey'],
+                   'locale': self.locale}
+        r = requests.get(self.baseUrl + what, params=payload).json()
+     
+        try:
+            if r['code']:
+                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=self.getSessionValue(self.linkIdName)).first()
+                # self.unlink(self.session['userid'], link.id)
+                self.log.debug("queryBlizzardApi found code: %s" % r['code'])
+                self.requestAuthorizationUrl()
+                return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
+                return (False, r['detail'])
+            elif 'error' in r.keys():
+                self.log.debug("queryBlizzardApi found error: %s" % r['error_description'])
+                return (False, r['error_description'])
+        except KeyError:
+            pass
+        except Exception as e:
+            self.log.warning("Please handle exception %s on in queryBlizzardApi!" % e)
+
+        self.saveAllData()
+        return (True, r)
 
     def cacheAvatarFile(self, origUrl, race, gender):
         avatarUrl = None
@@ -226,7 +253,7 @@ class BlizzNetwork(MMONetwork):
         # api: thrall/156/74806172-avatar.jpg
         # http://eu.battle.net/static-render/eu/thrall/156/74806172-avatar.jpg
         # http://eu.battle.net/static-render/eu/thrall/156/74806172-avatar.jpg?alt=wow/static/images/2d/avatar/6-0.jpg
-          # http://eu.battle.net/static-render/eu/azshara/56/94830136-avatar.jpg?alt=wow/static/images/2d/avatar/2-0.jpg
+        # http://eu.battle.net/static-render/eu/azshara/56/94830136-avatar.jpg?alt=wow/static/images/2d/avatar/2-0.jpg
 
         # FIXME against bug http://us.battle.net/en/forum/topic/14525622754 !
         # FIXME bug 2 http://us.battle.net/en/forum/topic/14525912884 !
@@ -337,6 +364,7 @@ class BlizzNetwork(MMONetwork):
                     friendImgs = []
                     for character in self.sc2DataResources['profiles'][userid]['characters']:
                         # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
+                        print "character['avatar']['url']", character['avatar']['url']
                         friendImgs.append({
                                             'type': 'cache',
                                             'name': self.cacheFile(character['avatar']['url']),

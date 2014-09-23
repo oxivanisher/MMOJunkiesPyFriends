@@ -301,8 +301,11 @@ def network_admin():
 def network_admin_do(networkHandle, index):
     if session.get('logged_in') and session.get('admin'):
         ret = {}
+        ret['networkName'] = MMONetworks[networkHandle].name
         (method, ret['methodName']) = MMONetworks[networkHandle].adminMethods[index]
-        ret['methodResult'] = method()
+        (retValue, ret['methodResult']) = method()
+        if not retValue:
+            flash(ret['methodResult'], 'error')
         return render_template('network_admin.html', networks = getAdminMethods(), result = ret)
     abort(401)
 
@@ -401,7 +404,9 @@ def oauth2_login(netHandle):
     # print "request.args", request.args
     # print "code", request.args.get("code")
     name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
-    # print "name", name
+    for arg in request.args:
+        print arg, request.args[arg]
+    print "requestAccessToken returned:", name
     if name:
         message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
         log.info(message)
