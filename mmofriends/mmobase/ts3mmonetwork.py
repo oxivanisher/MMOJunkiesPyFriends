@@ -40,9 +40,6 @@ class TS3Network(MMONetwork):
         self.lastOnlineRefreshDate = 0
         self.clientftfid = 0
 
-        self.clientDatabase = {}
-        self.clientInfoDatabase = {}
-
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
         self.adminMethods.append((self.cacheFiles, 'Cache files'))
 
