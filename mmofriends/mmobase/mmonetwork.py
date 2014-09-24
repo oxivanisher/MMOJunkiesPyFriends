@@ -15,17 +15,17 @@ from mmoutils import *
 from mmouser import *
 from mmofriends import db
 
-class MMONetworkProduct(object):
+# class MMONetworkProduct(object):
 
-    def __init__(self, name):
-        self.log = logging.getLogger(__name__)
-        self.log.debug("Initializing MMONetwork product %s" % name)
-        self.name = name
-        self.fields = []
+#     def __init__(self, name):
+#         self.log = logging.getLogger(__name__)
+#         self.log.debug("Initializing MMONetwork product %s" % name)
+#         self.name = name
+#         self.fields = []
 
-    def addField(self, name, comment = "", fieldType = str):
-        self.log.debug("Add a field with name, comment and fieldType")
-        self.fields.append((name, fieldType))
+#     def addField(self, name, comment = "", fieldType = str):
+#         self.log.debug("Add a field with name, comment and fieldType")
+#         self.fields.append((name, fieldType))
 
 class MMONetworkCache(db.Model):
     __tablename__ = 'mmonetcache'
@@ -51,6 +51,9 @@ class MMONetworkCache(db.Model):
     def set(self, cache_data):
         self.cache_data = json.dumps(cache_data)
 
+    def age(self):
+        return int(time.time()) - self.last_update
+
 class MMONetwork(object):
 
     def __init__(self, app, session, handle):
@@ -74,10 +77,6 @@ class MMONetwork(object):
         self.lastRefreshDate = 0
         self.adminMethods = []
         self.cache = {}
-
-        # self.hidden = False
-
-        # atexit.register(self.saveAtExit)
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
@@ -254,11 +253,28 @@ class MMONetwork(object):
         else:
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
+        ret.last_update = int(time.time())
+        db.session.add(ret)
+        db.session.commit()
 
+    def getCacheAge(self, name):
+        self.log.debug("Getting age of cache %s" % name)
+        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        if not ret:
+            return int(time.time())
+        return ret.last_update
+
+    def forceCacheUpdate(self, name):
+        self.log.debug("Forcing cache %s to update" % name)
+        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        if ret:
+            self.cache[name] = json.loads(ret.cache_data)
+        else:
+            self.cache[name] = {}
+        ret.last_update = 0
         db.session.add(ret)
         db.session.commit()
         
-
     # saver and loader methods
     # def registerToAutosaveAndLoad(self, var, fileName, default):
     #     self.log.debug("Registring %s to save on exit." % fileName)

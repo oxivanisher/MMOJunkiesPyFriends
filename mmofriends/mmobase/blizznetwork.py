@@ -49,7 +49,6 @@ class BlizzNetwork(MMONetwork):
             'wowPettypes': "/wow/data/pet/types"
         }
 
-        # self.sc2DataResources = {}
         self.sc2DataResourcesList = {
             'sc2achievements': "/sc2/data/achievements",
             'sc2rewards': "/sc2/data/rewards"
@@ -109,10 +108,10 @@ class BlizzNetwork(MMONetwork):
     def updateBaseResources(self, force = True):
         if force:
             for entry in self.wowDataResourcesList.keys():
-                self.cache[entry]['mmolastupdate'] = 0
+                self.forceCacheUpdate(entry)
 
             for entry in self.sc2DataResourcesList.keys():
-                self.cache[entry]['mmolastupdate'] = 0
+                self.forceCacheUpdate(entry)
 
         for entry in self.wowDataResourcesList.keys():
             self.updateResource(entry, self.wowDataResourcesList[entry])
@@ -161,11 +160,10 @@ class BlizzNetwork(MMONetwork):
     def updateResource(self, entry, location):
         self.log.debug("Updating resource from %s" % (location))
         self.getCache(entry)
-        if 'mmolastupdate' not in self.cache[entry] or self.cache[entry]['mmolastupdate'] < (time.time() - self.config['updateLock'] - random.randint(1, 300)):
+        if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300):
             (resValue, resData)  = self.queryBlizzardApi(location)
             if resValue:
                 self.cache[entry] = resData
-                self.cache[entry]['mmolastupdate'] = int(time.time())
                 self.setCache(entry)
                 self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resData)))
             else:
@@ -246,53 +244,37 @@ class BlizzNetwork(MMONetwork):
     def devTest(self):
         ret = []
 
-        for userid in self.sc2DataResources['profiles'].keys():
-            for character in self.sc2DataResources['profiles'][userid]['characters']:
-                print "userid", userid
-                # ret.append(str(self.sc2DataResources['profiles'][userid][character]['avatar']['url']))
-                print "url", character['avatar']['url']
-                # ret.append(str(self.sc2DataResources['profiles'][userid][character]['displayName']))
-                print "displayName", character['displayName']
-        ret.append(str(self.sc2DataResources['profiles']))
+        self.getCache('battletags')
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+        for userid in self.cache['wowProfiles'].keys():
 
-        # for userid in self.wowDataResources['profiles'].keys():
-        #     ret.append("userid: %s" % userid)
-        #     for char in self.wowDataResources['profiles'][userid]['characters']:
-        #         # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
-        #         ret.append(" - char: %s <img src='%s' />" % (char['name'], self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender'])))
-        #         # ret.append(" - thumbnail: %s" % (self.avatarUrl + char['thumbnail']))
+            ret.append("WOW Account: %s" % self.cache['battletags'][userid])
+            for char in self.cache['wowProfiles'][userid]['characters']:
+                ret.append("    WOW Toon: %s@%s" % (char['name'], char['realm']))
 
-        # respv, respt = self.queryBlizzardApi('/account/user/battletag')
-        # if respv:
-        #     response = respt['battletag']
-        # else:
-        #     response = "Error: %s" % respt
-        # ret.append("Battletag: %s" + response)
+            # ret.append("WOW Account: %s" % self.cache['battletags'][userid])
+            # for char in self.cache['sc2Profiles'][userid]['characters']:
+            #     ret.append("    SC2: %s" % (char['name']))
 
-        # respv, respt = self.queryBlizzardApi('/wow/user/characters')
-        # if respv:
-        #     response = str(respt)
-        # else:
-        #     response = "Error: %s" % respt
-        # ret.append("Profile Data:\n%s" % response)
-
-        # for entry in self.wowDataResources.keys():
-        #     ret.append("\n%s %s:\n%s" % (entry, len(self.wowDataResources[entry]), self.wowDataResources[entry]))
-
-        # ret.append("access_token: %s" % self.getSessionValue(self.linkIdName))
+        print json.dumps(self.cache['sc2Profiles'])
         return '\n'.join(ret)
 
     def getPartners(self):
         self.log.debug("List all partners for given user")
+
+        self.updateBaseResources(False)
+
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
         result = []
 
         self.getCache('battletags')
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
 
         try:
             # FIXME exclude myself ...
-            self.getCache('wowProfiles')
             for userid in self.cache['wowProfiles'].keys():
                 friendImgs = []
                 product = 'World of Warcraft'
@@ -322,36 +304,35 @@ class BlizzNetwork(MMONetwork):
                                 'friendImgs': friendImgs
                             })
 
-                product = 'Starcraft 2'
-                self.getCache('sc2Profiles')
-                for userid in self.cache['sc2Profiles'].keys():
-                    friendImgs = []
-                    for character in self.cache['sc2Profiles'][userid]['characters']:
-                        # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
-                        print "character['avatar']['url']", character['avatar']['url']
-                        friendImgs.append({
-                                            'type': 'cache',
-                                            'name': self.cacheFile(character['avatar']['url']),
-                                            'title': "[%s] %s" % (character['clanTag'], character['displayName'])
-                                        })
+            product = 'Starcraft 2'
+            for userid in self.cache['sc2Profiles'].keys():
+                friendImgs = []
+                for character in self.cache['sc2Profiles'][userid]['characters']:
+                    # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
+                    # print "character['avatar']['url']", character['avatar']['url']
+                    friendImgs.append({
+                                        'type': 'cache',
+                                        'name': self.cacheFile(character['avatar']['url']),
+                                        'title': "[%s] %s" % (character['clanTag'], character['displayName'])
+                                    })
 
-                    result.append({ 'id': userid,
-                                    'nick': self.cache['battletags'][userid],
-                                    'state': 'bla bla',
-                                    # 'state': OnlineState(friend.state),
-                                    'netHandle': self.handle,
-                                    'networkText': product,
-                                    'networkImgs': [{
-                                        'type': 'network',
-                                        'name': self.handle,
-                                        'title': self.name
-                                    },{
-                                        'type': 'product',
-                                        'name': 'starcraft2',
-                                        'title': product
-                                    }],
-                                    'friendImgs': friendImgs
-                                })
+                result.append({ 'id': userid,
+                                'nick': self.cache['battletags'][userid],
+                                'state': 'bla bla',
+                                # 'state': OnlineState(friend.state),
+                                'netHandle': self.handle,
+                                'networkText': product,
+                                'networkImgs': [{
+                                    'type': 'network',
+                                    'name': self.handle,
+                                    'title': self.name
+                                },{
+                                    'type': 'product',
+                                    'name': 'starcraft2',
+                                    'title': product
+                                }],
+                                'friendImgs': friendImgs
+                            })
 
             return (True, result)
         except Exception as e:
