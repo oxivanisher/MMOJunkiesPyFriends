@@ -70,11 +70,16 @@ class TS3Network(MMONetwork):
             self.log.info("Found %s online client(s)" % len(self.onlineClients))
         return True
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
         if self.refresh():
             ret = []
-            # for cldbid in self.onlineClients.keys():
-            for cldbid in self.clientDatabase.keys():
+            try:
+                kwargs['onlineOnly']
+                clientList = self.onlineClients.keys()
+            except KeyError:
+                clientList = self.clientDatabase.keys()
+
+            for cldbid in clientList:
                 # Refresh user details
                 self.fetchUserDetatilsByCldbid(cldbid)
                 try:

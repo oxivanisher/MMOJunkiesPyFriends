@@ -260,7 +260,7 @@ class BlizzNetwork(MMONetwork):
         print json.dumps(self.cache['sc2Profiles'])
         return '\n'.join(ret)
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
 
         self.updateBaseResources(False)

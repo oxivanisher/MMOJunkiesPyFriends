@@ -91,7 +91,7 @@ with app.test_request_context():
 def fetchFriendsList():
     retFriendsList = []
     for handle in MMONetworks.keys():
-        (res, friendsList) = MMONetworks[handle].getPartners()
+        (res, friendsList) = MMONetworks[handle].getPartners(onlineOnly=True)
         if res:
             # yes, we are getting friends
             retFriendsList += friendsList

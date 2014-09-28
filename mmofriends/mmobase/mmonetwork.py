@@ -164,7 +164,7 @@ class MMONetwork(object):
             self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
             return False
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',

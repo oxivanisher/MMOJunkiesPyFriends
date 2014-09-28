@@ -104,7 +104,7 @@ class ValveNetwork(MMONetwork):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         return "steamId: %s" % self.getSessionValue(self.linkIdName)
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
         self.getCache('users')
 
         self.log.debug("List all partners for given user")
