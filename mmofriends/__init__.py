@@ -88,9 +88,16 @@ with app.test_request_context():
 #                   access_token_secret='')
 
 # helper methods
-def fetchFriendsList():
+def fetchFriendsList(netHandle = None):
     retFriendsList = []
-    for handle in MMONetworks.keys():
+    args = {}
+    if not netHandle:
+        netHandles = MMONetworks.keys()
+        args = {'onlineOnly': True}
+    else:
+        netHandles = [netHandle]
+
+    for handle in netHandles:
         (res, friendsList) = MMONetworks[handle].getPartners(onlineOnly=True)
         if res:
             # yes, we are getting friends
@@ -287,9 +294,10 @@ def admin_status():
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
 def network_show(netHandle):
-    if not session.get('logged_in'):
+    if session.get('logged_in'):
+        return render_template('partner_list.html', friends = fetchFriendsList(netHandle))
+    else:
         abort(401)
-    pass
 
 @app.route('/Network/Administration', methods = ['GET'])
 def network_admin():
@@ -548,9 +556,6 @@ def profile_logout():
 # partner routes
 @app.route('/Partner/List')
 def partner_list():
-    # users = MMOUser.query.all()
-    # for user in users:
-    #     print user
     if session.get('logged_in'):
         return render_template('partner_list.html', friends = fetchFriendsList())
     else:

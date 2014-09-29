@@ -43,6 +43,15 @@ class ValveNetwork(MMONetwork):
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
 
+        self.onlineStates = {}
+        self.onlineStates[0] = "Offline"
+        self.onlineStates[1] = "Online"
+        self.onlineStates[2] = "Busy"
+        self.onlineStates[3] = "Away"
+        self.onlineStates[4] = "Snooze"
+        self.onlineStates[5] = "Looking for trade"
+        self.onlineStates[6] = "Looking to play"
+
     # helper methods
     def get_steam_userinfo(self, steam_id):
         self.getCache('users')
@@ -111,6 +120,13 @@ class ValveNetwork(MMONetwork):
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
         if self.getSessionValue(self.linkIdName):
+
+            try:
+                kwargs['onlineOnly']
+                onlineOnly = True
+            except KeyError:
+                pass
+
             result = []
             # try:
             allLinks = self.getNetworkLinks()
@@ -120,11 +136,14 @@ class ValveNetwork(MMONetwork):
             except Exception as e:
                 return (False, "Error connecting to Steam: %s" % e)
             for friend in friends:
+                if onlineOnly:
+                    if friend.state == 0:
+                        continue
+
+                linkId = None
                 for link in allLinks:
                     if friend.steamid == link['network_data']:
                         linkId = friend.steamid
-                    else:
-                        linkId = None
 
                 self.getPartnerDetails(friend.steamid)
                 self.cacheFile(friend.avatar)
@@ -148,7 +167,7 @@ class ValveNetwork(MMONetwork):
                 result.append({ 'mmoid': linkId,
                                 'id': friend.steamid,
                                 'nick': friend.name,
-                                'state': friend.state,
+                                'state': self.onlineStates[friend.state],
                                 # 'state': OnlineState(friend.state),
                                 # state() == OnlineState.OFFLINE
                                 'netHandle': self.handle,
@@ -186,7 +205,7 @@ class ValveNetwork(MMONetwork):
             except KeyError:
                 pass
             self.cache['users'][partnerId]['profile_url'] = steam_user.profile_url
-            self.cache['users'][partnerId]['state'] = steam_user.state
+            self.cache['users'][partnerId]['state'] = self.onlineStates[steam_user.state]
             self.cache['users'][partnerId]['level'] = steam_user.level
             self.cache['users'][partnerId]['xp'] = steam_user.xp
             # self.cache['users'][partnerId]['time_created'] = time.mktime(steam_user.time_created.timetuple())

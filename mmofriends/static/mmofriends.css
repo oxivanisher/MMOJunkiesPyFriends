@@ -7,10 +7,10 @@ body { padding-bottom: 22px; }
 }
 
 .glow {
-  border:1px solid #fafafa;
-  -webkit-box-shadow:0 0 6px #007eff;
-  -moz-box-shadow:0 0 5px #007eff;
-  box-shadow:0 0 5px #007eff;
+  border:1px solid #000;
+  -webkit-box-shadow:0 0 6px #00ff7e;
+  -moz-box-shadow:0 0 5px #00ff7e;
+  box-shadow:0 0 5px #00ff7e;
   outline: none;
 }
 
@@ -51,14 +51,18 @@ body { padding-bottom: 22px; }
 
 .position_bottom_right {
 	position: fixed;
-	bottom: 30px;
+	bottom: 10px;
 	right: 10px;
+  max-width: 60%;
+  z-index: 1000;
 }
 
 .position_bottom_left {
   position: fixed;
-  bottom: 30px;
+  bottom: 10px;
   left: 10px;
+  max-width: 30%;
+  z-index: 1000;
 }
 
 .twitter_news {

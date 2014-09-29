@@ -361,11 +361,6 @@ class BlizzNetwork(MMONetwork):
         
         return moreInfo
 
-    # def getPartnerDetails(self, partnerId):
-    #     self.log.debug("List partner details")
-    #     steam_user = self.getSteamUser(partnerId)
-    #     moreInfo = {}
-
     #     avatar = steam_user.avatar_full.split('/')[-1]
 
     #     self.setPartnerAvatar(moreInfo, avatar)

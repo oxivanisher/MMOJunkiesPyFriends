@@ -73,7 +73,7 @@ class TS3Network(MMONetwork):
     def getPartners(self, **kwargs):
         if self.refresh():
             allLinks = self.getNetworkLinks()
-            
+
             ret = []
             try:
                 kwargs['onlineOnly']
@@ -159,14 +159,13 @@ class TS3Network(MMONetwork):
                 else:
                     state = "Offline"
 
+                linkId = None
                 for link in allLinks:
                     if cldbid == link['network_data']:
                         linkId = cldbid
-                    else:
-                        linkId = None
 
-                ret.append({'id': linkId,
-                            'mmoid': cldbid,
+                ret.append({'id': cldbid,
+                            'mmoid': linkId,
                             'nick': nick,
                             'state': state,
                             'networkText': channelName,
