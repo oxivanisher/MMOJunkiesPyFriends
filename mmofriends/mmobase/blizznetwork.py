@@ -274,8 +274,14 @@ class BlizzNetwork(MMONetwork):
         self.getCache('sc2Profiles')
 
         try:
+            allLinks = self.getNetworkLinks()
             # FIXME exclude myself ...
             for userid in self.cache['wowProfiles'].keys():
+                if userid in self.cache['battletags']:
+                    linkId = self.cache['battletags'][userid]
+                else:
+                    linkId = None
+
                 friendImgs = []
                 product = 'World of Warcraft'
                 for char in self.cache['wowProfiles'][userid]['characters']:
@@ -286,7 +292,8 @@ class BlizzNetwork(MMONetwork):
                                         'title': char['name'] + '@' + char['realm']
                                     })
 
-                result.append({ 'id': userid,
+                result.append({ 'id': linkId,
+                                'mmoid': userid,
                                 'nick': self.cache['battletags'][userid],
                                 'state': 'bla bla',
                                 # 'state': OnlineState(friend.state),
@@ -316,7 +323,8 @@ class BlizzNetwork(MMONetwork):
                                         'title': "[%s] %s" % (character['clanTag'], character['displayName'])
                                     })
 
-                result.append({ 'id': userid,
+                result.append({ 'id': linkId,
+                                'mmoid': userid,
                                 'nick': self.cache['battletags'][userid],
                                 'state': 'bla bla',
                                 # 'state': OnlineState(friend.state),
@@ -341,6 +349,17 @@ class BlizzNetwork(MMONetwork):
             message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
             self.log.warning(message)
             return (False, message)
+
+    def getPartnerDetails(self, battletag):
+        self.log.debug("List partner details")
+        moreInfo = {}
+
+        self.getCache('battletags')
+        for key in self.cache['battletags'].keys():
+            if battletag == self.cache['battletags'][key]:
+                print "found btag", battletag
+        
+        return moreInfo
 
     # def getPartnerDetails(self, partnerId):
     #     self.log.debug("List partner details")

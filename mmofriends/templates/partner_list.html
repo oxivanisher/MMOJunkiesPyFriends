@@ -19,7 +19,10 @@
 	<tbody>
 	{% for friend in friends %}
 		<tr onmouseover="showInfoPopup('{{ url_for('partner_details', netHandle=friend.netHandle, partnerId=friend.id) }}');"
-			onmouseout="hideInfoPopup();" onclick="document.location='{{ url_for('network_show', netHandle=friend.netHandle) }}'">
+			onmouseout="hideInfoPopup();" 
+			{% if friend.mmoid -%}
+				onclick="document.location='{{ url_for('network_show', netHandle=friend.netHandle) }}'"
+			{%- endif -%}>
 			<td>
 				<a href="{{ url_for('network_show', netHandle=friend.netHandle) }}">
 				{%- for img in friend.networkImgs -%}
@@ -27,11 +30,16 @@
 				{%- endfor -%}
 				{{ friend.networkText }}</a>
 			</td>
-			<td><a href="{{ url_for('partner_show', netHandle=friend.netHandle, partnerId=friend.id) }}">
+			<td>{% if friend.mmoid -%}
+					<a href="{{ url_for('partner_show', netHandle=friend.netHandle, partnerId=friend.mmoid) }}">
+				{%- endif -%}
 				{%- for img in friend.friendImgs -%}
 					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
 				{%- endfor -%}
-				{{ friend.nick }}</a></td>
+				{{ friend.nick }}
+				{% if friend.mmoid -%}
+					</a>
+				{%- endif -%}</td>
 			<td>{{ friend.state }}</td>
 		</tr>
 	{% endfor %}

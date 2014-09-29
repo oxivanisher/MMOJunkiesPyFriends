@@ -1,29 +1,51 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-<h2>Profile for {{ networkname }}</h2>
-{% if partner.avatar -%}
-	<img class="position_bottom_left partner_detail_avatar glow"
-				src="{{ url_for('get_image', imgType='cache', imgId=partner.avatar) }}"
-				title="Avatar">
-{%- endif -%}
-<table class='table-striped'>
-	<tbody>
-		{% if partner.flags|length > 0 -%}
-		<tr>
-			<td colspan="2">Flags: {% for flag in partner.flags -%}
-							{{ flag -}}
-							{% if not loop.last -%}, {% endif %}
+<div id="tabs">
+	<ul>
+	{% for net in networks %}
+		<li><a href="#{{ net.handle }}">{{ net.name }}</a></li>
+	{% endfor %}
+	</ul>
+	{% for net in networks %}
+		<div id="{{ net.handle }}">
+		{% if net.linkData %}
+			{% if net.active %}Active{% endif %}
+			{% for link in net.linkData %}
+				<table>
+					<tbody>
+						{% if link.avatar -%}
+						<tr>
+							<td colspan="2">
+								<img src="{{ url_for('get_image', imgType='cache', imgId=link.avatar) }}" title="Avatar">
+							</td>
+						</tr>
+						{%- endif -%}
+						{% if link.flags|length > 0 -%}
+						<tr>
+							<td colspan="2">Flags: {% for flag in link.flags -%}
+											{{ flag -}}
+											{% if not loop.last -%}, {% endif %}
+										{%- endfor -%}
+							</td>
+						</tr>
+						{%- endif %}
+						{% for detail in link.details -%}
+						<tr>
+							<td nowrap>{{ detail.key }}</td>
+							<td>{{ detail.value }}</td>
+						</tr>
 						{%- endfor -%}
-			</td>
-		</tr>
-		{%- endif %}
-		{% for detail in partner.details -%}
-		<tr>
-			<td>{{ detail.key }}</td>
-			<td>{{ detail.value }}</td>
-		</tr>
-		{%- endfor -%}
-	</tbody>
-</table>
+					</tbody>
+				</table>
+			</div>
+			{% endfor %}
+		{% endif %}
+{% endfor %}
+</div>
+<script>
+	$(function() {
+		$( "#tabs" ).tabs({ active: {{ active }} });
+	});
+</script>
 {% endblock %}

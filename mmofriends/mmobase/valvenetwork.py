@@ -113,7 +113,19 @@ class ValveNetwork(MMONetwork):
         if self.getSessionValue(self.linkIdName):
             result = []
             # try:
-            for friend in self.getSteamUser(self.getSessionValue(self.linkIdName)).friends:
+            allLinks = self.getNetworkLinks()
+            friends = []
+            try:
+                friends = self.getSteamUser(self.getSessionValue(self.linkIdName)).friends
+            except Exception as e:
+                return (False, "Error connecting to Steam: %s" % e)
+            for friend in friends:
+                for link in allLinks:
+                    if friend.steamid == link['network_data']:
+                        linkId = friend.steamid
+                    else:
+                        linkId = None
+
                 self.getPartnerDetails(friend.steamid)
                 self.cacheFile(friend.avatar)
                 self.cacheFile(friend.avatar_full)
@@ -133,7 +145,8 @@ class ValveNetwork(MMONetwork):
                                     'title': friend.real_name
                                 })
 
-                result.append({ 'id': friend.steamid,
+                result.append({ 'mmoid': linkId,
+                                'id': friend.steamid,
                                 'nick': friend.name,
                                 'state': friend.state,
                                 # 'state': OnlineState(friend.state),
@@ -164,6 +177,7 @@ class ValveNetwork(MMONetwork):
             self.log.debug("Fetch user data for: %s" % partnerId)
             steam_user = self.getSteamUser(partnerId)
             self.cache['users'][partnerId] = {}
+            self.cache['users'][partnerId]['name'] = steam_user.name
             self.cache['users'][partnerId]['steamid'] = steam_user.steamid
             self.cache['users'][partnerId]['real_name'] = steam_user.real_name
             self.cache['users'][partnerId]['country_code'] = steam_user.country_code
@@ -229,6 +243,7 @@ class ValveNetwork(MMONetwork):
         # avatar = steam_user.avatar_full.split('/')[-1]
 
         self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
+        self.setPartnerDetail(moreInfo, "Name", self.cache['users'][partnerId]['name'])
 
         if self.session.get('admin'):
             self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][partnerId]['steamid'])

@@ -72,6 +72,8 @@ class TS3Network(MMONetwork):
 
     def getPartners(self, **kwargs):
         if self.refresh():
+            allLinks = self.getNetworkLinks()
+            
             ret = []
             try:
                 kwargs['onlineOnly']
@@ -157,7 +159,14 @@ class TS3Network(MMONetwork):
                 else:
                     state = "Offline"
 
-                ret.append({'id': cldbid,
+                for link in allLinks:
+                    if cldbid == link['network_data']:
+                        linkId = cldbid
+                    else:
+                        linkId = None
+
+                ret.append({'id': linkId,
+                            'mmoid': cldbid,
                             'nick': nick,
                             'state': state,
                             'networkText': channelName,
@@ -239,6 +248,9 @@ class TS3Network(MMONetwork):
             for cldbid in self.onlineClients.keys():
                 if cldbid not in currentLinks:
                     htmlFields['dropdown'].append({ 'name': self.onlineClients[cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
+            if not len(htmlFields['dropdown']):
+                htmlFields = {}
+                htmlFields['text'] = "Please connect to the Teamspeak Server"
         return htmlFields
 
     def doLink(self, userId):

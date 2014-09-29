@@ -560,8 +560,27 @@ def partner_list():
 def partner_show(netHandle, partnerId):
     if not session.get('logged_in'):
         abort(401)
-    return render_template('partner_show.html', partner = MMONetworks[netHandle].getPartnerDetails(partnerId),
-                                                networkname = MMONetworks[netHandle].name)
+
+    active = 0
+    count = 0
+    networks = []
+    for net in MMONetworks.keys():
+        linkInfo = MMONetworks[net].getNetworkLinks(partnerId)
+        if linkInfo:
+            netData = {}
+            netData['linkData'] = []
+            if MMONetworks[net].handle == netHandle:
+                active = count
+            netData['name'] = MMONetworks[net].name
+            netData['handle'] = MMONetworks[net].handle
+
+            for link in linkInfo:
+                print link['network_data']
+                netData['linkData'].append(MMONetworks[net].getPartnerDetails(link['network_data']))
+            count += 1
+            networks.append(netData)
+
+    return render_template('partner_show.html', networks = networks, active = active)
 
 @app.route('/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
 def partner_details(netHandle, partnerId):

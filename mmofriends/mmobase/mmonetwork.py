@@ -168,6 +168,7 @@ class MMONetwork(object):
         self.log.debug("List all partners for given user")
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
+                        'mmoid': internalId,
                         'nick': 'nickName',
                         'state': 'State',
                         'netHandle': self.handle,

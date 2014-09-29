@@ -45,6 +45,8 @@
 						<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
 					{%- elif net.linkNetwork.link -%}
 						<a href="{{ net.linkNetwork.link.url }}"><img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/> {{ net.linkNetwork.link.comment }}</a>
+					{%- elif net.linkNetwork.text -%}
+						{{ net.linkNetwork.text }}
 	        		{% endif %}
 				</td>
 			</tr>
