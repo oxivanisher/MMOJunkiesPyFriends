@@ -121,6 +121,7 @@ class ValveNetwork(MMONetwork):
             return (False, False)
         if self.getSessionValue(self.linkIdName):
 
+            onlineOnly = False
             try:
                 kwargs['onlineOnly']
                 onlineOnly = True

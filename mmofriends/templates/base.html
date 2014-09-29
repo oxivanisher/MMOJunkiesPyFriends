@@ -91,8 +91,8 @@
 		{%- endblock %}
 	</head>
 	<body>
-		<div><span id="imgpopup" class="position_bottom_left glow" style="display: none;"><img id="popupimg" src="" /></span></div>
-		<div><span id="infopopup" class="position_bottom_right glow" style="display: none;"></span></div>
+		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none;"><img id="popupimg" src="" /></span></div>
+		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none;"></span></div>
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="container-fluid">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -110,8 +110,22 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						{% if session.logged_in -%}
-						<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Friends</a></li>
-						<li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
+<!-- 						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Friends <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu"> -->
+								<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Online Friends</a></li>
+<!-- 							</ul>
+						</li>
+ -->
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tasks"></span> Networks <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Link / Unlink</a></li>
+								{%- for net in session.networks %}
+									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
+								{%- endfor %}
+							</ul>
+						</li>
 						{% endif -%}
 						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
 					</ul>

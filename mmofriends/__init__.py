@@ -90,15 +90,17 @@ with app.test_request_context():
 # helper methods
 def fetchFriendsList(netHandle = None):
     retFriendsList = []
-    args = {}
     if not netHandle:
         netHandles = MMONetworks.keys()
-        args = {'onlineOnly': True}
     else:
         netHandles = [netHandle]
 
     for handle in netHandles:
-        (res, friendsList) = MMONetworks[handle].getPartners(onlineOnly=True)
+        if not netHandle:
+            (res, friendsList) = MMONetworks[handle].getPartners(onlineOnly=True)
+        else:
+            (res, friendsList) = MMONetworks[handle].getPartners()
+
         if res:
             # yes, we are getting friends
             retFriendsList += friendsList
@@ -528,6 +530,9 @@ def profile_login():
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
+                session['networks'] = []
+                for net in MMONetworks.keys():
+                    session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
                 session['requests'] = 0
                 
                 #loading network links:

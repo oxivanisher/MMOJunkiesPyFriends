@@ -260,6 +260,28 @@ class BlizzNetwork(MMONetwork):
         print json.dumps(self.cache['sc2Profiles'])
         return '\n'.join(ret)
 
+    def getBestWowChar(self, chars):
+        achievmentPoints = -1
+        preferedChars = []
+        for char in chars:
+            if char['achievementPoints'] > achievmentPoints:
+                preferedChars = [char]
+                achievmentPoints = char['achievementPoints']
+            elif char['achievementPoints'] == achievmentPoints:
+                preferedChars.append(char)
+
+        level = -1
+        finalChars = []
+        for char in preferedChars:
+            if char['level'] > level:
+                finalChars = [char]
+            elif char['level'] == level:
+                finalChars.append(char)
+        if len(finalChars) == 0:
+            finalChars = preferedChars
+
+        return finalChars
+
     def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
 
@@ -272,75 +294,62 @@ class BlizzNetwork(MMONetwork):
         self.getCache('battletags')
         self.getCache('wowProfiles')
         self.getCache('sc2Profiles')
+        self.getCache('d3Profiles')
 
         try:
             allLinks = self.getNetworkLinks()
+            myNets = []
+            friendImgs = []
             # FIXME exclude myself ...
-            for userid in self.cache['wowProfiles'].keys():
-                if userid in self.cache['battletags']:
-                    linkId = self.cache['battletags'][userid]
-                else:
-                    linkId = None
 
-                friendImgs = []
-                product = 'World of Warcraft'
-                for char in self.cache['wowProfiles'][userid]['characters']:
-                    # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
-                    friendImgs.append({
-                                        'type': 'cache',
-                                        'name': self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']),
-                                        'title': char['name'] + '@' + char['realm']
-                                    })
+            # Battle.net in general
+            myProducts = [{ 'type': 'network',
+                            'name': self.handle,
+                            'title': self.name }]
 
-                result.append({ 'id': linkId,
-                                'mmoid': userid,
-                                'nick': self.cache['battletags'][userid],
-                                'state': 'bla bla',
-                                # 'state': OnlineState(friend.state),
-                                'netHandle': self.handle,
-                                'networkText': product,
-                                'networkImgs': [{
-                                    'type': 'network',
-                                    'name': self.handle,
-                                    'title': self.name
-                                },{
-                                    'type': 'product',
-                                    'name': 'worldofwarcraft',
-                                    'title': product
-                                }],
-                                'friendImgs': friendImgs
-                            })
+            for userid in self.cache['battletags'].keys():
+                linkId = self.cache['battletags'][userid]
 
-            product = 'Starcraft 2'
-            for userid in self.cache['sc2Profiles'].keys():
-                friendImgs = []
-                for character in self.cache['sc2Profiles'][userid]['characters']:
-                    # avUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + char['thumbnail']
-                    # print "character['avatar']['url']", character['avatar']['url']
-                    friendImgs.append({
-                                        'type': 'cache',
-                                        'name': self.cacheFile(character['avatar']['url']),
-                                        'title': "[%s] %s" % (character['clanTag'], character['displayName'])
-                                    })
+                # World of warcraft
+                if userid in self.cache['wowProfiles'].keys():
+                    if self.cache['wowProfiles'][userid]['characters']:
+                        myProducts.append({ 'type': 'product',
+                                            'name': 'worldofwarcraft',
+                                            'title': 'World of Warcraft' })
 
-                result.append({ 'id': linkId,
-                                'mmoid': userid,
-                                'nick': self.cache['battletags'][userid],
-                                'state': 'bla bla',
-                                # 'state': OnlineState(friend.state),
-                                'netHandle': self.handle,
-                                'networkText': product,
-                                'networkImgs': [{
-                                    'type': 'network',
-                                    'name': self.handle,
-                                    'title': self.name
-                                },{
-                                    'type': 'product',
-                                    'name': 'starcraft2',
-                                    'title': product
-                                }],
-                                'friendImgs': friendImgs
-                            })
+                        for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
+                            friendImgs.append({ 'type': 'cache',
+                                                'name': self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']),
+                                                'title': char['name'] + '@' + char['realm'] })
+
+                # Starcraft 2
+                if userid in self.cache['sc2Profiles'].keys():
+                    myProducts.append({ 'type': 'product',
+                                        'name': 'starcraft2',
+                                        'title': 'Starcraft 2' })
+                    for character in self.cache['sc2Profiles'][userid]['characters']:
+                        friendImgs.append({ 'type': 'cache',
+                                            'name': self.cacheFile(character['avatar']['url']),
+                                            'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
+
+                # Diablo 3
+                if userid in self.cache['d3Profiles'].keys():
+                    myProducts.append({ 'type': 'product',
+                                        'name': 'diablo3',
+                                        'title': 'Diablo 3' })
+                    friendImgs.append({ 'type': 'product',
+                                        'name': 'diablo3',
+                                        'title': 'Diablo 3' })
+
+            result.append({ 'id': linkId,
+                            'mmoid': userid,
+                            'nick': self.cache['battletags'][userid],
+                            'state': 'bla bla',
+                            'netHandle': self.handle,
+                            'networkText': self.name,
+                            'networkImgs': myProducts,
+                            'friendImgs': friendImgs
+                        })
 
             return (True, result)
         except Exception as e:
@@ -355,9 +364,34 @@ class BlizzNetwork(MMONetwork):
         moreInfo = {}
 
         self.getCache('battletags')
-        for key in self.cache['battletags'].keys():
-            if battletag == self.cache['battletags'][key]:
-                print "found btag", battletag
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+
+        self.getCache('battletags')
+        for userid in self.cache['battletags'].keys():
+            if battletag == self.cache['battletags'][userid]:
+                # Starcraft 2
+                if userid in self.cache['sc2Profiles'].keys():
+                    for char in self.cache['sc2Profiles'][userid]['characters']:
+                        self.setPartnerDetail(moreInfo, "SC 2", "[%s] %s" % (char['clanTag'], char['displayName']))
+                        self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
+
+                # Diablo 3
+                for hero in self.cache['d3Profiles'][userid]['heroes']:
+                    self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+
+                # World of Warcraft
+                if userid in self.cache['wowProfiles'].keys():
+                    for char in self.cache['wowProfiles'][userid]['characters']:
+                        self.setPartnerDetail(moreInfo, "WoW", "%s@%s: %s %s lvl: %s" % (char['name'],
+                                                                                         char['realm'],
+                                                                                         char['gender'],
+                                                                                         char['race'],
+                                                                                         char['level']))
+
+                chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                for char in chars:
+                    self.setPartnerAvatar(moreInfo, self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']))
         
         return moreInfo
 
