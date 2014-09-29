@@ -585,10 +585,16 @@ def partner_show(netHandle, partnerId):
             netData['handle'] = MMONetworks[net].handle
 
             for link in linkInfo:
-                print link['network_data']
                 netData['linkData'].append(MMONetworks[net].getPartnerDetails(link['network_data']))
-            count += 1
-            networks.append(netData)
+                if MMONetworks[net].handle == "Blizz":
+                    print "net.handle", MMONetworks[net].handle
+                    print "aaaa", link
+                    print "bbbb", MMONetworks[net].getPartnerDetails(link['network_data'])
+                    print "cccc", netData['linkData']
+                networks.append(netData)
+                count += 1
+
+    print "zzzz", networks
 
     return render_template('partner_show.html', networks = networks, active = active)
 

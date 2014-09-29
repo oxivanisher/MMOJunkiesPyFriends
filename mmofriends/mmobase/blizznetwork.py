@@ -341,15 +341,15 @@ class BlizzNetwork(MMONetwork):
                                         'name': 'diablo3',
                                         'title': 'Diablo 3' })
 
-            result.append({ 'id': linkId,
-                            'mmoid': userid,
-                            'nick': self.cache['battletags'][userid],
-                            'state': 'bla bla',
-                            'netHandle': self.handle,
-                            'networkText': self.name,
-                            'networkImgs': myProducts,
-                            'friendImgs': friendImgs
-                        })
+                result.append({ 'id': linkId,
+                                'mmoid': userid,
+                                'nick': self.cache['battletags'][userid],
+                                'state': 'bla bla',
+                                'netHandle': self.handle,
+                                'networkText': self.name,
+                                'networkImgs': myProducts,
+                                'friendImgs': friendImgs
+                            })
 
             return (True, result)
         except Exception as e:
@@ -366,8 +366,12 @@ class BlizzNetwork(MMONetwork):
         self.getCache('battletags')
         self.getCache('wowProfiles')
         self.getCache('sc2Profiles')
+        self.getCache('d3Profiles')
 
-        self.getCache('battletags')
+        for link in self.getNetworkLinks():
+            if link['network_data'] == battletag:
+                battletag = self.cache['battletags'][str(link['user_id'])]
+
         for userid in self.cache['battletags'].keys():
             if battletag == self.cache['battletags'][userid]:
                 # Starcraft 2

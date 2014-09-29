@@ -3,15 +3,14 @@
 {% block content %}
 <div id="tabs">
 	<ul>
-	{% for net in networks %}
+	{% for net in networks -%}
 		<li><a href="#{{ net.handle }}">{{ net.name }}</a></li>
-	{% endfor %}
+	{% endfor -%}
 	</ul>
-	{% for net in networks %}
+	{% for net in networks -%}
 		<div id="{{ net.handle }}">
-		{% if net.linkData %}
-			{% if net.active %}Active{% endif %}
-			{% for link in net.linkData %}
+		{% if net.linkData -%}
+			{% for link in net.linkData -%}
 				<table>
 					<tbody>
 						{% if link.avatar -%}

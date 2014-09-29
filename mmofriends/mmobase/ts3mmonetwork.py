@@ -161,8 +161,9 @@ class TS3Network(MMONetwork):
 
                 linkId = None
                 for link in allLinks:
+                    print link
                     if cldbid == link['network_data']:
-                        linkId = cldbid
+                        linkId = link['user_id']
 
                 ret.append({'id': cldbid,
                             'mmoid': linkId,
@@ -539,9 +540,3 @@ class TS3Network(MMONetwork):
         self.cacheFiles()
         self.refresh()
         return self.clientDatabase
-
-    # def saveAtExit(self):
-    #     self.loadFromSave()
-        # self.onlineClients = {}
-        # self.clientDatabase = {}
-        # self.clientInfoDatabase = {}
