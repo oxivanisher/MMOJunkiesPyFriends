@@ -262,6 +262,7 @@ class ValveNetwork(MMONetwork):
 
         # avatar = steam_user.avatar_full.split('/')[-1]
 
+        self.getCache('users')
         self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
         self.setPartnerDetail(moreInfo, "Name", self.cache['users'][partnerId]['name'])
 
