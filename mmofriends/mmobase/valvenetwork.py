@@ -8,6 +8,7 @@ import random
 import urllib2
 import urllib
 import re
+import time
 
 from flask import current_app
 from mmoutils import *
@@ -44,14 +45,18 @@ class ValveNetwork(MMONetwork):
 
     # helper methods
     def get_steam_userinfo(self, steam_id):
-        options = {
-            'key': self.config['apikey'],
-            'steamids': steam_id
-        }
-        url = 'http://api.steampowered.com/ISteamUser/' \
-              'GetPlayerSummaries/v0001/?%s' % urllib.urlencode(options)
-        rv = json.load(urllib2.urlopen(url))
-        return rv['response']['players']['player'][0] or {}
+        self.getCache('users')
+        if steam_id not in self.cache['users'].keys():
+            options = {
+                'key': self.config['apikey'],
+                'steamids': steam_id
+            }
+            url = 'http://api.steampowered.com/ISteamUser/' \
+                  'GetPlayerSummaries/v0001/?%s' % urllib.urlencode(options)
+            rv = json.load(urllib2.urlopen(url))
+            self.cache['users'][steam_id] = rv['response']['players']['player'][0]
+            self.setCache('users')
+        return self.cache['users'][steam_id] or {}
 
     # oid methods
     def oid_login(self, oid):
@@ -99,7 +104,9 @@ class ValveNetwork(MMONetwork):
         # have fun: https://github.com/smiley/steamapi/blob/master/steamapi/user.py
         return "steamId: %s" % self.getSessionValue(self.linkIdName)
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
+        self.getCache('users')
+
         self.log.debug("List all partners for given user")
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
@@ -148,55 +155,128 @@ class ValveNetwork(MMONetwork):
             return (True, {})
 
     def getPartnerDetails(self, partnerId):
-        self.log.debug("List partner details")
-        steam_user = self.getSteamUser(partnerId)
+        self.getCache('users')
+        self.getCache('games')
+        self.getCache('groups')
+
+        self.log.debug("List partner details for: %s" % partnerId)
+        if partnerId not in self.cache['users'].keys():
+            self.log.debug("Fetch user data for: %s" % partnerId)
+            steam_user = self.getSteamUser(partnerId)
+            self.cache['users'][partnerId] = {}
+            self.cache['users'][partnerId]['steamid'] = steam_user.steamid
+            self.cache['users'][partnerId]['real_name'] = steam_user.real_name
+            self.cache['users'][partnerId]['country_code'] = steam_user.country_code
+            try:
+                self.cache['users'][partnerId]['last_logoff'] = time.mktime(steam_user.last_logoff.timetuple())
+            except KeyError:
+                pass
+            self.cache['users'][partnerId]['profile_url'] = steam_user.profile_url
+            self.cache['users'][partnerId]['state'] = steam_user.state
+            self.cache['users'][partnerId]['level'] = steam_user.level
+            self.cache['users'][partnerId]['xp'] = steam_user.xp
+            # self.cache['users'][partnerId]['time_created'] = time.mktime(steam_user.time_created.timetuple())
+            self.cache['users'][partnerId]['avatar'] = self.cacheFile(steam_user.avatar_full)
+            self.cache['users'][partnerId]['primary_group'] = steam_user.group.guid
+
+            try:
+                games = []
+                for game in steam_user.games:
+                    if game.id not in self.cache['games'].keys():
+                        self.cache['games'][game.id] = {}
+                        self.cache['games'][game.id]['id'] = game.id
+                        self.cache['games'][game.id]['name'] = game.name
+                        self.setCache('games')
+                    games.append(game.id)
+            except TypeError:
+                pass
+            self.cache['users'][partnerId]['games'] = games
+
+            try:
+                recent = []
+                for game in steam_user.recently_played:
+                    recent.append(game.id)
+            except TypeError:
+                pass
+            self.cache['users'][partnerId]['recently_played'] = recent
+
+            try:
+                badges = []
+                for badge in steam_user.badges:
+                    badges.append(badge.id)
+            except TypeError:
+                pass
+            self.cache['users'][partnerId]['badges'] = badges
+
+            # print "steam_user.groups", steam_user.groups
+            # try:
+            #     groups = []
+            #     for group in steam_user.groups:
+            #         if group.guid not in self.cache['groups'].keys():
+            #             self.cache['groups'][group.id] = {}
+            #             self.cache['groups'][group.id]['id'] = group.gid
+            #             self.cache['groups'][group.id]['name'] = group.name
+            #             self.setCache('groups')
+            #         groups.append(group.id)
+            # except TypeError:
+            #     pass
+            # self.cache['users'][partnerId]['groups'] = groups
+
+            self.setCache('users')
+
         moreInfo = {}
 
-        avatar = steam_user.avatar_full.split('/')[-1]
+        # avatar = steam_user.avatar_full.split('/')[-1]
 
-        self.setPartnerAvatar(moreInfo, avatar)
-
-        self.setPartnerDetail(moreInfo, "Country Code", steam_user.country_code)
-        # self.setPartnerDetail(moreInfo, "Created", steam_user.time_created)
-        self.setPartnerDetail(moreInfo, "Last Logoff", steam_user.last_logoff)
-        self.setPartnerDetail(moreInfo, "Profile URL", steam_user.profile_url)
-        self.setPartnerDetail(moreInfo, "Online/Offline", steam_user.state)
-        self.setPartnerDetail(moreInfo, "Level", steam_user.level)
-        self.setPartnerDetail(moreInfo, "XP", steam_user.xp)
-        # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
-
-        try:
-            recent = []
-            for game in steam_user.recently_played:
-                recent.append(game.name)
-            self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(recent))
-        except TypeError:
-            pass
-        
-        try:
-            games = []
-            for game in steam_user.games:
-                games.append(game.name)
-            self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
-        except TypeError:
-            pass
-        
-        # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
-
-        if steam_user.group:
-            self.setPartnerDetail(moreInfo, "Primary Group", steam_user.group.guid)
-
-        # groups = []
-        # for group in steam_user.groups:
-        #     group.append(group.guid)
-        # self.setPartnerDetail(moreInfo, "Groups", ', '.join(groups))
-
-        if steam_user.currently_playing:
-            self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
+        self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
 
         if self.session.get('admin'):
-            self.setPartnerDetail(moreInfo, "Steam ID", steam_user.steamid)
-            self.setPartnerDetail(moreInfo, "Real Name", steam_user.real_name)
+            self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][partnerId]['steamid'])
+            self.setPartnerDetail(moreInfo, "Real Name", self.cache['users'][partnerId]['real_name'])
+
+        self.setPartnerDetail(moreInfo, "Country Code", self.cache['users'][partnerId]['country_code'])
+        try:
+            self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['users'][partnerId]['time_created']))
+        except KeyError:
+            pass
+        try:
+            self.setPartnerDetail(moreInfo, "Last Logoff", timestampToString(self.cache['users'][partnerId]['last_logoff']))
+        except KeyError:
+            pass
+        self.setPartnerDetail(moreInfo, "Profile URL", self.cache['users'][partnerId]['profile_url'])
+        self.setPartnerDetail(moreInfo, "Online/Offline", self.cache['users'][partnerId]['state'])
+        self.setPartnerDetail(moreInfo, "Level", self.cache['users'][partnerId]['level'])
+        self.setPartnerDetail(moreInfo, "XP", self.cache['users'][partnerId]['xp'])
+
+        games = []
+        for gameid in self.cache['users'][partnerId]['games']:
+            try:
+                games.append(self.cache['games'][str(gameid)]['name'])
+            except KeyError:
+                self.log.debug("Ignoring game ID %s" % gameid)
+        self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
+
+        games = []
+        for gameid in self.cache['users'][partnerId]['recently_played']:
+            try:
+                games.append(self.cache['games'][str(gameid)]['name'])
+            except KeyError:
+                self.log.debug("Ignoring game ID %s" % gameid)
+        self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(games))
+        
+        # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
+        # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
+
+        if self.cache['users'][partnerId]['primary_group']:
+            self.setPartnerDetail(moreInfo, "Primary Group", self.cache['users'][partnerId]['primary_group'])
+
+        # groups = []
+        # for group in self.cache['users'][partnerId]['groups']:
+        #     groups.append(self.cache['users'][group]['name'])
+        # self.setPartnerDetail(moreInfo, "Groups", ', '.join(groups))
+
+        # if steam_user.currently_playing:
+        #     self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
 
         return moreInfo
 
@@ -208,6 +288,7 @@ class ValveNetwork(MMONetwork):
 
     # steam methods
     def getSteamUser(self, name):
+        self.log.debug("getSteamUser %s" % name)
         try:
             steam_user = user.SteamUser(userid=int(name))
         except ValueError: # Not an ID, but a vanity URL.

@@ -9,6 +9,7 @@ import random
 import atexit
 import urllib
 import json
+import zlib
 
 from flask import current_app
 from mmoutils import *
@@ -34,7 +35,7 @@ class MMONetworkCache(db.Model):
     network_handle = db.Column(db.String(20))
     entry_name = db.Column(db.String(20))
     last_update = db.Column(db.Integer)
-    cache_data = db.Column(db.Text)
+    cache_data = db.Column(db.UnicodeText)
 
     def __init__(self, network_handle, entry_name, cache_data = ""):
         self.network_handle = network_handle
@@ -43,7 +44,7 @@ class MMONetworkCache(db.Model):
         self.cache_data = cache_data
 
     def __repr__(self):
-        return '<MMONetCache %r>' % self.id
+        return '<MMONetworkCache %r>' % self.id
 
     def get(self):
         return json.loads(self.cache_data)
@@ -53,6 +54,35 @@ class MMONetworkCache(db.Model):
 
     def age(self):
         return int(time.time()) - self.last_update
+
+# class MMONetworkItemCache(db.Model):
+#     __tablename__ = 'mmonetitemcache'
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     network_handle = db.Column(db.String(20))
+#     entry_name = db.Column(db.String(20))
+#     item_name = db.Column(db.String(20))
+#     last_update = db.Column(db.Integer)
+#     cache_data = db.Column(db.Text)
+
+#     def __init__(self, network_handle, entry_name, item_name, cache_data = ""):
+#         self.network_handle = network_handle
+#         self.entry_name = entry_name
+#         self.item_name = item_name
+#         self.last_update = 0
+#         self.cache_data = cache_data
+
+#     def __repr__(self):
+#         return '<MMONetworkItemCache %r>' % self.id
+
+#     def get(self):
+#         return json.loads(self.cache_data)
+
+#     def set(self, cache_data):
+#         self.cache_data = json.dumps(cache_data)
+
+#     def age(self):
+#         return int(time.time()) - self.last_update
 
 class MMONetwork(object):
 
@@ -134,7 +164,7 @@ class MMONetwork(object):
             self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
             return False
 
-    def getPartners(self):
+    def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
@@ -236,17 +266,21 @@ class MMONetwork(object):
             avatarFile.retrieve(url, outputFilePath)
         return newUrl
 
+    # MMONetworkCache methods
     def getCache(self, name):
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
-            self.log.debug("Loading cache %s from database" % name)
-            self.cache[name] = json.loads(ret.cache_data)
+            self.log.debug("Loading cache: %s" % name)
+            try:
+                self.cache[name] = json.loads(ret.cache_data)
+            except ValueError:
+                self.cache[name] = {}
         else:
-            self.log.debug("Setting up new cache named %s" % name)
+            self.log.debug("Setting up new cache: %s" % name)
             self.cache[name] = {}
 
     def setCache(self, name):
-        self.log.debug("Saving cache named %s" % name)
+        self.log.debug("Saving cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             ret.set(self.cache[name])
@@ -258,22 +292,69 @@ class MMONetwork(object):
         db.session.commit()
 
     def getCacheAge(self, name):
-        self.log.debug("Getting age of cache %s" % name)
+        self.log.debug("Getting age of cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if not ret:
             return int(time.time())
         return ret.last_update
 
     def forceCacheUpdate(self, name):
-        self.log.debug("Forcing cache %s to update" % name)
+        self.log.debug("Forcing cache update: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
-            self.cache[name] = json.loads(ret.cache_data)
+            try:
+                self.cache[name] = json.loads(ret.cache_data)
+            except ValueError:
+                self.cache[name] = {}
         else:
             self.cache[name] = {}
+            ret = MMONetworkCache(self.handle, name)
+            
         ret.last_update = 0
         db.session.add(ret)
         db.session.commit()
+
+    # # MMONetworkItemCache methods
+    # def getItemCache(self, name, item):
+    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
+    #     if not name in self.cache.keys():
+    #         self.cache[name] = {}
+    #     if ret:
+    #         self.log.debug("Loading cache item %s>%s from database" % (name, item))
+    #         self.cache[name][item] = json.loads(ret.cache_data)
+    #     else:
+    #         self.log.debug("Setting up new cache named %s>%s" % (name, item))
+    #         self.cache[name][item] = {}
+
+    # def setItemCache(self, name, item):
+    #     self.log.debug("Saving cache item named %s>%s" % (name, item))
+    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
+    #     if ret:
+    #         ret.set(self.cache[name][item])
+    #     else:
+    #         ret = MMONetworkItemCache(self.handle, name)
+    #         ret.set(self.cache[name][item])
+    #     ret.last_update = int(time.time())
+    #     db.session.add(ret)
+    #     db.session.commit()
+
+    # def getItemCacheAge(self, name, item):
+    #     self.log.debug("Getting age of cache item %s>%s" % (name, item))
+    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
+    #     if not ret:
+    #         return int(time.time())
+    #     return ret.last_update
+
+    # def forceItemCacheUpdate(self, name, item):
+    #     self.log.debug("Forcing cache item %s>%s to update" % (name, item))
+    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
+    #     if ret:
+    #         self.cache[name][item] = json.loads(ret.cache_data)
+    #     else:
+    #         self.cache[name][item] = {}
+    #     ret.last_update = 0
+    #     db.session.add(ret)
+    #     db.session.commit()
         
     # saver and loader methods
     # def registerToAutosaveAndLoad(self, var, fileName, default):
