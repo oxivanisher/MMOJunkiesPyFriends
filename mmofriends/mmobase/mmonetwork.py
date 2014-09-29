@@ -291,6 +291,7 @@ class MMONetwork(object):
         ret.last_update = int(time.time())
         db.session.add(ret)
         db.session.commit()
+        db.session.flush()
 
     def getCacheAge(self, name):
         self.log.debug("Getting age of cache: %s" % name)
