@@ -487,6 +487,7 @@ def profile_register():
 
             db.session.add(newUser)
             try:
+                db.session.flush()
                 db.session.commit()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
@@ -516,6 +517,7 @@ def profile_verify(userId, verifyKey):
         flash("User not found to verify.")
     elif verifyUser.verify(verifyKey):
         db.session.merge(verifyUser)
+        db.session.flush()
         db.session.commit()
         if verifyUser.veryfied:
             # db.session.expire(verifyUser)

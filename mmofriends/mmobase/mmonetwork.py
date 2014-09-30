@@ -132,8 +132,8 @@ class MMONetwork(object):
         self.log.debug("Saving network link for user %s" % (self.session['nick']))
         netLink = MMONetLink(self.session['userid'], self.handle, network_data)
         db.session.add(netLink)
-        db.session.commit()
         db.session.flush()
+        db.session.commit()
 
     def loadLinks(self, userId):
         self.log.debug("Loading user links for userId %s" % userId)
@@ -158,8 +158,8 @@ class MMONetwork(object):
             link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
             self.setSessionValue(self.linkIdName, None)
             db.session.delete(link)
-            db.session.commit()
             db.session.flush()
+            db.session.commit()
             self.log.info("Unlinked network with userid %s and netLinkId %s" % (user_id, netLinkId))
             return True
         except Exception as e:
@@ -296,6 +296,7 @@ class MMONetwork(object):
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
         db.session.merge(ret)
+        db.session.flush()
         db.session.commit()
         # db.session.expire(ret)
 
@@ -320,6 +321,7 @@ class MMONetwork(object):
             
         ret.last_update = 0
         db.session.merge(ret)
+        db.session.flush()
         db.session.commit()
         # db.session.expire(ret)
 
