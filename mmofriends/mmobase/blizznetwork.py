@@ -298,8 +298,6 @@ class BlizzNetwork(MMONetwork):
 
         try:
             allLinks = self.getNetworkLinks()
-            myNets = []
-            friendImgs = []
             # FIXME exclude myself ...
 
             # Battle.net in general
@@ -308,6 +306,8 @@ class BlizzNetwork(MMONetwork):
                             'title': self.name }]
 
             for userid in self.cache['battletags'].keys():
+                myNets = []
+                friendImgs = []
                 linkId = self.cache['battletags'][userid]
 
                 # World of warcraft
