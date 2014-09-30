@@ -175,11 +175,18 @@ def getAdminMethods():
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('error.html', number = 404, message = "Page not found!"), 404
+    flash("Page not found!", 'error')
+    return render_template('login.html'), 404
 
 @app.errorhandler(401)
 def not_found(error):
-    return render_template('error.html', number = 401, message = "Unauthorized!"), 401
+    flash("Unauthorized!", 'error')
+    return render_template('login.html'), 401
+
+@app.errorhandler(403)
+def not_found(error):
+    flash("Forbidden!", 'error')
+    return render_template('login.html'), 403
 
 # app routes
 @app.before_first_request
@@ -215,7 +222,7 @@ def dev():
         return redirect(url_for('login'))
     if not session.get('admin'):
         log.warning("<%s> tried to access admin without permission!")
-        abort(401)
+        abort(403)
     ret = []
     for handle in MMONetworks.keys():
         try:
@@ -260,7 +267,7 @@ def admin_status():
         abort(401)
     if not session.get('admin'):
         log.warning("<%s> tried to access admin without permission!")
-        abort(401)
+        abort(403)
 
     loadedNets = []
     for handle in MMONetworks.keys():
@@ -309,7 +316,7 @@ def network_show(netHandle):
 def network_admin():
     if session.get('logged_in') and session.get('admin'):
         return render_template('network_admin.html', networks = getAdminMethods())
-    abort(401)
+    abort(403)
 
 @app.route('/Network/Administration/<networkHandle>/<int:index>', methods = ['GET'])
 def network_admin_do(networkHandle, index):
@@ -321,7 +328,7 @@ def network_admin_do(networkHandle, index):
         if not retValue:
             flash(ret['methodResult'], 'error')
         return render_template('network_admin.html', networks = getAdminMethods(), result = ret)
-    abort(401)
+    abort(403)
 
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
