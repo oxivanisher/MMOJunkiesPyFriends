@@ -68,7 +68,7 @@ if not app.debug:
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 if not len(app.config['APPSECRET']):
-    self.log.warning("Generating random secret_key. All older cookies will be invalid.")
+    log.warning("Generating random secret_key. All older cookies will be invalid.")
     app.secret_key = os.urandom(24)
 else:
     app.secret_key = app.config['APPSECRET']
