@@ -301,12 +301,10 @@ class BlizzNetwork(MMONetwork):
             # FIXME exclude myself ...
 
             # Battle.net in general
-            myProducts = [{ 'type': 'network',
-                            'name': self.handle,
-                            'title': self.name }]
-
             for userid in self.cache['battletags'].keys():
-                myNets = []
+                myProducts = [{ 'type': 'network',
+                                'name': self.handle,
+                                'title': self.name }]
                 friendImgs = []
                 linkId = self.cache['battletags'][userid]
 
