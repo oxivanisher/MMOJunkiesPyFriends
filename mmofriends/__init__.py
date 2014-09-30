@@ -487,6 +487,7 @@ def profile_register():
             try:
                 db.session.commit()
                 db.session.flush()
+                db.session.close()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
                     flash("Please check your mails at %s" % newUser.email, 'info')
@@ -516,6 +517,7 @@ def profile_verify(userId, verifyKey):
         db.session.add(verifyUser)
         db.session.commit()
         db.session.flush()
+        db.session.close()
         if verifyUser.veryfied:
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))

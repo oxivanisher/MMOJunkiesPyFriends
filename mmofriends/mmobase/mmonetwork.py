@@ -271,8 +271,6 @@ class MMONetwork(object):
 
     # MMONetworkCache methods
     def getCache(self, name):
-        db.session.commit()
-        db.session.flush()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             self.log.debug("Loading cache: %s" % name)
@@ -283,6 +281,10 @@ class MMONetwork(object):
         else:
             self.log.debug("Setting up new cache: %s" % name)
             self.cache[name] = {}
+
+        db.session.commit()
+        db.session.flush()
+        db.session.close()
 
     def setCache(self, name):
         self.log.debug("Saving cache: %s" % name)
@@ -296,6 +298,7 @@ class MMONetwork(object):
         db.session.add(ret)
         db.session.commit()
         db.session.flush()
+        db.session.close()
 
     def getCacheAge(self, name):
         self.log.debug("Getting age of cache: %s" % name)
@@ -319,6 +322,7 @@ class MMONetwork(object):
         ret.last_update = 0
         db.session.add(ret)
         db.session.commit()
+        db.session.close()
 
     # # MMONetworkItemCache methods
     # def getItemCache(self, name, item):
