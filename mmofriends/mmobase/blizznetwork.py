@@ -38,20 +38,20 @@ class BlizzNetwork(MMONetwork):
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
-            'wowCharacter_races': "/wow/data/character/races",
-            'wowCharacter_classes': "/wow/data/character/classes",
-            'wowCharacter_achievements': "/wow/data/character/achievements",
-            'wowGuild_rewards': "/wow/data/guild/rewards",
-            'wowGuild_perks': "/wow/data/guild/perks",
-            'wowGuild_achievements': "/wow/data/guild/achievements",
-            'wowItem_classes': "/wow/data/item/classes",
+            'wowCharRaces': "/wow/data/character/races",
+            'wowCharClasses': "/wow/data/character/classes",
+            'wowCharAchievements': "/wow/data/character/achievements",
+            'wowGuildRewards': "/wow/data/guild/rewards",
+            'wowGuildPerks': "/wow/data/guild/perks",
+            'wowGuildAchievements': "/wow/data/guild/achievements",
+            'wowItemClasses': "/wow/data/item/classes",
             'wowTalents': "/wow/data/talents",
             'wowPettypes': "/wow/data/pet/types"
         }
 
         self.sc2DataResourcesList = {
-            'sc2achievements': "/sc2/data/achievements",
-            'sc2rewards': "/sc2/data/rewards"
+            'sc2Achievements': "/sc2/data/achievements",
+            'sc2Rewards': "/sc2/data/rewards"
         }
 
         # admin methods
