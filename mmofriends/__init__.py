@@ -83,8 +83,8 @@ with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
     db.create_all()
-    db.session.autocommit = True
-    db.session.autoflush = True
+    # db.session.autocommit = True
+    # db.session.autoflush = True
     oid = OpenID(app)
 
 # initialize twitter api for news
