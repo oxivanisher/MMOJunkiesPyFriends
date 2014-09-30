@@ -130,7 +130,9 @@ class BlizzNetwork(MMONetwork):
             self.updateUserResources(userid)
         return (True, "All user resources updated")
 
-    def updateUserResources(self, userid = self.session['userid']):
+    def updateUserResources(self, userid = None):
+        if not userid:
+            userid = self.session['userid']
         self.log.debug("Updating resources for userid %s" % userid)
 
         if userid != self.session['userid']:
@@ -188,7 +190,9 @@ class BlizzNetwork(MMONetwork):
         return (True, "Resource updated from %s" % location)
 
     # Query Blizzard
-    def queryBlizzardApi(self, what, accessToken = self.getSessionValue(self.linkIdName)):
+    def queryBlizzardApi(self, what, accessToken = None):
+        if not accessToken:
+            accessToken = self.getSessionValue(self.linkIdName)
         self.log.debug("Query Blizzard API for %s" % what)
         payload = {'access_token': accessToken,
                    'apikey': self.config['apikey'],
