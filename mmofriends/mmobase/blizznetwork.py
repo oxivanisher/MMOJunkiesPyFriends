@@ -381,8 +381,9 @@ class BlizzNetwork(MMONetwork):
                         self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
 
                 # Diablo 3
-                for hero in self.cache['d3Profiles'][userid]['heroes']:
-                    self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+                if userid in self.cache['d3Profiles'].keys():
+                    for hero in self.cache['d3Profiles'][userid]['heroes']:
+                        self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
 
                 # World of Warcraft
                 if userid in self.cache['wowProfiles'].keys():
