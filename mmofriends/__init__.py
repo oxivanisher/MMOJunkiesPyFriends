@@ -176,17 +176,17 @@ def getAdminMethods():
 @app.errorhandler(404)
 def not_found(error):
     flash("Page not found!", 'error')
-    return render_template('login.html'), 404
+    return render_template('profile_login.html'), 404
 
 @app.errorhandler(401)
 def not_found(error):
     flash("Unauthorized!", 'error')
-    return render_template('login.html'), 401
+    return render_template('profile_login.html'), 401
 
 @app.errorhandler(403)
 def not_found(error):
     flash("Forbidden!", 'error')
-    return render_template('login.html'), 403
+    return render_template('profile_login.html'), 403
 
 # app routes
 @app.before_first_request
