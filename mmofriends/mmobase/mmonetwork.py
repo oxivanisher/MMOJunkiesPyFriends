@@ -294,7 +294,7 @@ class MMONetwork(object):
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
         db.session.commit()
-        db.session.expire(ret)
+        # db.session.expire(ret)
 
     def getCacheAge(self, name):
         self.log.debug("Getting age of cache: %s" % name)
@@ -318,7 +318,7 @@ class MMONetwork(object):
         ret.last_update = 0
         db.session.add(ret)
         db.session.commit()
-        db.session.expire(ret)
+        # db.session.expire(ret)
 
     # # MMONetworkItemCache methods
     # def getItemCache(self, name, item):

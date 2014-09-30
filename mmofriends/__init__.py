@@ -83,8 +83,8 @@ with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
     db.create_all()
-    # db.session.autocommit = True
-    # db.session.autoflush = True
+    db.session.autocommit = True
+    db.session.autoflush = True
     oid = OpenID(app)
 
 # initialize twitter api for news
@@ -499,7 +499,7 @@ def profile_register():
                 flash("SQL Alchemy IntegrityError: %s" % e, 'error')
             except InterfaceError, e:
                 flash("SQL Alchemy InterfaceError %s" % e, 'error')
-            db.session.expire(newUser)
+            # db.session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
 
@@ -518,12 +518,12 @@ def profile_verify(userId, verifyKey):
         db.session.add(verifyUser)
         db.session.commit()
         if verifyUser.veryfied:
-            db.session.expire(verifyUser)
+            # db.session.expire(verifyUser)
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))
         else:
             flash("Verification NOT ok. Please try again.", 'error')
-    db.session.expire(verifyUser)
+    # db.session.expire(verifyUser)
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
