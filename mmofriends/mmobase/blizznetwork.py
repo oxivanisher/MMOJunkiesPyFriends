@@ -31,7 +31,7 @@ class BlizzNetwork(MMONetwork):
         super(BlizzNetwork, self).__init__(app, session, handle)
 
         self.description = "Battle.Net from Blizzard Entertainment"
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
         self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
