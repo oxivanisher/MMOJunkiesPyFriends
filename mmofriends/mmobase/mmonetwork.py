@@ -293,6 +293,7 @@ class MMONetwork(object):
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
+        db.session.add(ret)
         db.session.commit()
         # db.session.expire(ret)
 
