@@ -283,7 +283,6 @@ class MMONetwork(object):
             self.cache[name] = {}
 
         db.session.commit()
-        db.session.expire(ret)
 
     def setCache(self, name):
         self.log.debug("Saving cache: %s" % name)
