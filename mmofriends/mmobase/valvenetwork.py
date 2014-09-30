@@ -263,8 +263,13 @@ class ValveNetwork(MMONetwork):
         # avatar = steam_user.avatar_full.split('/')[-1]
 
         self.getCache('users')
+        try:
+            self.setPartnerDetail(moreInfo, "Name", self.cache['users'][partnerId]['name'])
+        except KeyError:
+            #Probably empty database!
+            return moreInfo
         self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
-        self.setPartnerDetail(moreInfo, "Name", self.cache['users'][partnerId]['name'])
+
 
         if self.session.get('admin'):
             self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][partnerId]['steamid'])

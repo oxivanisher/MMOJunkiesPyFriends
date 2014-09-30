@@ -67,7 +67,10 @@ if not app.debug:
 
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
-app.secret_key = app.config['APPSECRET']
+if not len(app.config['APPSECRET']):
+    app.secret_key = os.urandom(24)
+else:
+    app.secret_key = app.config['APPSECRET']
 MMONetworks = {}
 
 # jinja2 methods
