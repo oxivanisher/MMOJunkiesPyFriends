@@ -68,7 +68,7 @@ if not app.debug:
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 if not len(app.config['APPSECRET']):
-    log.warning("Generating random secret_key. All older cookies will be invalid.")
+    log.warning("Generating random secret_key. All older cookies will be invalid, but i will NOT work with multiple processes (WSGI).")
     app.secret_key = os.urandom(24)
 else:
     app.secret_key = app.config['APPSECRET']
@@ -512,6 +512,8 @@ def profile_verify(userId, verifyKey):
     if not verifyUser:
         flash("User not found to verify.")
     elif verifyUser.verify(verifyKey):
+        db.session.add(verifyUser)
+        db.session.commit()
         if verifyUser.veryfied:
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))
