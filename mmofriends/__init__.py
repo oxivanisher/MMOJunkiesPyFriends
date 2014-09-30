@@ -83,7 +83,7 @@ with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
     db.create_all()
-    db.session.autocommit = True
+    # db.session.autocommit = True
     # db.session.autoflush = True
     oid = OpenID(app)
 
@@ -488,7 +488,6 @@ def profile_register():
             db.session.add(newUser)
             try:
                 db.session.commit()
-                db.session.flush()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
                     flash("Please check your mails at %s" % newUser.email, 'info')
@@ -500,6 +499,7 @@ def profile_register():
                 flash("SQL Alchemy IntegrityError: %s" % e, 'error')
             except InterfaceError, e:
                 flash("SQL Alchemy InterfaceError %s" % e, 'error')
+            db.session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
 
@@ -517,12 +517,13 @@ def profile_verify(userId, verifyKey):
     elif verifyUser.verify(verifyKey):
         db.session.add(verifyUser)
         db.session.commit()
-        db.session.flush()
         if verifyUser.veryfied:
+            db.session.expire(verifyUser)
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))
         else:
             flash("Verification NOT ok. Please try again.", 'error')
+    db.session.expire(verifyUser)
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
