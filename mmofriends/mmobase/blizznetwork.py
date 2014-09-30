@@ -391,7 +391,6 @@ class BlizzNetwork(MMONetwork):
                                                                                          char['gender'],
                                                                                          char['race'],
                                                                                          char['level']))
-                if userid in self.getBestWowChar(self.cache['wowProfiles']):
                     chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                     for char in chars:
                         self.setPartnerAvatar(moreInfo, self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']))
