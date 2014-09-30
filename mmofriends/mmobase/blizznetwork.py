@@ -122,13 +122,14 @@ class BlizzNetwork(MMONetwork):
         # self.saveAllData()
         return (True, "All resources updated")
 
-    def updateUserResources(self):
+    def updateUserResources(self, userid = self.session['userid']):
+        self.log.debug("Updating resources for userid %s" % userid)
         # fetching battle tag
         self.getCache('battletags')
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag')
         if not retValue:
             return (False, retMessage)
-        self.cache['battletags'][self.session['userid']] = retMessage['battletag']
+        self.cache['battletags'][userid] = retMessage['battletag']
         self.setCache('battletags')
 
         # fetching wow chars
@@ -136,15 +137,15 @@ class BlizzNetwork(MMONetwork):
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters')
         if not retValue:
             return (False, retMessage)
-        self.cache['wowProfiles'][self.session['userid']] = retMessage
+        self.cache['wowProfiles'][userid] = retMessage
         self.setCache('wowProfiles')
 
         # fetching d3 profile
         self.getCache('d3Profiles')
-        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][self.session['userid']].replace('#', '-'))
+        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'))
         if not retValue:
             return (False, retMessage)
-        self.cache['d3Profiles'][self.session['userid']] = retMessage
+        self.cache['d3Profiles'][userid] = retMessage
         self.setCache('d3Profiles')
 
         # fetching sc2
@@ -152,7 +153,7 @@ class BlizzNetwork(MMONetwork):
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user')
         if not retValue:
             return (False, retMessage)
-        self.cache['sc2Profiles'][self.session['userid']] = retMessage
+        self.cache['sc2Profiles'][userid] = retMessage
         self.setCache('sc2Profiles')
 
         return (True, "All resources updated")
