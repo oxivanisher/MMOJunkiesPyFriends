@@ -269,6 +269,8 @@ class MMONetwork(object):
 
     # MMONetworkCache methods
     def getCache(self, name):
+        db.session.commit()
+        db.session.flush()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             self.log.debug("Loading cache: %s" % name)
