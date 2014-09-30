@@ -126,8 +126,8 @@ class BlizzNetwork(MMONetwork):
     def updateAllUserResources(self):
         self.getCache('battletags')
         for link in self.getNetworkLinks():
-            self.log.debug("Updating user resources for userid %s" % userid)
-            self.updateUserResources(link[user_id])
+            self.log.debug("Updating user resources for userid %s" % link['user_id'])
+            self.updateUserResources(link['user_id'])
         return (True, "All user resources updated")
 
     def updateUserResources(self, userid = None):
