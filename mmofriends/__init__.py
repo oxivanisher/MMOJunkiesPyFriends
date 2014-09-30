@@ -486,6 +486,7 @@ def profile_register():
             db.session.add(newUser)
             try:
                 db.session.commit()
+                db.session.flush()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email, "MMOFriends Activation email", "<a href='%s'>Verify your account with this link.</a>" % (actUrl)):
                     flash("Please check your mails at %s" % newUser.email, 'info')
@@ -514,6 +515,7 @@ def profile_verify(userId, verifyKey):
     elif verifyUser.verify(verifyKey):
         db.session.add(verifyUser)
         db.session.commit()
+        db.session.flush()
         if verifyUser.veryfied:
             flash("Verification ok. Please log in.", 'success')
             return redirect(url_for('profile_login'))
@@ -599,11 +601,6 @@ def partner_show(netHandle, partnerId):
 
             for link in linkInfo:
                 netData['linkData'].append(MMONetworks[net].getPartnerDetails(link['network_data']))
-                if MMONetworks[net].handle == "Blizz":
-                    print "net.handle", MMONetworks[net].handle
-                    print "aaaa", link
-                    print "bbbb", MMONetworks[net].getPartnerDetails(link['network_data'])
-                    print "cccc", netData['linkData']
                 networks.append(netData)
                 count += 1
 
