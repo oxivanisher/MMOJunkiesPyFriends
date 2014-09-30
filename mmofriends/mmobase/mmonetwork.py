@@ -299,7 +299,7 @@ class MMONetwork(object):
     def getCacheAge(self, name):
         self.log.debug("Getting age of cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
-        if not ret.last_update:
+        if not ret:
             return int(time.time())
         return ret.last_update
 
