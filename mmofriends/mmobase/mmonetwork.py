@@ -282,7 +282,7 @@ class MMONetwork(object):
             self.log.debug("Setting up new cache: %s" % name)
             self.cache[name] = {}
 
-        db.session.commit()
+        # db.session.commit()
 
     def setCache(self, name):
         self.log.debug("Saving cache: %s" % name)
