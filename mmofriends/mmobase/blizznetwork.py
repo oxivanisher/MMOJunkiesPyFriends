@@ -142,34 +142,34 @@ class BlizzNetwork(MMONetwork):
             accessToken = self.getSessionValue(self.linkIdName)
 
         # fetching battle tag
-        self.getCache('battletags')
-        (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag',accessToken)
+        (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
         if not retValue:
             return (False, retMessage)
+        self.getCache('battletags')
         self.cache['battletags'][userid] = retMessage['battletag']
         self.setCache('battletags')
 
         # fetching wow chars
-        self.getCache('wowProfiles')
-        (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters',accessToken)
+        (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
         if not retValue:
             return (False, retMessage)
+        self.getCache('wowProfiles')
         self.cache['wowProfiles'][userid] = retMessage
         self.setCache('wowProfiles')
 
         # fetching d3 profile
-        self.getCache('d3Profiles')
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
         if not retValue:
             return (False, retMessage)
+        self.getCache('d3Profiles')
         self.cache['d3Profiles'][userid] = retMessage
         self.setCache('d3Profiles')
 
         # fetching sc2
-        self.getCache('sc2Profiles')
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
         if not retValue:
             return (False, retMessage)
+        self.getCache('sc2Profiles')
         self.cache['sc2Profiles'][userid] = retMessage
         self.setCache('sc2Profiles')
 
@@ -191,9 +191,9 @@ class BlizzNetwork(MMONetwork):
 
     # Query Blizzard
     def queryBlizzardApi(self, what, accessToken = None):
+        self.log.debug("Query Blizzard API for %s" % what)
         if not accessToken:
             accessToken = self.getSessionValue(self.linkIdName)
-        self.log.debug("Query Blizzard API for %s" % what)
         payload = {'access_token': accessToken,
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
