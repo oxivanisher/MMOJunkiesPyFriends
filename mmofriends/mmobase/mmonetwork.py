@@ -288,8 +288,10 @@ class MMONetwork(object):
         self.log.debug("Saving cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
+            self.log.debug("Found existing cache")
             ret.set(self.cache[name])
         else:
+            self.log.debug("New cache created")
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
