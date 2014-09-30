@@ -30,7 +30,7 @@ from mmofriends import db
 
 class MMONetworkCache(db.Model):
     __tablename__ = 'mmonetcache'
-    __table_args__ = (UniqueConstraint(network_handle, entry_name, name="only1cache"))
+    __table_args__ = (UniqueConstraint(network_handle, entry_name, name="handle_name_uc"))
 
     id = db.Column(db.Integer, primary_key=True)
     network_handle = db.Column(db.String(20))
