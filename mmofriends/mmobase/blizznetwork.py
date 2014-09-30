@@ -307,7 +307,7 @@ class BlizzNetwork(MMONetwork):
 
         self.updateBaseResources(False)
         self.getCache('battletags')
-        if len(self.cache['battletags']) > len(self.getNetworkLinks()):
+        if len(self.cache['battletags']) < len(self.getNetworkLinks()):
             self.log.info("Battletags missing in cache. Forced update initiated")
             self.updateAllUserResources()
 
