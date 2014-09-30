@@ -56,6 +56,7 @@ class BlizzNetwork(MMONetwork):
 
         # admin methods
         self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
+        self.adminMethods.append((self.updateAllUserResources, 'Recache all user resources'))
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
         # setup batttleNet service
@@ -122,11 +123,25 @@ class BlizzNetwork(MMONetwork):
         # self.saveAllData()
         return (True, "All resources updated")
 
+    def updateAllUserResources(self):
+        self.getCache('battletags')
+        for userid in self.cache['battletags'].keys():
+            self.log.debug("Updating user resources for userid %s" % userid)
+            self.updateUserResources(userid)
+        return (True, "All user resources updated")
+
     def updateUserResources(self, userid = self.session['userid']):
         self.log.debug("Updating resources for userid %s" % userid)
+
+        if userid != self.session['userid']:
+            link = self.getNetworkLinks(userid)
+            accessToken = link['network_data']
+        else:
+            accessToken = self.getSessionValue(self.linkIdName)
+
         # fetching battle tag
         self.getCache('battletags')
-        (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag')
+        (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag',accessToken)
         if not retValue:
             return (False, retMessage)
         self.cache['battletags'][userid] = retMessage['battletag']
@@ -134,7 +149,7 @@ class BlizzNetwork(MMONetwork):
 
         # fetching wow chars
         self.getCache('wowProfiles')
-        (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters')
+        (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters',accessToken)
         if not retValue:
             return (False, retMessage)
         self.cache['wowProfiles'][userid] = retMessage
@@ -142,7 +157,7 @@ class BlizzNetwork(MMONetwork):
 
         # fetching d3 profile
         self.getCache('d3Profiles')
-        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'))
+        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
         if not retValue:
             return (False, retMessage)
         self.cache['d3Profiles'][userid] = retMessage
@@ -150,7 +165,7 @@ class BlizzNetwork(MMONetwork):
 
         # fetching sc2
         self.getCache('sc2Profiles')
-        (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user')
+        (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
         if not retValue:
             return (False, retMessage)
         self.cache['sc2Profiles'][userid] = retMessage
@@ -173,9 +188,9 @@ class BlizzNetwork(MMONetwork):
         return (True, "Resource updated from %s" % location)
 
     # Query Blizzard
-    def queryBlizzardApi(self, what):
+    def queryBlizzardApi(self, what, accessToken = self.getSessionValue(self.linkIdName)):
         self.log.debug("Query Blizzard API for %s" % what)
-        payload = {'access_token': self.getSessionValue(self.linkIdName),
+        payload = {'access_token': accessToken,
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
         r = requests.get(self.baseUrl + what, params=payload).json()
