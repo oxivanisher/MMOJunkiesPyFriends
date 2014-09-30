@@ -137,7 +137,7 @@ class BlizzNetwork(MMONetwork):
 
         if userid != self.session['userid']:
             link = self.getNetworkLinks(userid)
-            accessToken = link['network_data']
+            accessToken = link[0]['network_data']
         else:
             accessToken = self.getSessionValue(self.linkIdName)
 
