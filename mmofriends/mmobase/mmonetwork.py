@@ -37,7 +37,7 @@ class MMONetworkCache(db.Model):
     last_update = db.Column(db.Integer)
     cache_data = db.Column(db.UnicodeText)
     
-    __table_args__ = (db.UniqueConstraint(network_handle, entry_name, name="handle_name_uc"))
+    __table_args__ = (db.UniqueConstraint(network_handle, entry_name, name="handle_name_uc"), )
 
     def __init__(self, network_handle, entry_name, cache_data = ""):
         self.network_handle = network_handle
