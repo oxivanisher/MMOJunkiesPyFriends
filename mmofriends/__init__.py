@@ -527,6 +527,7 @@ def profile_verify(userId, verifyKey):
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
+@app.route('/Login', methods=['GET', 'POST'])
 def profile_login():
     if request.method == 'POST':
         log.info("Trying to login user: %s" % request.form['nick'])
@@ -568,6 +569,7 @@ def profile_login():
     return render_template('profile_login.html')
 
 @app.route('/Profile/Logout')
+@app.route('/Logout')
 def profile_logout():
     session.pop('logged_in', None)
     session.pop('nick', None)
