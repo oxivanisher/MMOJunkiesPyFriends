@@ -301,8 +301,7 @@ class MMONetwork(object):
         self.log.debug("Getting age of cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         last_update = ret.last_update
-        db.session.expire(ret)
-        if not ret:
+        if not last_update:
             return int(time.time())
         return last_update
 
