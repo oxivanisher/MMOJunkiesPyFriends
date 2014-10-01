@@ -130,6 +130,7 @@ class MMONetwork(object):
 
     def saveLink(self, network_data):
         self.log.debug("Saving network link for user %s" % (self.session['nick']))
+        db.session.remove()
         netLink = MMONetLink(self.session['userid'], self.handle, network_data)
         db.session.add(netLink)
         db.session.flush()
@@ -157,6 +158,7 @@ class MMONetwork(object):
         try:
             link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
             self.setSessionValue(self.linkIdName, None)
+            db.session.remove()
             db.session.delete(link)
             db.session.flush()
             db.session.commit()
@@ -271,6 +273,7 @@ class MMONetwork(object):
 
     # MMONetworkCache methods
     def getCache(self, name):
+        db.session.remove()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             self.log.debug("Loading cache: %s" % name)
@@ -286,6 +289,7 @@ class MMONetwork(object):
 
     def setCache(self, name):
         self.log.debug("Saving cache: %s" % name)
+        db.session.remove()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             self.log.debug("Found existing cache")
@@ -309,6 +313,7 @@ class MMONetwork(object):
 
     def forceCacheUpdate(self, name):
         self.log.debug("Forcing cache update: %s" % name)
+        db.session.remove()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             try:
