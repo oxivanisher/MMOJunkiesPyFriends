@@ -276,26 +276,26 @@ class MMONetwork(object):
         db.session.remove()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
-            self.log.debug("Loading cache: %s" % name)
+            # self.log.debug("Loading cache: %s" % name)
             try:
                 self.cache[name] = json.loads(ret.cache_data)
             except ValueError:
                 self.cache[name] = {}
         else:
-            self.log.debug("Setting up new cache: %s" % name)
+            # self.log.debug("Setting up new cache: %s" % name)
             self.cache[name] = {}
 
         # db.session.commit()
 
     def setCache(self, name):
-        self.log.debug("Saving cache: %s" % name)
+        # self.log.debug("Saving cache: %s" % name)
         db.session.remove()
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
-            self.log.debug("Found existing cache")
+            # self.log.debug("Found existing cache")
             ret.set(self.cache[name])
         else:
-            self.log.debug("New cache created")
+            # self.log.debug("New cache created")
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
@@ -305,7 +305,7 @@ class MMONetwork(object):
         # db.session.expire(ret)
 
     def getCacheAge(self, name):
-        self.log.debug("Getting age of cache: %s" % name)
+        # self.log.debug("Getting age of cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if not ret:
             return int(time.time())
