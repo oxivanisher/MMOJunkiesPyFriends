@@ -193,10 +193,12 @@ def not_found(error):
 # app routes
 @app.before_first_request
 def before_first_request():
+    db.session.remove()
     loadNetworks()
 
 @app.before_request
 def before_request():
+    db.session.remove()
     try:
         session['requests'] += 1
     except KeyError:
@@ -443,7 +445,6 @@ def oauth2_login(netHandle):
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])
 def profile_register():
-    db.session.remove()
     if request.method == 'POST':
         valid = True
         if request.form['nick'] and \
