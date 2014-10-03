@@ -20,7 +20,7 @@ Blizz:
   apisecret: secret
   icon: battlenet.png
 Valve:
-  name: Steam from Valve
+  name: Steam
   class: ValveNetwork
   active: True
   apikey: secret

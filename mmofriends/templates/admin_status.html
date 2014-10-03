@@ -26,8 +26,8 @@
 			<td><img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" title="{{ net.name }}"/></td>
 			<td>{{ net.className }}</td>
 			<td>{{ net.handle }}</td>
-			<td>{{ net.name }}</td>
-			<td><a href="{{ url_for('network_admin', networkHandle=net.handle) }}">{{ net.moreInfo }}</a></td>
+			<td><a href="{{ url_for('network_admin', networkHandle=net.handle) }}">{{ net.name }}</a></td>
+			<td>{{ net.moreInfo }}</td>
 			<td>{{ net.description }}</td>
 		</tr>
 		{% endfor %}
