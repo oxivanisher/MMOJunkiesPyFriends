@@ -514,7 +514,6 @@ def profile_show():
 @app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
 def profile_verify(userId, verifyKey):
     log.info("Verify userid %s" % userId)
-    db.session.remove()
     verifyUser = getUserById(userId)
     if not verifyUser:
         flash("User not found to verify.")

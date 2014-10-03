@@ -87,6 +87,15 @@
             function hideInfoPopup() {
             	$("#infopopup").hide();
             }
+            function popUpChat () {
+            	url = "https://chat.mmojunkies.net/?server=oxi&css=darkness
+						{%- if session.nick -%}
+						&name={{ session.nick }}
+						{%- endif -%}"
+				chatWin = window.open(url, "MMOJunkies Chat", "location=no,directories=no,toolbar=no,status=no,menubar=no,scrollbars=no,width=1000,height=700,resizable=yes");
+				chatWin.focus();
+				return false;
+			}
 		</script>
 		{%- endblock %}
 	</head>
@@ -127,9 +136,10 @@
 							</ul>
 						</li>
 						{% endif -%}
-						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
+						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
 					{% if session.logged_in -%}
 						{% if session.admin  -%}
 							<li class="dropdown">
