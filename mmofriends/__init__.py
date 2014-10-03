@@ -590,6 +590,20 @@ def partner_list():
     else:
         abort(401)
 
+@app.route('/Partner/Find')
+def partner_find():
+    if session.get('logged_in'):
+        retFriendsFindList = []
+        for handle in MMONetworks.keys():
+            (res, findList) = MMONetworks[handle].findPartners()
+            if res:
+                retFriendsFindList += findList
+            else:
+                flash(findList, 'error')
+        return render_template('partner_find.html', friends = retFriendsFindList)
+    else:
+        abort(401)
+
 @app.route('/Partner/Show/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
 def partner_show(netHandle, partnerId):
     if not session.get('logged_in'):

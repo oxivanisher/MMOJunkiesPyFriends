@@ -72,6 +72,11 @@
 						}
 					}
 				});
+				$('ul.nav li.dropdown').hover(function(){
+				       $(this).children('ul.dropdown-menu').slideDown(); 
+				    }, function(){
+				       $(this).children('ul.dropdown-menu').slideUp(); 
+				});
 			});
             function showImgPopup(imgSrc) {
             	$('img#popupimg').attr( "src", imgSrc );
@@ -122,19 +127,14 @@
 <!-- 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Friends <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu"> -->
+								<li class="{% if url_for('partner_find') == request.path %}active{% endif %}"><a href="{{ url_for('partner_find') }}"><span class="glyphicon glyphicon-user"></span> Find new friends</a></li>
 								<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Online Friends</a></li>
 <!-- 							</ul>
 						</li>
  -->
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tasks"></span> Networks <span class="caret"></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li class="{% if url_for('network_link') == request.path %}active{% endif %}"><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Link / Unlink</a></li>
-								{%- for net in session.networks %}
-									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
-								{%- endfor %}
-							</ul>
-						</li>
+<!-- 						<li class="dropdown">
+
+						</li> -->
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
 					</ul>
@@ -146,7 +146,7 @@
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Administration <span class="caret"></span></a>
 		         				<ul class="dropdown-menu" role="menu">
 									<li class="{% if url_for('admin_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_status') }}"><span class="glyphicon glyphicon-eye-open"></span> Status</a></li>
-									<li class="{% if url_for('network_admin') == request.path %}active{% endif %}"><a href="{{ url_for('network_admin') }}"><span class="glyphicon glyphicon-tasks"></span> Network</a></li>
+									<li class="{% if url_for('network_admin') == request.path %}active{% endif %}"><a href="{{ url_for('network_admin') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
 									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}"><span class="glyphicon glyphicon-wrench"></span> Developer Tools</a></li>
 								</ul>
 							</li>
@@ -155,6 +155,14 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu">
 								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+
+								<li class="divider"></li>
+
+								<li><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> (Un)link Network</a></li>
+								{%- for net in session.networks %}
+									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
+								{%- endfor %}
+
 								<li class="divider"></li>
 								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 							</ul>
