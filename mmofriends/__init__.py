@@ -5,7 +5,8 @@
 import sys
 import os
 import logging
-
+import urllib
+import hashlib
 
 from mmobase.mmouser import *
 from mmobase.mmonetwork import *
@@ -543,7 +544,11 @@ def profile_show(do = None):
         db.session.commit()
         flash("Profile changed", 'success')
 
-    return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all())
+    size = 60
+    gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
+    gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
+
+    return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all(), userAvatar = gravatar_url)
 
 @app.route('/Profile/Nick/<do>', methods=['GET', 'POST'])
 @app.route('/Profile/Nick/<do>/<nick>', methods=['GET', 'POST'])
@@ -554,15 +559,11 @@ def profile_nick(do, nick = None):
         nick = request.form['nick']
     myUser = getUserById(session.get('userid'))
     myUser.load()
-    print "do", do
-    print "nick", nick
 
     if do == "add":
         myUser.addNick(nick)
     elif do == "remove":
         myUser.removeNick(nick)
-
-    print "myUser.nicks", myUser.nicks.all()
 
     return redirect(url_for('profile_show'))
 
@@ -659,8 +660,9 @@ def partner_find():
     else:
         abort(401)
 
-@app.route('/Partner/Show/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
-def partner_show(netHandle, partnerId):
+@app.route('/Partner/Show/<partnerId>/', methods = ['GET', 'POST'])
+@app.route('/Partner/Show/<partnerId>/<netHandle>/', methods = ['GET', 'POST'])
+def partner_show(partnerId, netHandle = None):
     if not session.get('logged_in'):
         abort(401)
 
@@ -683,8 +685,14 @@ def partner_show(netHandle, partnerId):
                 count += 1
 
     # print "zzzz", networks
+    myUser = getUserById(partnerId)
+    myUser.load()
 
-    return render_template('partner_show.html', networks = networks, active = active)
+    size = 100
+    gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
+    gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
+
+    return render_template('partner_show.html', myUser = myUser, userAvatar = gravatar_url, networks = networks, active = active)
 
 @app.route('/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
 def partner_details(netHandle, partnerId):

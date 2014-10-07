@@ -2,11 +2,31 @@
 {% block title %}About{% endblock %}
 {% block content %}
 <div id="tabs">
-	<ul>
-	{% for net in networks -%}
-		<li><a href="#{{ net.handle }}">{{ net.name }}</a></li>
-	{% endfor -%}
-	</ul>
+	<img src="{{ userAvatar }}" title="myUser.nick" style="float: left; margin-right: 50px;"/>
+	<table>
+		<tr>
+			<td>Nickname</td>
+			<td><strong>{{ myUser.nick }}</strong></td>
+		</tr>
+		<tr>
+			<td>Real Name</td>
+			<td>{{ myUser.name }}</td>
+		</tr>
+		{% if myUser.website -%}
+		<tr>
+			<td>Website</td>
+			<td><a href="{{ myUser.website }}" target="_blank" title="{{ myUser.website }}">{{ myUser.website }}</a></td>
+		</tr>
+		{%- endif -%}			
+		</tr>
+	</table>
+	{%- if networks -%}
+		<ul>
+		{% for net in networks -%}
+			<li><a href="#{{ net.handle }}">{{ net.name }}</a></li>
+		{% endfor -%}
+		</ul>
+	{%- endif -%}
 	{% for net in networks -%}
 		<div id="{{ net.handle }}">
 		{% if net.linkData -%}
