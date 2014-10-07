@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-<img src="{{ userAvatar }}" title="myUser.nick" style="margin-right: 50px;"/>
+<img src="{{ userAvatar }}" title="myUser.nick" class="profileAvatar glow"/>
 
 <table class='table table-striped'>
 <form action="{{ url_for('profile_show') }}" id="profile" method="post">
