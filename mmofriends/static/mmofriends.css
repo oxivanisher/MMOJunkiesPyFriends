@@ -71,3 +71,10 @@ body { padding-bottom: 22px; }
   top: 60px;
   float: left;
 }
+
+.profileAvatar {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  max-width: 120px;
+  max-height: 120px;
+}
