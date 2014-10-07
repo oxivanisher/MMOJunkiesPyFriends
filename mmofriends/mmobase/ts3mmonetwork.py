@@ -161,7 +161,7 @@ class TS3Network(MMONetwork):
 
                 linkId = None
                 for link in allLinks:
-                    print link
+                    # print link
                     if cldbid == link['network_data']:
                         linkId = link['user_id']
 

@@ -544,8 +544,8 @@ def profile_show(do = None):
         db.session.commit()
         flash("Profile changed", 'success')
 
-    size = 60
-    gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
+    size = 80
+    gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
     gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
 
     return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all(), userAvatar = gravatar_url)
@@ -688,8 +688,8 @@ def partner_show(partnerId, netHandle = None):
     myUser = getUserById(partnerId)
     myUser.load()
 
-    size = 100
-    gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
+    size = 120
+    gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
     gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
 
     return render_template('partner_show.html',
