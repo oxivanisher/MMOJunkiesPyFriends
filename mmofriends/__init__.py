@@ -692,7 +692,12 @@ def partner_show(partnerId, netHandle = None):
     gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
     gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
 
-    return render_template('partner_show.html', myUser = myUser, userAvatar = gravatar_url, networks = networks, active = active)
+    return render_template('partner_show.html',
+                            myUser = myUser,
+                            nicknames = myUser.nicks.all(),
+                            userAvatar = gravatar_url,
+                            networks = networks,
+                            active = active)
 
 @app.route('/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
 def partner_details(netHandle, partnerId):

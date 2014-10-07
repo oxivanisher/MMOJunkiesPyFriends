@@ -3,23 +3,20 @@
 {% block content %}
 <div id="tabs">
 	<img src="{{ userAvatar }}" title="myUser.nick" style="float: left; margin-right: 50px;"/>
-	<table>
-		<tr>
-			<td>Nickname</td>
-			<td><strong>{{ myUser.nick }}</strong></td>
-		</tr>
-		<tr>
-			<td>Real Name</td>
-			<td>{{ myUser.name }}</td>
-		</tr>
-		{% if myUser.website -%}
-		<tr>
-			<td>Website</td>
-			<td><a href="{{ myUser.website }}" target="_blank" title="{{ myUser.website }}">{{ myUser.website }}</a></td>
-		</tr>
-		{%- endif -%}			
-		</tr>
-	</table>
+	<strong>{{ myUser.nick }}</strong>
+	{%- if myUser.name %}
+		({{ myUser.name }})
+	{%- endif %}
+	{%- if myUser.website %}
+		<a href="{{ myUser.website }}" target="_blank" title="{{ myUser.website }}">{{ myUser.website }}</a>
+	{%- endif -%}
+	{%- if nicknames -%}
+		<br />aka:
+		{% for nick in nicknames %}
+			{%- if not loop.first %}, {% endif -%}
+			{{ nick.nick }}
+		{%- endfor %}
+	{%- endif -%}
 	{%- if networks -%}
 		<ul>
 		{% for net in networks -%}
