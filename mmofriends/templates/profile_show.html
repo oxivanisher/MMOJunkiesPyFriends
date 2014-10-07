@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<table class='table table-striped'>
+<form action="{{ url_for('profile_show') }}" id="register" method="post">
+	<input type="hidden" name="do" value="editprofile" />
+	<tr><td colspan="2"><h3>Profile</h3></td></tr>
+	<tr><td>Nickname</td><td><strong>{{ values.nick }}</strong></td></tr>
+	<tr><td>Email</td><td><strong>{{ values.email }}</strong></td></tr>
+	<tr><td>Website:</td><td><input type="text" name="website" class="backend" value="{{ values.website }}"></td></tr>
+	<tr><td>Real Name:</td><td><input type="text" name="name" class="backend" value="{{ values.name }}"></td></tr>
+	<tr>
+		<td colspan="2">
+			<button class="btn btn-default" type="submit">submit</button>
+			<button class="btn btn-default" type="reset">reset</button>
+		</td>
+	</tr>
+</form>
+
+<form action="{{ url_for('profile_show') }}" id="register" method="post">
+	<input type="hidden" name="do" value="pwchange" />
+	<tr><td colspan="2"><h3>Password change</h3></td></tr>
+	<tr><td>Old password:</td><td><input type="password" name="oldpassword" class="backend" ></td></tr>
+	<tr><td>New password:</td><td><input type="password" name="newpassword1" class="backend" ></td></tr>
+	<tr><td>New password again:</td><td><input type="password" name="newpassword2" class="backend" ></td></tr>
+	<tr>
+		<td colspan="2">
+			<button class="btn btn-default" type="submit">submit</button>
+			<button class="btn btn-default" type="reset">reset</button>
+		</td>
+	</tr>
+</form>
+
+<form action="{{ url_for('profile_nick', do='add') }}" id="register" method="post">
+	<tr><td colspan="2"><h3>Nicknames</h3></td></tr>
+	<tr><td>New nickname:</td><td><input type="text" name="newnick" class="backend" ></td></tr>
+	{% if nicknames -%}
+	<tr>
+		<td colspan="2">
+			{%- for nick in nicknames -%}
+				<a href="{{ url_for('profile_nick', do='remove', nick=nick.id) }}">{{ nick.nick }}</a>
+			{% endfor -%}
+		</td>
+	</tr>
+	{%- endif -%}
+	<tr>
+		<td colspan="2">
+			<button class="btn btn-default" type="submit">submit</button>
+			<button class="btn btn-default" type="reset">reset</button>
+		</td>
+	</tr>
+</form>
+</table>
+{% endblock %}

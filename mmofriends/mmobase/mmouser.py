@@ -39,6 +39,21 @@ class MMONetLink(db.Model):
         return '<MMONetLink %r>' % self.id
 
 
+class MMOUserNick(db.Model):
+    __tablename__ = 'mmousernick'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('mmouser.id'))
+    nick = db.Column(db.String(25))    
+
+    def __init__(self, user_id, nick):
+        self.user_id = user_id
+        self.nick = nick
+
+    def __repr__(self):
+        return '<MMOUserNick %r' % self.id
+
+
 class MMOUser(db.Model):
     __tablename__ = 'mmouser'
 

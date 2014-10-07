@@ -182,7 +182,7 @@ def not_found(error):
 
 @app.errorhandler(401)
 def not_found(error):
-    flash("Unauthorized!", 'error')
+    # flash("Unauthorized!", 'error')
     return render_template('profile_login.html'), 401
 
 @app.errorhandler(403)
@@ -429,9 +429,9 @@ def oauth2_login(netHandle):
     # print "request.args", request.args
     # print "code", request.args.get("code")
     name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
-    for arg in request.args:
-        print arg, request.args[arg]
-    print "requestAccessToken returned:", name
+    # for arg in request.args:
+    #     print arg, request.args[arg]
+    # print "requestAccessToken returned:", name
     if name:
         message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
         log.info(message)
@@ -479,7 +479,10 @@ def profile_register():
             newUser = MMOUser(request.form['nick'])
             newUser.email = request.form['email']
             newUser.name = request.form['name']
-            newUser.website = request.form['website']
+            if request.form['website'].startswith("http"):
+                newUser.website = request.form['website']
+            else:
+                newUser.website = "http://" + request.form['website']
             newUser.setPassword(request.form['password'])
             if request.form['nick'] == app.config['ROOTUSER']:
                 log.info("Registred root user: %s" % request.form['nick'])
@@ -507,9 +510,47 @@ def profile_register():
     return render_template('profile_register.html', values = request.form)
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
-def profile_show():
-    flash("show profile, change template in the future", 'info')
-    return render_template('profile_register.html', values = getUserById())
+def profile_show(do = None):
+    if not session.get('logged_in'):
+        abort(401)
+    myUser = getUserById(session.get('userid'))
+    myUser.load()
+    userChanged = False
+    if request.method == 'POST':
+        if request.form['do'] == "pwchange":
+            if myUser.checkPassword(request.form['oldpassword']):
+                if request.form['newpassword1'] == request.form['newpassword2']:
+                    if len(request.form['newpassword1']) < 8:
+                        flash("Password is too short", 'error')
+                    else:
+                        myUser.setPassword(request.form['newpassword1'])
+                        userChanged = True
+                else:
+                    flash("New passwords do not match!", 'error')
+            else:
+                flash("Old password not correct!", 'error')
+        elif request.form['do'] == "editprofile":
+            if request.form['website'].startswith("http"):
+                myUser.website = request.form['website']
+            else:
+                myUser.website = "http://" + request.form['website']
+            myUser.name = request.form['name']
+            userChanged = True
+    if userChanged:
+        db.session.merge(myUser)
+        db.session.flush()
+        db.session.commit()
+        flash("Profile changed", 'success')
+
+    return render_template('profile_show.html', values = myUser, nicknames = [])
+
+@app.route('/Profile/Nick', methods=['GET', 'POST'])
+def profile_nick(do, nick):
+    if not session.get('logged_in'):
+        abort(401)
+    print "do", do
+    print "nick", nick
+    return render_template('profile_show.html', values = getUserById(session.get('userid')), nicknames = [])
 
 @app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
 def profile_verify(userId, verifyKey):
@@ -627,7 +668,7 @@ def partner_show(netHandle, partnerId):
                 networks.append(netData)
                 count += 1
 
-    print "zzzz", networks
+    # print "zzzz", networks
 
     return render_template('partner_show.html', networks = networks, active = active)
 
