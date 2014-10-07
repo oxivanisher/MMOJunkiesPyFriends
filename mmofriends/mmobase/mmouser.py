@@ -10,6 +10,7 @@ import random
 
 from mmoutils import *
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 # from mmofriends import db, app
 db = SQLAlchemy()
 
@@ -43,8 +44,11 @@ class MMOUserNick(db.Model):
     __tablename__ = 'mmousernick'
 
     id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship('MMOUser', backref=db.backref('nicks', lazy='dynamic'))
     user_id = db.Column(db.ForeignKey('mmouser.id'))
     nick = db.Column(db.String(25))    
+
+    __table_args__ = (db.UniqueConstraint(user_id, nick, name="userid_nick_uc"), )
 
     def __init__(self, user_id, nick):
         self.user_id = user_id
@@ -131,3 +135,33 @@ class MMOUser(db.Model):
             return True
         else:
             return False
+
+    def addNick(self, nick = None):
+        self.log.info("Adding Nick: %s" % nick)
+        if nick:
+            newNick = MMOUserNick(self.id, nick)
+            try:
+                db.session.add(newNick)
+                db.session.flush()
+                db.session.commit()
+            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+                db.session.rollback()
+                self.log.warning("SQL Alchemy Error: %s" % e)
+                return False
+            return True
+        return False
+
+    def removeNick(self, nickId = None):
+        self.log.info("Removing NickID: %s" % nickId)
+        if nickId:
+            oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
+            try:
+                db.session.delete(oldNick)
+                db.session.flush()
+                db.session.commit()
+            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+                db.session.rollback()
+                self.log.warning("SQL Alchemy Error: %s" % e)
+                return False
+            return True
+        return False

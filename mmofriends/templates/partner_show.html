@@ -16,7 +16,7 @@
 						{% if link.avatar -%}
 						<tr>
 							<td colspan="2">
-								<img src="{{ url_for('get_image', imgType='cache', imgId=link.avatar) }}" title="Avatar">
+								<img src="{{ url_for('get_image', imgType='cache', imgId=link.avatar) }}" class="img-responsive" title="Avatar">
 							</td>
 						</tr>
 						{%- endif -%}

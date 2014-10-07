@@ -24,7 +24,7 @@ except ImportError:
 
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
-    from sqlalchemy.exc import IntegrityError, InterfaceError
+    from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 except ImportError:
     log.error("Please install the sqlalchemy extension for flask")
     sys.exit(2)
@@ -501,16 +501,17 @@ def profile_register():
                     flash("Error sending the email to you.", 'error')
                 return redirect(url_for('profile_login'))
 
-            except IntegrityError, e:
-                flash("SQL Alchemy IntegrityError: %s" % e, 'error')
-            except InterfaceError, e:
-                flash("SQL Alchemy InterfaceError %s" % e, 'error')
+            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+                db.session.rollback()
+                flash("SQL Alchemy Error: %s" % e, 'error')
+                log.warning("SQL Alchemy Error: %s" % e)
             # db.session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show(do = None):
+    # gravatar: https://de.gravatar.com/site/implement/images/python/
     if not session.get('logged_in'):
         abort(401)
     myUser = getUserById(session.get('userid'))
@@ -542,15 +543,28 @@ def profile_show(do = None):
         db.session.commit()
         flash("Profile changed", 'success')
 
-    return render_template('profile_show.html', values = myUser, nicknames = [])
+    return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all())
 
-@app.route('/Profile/Nick', methods=['GET', 'POST'])
-def profile_nick(do, nick):
+@app.route('/Profile/Nick/<do>', methods=['GET', 'POST'])
+@app.route('/Profile/Nick/<do>/<nick>', methods=['GET', 'POST'])
+def profile_nick(do, nick = None):
     if not session.get('logged_in'):
         abort(401)
+    if not nick:
+        nick = request.form['nick']
+    myUser = getUserById(session.get('userid'))
+    myUser.load()
     print "do", do
     print "nick", nick
-    return render_template('profile_show.html', values = getUserById(session.get('userid')), nicknames = [])
+
+    if do == "add":
+        myUser.addNick(nick)
+    elif do == "remove":
+        myUser.removeNick(nick)
+
+    print "myUser.nicks", myUser.nicks.all()
+
+    return redirect(url_for('profile_show'))
 
 @app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
 def profile_verify(userId, verifyKey):

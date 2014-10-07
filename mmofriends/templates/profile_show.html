@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 <table class='table table-striped'>
-<form action="{{ url_for('profile_show') }}" id="register" method="post">
+<form action="{{ url_for('profile_show') }}" id="profile" method="post">
 	<input type="hidden" name="do" value="editprofile" />
 	<tr><td colspan="2"><h3>Profile</h3></td></tr>
 	<tr><td>Nickname</td><td><strong>{{ values.nick }}</strong></td></tr>
@@ -17,7 +17,7 @@
 	</tr>
 </form>
 
-<form action="{{ url_for('profile_show') }}" id="register" method="post">
+<form action="{{ url_for('profile_show') }}" id="password" method="post">
 	<input type="hidden" name="do" value="pwchange" />
 	<tr><td colspan="2"><h3>Password change</h3></td></tr>
 	<tr><td>Old password:</td><td><input type="password" name="oldpassword" class="backend" ></td></tr>
@@ -31,14 +31,18 @@
 	</tr>
 </form>
 
-<form action="{{ url_for('profile_nick', do='add') }}" id="register" method="post">
+<form action="{{ url_for('profile_nick', do='add') }}" id="nicks" method="post">
 	<tr><td colspan="2"><h3>Nicknames</h3></td></tr>
-	<tr><td>New nickname:</td><td><input type="text" name="newnick" class="backend" ></td></tr>
+	<tr><td>New nickname:</td><td><input type="text" name="nick" class="backend" ></td></tr>
 	{% if nicknames -%}
 	<tr>
 		<td colspan="2">
 			{%- for nick in nicknames -%}
-				<a href="{{ url_for('profile_nick', do='remove', nick=nick.id) }}">{{ nick.nick }}</a>
+				<a href="{{ url_for('profile_nick', do='remove', nick=nick.id) }}">
+					<button type="button" class="btn btn-default btn-xs">{{ nick.nick }}
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</a>
 			{% endfor -%}
 		</td>
 	</tr>
