@@ -137,6 +137,7 @@ class ValveNetwork(MMONetwork):
             try:
                 friends = self.getSteamUser(self.getSessionValue(self.linkIdName)).friends
             except Exception as e:
+                self.log.warning("Unable to get data from Steam: %s" % e)
                 return (False, "Error connecting to Steam: %s" % e)
             for friend in friends:
                 if onlineOnly:
@@ -341,8 +342,10 @@ class ValveNetwork(MMONetwork):
             steam_user = user.SteamUser(userid=int(name))
         except ValueError: # Not an ID, but a vanity URL.
             steam_user = user.SteamUser(userurl=name)
-        except APIUnauthorized:
+        except APIUnauthorized as e:
+            self.log.warning("Unable to get data from Steam (APIUnauthorized): %s" % e)
             return False
-        except ConnectionError:
+        except ConnectionError as e:
+            self.log.warning("Unable to get data from Steam (ConnectionError): %s" % e)
             return False
         return steam_user
