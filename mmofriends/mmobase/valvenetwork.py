@@ -16,6 +16,8 @@ from mmouser import *
 from mmonetwork import *
 from mmofriends import db
 
+from requests.exceptions import ConnectionError
+
 try:
     from steamapi import *
 except ImportError:
@@ -195,7 +197,12 @@ class ValveNetwork(MMONetwork):
         self.log.debug("List partner details for: %s" % partnerId)
         if partnerId not in self.cache['users'].keys():
             self.log.debug("Fetch user data for: %s" % partnerId)
-            steam_user = self.getSteamUser(partnerId)
+            try:
+                steam_user = self.getSteamUser(partnerId)
+            except Exception as e:
+                self.log.warning("Unable to get data from Steam: %s" % e)
+                return {}
+
             self.cache['users'][partnerId] = {}
             self.cache['users'][partnerId]['name'] = steam_user.name
             self.cache['users'][partnerId]['steamid'] = steam_user.steamid
@@ -336,4 +343,6 @@ class ValveNetwork(MMONetwork):
             steam_user = user.SteamUser(userurl=name)
         except APIUnauthorized:
             return False
-        return steam_user        
+        except ConnectionError:
+            return False
+        return steam_user
