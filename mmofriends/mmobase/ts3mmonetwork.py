@@ -570,4 +570,4 @@ class TS3Network(MMONetwork):
 
     def findPartners(self):
         self.log.debug("Searching for new partners to play with")
-        return self.getPartners()
+        return self.getPartners(onlineOnly=True)
