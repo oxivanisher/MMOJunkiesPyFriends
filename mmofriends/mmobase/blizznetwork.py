@@ -369,7 +369,7 @@ class BlizzNetwork(MMONetwork):
                 result.append({ 'id': linkId,
                                 'mmoid': userid,
                                 'nick': self.cache['battletags'][userid],
-                                'state': 'bla bla',
+                                'state': 'No info available',
                                 'netHandle': self.handle,
                                 'networkText': self.name,
                                 'networkImgs': myProducts,
