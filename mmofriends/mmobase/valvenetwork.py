@@ -156,6 +156,8 @@ class ValveNetwork(MMONetwork):
                         linkId = friend
 
                 self.getPartnerDetails(friend)
+                self.getCache('users')
+
                 self.cacheFile(self.cache['users'][friend]['avatar'])
                 self.cacheFile(self.cache['users'][friend]['avatar_full'])
                 friendImgs = []
@@ -170,7 +172,7 @@ class ValveNetwork(MMONetwork):
 
                 friendImgs.append({
                                     'type': 'cache',
-                                    'name': self.cache['users'][friend]['avatar'].split('/')[-1],
+                                    'name': self.cache['users'][friend]['avatar'], #.split('/')[-1]
                                     'title': self.cache['users'][friend]['real_name']
                                 })
 
