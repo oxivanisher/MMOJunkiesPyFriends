@@ -156,22 +156,22 @@ class ValveNetwork(MMONetwork):
                         linkId = friend
 
                 self.getPartnerDetails(friend)
-                self.cacheFile(self.cache['users']['avatar'])
-                self.cacheFile(self.cache['users']['avatar_full'])
+                self.cacheFile(self.cache['users'][friend]['avatar'])
+                self.cacheFile(self.cache['users'][friend]['avatar_full'])
                 friendImgs = []
                 try:
                     friendImgs.append({
                                     'type': 'flag',
-                                    'name': self.cache['users']['country_code'].lower(),
-                                    'title': self.cache['users']['country_code']
+                                    'name': self.cache['users'][friend]['country_code'].lower(),
+                                    'title': self.cache['users'][friend]['country_code']
                                     })
                 except Exception:
                     pass
 
                 friendImgs.append({
                                     'type': 'cache',
-                                    'name': self.cache['users']['avatar'].split('/')[-1],
-                                    'title': self.cache['users']['real_name']
+                                    'name': self.cache['users'][friend]['avatar'].split('/')[-1],
+                                    'title': self.cache['users'][friend]['real_name']
                                 })
 
                 onlineState = 0
@@ -182,16 +182,16 @@ class ValveNetwork(MMONetwork):
 
                 result.append({ 'mmoid': linkId,
                                 'id': friend,
-                                'nick': self.cache['users']['name'],
+                                'nick': self.cache['users'][friend]['name'],
                                 'state': self.onlineStates[onlineState], #FIXME!
                                 # 'state': OnlineState(friend.state),
                                 # state() == OnlineState.OFFLINE
-                                'netHandle': self.cache['users']['handle'],
-                                'networkText': self.cache['users']['name'],
+                                'netHandle': self.cache['users'][friend]['handle'],
+                                'networkText': self.cache['users'][friend]['name'],
                                 'networkImgs': [{
                                     'type': 'network',
-                                    'name': self.cache['users']['handle'],
-                                    'title': self.cache['users']['name']
+                                    'name': self.cache['users'][friend]['handle'],
+                                    'title': self.cache['users'][friend]['name']
                                 }],
                                 'friendImgs': friendImgs
                             })
