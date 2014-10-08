@@ -232,6 +232,8 @@ class ValveNetwork(MMONetwork):
                     games.append(game.id)
             except TypeError:
                 pass
+            except Exception as e:
+                self.log.warning("Looping over steam games error: %s" % e)
             self.cache['users'][partnerId]['games'] = games
 
             try:
@@ -240,6 +242,8 @@ class ValveNetwork(MMONetwork):
                     recent.append(game.id)
             except TypeError:
                 pass
+            except Exception as e:
+                self.log.warning("Looping over steam recently_played error: %s" % e)
             self.cache['users'][partnerId]['recently_played'] = recent
 
             try:
@@ -248,6 +252,8 @@ class ValveNetwork(MMONetwork):
                     badges.append(badge.id)
             except TypeError:
                 pass
+            except Exception as e:
+                self.log.warning("Looping over steam badges error: %s" % e)
             self.cache['users'][partnerId]['badges'] = badges
 
             # print "steam_user.groups", steam_user.groups
