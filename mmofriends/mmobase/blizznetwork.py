@@ -326,6 +326,7 @@ class BlizzNetwork(MMONetwork):
 
             # Battle.net in general
             for userid in self.cache['battletags'].keys():
+                self.log.info("TMP %s %s" % (userid, self.session['userid']))
                 if str(userid) == str(self.session['userid']):
                     print "ignoring %s" % userid
                     continue
