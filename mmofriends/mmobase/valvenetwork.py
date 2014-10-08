@@ -156,6 +156,7 @@ class ValveNetwork(MMONetwork):
                 self.getPartnerDetails(friend)
                 self.getCache('users')
 
+                print "self.cache['users']", self.cache['users']
                 if friend not in self.cache['users'].keys():
                     self.log.error("Unable to find or load user %s" % friend)
                     continue
@@ -377,7 +378,7 @@ class ValveNetwork(MMONetwork):
         except ConnectionError as e:
             self.log.warning("Unable to get data from Steam (ConnectionError): %s" % e)
             return False
-        self.log.info("Fetched user %s" % name)
+        self.log.info("Fetched user data from steam for %s" % name)
         return steam_user
 
     def findPartners(self):
