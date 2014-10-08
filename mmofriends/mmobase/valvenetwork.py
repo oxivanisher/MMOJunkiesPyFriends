@@ -158,8 +158,16 @@ class ValveNetwork(MMONetwork):
                 self.getPartnerDetails(friend)
                 self.getCache('users')
 
-                self.cacheFile(self.cache['users'][friend]['avatar'])
-                self.cacheFile(self.cache['users'][friend]['avatar_full'])
+                try:
+                    self.cacheFile(self.cache['users'][friend]['avatar'])
+                except KeyError:
+                    pass
+
+                try:
+                    self.cacheFile(self.cache['users'][friend]['avatar_full'])
+                except KeyError:
+                    pass
+
                 friendImgs = []
                 try:
                     friendImgs.append({
@@ -170,11 +178,12 @@ class ValveNetwork(MMONetwork):
                 except Exception:
                     pass
 
-                friendImgs.append({
-                                    'type': 'cache',
-                                    'name': self.cache['users'][friend]['avatar'], #.split('/')[-1]
-                                    'title': self.cache['users'][friend]['real_name']
-                                })
+                if 'avatar' in self.cache['users'][friend].keys():
+                    friendImgs.append({
+                                        'type': 'cache',
+                                        'name': self.cache['users'][friend]['avatar'], #.split('/')[-1]
+                                        'title': self.cache['users'][friend]['name']
+                                    })
 
                 onlineState = 0
                 try:
