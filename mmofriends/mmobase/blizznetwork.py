@@ -327,6 +327,7 @@ class BlizzNetwork(MMONetwork):
             # Battle.net in general
             for userid in self.cache['battletags'].keys():
                 if userid == self.session['userid']:
+                    print "ignoring %s" % userid
                     continue
 
                 myProducts = [{ 'type': 'network',
