@@ -322,9 +322,6 @@ class BlizzNetwork(MMONetwork):
 
         try:
             allLinks = self.getNetworkLinks()
-            # FIXME exclude myself ...
-
-            # Battle.net in general
             for userid in self.cache['battletags'].keys():
                 if str(userid) == str(self.session['userid']):
                     continue
