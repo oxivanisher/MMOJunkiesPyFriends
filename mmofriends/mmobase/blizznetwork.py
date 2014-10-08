@@ -326,6 +326,9 @@ class BlizzNetwork(MMONetwork):
 
             # Battle.net in general
             for userid in self.cache['battletags'].keys():
+                if userid == self.session['userid']:
+                    continue
+
                 myProducts = [{ 'type': 'network',
                                 'name': self.handle,
                                 'title': self.name }]
@@ -421,51 +424,35 @@ class BlizzNetwork(MMONetwork):
         
         return moreInfo
 
-    #     avatar = steam_user.avatar_full.split('/')[-1]
-
-    #     self.setPartnerAvatar(moreInfo, avatar)
-
-    #     self.setPartnerDetail(moreInfo, "Country Code", steam_user.country_code)
-    #     # self.setPartnerDetail(moreInfo, "Created", steam_user.time_created)
-    #     self.setPartnerDetail(moreInfo, "Last Logoff", steam_user.last_logoff)
-    #     self.setPartnerDetail(moreInfo, "Profile URL", steam_user.profile_url)
-    #     self.setPartnerDetail(moreInfo, "Online/Offline", steam_user.state)
-    #     self.setPartnerDetail(moreInfo, "Level", steam_user.level)
-    #     self.setPartnerDetail(moreInfo, "XP", steam_user.xp)
-    #     # self.setPartnerDetail(moreInfo, "Badges", steam_user.badges)
-
-    #     recent = []
-    #     for game in steam_user.recently_played:
-    #         recent.append(game.name)
-    #     self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(recent))
-        
-    #     games = []
-    #     for game in steam_user.games:
-    #         games.append(game.name)
-    #     self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
-        
-    #     # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
-
-
-    #     if steam_user.group:
-    #         self.setPartnerDetail(moreInfo, "Primary Group", steam_user.group.guid)
-
-    #     # groups = []
-    #     # for group in steam_user.groups:
-    #     #     group.append(group.guid)
-    #     # self.setPartnerDetail(moreInfo, "Groups", ', '.join(groups))
-
-    #     if steam_user.currently_playing:
-    #         self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
-
-    #     if self.session.get('admin'):
-    #         self.setPartnerDetail(moreInfo, "Steam ID", steam_user.code)
-    #         self.setPartnerDetail(moreInfo, "Real Name", steam_user.real_name)
-
-    #     return moreInfo
-
-    # # def setNetworkMoreInfo(self, moreInfo):
-    # #     self.moreInfo = moreInfo
-
-    # def admin(self):
-    #     self.log.debug("Loading admin stuff")
+    def findPartners(self):
+        self.log.debug("Searching for new partners to play with")
+        return ( False, "Network not yet programmed")
+        return ( True, {'id': 'someId',
+                        'mmoid': internalId,
+                        'nick': 'nickName',
+                        'state': 'State',
+                        'netHandle': self.handle,
+                        'networkText': 'Product',
+                        'networkImgs': [{
+                            'type': 'network',
+                            'name': self.handle,
+                            'title': self.name
+                        },{
+                            'type': 'cache',
+                            'name': 'gameIconPath',
+                            'title': 'gameName'
+                        },{
+                            'type': 'cache',
+                            'name': 'mapIconPath',
+                            'title': 'mapName'
+                        }],
+                        'friendImgs': [{
+                            'type': 'cache',
+                            'name': 'rankIconPath',
+                            'title': 'rankIcon'
+                        },{
+                            'type': 'cache',
+                            'name': 'someImagePath',
+                            'title': 'someImage'
+                        }]
+                    })
