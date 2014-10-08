@@ -423,4 +423,4 @@ class BlizzNetwork(MMONetwork):
 
     def findPartners(self):
         self.log.debug("Searching for new partners to play with")
-        return ( True, self.getPartners() )
+        return self.getPartners()
