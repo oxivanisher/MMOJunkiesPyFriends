@@ -134,52 +134,64 @@ class ValveNetwork(MMONetwork):
             # try:
             allLinks = self.getNetworkLinks()
             friends = []
+            onlineFriends = {}
             try:
-                friends = self.getSteamUser(self.getSessionValue(self.linkIdName)).friends
+                for friend in self.getSteamUser(self.getSessionValue(self.linkIdName)).friends:
+                    friends.append(friend.steamid)
+                    onlineFriends[friend.steamid] = friend.state
             except Exception as e:
                 self.log.warning("Unable to get data from Steam: %s" % e)
                 return (False, "Error connecting to Steam: %s" % e)
+
+
+
             for friend in friends:
                 if onlineOnly:
-                    if friend.state == 0:
+                    if onlineFriends[friend] == 0:
                         continue
 
                 linkId = None
                 for link in allLinks:
-                    if friend.steamid == link['network_data']:
-                        linkId = friend.steamid
+                    if friend == link['network_data']:
+                        linkId = friend
 
-                self.getPartnerDetails(friend.steamid)
-                self.cacheFile(friend.avatar)
-                self.cacheFile(friend.avatar_full)
+                self.getPartnerDetails(friend)
+                self.cacheFile(self.cache['users']['avatar'])
+                self.cacheFile(self.cache['users']['avatar_full'])
                 friendImgs = []
                 try:
                     friendImgs.append({
                                     'type': 'flag',
-                                    'name': friend.country_code.lower(),
-                                    'title': friend.country_code
+                                    'name': self.cache['users']['country_code'].lower(),
+                                    'title': self.cache['users']['country_code']
                                     })
                 except Exception:
                     pass
 
                 friendImgs.append({
                                     'type': 'cache',
-                                    'name': friend.avatar.split('/')[-1],
-                                    'title': friend.real_name
+                                    'name': self.cache['users']['avatar'].split('/')[-1],
+                                    'title': self.cache['users']['real_name']
                                 })
 
+                onlineState = 0
+                try:
+                    onlineState = onlineFriends[friend]
+                except KeyError:
+                    pass
+
                 result.append({ 'mmoid': linkId,
-                                'id': friend.steamid,
-                                'nick': friend.name,
-                                'state': self.onlineStates[friend.state],
+                                'id': friend,
+                                'nick': self.cache['users']['name'],
+                                'state': self.onlineStates[onlineState], #FIXME!
                                 # 'state': OnlineState(friend.state),
                                 # state() == OnlineState.OFFLINE
-                                'netHandle': self.handle,
-                                'networkText': self.name,
+                                'netHandle': self.cache['users']['handle'],
+                                'networkText': self.cache['users']['name'],
                                 'networkImgs': [{
                                     'type': 'network',
-                                    'name': self.handle,
-                                    'title': self.name
+                                    'name': self.cache['users']['handle'],
+                                    'title': self.cache['users']['name']
                                 }],
                                 'friendImgs': friendImgs
                             })
@@ -194,6 +206,8 @@ class ValveNetwork(MMONetwork):
         self.getCache('users')
         self.getCache('games')
         self.getCache('groups')
+
+        # FIXME insert cache magic here!
 
         self.log.debug("List partner details for: %s" % partnerId)
         if partnerId not in self.cache['users'].keys():
@@ -218,7 +232,8 @@ class ValveNetwork(MMONetwork):
             self.cache['users'][partnerId]['level'] = steam_user.level
             self.cache['users'][partnerId]['xp'] = steam_user.xp
             # self.cache['users'][partnerId]['time_created'] = time.mktime(steam_user.time_created.timetuple())
-            self.cache['users'][partnerId]['avatar'] = self.cacheFile(steam_user.avatar_full)
+            self.cache['users'][partnerId]['avatar'] = self.cacheFile(steam_user.avatar)
+            self.cache['users'][partnerId]['avatar_full'] = self.cacheFile(steam_user.avatar_full)
             self.cache['users'][partnerId]['primary_group'] = steam_user.group.guid
 
             try:
