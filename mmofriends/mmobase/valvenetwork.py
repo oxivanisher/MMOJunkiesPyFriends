@@ -156,10 +156,10 @@ class ValveNetwork(MMONetwork):
                 self.getPartnerDetails(friend)
                 self.getCache('users')
 
-                self.log.error("self.cache['users']: %s" % self.cache['users'])
-                if friend not in self.cache['users'].keys():
+                if str(friend) not in self.cache['users'].keys():
                     self.log.error("Unable to find or load user %s" % friend)
                     continue
+                friend = str(friend)
                 self.cacheFile(self.cache['users'][friend]['avatar'])
                 self.cacheFile(self.cache['users'][friend]['avatar_full'])
 
