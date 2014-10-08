@@ -143,8 +143,6 @@ class ValveNetwork(MMONetwork):
                 self.log.warning("Unable to get data from Steam: %s" % e)
                 return (False, "Error connecting to Steam: %s" % e)
 
-
-
             for friend in friends:
                 if onlineOnly:
                     if onlineFriends[friend] == 0:
@@ -223,6 +221,8 @@ class ValveNetwork(MMONetwork):
             except Exception as e:
                 self.log.warning("Unable to get data from Steam: %s" % e)
                 return {}
+            if not steam_user:
+                return {}
 
             self.cache['users'][partnerId] = {}
             self.cache['users'][partnerId]['name'] = steam_user.name
@@ -292,6 +292,8 @@ class ValveNetwork(MMONetwork):
             # self.cache['users'][partnerId]['groups'] = groups
 
             self.setCache('users')
+            self.setCache('games')
+            self.setCache('groups')
 
         moreInfo = {}
 
@@ -375,6 +377,7 @@ class ValveNetwork(MMONetwork):
         except ConnectionError as e:
             self.log.warning("Unable to get data from Steam (ConnectionError): %s" % e)
             return False
+        self.log.info("Fetched user %s" % name)
         return steam_user
 
     def findPartners(self):
