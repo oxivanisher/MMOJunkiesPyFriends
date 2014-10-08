@@ -355,3 +355,37 @@ class ValveNetwork(MMONetwork):
             self.log.warning("Unable to get data from Steam (ConnectionError): %s" % e)
             return False
         return steam_user
+
+    def findPartners(self):
+        self.log.debug("Searching for new partners to play with")
+        return ( True, [])
+        return ( False, "Network not yet programmed")
+        return ( True, {'id': 'someId',
+                        'mmoid': internalId,
+                        'nick': 'nickName',
+                        'state': 'State',
+                        'netHandle': self.handle,
+                        'networkText': 'Product',
+                        'networkImgs': [{
+                            'type': 'network',
+                            'name': self.handle,
+                            'title': self.name
+                        },{
+                            'type': 'cache',
+                            'name': 'gameIconPath',
+                            'title': 'gameName'
+                        },{
+                            'type': 'cache',
+                            'name': 'mapIconPath',
+                            'title': 'mapName'
+                        }],
+                        'friendImgs': [{
+                            'type': 'cache',
+                            'name': 'rankIconPath',
+                            'title': 'rankIcon'
+                        },{
+                            'type': 'cache',
+                            'name': 'someImagePath',
+                            'title': 'someImage'
+                        }]
+                    })
