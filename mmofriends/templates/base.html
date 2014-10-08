@@ -72,6 +72,9 @@
 						}
 					}
 				});
+				// $( "#loadingOverlay" ).modal({
+				// 	modal: true
+				// });
 				$('ul.nav li.dropdown').hover(function(){
 				       $(this).children('ul.dropdown-menu').slideDown(); 
 				    }, function(){
@@ -101,10 +104,15 @@
 				chatWin.focus();
 				return false;
 			}
+			$(window).load(function(){
+			   $('#loadingOverlay').fadeOut();
+			   $('#loadingOverlay').modal('hide');
+			});
 		</script>
 		{%- endblock %}
 	</head>
 	<body>
+		<!-- <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />Loading...</div> -->
 		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none;"><img id="popupimg" src="" /></span></div>
 		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none;"></span></div>
 		<nav class="navbar navbar-inverse" role="navigation">
