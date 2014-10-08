@@ -158,15 +158,11 @@ class ValveNetwork(MMONetwork):
                 self.getPartnerDetails(friend)
                 self.getCache('users')
 
-                try:
-                    self.cacheFile(self.cache['users'][friend]['avatar'])
-                except KeyError:
-                    pass
-
-                try:
-                    self.cacheFile(self.cache['users'][friend]['avatar_full'])
-                except KeyError:
-                    pass
+                if friend not in self.cache['users'].keys():
+                    self.log.error("Unable to find or load user %s" % friend)
+                    continue
+                self.cacheFile(self.cache['users'][friend]['avatar'])
+                self.cacheFile(self.cache['users'][friend]['avatar_full'])
 
                 friendImgs = []
                 try:
@@ -178,12 +174,11 @@ class ValveNetwork(MMONetwork):
                 except Exception:
                     pass
 
-                if 'avatar' in self.cache['users'][friend].keys():
-                    friendImgs.append({
-                                        'type': 'cache',
-                                        'name': self.cache['users'][friend]['avatar'], #.split('/')[-1]
-                                        'title': self.cache['users'][friend]['name']
-                                    })
+                friendImgs.append({
+                                    'type': 'cache',
+                                    'name': self.cache['users'][friend]['avatar'], #.split('/')[-1]
+                                    'title': self.cache['users'][friend]['name']
+                                })
 
                 onlineState = 0
                 try:
