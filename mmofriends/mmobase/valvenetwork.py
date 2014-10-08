@@ -191,12 +191,12 @@ class ValveNetwork(MMONetwork):
                                 'state': self.onlineStates[onlineState], #FIXME!
                                 # 'state': OnlineState(friend.state),
                                 # state() == OnlineState.OFFLINE
-                                'netHandle': self.cache['users'][friend]['handle'],
-                                'networkText': self.cache['users'][friend]['name'],
+                                'netHandle': self.handle,
+                                'networkText': self.name,
                                 'networkImgs': [{
                                     'type': 'network',
-                                    'name': self.cache['users'][friend]['handle'],
-                                    'title': self.cache['users'][friend]['name']
+                                    'name': self.handle,
+                                    'title': self.name
                                 }],
                                 'friendImgs': friendImgs
                             })
