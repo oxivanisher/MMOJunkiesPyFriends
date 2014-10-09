@@ -181,7 +181,7 @@ class ValveNetwork(MMONetwork):
 
                 onlineState = 0
                 try:
-                    onlineState = onlineFriends[friend]
+                    onlineState = int(onlineFriends[friend])
                 except KeyError:
                     pass
 
@@ -306,7 +306,7 @@ class ValveNetwork(MMONetwork):
         except KeyError:
             #Probably empty database!
             return moreInfo
-        self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
+        self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar_full'])
 
 
         if self.session.get('admin'):
