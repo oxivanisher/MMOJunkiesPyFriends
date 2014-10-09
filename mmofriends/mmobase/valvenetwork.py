@@ -183,7 +183,7 @@ class ValveNetwork(MMONetwork):
                 try:
                     onlineState = str(onlineFriends[friend])
                 except KeyError:
-                    self.log.debug("Online state not found: %s" % onlineFriends[friend])
+                    # self.log.debug("Online state not found: %s" % onlineFriends[friend])
                     pass
 
                 result.append({ 'mmoid': linkId,
