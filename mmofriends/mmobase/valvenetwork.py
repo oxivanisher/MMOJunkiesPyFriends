@@ -181,7 +181,7 @@ class ValveNetwork(MMONetwork):
 
                 onlineState = 0
                 try:
-                    onlineState = str(onlineFriends[friend])
+                    onlineState = onlineFriends[int(friend)]
                 except KeyError:
                     # self.log.debug("Online state not found: %s" % onlineFriends[friend])
                     pass
