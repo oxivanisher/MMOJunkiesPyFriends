@@ -139,6 +139,7 @@ class ValveNetwork(MMONetwork):
                 for friend in self.getSteamUser(self.getSessionValue(self.linkIdName)).friends:
                     friends.append(friend.steamid)
                     onlineFriends[friend.steamid] = friend.state
+                self.log.debug("Friends state: %s" % onlineFriends)
             except Exception as e:
                 self.log.warning("Unable to get data from Steam: %s" % e)
                 return (False, "Error connecting to Steam: %s" % e)
