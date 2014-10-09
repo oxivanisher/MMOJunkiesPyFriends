@@ -180,16 +180,10 @@ class ValveNetwork(MMONetwork):
                                     'title': self.cache['users'][friend]['name']
                                 })
 
-                onlineState = 0
-                try:
-                    onlineState = int(onlineFriends[friend])
-                except KeyError:
-                    pass
-
                 result.append({ 'mmoid': linkId,
                                 'id': friend,
                                 'nick': self.cache['users'][friend]['name'],
-                                'state': self.onlineStates[onlineState], #FIXME!
+                                'state': self.onlineStates[onlineFriends[friend]], #FIXME!
                                 # 'state': OnlineState(friend.state),
                                 # state() == OnlineState.OFFLINE
                                 'netHandle': self.handle,
