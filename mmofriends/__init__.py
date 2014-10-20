@@ -36,6 +36,12 @@ except ImportError:
     log.error("Please install the openid extension for flask")
     sys.exit(2)
 
+try:
+    from celery import Celery
+except ImportError:
+    log.error("Please install Celery")
+    sys.exit(2)
+
 # try:
 #     import twitter
 # except ImportError:
@@ -175,6 +181,26 @@ def getAdminMethods():
                      'methods': adminMethods})
     return nets
 
+def make_celery(app):
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
+celery = make_celery(app)
+
+@celery.task()
+def test_work(a, b):
+    log.warning("Test Worker sleeping (%s, %s)" % (a, b))
+    time.sleep(20)
+    log.warning("Test Worker working (%s, %s)" % (a, b))
+    return a + b
+
 # flask error handlers
 @app.errorhandler(404)
 def not_found(error):
@@ -195,6 +221,7 @@ def not_found(error):
 @app.before_first_request
 def before_first_request():
     db.session.remove()
+    test_work.delay(42, 5)
     loadNetworks()
 
 @app.before_request
