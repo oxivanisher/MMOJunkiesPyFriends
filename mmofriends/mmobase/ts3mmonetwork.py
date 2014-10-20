@@ -430,6 +430,13 @@ class TS3Network(MMONetwork):
         except Exception as e:
             return "%s" % e
 
+    def background_worker(self):
+        self.log.debug("%s %s %s" % (time.time(), self.backgroundWorkerTime, 60))
+        if time.time() > self.backgroundWorkerTime + 60:
+            self.log.debug("Background worker is running: cacheAvailableClients")
+            self.cacheAvailableClients()
+            self.backgroundWorkerTime = time.time()
+
     def cacheAvailableClients(self):
         self.getCache('clientDatabase')
         self.log.info("Fetching all clients from database.")

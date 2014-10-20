@@ -107,6 +107,7 @@ class MMONetwork(object):
         self.moreInfo = 'NoMoreInfo'
         self.varsToSave = []
         self.lastRefreshDate = 0
+        self.backgroundWorkerTime = 0
         self.adminMethods = []
         self.cache = {}
 
@@ -127,6 +128,9 @@ class MMONetwork(object):
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
+
+    def background_worker(self):
+        self.log.debug("Background worker is working (not doing anything really)")
 
     def saveLink(self, network_data):
         self.log.debug("Saving network link for user %s" % (self.session['nick']))

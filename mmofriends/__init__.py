@@ -141,6 +141,7 @@ def loadNetworks():
                 log.error(message)
         else:
             log.info("MMONetwork %s (%s) is deactivated" % (network['name'], handle))
+    return MMONetworks
 
 def getUserByNick(nick = None):
     with app.test_request_context():
@@ -195,11 +196,16 @@ def make_celery(app):
 celery = make_celery(app)
 
 @celery.task()
-def test_work(a, b):
-    log.warning("Test Worker sleeping (%s, %s)" % (a, b))
-    time.sleep(20)
-    log.warning("Test Worker working (%s, %s)" % (a, b))
-    return a + b
+def background_worker():
+    log.warning("Test Worker starting")
+    MMONetworks = loadNetworks()
+    work = True
+    while work:
+        for net in MMONetworks.keys():
+            log.warning("Test Worker working on %s" % net)
+            MMONetworks[net].background_worker()
+        # log.warning("Test Worker sleeping")
+        time.sleep(5)
 
 # flask error handlers
 @app.errorhandler(404)
@@ -221,7 +227,7 @@ def not_found(error):
 @app.before_first_request
 def before_first_request():
     db.session.remove()
-    test_work.delay(42, 5)
+    background_worker.delay()
     loadNetworks()
 
 @app.before_request
