@@ -158,6 +158,7 @@ class TS3Network(MMONetwork):
                 try:
                     nick = self.onlineClients[cldbid]['client_nickname'].decode('utf-8')
                 except KeyError:
+                    self.fetchUserDetatilsByCldbid(cldbid)
                     try:
                         nick = self.cache['clientDatabase'][cldbid]['client_nickname'].decode('utf-8')
                     except UnicodeEncodeError:

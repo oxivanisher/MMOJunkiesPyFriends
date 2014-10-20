@@ -181,8 +181,9 @@ class ValveNetwork(MMONetwork):
 
                 onlineState = 0
                 try:
-                    onlineState = onlineFriends[friend]
+                    onlineState = onlineFriends[int(friend)]
                 except KeyError:
+                    # self.log.debug("Online state not found: %s" % onlineFriends[friend])
                     pass
 
                 result.append({ 'mmoid': linkId,
@@ -306,7 +307,7 @@ class ValveNetwork(MMONetwork):
         except KeyError:
             #Probably empty database!
             return moreInfo
-        self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar'])
+        self.setPartnerAvatar(moreInfo, self.cache['users'][partnerId]['avatar_full'])
 
 
         if self.session.get('admin'):

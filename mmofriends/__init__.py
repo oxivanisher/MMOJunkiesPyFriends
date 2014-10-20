@@ -66,11 +66,12 @@ except RuntimeError as e:
     log.error(e)
     sys.exit(2)
 
-if not app.debug:
-    from logging.handlers import SMTPHandler
-    mail_handler = SMTPHandler(app.config['EMAILSERVER'], app.config['EMAILFROM'], app.config['ADMINS'], current_app.name + ' failed!')
-    mail_handler.setLevel(logging.ERROR)
-    app.logger.addHandler(mail_handler)
+with app.test_request_context():
+    if not app.debug:
+        from logging.handlers import SMTPHandler
+        mail_handler = SMTPHandler(app.config['EMAILSERVER'], app.config['EMAILFROM'], app.config['ADMINS'], current_app.name + ' failed!')
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
 
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
