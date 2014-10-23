@@ -40,6 +40,9 @@ class TS3Network(MMONetwork):
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
         self.adminMethods.append((self.cacheFiles, 'Cache files'))
 
+        self.registerWorker(self.cacheAvailableClients, 0)
+        self.registerWorker(self.cacheAvailableClients, 20)
+
     def refresh(self):
         if not self.connect():
             self.log.warning("Not refreshing online clients because we are disconnected")
@@ -431,28 +434,23 @@ class TS3Network(MMONetwork):
         except Exception as e:
             return "%s" % e
 
-    def background_worker(self):
-        self.log.debug("%s %s %s" % (time.time(), self.backgroundWorkerTime, 60))
-        if time.time() > self.backgroundWorkerTime + 60:
-            self.log.debug("Background worker is running: cacheAvailableClients")
-            self.cacheAvailableClients()
-            self.backgroundWorkerTime = time.time()
-
-    def cacheAvailableClients(self):
+    def cacheAvailableClients(self, logger = None):
+        if not logger:
+            logger = self.log
         self.getCache('clientDatabase')
-        self.log.info("Fetching all clients from database.")
+        logger.info("Fetching all clients from database.")
 
         clientNum = 0
         clientTot = int(self.sendCommand('clientdblist -count').data[0]['count'])
         allClients = []
         while clientNum < clientTot:
-            self.log.debug("Fetching all clients, starting at: %s" % clientNum)
+            logger.debug("Fetching all clients, starting at: %s" % clientNum)
             newClients = self.sendCommand('clientdblist start=%s' % clientNum).data
             clientNum += len(newClients)
             allClients += newClients
         for client in allClients:
             self.cache['clientDatabase'][client['cldbid']] = client
-        self.log.info("Fetched all client database. %s clients in total." % clientNum)
+        logger.info("Fetched all client database. %s clients in total." % clientNum)
 
 
         self.setCache('clientDatabase')

@@ -198,15 +198,14 @@ celery = make_celery(app)
 
 @celery.task()
 def background_worker():
-    log.warning("Test Worker starting")
+    log.debug("Background worker looping")
     MMONetworks = loadNetworks()
     work = True
     while work:
         for net in MMONetworks.keys():
-            log.warning("Test Worker working on %s" % net)
-            MMONetworks[net].background_worker()
+            MMONetworks[net].background_worker(log)
         # log.warning("Test Worker sleeping")
-        time.sleep(5)
+        time.sleep(1)
 
 # flask error handlers
 @app.errorhandler(404)
@@ -308,6 +307,33 @@ def admin_status():
         log.warning("<%s> tried to access admin without permission!")
         abort(403)
 
+    registeredWorkers = []
+    i = celery.control.inspect()
+    for worker in i.registered().keys():
+        for task in i.registered()[worker]:
+            registeredWorkers.append({ 'worker': worker,
+                                       'task': task })
+
+    avtiveTasks = []
+    for worker in i.active().keys():
+        for task in i.active()[worker]:
+            avtiveTasks.append({ 'worker': worker,
+                                 'name': task['name'],
+                                 'id': task['id'],
+                                 'args': task['args'],
+                                 'kwargs': task['kwargs'] })
+
+    scheduledTasks = []
+    for worker in i.scheduled().keys():
+        for task in i.scheduled()[worker]:
+            scheduledTasks.append({ 'worker': worker,
+                                    'eta': task['eta'],
+                                    'priority': task['priority'],
+                                    'name': task['request']['name'],
+                                    'id': task['request']['id'],
+                                    'args': task['request']['args'],
+                                    'kwargs': task['request']['kwargs'] })
+
     loadedNets = []
     for handle in MMONetworks.keys():
         network = MMONetworks[handle]
@@ -326,7 +352,6 @@ def admin_status():
                             'moreInfo': network.moreInfo,
                             'description': network.description })
     registredUsers = []
-
     with app.test_request_context():
         users = MMOUser.query.all()
         for user in users:
@@ -341,6 +366,9 @@ def admin_status():
     infos = {}
     infos['loadedNets'] = loadedNets
     infos['registredUsers'] = registredUsers
+    infos['registeredWorkers'] = registeredWorkers
+    infos['avtiveTasks'] = avtiveTasks
+    infos['scheduledTasks'] = scheduledTasks
     return render_template('admin_status.html', infos = infos)
 
 # network routes

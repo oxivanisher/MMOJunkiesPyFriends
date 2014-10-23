@@ -109,6 +109,7 @@ class MMONetwork(object):
         self.lastRefreshDate = 0
         self.backgroundWorkerTime = 0
         self.adminMethods = []
+        self.backgroundTasks = []
         self.cache = {}
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
@@ -128,9 +129,6 @@ class MMONetwork(object):
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
-
-    def background_worker(self):
-        self.log.debug("Background worker is working (not doing anything really)")
 
     def saveLink(self, network_data):
         self.log.debug("Saving network link for user %s" % (self.session['nick']))
@@ -361,6 +359,35 @@ class MMONetwork(object):
         db.session.flush()
         db.session.commit()
         # db.session.expire(ret)
+
+    # Background worker methods
+    def background_worker(self, logger):
+        logger.debug("Background worker is working")
+        for (method, timeout, lastCheck) in self.backgroundTasks:
+            run = False
+            remove = False
+            index = self.backgroundTasks.index((method, timeout, lastCheck))
+            if not timeout:
+                run = True
+                remove = True
+            else:
+                if time.time() - lastCheck > timeout:
+                    run = True
+                    self.backgroundTasks[index] = (method, timeout, time.time())
+
+            if run:
+                logger.warning("Running task %s (%s)" % (method.func_name, timeout))
+                (result, text) = method(logger)
+                if result:
+                    logger.warning("Result: %s" % text)
+
+            if remove:
+                logger.warning("Removing task %s" % method.func_name)
+                self.backgroundTasks.pop(index)
+
+    def registerWorker(self, method, timeout):
+        self.log.info("%s Registered onetime background worker %s (%s)" % (self.handle, method.func_name, timeout))
+        self.backgroundTasks.append((method, timeout, 0))
 
     # # MMONetworkItemCache methods
     # def getItemCache(self, name, item):
