@@ -25,17 +25,17 @@ class TS3Network(MMONetwork):
 
         self.description = "Team Speak 3 is like skype for gamers."
 
-        self.setLogLevel(logging.INFO)
+        # self.setLogLevel(logging.INFO)
 
         self.server = None
-
         self.connected = False
-
         self.clientftfid = 0
 
+        # admin methods
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
         self.adminMethods.append((self.cacheFiles, 'Cache files'))
 
+        # background updater methods
         self.registerWorker(self.updateServerInfo, 900)
         self.registerWorker(self.cacheAvailableClients, 900)
         self.registerWorker(self.refreshOnlineClients, 20)
