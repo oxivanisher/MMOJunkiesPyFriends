@@ -192,15 +192,9 @@ class TS3Network(MMONetwork):
                 userGroups = []
                 userGroupIcon = 0
                 userGroupName = ""
-                print "try group"
-                print "aa", self.cache['clientDatabase'][cldbid]
                 for group in self.cache['clientDatabase'][cldbid]['groups']:
-                    print "group", group
                     for g in self.cache['serverInfo']['groupList'].keys():
-                        print "g", g
                         if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
-                            print "iconid", self.cache['serverInfo']['groupList'][g]['iconid']
-                            print "groupList", self.cache['serverInfo']['groupList']
                             userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
                             self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
                     userGroups.append(group['name'])
