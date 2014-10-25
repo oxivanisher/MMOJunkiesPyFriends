@@ -25,10 +25,6 @@ class TS3Network(MMONetwork):
 
         self.description = "Team Speak 3 is like skype for gamers."
 
-        # self.serverInfo = {}
-        # self.channelList = []
-        # self.channelGroupList = {}
-        # self.groupList = {}
         self.setLogLevel(logging.INFO)
 
         self.server = None
@@ -192,13 +188,6 @@ class TS3Network(MMONetwork):
             if myself:
                 continue
 
-            # Refresh user details
-            # self.fetchUserDetatilsByCldbid(cldbid)
-            # try:
-            #     self.fetchUserInfo(self.cache['onlineClients'][cldbid]['clid'], cldbid)
-            # except KeyError:
-            #     pass
-
             try:
                 userGroups = []
                 userGroupIcon = 0
@@ -265,16 +254,7 @@ class TS3Network(MMONetwork):
             except KeyError:
                 pass
 
-            # try:
             nick = self.cache['onlineClients'][cldbid]['client_nickname']
-                # nick = self.cache['onlineClients'][cldbid]['client_nickname'].decode('utf-8')
-            # except KeyError:
-            #     self.fetchUserDetatilsByCldbid(cldbid)
-            #     try:
-            #         nick = self.cache['clientDatabase'][cldbid]['client_nickname'].decode('utf-8')
-            #     except UnicodeEncodeError:
-            #         nick = self.cache['clientDatabase'][cldbid]['client_nickname']
-
             if cldbid in self.cache['onlineClients']:
                 state = "Online"
             else:
@@ -282,7 +262,6 @@ class TS3Network(MMONetwork):
 
             linkId = None
             for link in allLinks:
-                # print link
                 if cldbid == link['network_data']:
                     linkId = link['user_id']
 
@@ -297,8 +276,6 @@ class TS3Network(MMONetwork):
                 })
 
         return (True, ret)
-        # else:
-        #     return (False, "Unable to connect to TS3 server.")
 
     def getPartnerDetails(self, cldbid):
         moreInfo = {}
@@ -306,10 +283,6 @@ class TS3Network(MMONetwork):
         self.getCache('clientDatabase')
         self.getCache('clientInfoDatabase')
         self.getCache('serverInfo')
-
-        # if self.refresh():
-            # Refresh user details
-        # self.fetchUserDetatilsByCldbid(cldbid)
 
         try:
             self.fetchUserInfo(self.cache['onlineClients'][cldbid]['clid'], cldbid)
@@ -363,7 +336,6 @@ class TS3Network(MMONetwork):
 
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
-        # self.refresh()
         self.getCache('onlineClients')
         
         htmlFields = {}
@@ -382,7 +354,6 @@ class TS3Network(MMONetwork):
 
     def doLink(self, userId):
         self.log.debug("Link user %s to network %s" % (userId, self.name))
-        # self.refresh()
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
         message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
@@ -391,26 +362,14 @@ class TS3Network(MMONetwork):
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
-        # self.refresh()
         if self.getSessionValue('doLinkKey') == userKey:
             self.saveLink(self.getSessionValue(self.linkIdName))
             return True
         else:
             return False
 
-    def prepareForFirstRequest(self):
-        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
-        # self.connect()
-        # self.cacheAvailableClients()
-        self.cacheFiles()
-        # self.refresh()
-
     def admin(self):
         self.log.debug("Admin: Returning client database")
-        # add method to refetch all clients from server!
-        # self.cacheAvailableClients()
-        # self.cacheFiles()
-        # self.refresh()
         return "noting"
 
     def findPartners(self):
@@ -491,16 +450,6 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid] = response.data[0]
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] = time.time()
 
-
-
-        # updateUserGroupDetails = False
-        # try:
-        #     if self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
-        #         updateUserGroupDetails = True
-        # except KeyError:
-        #     updateUserGroupDetails = True
-
-        # if updateUserGroupDetails:
             self.cache['clientDatabase'][cldbid]['groups'] = {}
             logger.info("Fetching user group details for cldbid: %s" % cldbid)
             response = self.sendCommand('servergroupsbyclientid cldbid=%s' % cldbid)
@@ -510,8 +459,6 @@ class TS3Network(MMONetwork):
 
         else:
             logger.debug("Not fetching user details for cldbid: %s" % cldbid)
-        # else:
-        #     logger.debug("Not fetching user group details for cldbid: %s" % cldbid)
 
         self.setCache('clientDatabase')
 

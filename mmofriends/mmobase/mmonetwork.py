@@ -288,7 +288,7 @@ class MMONetwork(object):
             self.setSessionValue('loaded', True)
 
     def prepareForFirstRequest(self):
-        self.log.warning("%s: Running prepareForFirstRequest." % self.handle)
+        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
 
     def cacheFile(self, url):
         newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
