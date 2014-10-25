@@ -28,7 +28,9 @@ class TS3Network(MMONetwork):
         # self.serverInfo = {}
         # self.channelList = []
         # self.channelGroupList = {}
-        self.groupList = {}
+        # self.groupList = {}
+        self.setLogLevel(logging.INFO)
+
         self.server = None
 
         self.connected = False
@@ -38,47 +40,135 @@ class TS3Network(MMONetwork):
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
         self.adminMethods.append((self.cacheFiles, 'Cache files'))
 
-        self.registerWorker(self.updateOnlineClientInfos, 20)
+        self.registerWorker(self.updateServerInfo, 900)
+        self.registerWorker(self.cacheAvailableClients, 900)
         self.registerWorker(self.refreshOnlineClients, 20)
-        self.registerWorker(self.cacheAvailableClients, 300)
+        self.registerWorker(self.updateOnlineClientInfos, 60)
+        self.registerWorker(self.cacheFiles, 900)
 
+    # background worker methods
     def refreshOnlineClients(self, logger = None):
-        self.getCache('onlineClients')
         if not logger:
             logger = self.log
-        if not self.connect():
-            logger.warning("Not refreshing online clients because we are disconnected")
-            return False
+        if self.connect():
+            self.getCache('onlineClients')
+            if not self.connect():
+                logger.warning("Not refreshing online clients because we are disconnected")
+                return False
 
-        logger.debug("Fetching online clients")
-        response = self.sendCommand("clientlist -icon")
-        self.cache['onlineClients'] = {}
-        clients = {}
-        try:
-            for client in response.data:
-                clients[client['clid']] = client
-        except AttributeError:
-            return True
+            logger.info("Fetching online clients from server")
+            response = self.sendCommand("clientlist -icon")
+            self.cache['onlineClients'] = {}
+            clients = {}
 
-        for client in clients.keys():
-            # ignoring console users
-            if int(clients[client]['client_type']) != 1:
-                self.cache['onlineClients'][clients[client]['client_database_id']] = clients[client]
+            try:
+                for client in response.data:
+                    clients[client['clid']] = client
+            except AttributeError:
+                return True
 
-        self.setCache('onlineClients')
-        logger.info("Found %s online client(s)" % len(self.cache['onlineClients']))
+            for client in clients.keys():
+                # ignoring console users
+                if int(clients[client]['client_type']) != 1:
+                    self.cache['onlineClients'][clients[client]['client_database_id']] = clients[client]
+
+            self.setCache('onlineClients')
+            return "Found %s online client(s)" % len(self.cache['onlineClients'])
 
     def updateOnlineClientInfos(self, logger = None):
-        self.getCache('onlineClients')
+        if self.connect():
+            self.getCache('onlineClients')
+            if not logger:
+                logger = self.log
+
+            for client in self.cache['onlineClients']:
+                logger.debug("Updating online client info for: %s" % self.cache['onlineClients'][client]['client_database_id'])
+                self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
+            return "All %s online clients fetched" % len(self.cache['onlineClients'])
+
+    def cacheAvailableClients(self, logger = None):
+        if self.connect():
+            if not logger:
+                logger = self.log
+            self.getCache('clientDatabase')
+            logger.info("Fetching all clients from server")
+
+            clientNum = 0
+            clientTot = int(self.sendCommand('clientdblist -count').data[0]['count'])
+            allClients = []
+            while clientNum < clientTot:
+                logger.debug("Fetching all clients, starting at: %s" % clientNum)
+                newClients = self.sendCommand('clientdblist start=%s' % clientNum).data
+                clientNum += len(newClients)
+                allClients += newClients
+            for client in allClients:
+                self.cache['clientDatabase'][client['cldbid']] = client
+            logger.info("Fetched %s clients" % clientNum)
+
+            self.setCache('clientDatabase')
+            return "All %s clients fetched" % len(allClients)
+            # return (True, "All clients fetched: %s" % len(allClients))
+            # return "all clients fetched: %s" % len(allClients)
+
+    def updateServerInfo(self, logger = None):
         if not logger:
             logger = self.log
+        self.getCache('serverInfo')
+        if self.connect():
+            # fetching channels
+            logger.debug("Fetching channels")
+            self.cache['serverInfo']['channelList'] = []
+            result = self.sendCommand('channellist -icon')
+            for channel in result.data:
+                try:
+                    if int(channel['channel_icon_id']) < 0:
+                        channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
+                except KeyError:
+                    channel['channel_icon_id'] = 0
+                self.cache['serverInfo']['channelList'].append(channel)
 
-        for client in self.cache['onlineClients']:
-            logger.info("Updating online client info")
-            self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
+            # fetching groups
+            logger.debug("Fetching groups")
+            self.cache['serverInfo']['groupList'] = {}
+            result = self.sendCommand('servergrouplist')
+            for group in result.data:
+                # logger.error("group id %s" % group)
+                self.cache['serverInfo']['groupList'][group['sgid']] = group
 
-        return True
+            # fetching channel groups
+            logger.debug("Fetching channel groups")
+            self.cache['serverInfo']['channelGroupList'] = {}
+            result = self.sendCommand('channelgrouplist')
+            for group in result.data:
+                self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
+            self.setCache('serverInfo')
 
+    def cacheFiles(self, logger = None):
+        if not logger:
+            logger = self.log
+        self.getCache('onlineClients')
+        self.getCache('serverInfo')
+        if self.connect():
+            logger.debug("Caching server icon")
+            self.cacheServerIcon(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id'])
+
+            self.log.debug("Caching channel icons")
+            for channel in self.cache['serverInfo']['channelList']:
+                logger.debug("Caching file for channel: %s" % channel['channel_name'])
+                self.cacheIcon(channel['channel_icon_id'])
+
+            self.log.debug("Caching client icons")
+            for client in self.cache['onlineClients'].keys():
+                logger.debug("Caching file for client: %s" % self.cache['onlineClients'][client]['client_nickname'])
+                self.cacheIcon(self.cache['onlineClients'][client]['client_icon_id'])
+
+            self.log.debug("Caching group icons")
+            for group in self.cache['serverInfo']['groupList'].keys():
+                logger.debug("Caching file for group: %s" % self.cache['serverInfo']['groupList'][group]['name'])
+                if int(self.cache['serverInfo']['groupList'][group]['iconid']):
+                    self.cacheIcon(self.cache['serverInfo']['groupList'][group]['iconid'])
+
+    # Class overwrites
     def getPartners(self, **kwargs):
         self.getCache('onlineClients')
         # if self.refresh():
@@ -113,11 +203,17 @@ class TS3Network(MMONetwork):
                 userGroups = []
                 userGroupIcon = 0
                 userGroupName = ""
+                print "try group"
+                print "aa", self.cache['clientDatabase'][cldbid]
                 for group in self.cache['clientDatabase'][cldbid]['groups']:
-                    for g in self.groupList.keys():
-                        if self.groupList[g]['sgid'] == group['sgid']:
-                            userGroupIcon = 'icon_' + self.groupList[g]['iconid']
-                            self.cacheIcon(self.groupList[g]['iconid'])
+                    print "group", group
+                    for g in self.cache['serverInfo']['groupList'].keys():
+                        print "g", g
+                        if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
+                            print "iconid", self.cache['serverInfo']['groupList'][g]['iconid']
+                            print "groupList", self.cache['serverInfo']['groupList']
+                            userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
+                            self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
                     userGroups.append(group['name'])
                     userGroupName = group['name']
             except KeyError:
@@ -169,15 +265,15 @@ class TS3Network(MMONetwork):
             except KeyError:
                 pass
 
-            try:
-                nick = self.cache['onlineClients'][cldbid]['client_nickname']
+            # try:
+            nick = self.cache['onlineClients'][cldbid]['client_nickname']
                 # nick = self.cache['onlineClients'][cldbid]['client_nickname'].decode('utf-8')
-            except KeyError:
-                self.fetchUserDetatilsByCldbid(cldbid)
-                try:
-                    nick = self.cache['clientDatabase'][cldbid]['client_nickname'].decode('utf-8')
-                except UnicodeEncodeError:
-                    nick = self.cache['clientDatabase'][cldbid]['client_nickname']
+            # except KeyError:
+            #     self.fetchUserDetatilsByCldbid(cldbid)
+            #     try:
+            #         nick = self.cache['clientDatabase'][cldbid]['client_nickname'].decode('utf-8')
+            #     except UnicodeEncodeError:
+            #         nick = self.cache['clientDatabase'][cldbid]['client_nickname']
 
             if cldbid in self.cache['onlineClients']:
                 state = "Online"
@@ -209,6 +305,7 @@ class TS3Network(MMONetwork):
         self.getCache('onlineClients')
         self.getCache('clientDatabase')
         self.getCache('clientInfoDatabase')
+        self.getCache('serverInfo')
 
         # if self.refresh():
             # Refresh user details
@@ -235,12 +332,12 @@ class TS3Network(MMONetwork):
 
             userGroups = []
             userGroupIcon = 0
-            userGroupName = ""
+            userGroupName = "Unknown"
             for group in self.cache['clientDatabase'][cldbid]['groups']:
-                for g in self.groupList.keys():
-                    if self.groupList[g]['sgid'] == group['sgid']:
-                        userGroupIcon = 'icon_' + self.groupList[g]['iconid']
-                        self.cacheIcon(self.groupList[g]['iconid'])
+                for g in self.cache['serverInfo']['groupList'].keys():
+                    if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
+                        userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
+                        self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
                 userGroups.append(group['name'])
                 userGroupName = group['name']
             self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
@@ -301,27 +398,48 @@ class TS3Network(MMONetwork):
         else:
             return False
 
+    def prepareForFirstRequest(self):
+        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
+        # self.connect()
+        # self.cacheAvailableClients()
+        self.cacheFiles()
+        # self.refresh()
+
+    def admin(self):
+        self.log.debug("Admin: Returning client database")
+        # add method to refetch all clients from server!
+        # self.cacheAvailableClients()
+        # self.cacheFiles()
+        # self.refresh()
+        return "noting"
+
+    def findPartners(self):
+        self.log.debug("Searching for new partners to play with")
+        return self.getPartners(onlineOnly=True)
+
     # helper methods
-    def connect(self):
+    def connect(self, logger = None):
+        if not logger:
+            logger = self.log
         self.getCache('serverInfo')
         if not self.connected:
-            self.log.debug("Connecting to TS3 server")
+            logger.info("Connecting to TS3 server %s:%s/%s" % (self.config['ip'], self.config['port'], self.config['serverid']))
 
             try:
                 self.server = ts3.TS3Server(self.config['ip'], self.config['port'], self.config['serverid'])
                 if not self.server.is_connected():
-                    self.log.warning("TS3 Server connection error: Unable to open connection, probably banned!")
+                    logger.warning("TS3 Server connection error: Unable to open connection, probably banned!")
                     return False
                     
                 if not self.server.login(self.config['username'], self.config['password']):
-                    self.log.warning("TS3 Server connection error: Unable to login")
+                    loggerlogger.warning("TS3 Server connection error: Unable to login")
                     return False
 
             except ts3.ConnectionError as e:
-                self.log.warning("TS3 Server connection error: %s" % e)
+                logger.warning("TS3 Server connection error: %s" % e)
                 return False
             except EOFError as e:
-                self.log.warning("TS3 Server connection error: %s" % e)
+                logger.warning("TS3 Server connection error: %s" % e)
                 return False
 
             result = self.sendCommand('serverinfo')
@@ -329,37 +447,10 @@ class TS3Network(MMONetwork):
                 if int(serverData['virtualserver_id']) == self.config['serverid']:
                     self.cache['serverInfo']['serverInfo'] = serverData
                     self.setNetworkMoreInfo(serverData['virtualserver_name'])
-                    self.log.info("Connected to: %s" % self.moreInfo)
+                    logger.info("Connected to: %s" % self.moreInfo)
                     self.setCache('serverInfo')
 
             self.connected = True
-
-            # fetching channels
-            self.log.debug("Fetching channels")
-            self.cache['serverInfo']['channelList'] = []
-            result = self.sendCommand('channellist -icon')
-            for channel in result.data:
-                try:
-                    if int(channel['channel_icon_id']) < 0:
-                        channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
-                except KeyError:
-                    channel['channel_icon_id'] = 0
-                self.cache['serverInfo']['channelList'].append(channel)
-
-            # fetching groups
-            self.log.debug("Fetching groups")
-            self.groupList = {}
-            result = self.sendCommand('servergrouplist')
-            for group in result.data:
-                self.groupList[group['sgid']] = group
-
-            # fetching channel groups
-            self.log.debug("Fetching channel groups")
-            self.cache['serverInfo']['channelGroupList'] = {}
-            result = self.sendCommand('channelgrouplist')
-            for group in result.data:
-                self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
-
         return True
 
     def sendCommand(self, command):
@@ -379,7 +470,10 @@ class TS3Network(MMONetwork):
             self.log.warning("TS3 Server connection error - Exception: %s" % e)
             return False
 
-    def fetchUserDetatilsByCldbid(self, cldbid):
+    def fetchUserDetatilsByCldbid(self, cldbid, logger = None):
+        if not logger:
+            logger = self.log
+
         updateUserDetails = False
         self.getCache('clientDatabase')
 
@@ -391,33 +485,33 @@ class TS3Network(MMONetwork):
 
         if updateUserDetails:
             self.cache['clientDatabase'][cldbid] = {}
-            self.log.info("Fetching client db info for cldbid: %s" % cldbid)
+            logger.debug("Fetching client db info for cldbid: %s" % cldbid)
             response = self.sendCommand('clientdbinfo cldbid=%s' % cldbid)
             if response:
                 self.cache['clientDatabase'][cldbid] = response.data[0]
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] = time.time()
 
-        else:
-            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
 
 
-        updateUserGroupDetails = False
-        try:
-            if self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
-                updateUserGroupDetails = True
-        except KeyError:
-            updateUserGroupDetails = True
+        # updateUserGroupDetails = False
+        # try:
+        #     if self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
+        #         updateUserGroupDetails = True
+        # except KeyError:
+        #     updateUserGroupDetails = True
 
-        if updateUserGroupDetails:
+        # if updateUserGroupDetails:
             self.cache['clientDatabase'][cldbid]['groups'] = {}
-            self.log.debug("Fetching user group details for cldbid: %s" % cldbid)
+            logger.info("Fetching user group details for cldbid: %s" % cldbid)
             response = self.sendCommand('servergroupsbyclientid cldbid=%s' % cldbid)
             if response:
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
         else:
-            self.log.debug("Not fetching user group details for cldbid: %s" % cldbid)
+            logger.debug("Not fetching user details for cldbid: %s" % cldbid)
+        # else:
+        #     logger.debug("Not fetching user group details for cldbid: %s" % cldbid)
 
         self.setCache('clientDatabase')
 
@@ -451,29 +545,6 @@ class TS3Network(MMONetwork):
             return "cldbid: %s" % self.getSessionValue(self.linkIdName)
         except Exception as e:
             return "%s" % e
-
-    def cacheAvailableClients(self, logger = None):
-        if not logger:
-            logger = self.log
-        self.getCache('clientDatabase')
-        logger.info("Fetching all clients from database.")
-
-        clientNum = 0
-        clientTot = int(self.sendCommand('clientdblist -count').data[0]['count'])
-        allClients = []
-        while clientNum < clientTot:
-            logger.debug("Fetching all clients, starting at: %s" % clientNum)
-            newClients = self.sendCommand('clientdblist start=%s' % clientNum).data
-            clientNum += len(newClients)
-            allClients += newClients
-        for client in allClients:
-            self.cache['clientDatabase'][client['cldbid']] = client
-        logger.info("Fetched all client database. %s clients in total." % clientNum)
-
-
-        self.setCache('clientDatabase')
-        return (True, "All clients fetched: %s" % len(allClients))
-        # return "all clients fetched: %s" % len(allClients)
 
     # file transfer methods
     def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):
@@ -553,47 +624,5 @@ class TS3Network(MMONetwork):
         # https://docs.planetteamspeak.com/ts3/php/framework/class_team_speak3___node___client.html#a1c1b0fa71731df7ac3d4098b046938c7
         return self.cacheFile("avatar_%s" % flagAvatarId, cid)
 
-    def cacheFiles(self):
-        self.getCache('onlineClients')
-        self.getCache('serverInfo')
-        if self.connect():
-            self.log.debug("Caching server icon")
-            self.cacheServerIcon(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id'])
-
-            self.log.debug("Caching channel icons")
-            for channel in self.cache['serverInfo']['channelList']:
-                self.log.debug("Caching file for channel: %s" % channel['channel_name'])
-                self.cacheIcon(channel['channel_icon_id'])
-
-            self.log.debug("Caching client icons")
-            for client in self.cache['onlineClients'].keys():
-                self.log.debug("Caching file for client: %s" % self.cache['onlineClients'][client]['client_nickname'])
-                self.cacheIcon(self.cache['onlineClients'][client]['client_icon_id'])
-
-            self.log.debug("Caching group icons")
-            for group in self.groupList.keys():
-                self.log.debug("Caching file for group: %s" % self.groupList[group]['name'])
-                if int(self.groupList[group]['iconid']):
-                    self.cacheIcon(self.groupList[group]['iconid'])
-
     def cacheServerIcon(self, iconId):
         self.cacheIcon((int(iconId) + 4294967296))
-
-    def prepareForFirstRequest(self):
-        self.log.warning("Running prepareForFirstRequest. This might take a while!")
-        # self.connect()
-        # self.cacheAvailableClients()
-        self.cacheFiles()
-        # self.refresh()
-
-    def admin(self):
-        self.log.debug("Admin: Returning client database")
-        # add method to refetch all clients from server!
-        # self.cacheAvailableClients()
-        # self.cacheFiles()
-        # self.refresh()
-        return "noting"
-
-    def findPartners(self):
-        self.log.debug("Searching for new partners to play with")
-        return self.getPartners(onlineOnly=True)

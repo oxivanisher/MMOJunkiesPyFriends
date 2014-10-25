@@ -288,7 +288,7 @@ class MMONetwork(object):
             self.setSessionValue('loaded', True)
 
     def prepareForFirstRequest(self):
-        self.log.debug("Prepare for first request.")
+        self.log.warning("%s: Running prepareForFirstRequest." % self.handle)
 
     def cacheFile(self, url):
         newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
@@ -376,17 +376,18 @@ class MMONetwork(object):
                     self.backgroundTasks[index] = (method, timeout, time.time())
 
             if run:
-                logger.warning("Running task %s (%s)" % (method.func_name, timeout))
-                (result, text) = method(logger)
-                if result:
-                    logger.warning("Result: %s" % text)
+                ret = None
+                logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
+                ret = method(logger)
+                if ret:
+                    logger.info("[%s] -> %s" % (self.handle, ret))
 
             if remove:
-                logger.warning("Removing task %s" % method.func_name)
+                logger.info("[%s] -> Removing task %s" % (self.handle, method.func_name))
                 self.backgroundTasks.pop(index)
 
     def registerWorker(self, method, timeout):
-        self.log.info("%s Registered onetime background worker %s (%s)" % (self.handle, method.func_name, timeout))
+        self.log.info("%s Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))
 
     # # MMONetworkItemCache methods

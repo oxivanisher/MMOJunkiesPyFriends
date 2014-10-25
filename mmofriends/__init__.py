@@ -137,8 +137,9 @@ def loadNetworks():
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
                 message = "Unable to initialize MMONetwork %s because: %s" % (network['name'], e)
-                if session.get('admin'):
-                    flash(message, 'error')
+                with app.test_request_context():
+                    if session.get('admin'):
+                        flash(message, 'error')
                 log.error(message)
         else:
             log.info("MMONetwork %s (%s) is deactivated" % (network['name'], handle))
@@ -183,6 +184,7 @@ def getAdminMethods():
                      'methods': adminMethods})
     return nets
 
+# background worker methods (celery)
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
     celery.conf.update(app.config)
@@ -198,14 +200,23 @@ celery = make_celery(app)
 
 @celery.task()
 def background_worker():
-    log.debug("Background worker looping")
+    log.setLevel(logging.INFO)
+    log.info("Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
+    log.info("Background worker starts looping")
     work = True
     while work:
         for net in MMONetworks.keys():
-            MMONetworks[net].background_worker(log)
+            try:
+                ret = None
+                ret = MMONetworks[net].background_worker(log)
+                if ret:
+                    log.info("[%s] -> Result: %s" % (net, ret))
+            except Exception as e:
+                log.warning("[%s] -> Exception: %s" % (net, e))
         # log.warning("Test Worker sleeping")
         time.sleep(1)
+background_worker.delay()
 
 # flask error handlers
 @app.errorhandler(404)
@@ -227,7 +238,6 @@ def not_found(error):
 @app.before_first_request
 def before_first_request():
     db.session.remove()
-    background_worker.delay()
     loadNetworks()
 
 @app.before_request
