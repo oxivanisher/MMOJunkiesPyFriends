@@ -343,40 +343,43 @@ class BlizzNetwork(MMONetwork):
                 # World of warcraft
                 if userid in self.cache['wowProfiles'].keys():
                     if self.cache['wowProfiles'][userid]['characters']:
-                        myProducts.append({ 'type': 'product',
-                                            'name': 'worldofwarcraft',
-                                            'title': 'World of Warcraft' })
-
                         try:
                             for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
                                 friendImgs.append({ 'type': 'cache',
                                                     'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
                                                     'title': char['name'] + '@' + char['realm'] })
+                            myProducts.append({ 'type': 'product',
+                                                'name': 'worldofwarcraft',
+                                                'title': 'World of Warcraft' })
                         except KeyError:
                             pass
 
 
                 # Starcraft 2
                 if userid in self.cache['sc2Profiles'].keys():
-                    myProducts.append({ 'type': 'product',
-                                        'name': 'starcraft2',
-                                        'title': 'Starcraft 2' })
                     try:
                         for character in self.cache['sc2Profiles'][userid]['characters']:
                             friendImgs.append({ 'type': 'cache',
                                                 'name': self.cacheFile(character['avatar']['url']),
                                                 'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
+                        myProducts.append({ 'type': 'product',
+                                            'name': 'starcraft2',
+                                            'title': 'Starcraft 2' })
                     except KeyError:
                         pass
 
-                # Diablo 3
+                # Diablo 3 heroes
                 if userid in self.cache['d3Profiles'].keys():
-                    myProducts.append({ 'type': 'product',
-                                        'name': 'diablo3',
-                                        'title': 'Diablo 3' })
-                    friendImgs.append({ 'type': 'product',
-                                        'name': 'diablo3',
-                                        'title': 'Diablo 3' })
+                    try:
+                        if len(self.cache['d3Profiles'][userid]['heroes']) > 0:
+                            myProducts.append({ 'type': 'product',
+                                                'name': 'diablo3',
+                                                'title': 'Diablo 3' })
+                            # friendImgs.append({ 'type': 'product',
+                            #                     'name': 'diablo3',
+                            #                     'title': 'Diablo 3' })
+                    except KeyError:
+                            pass
 
                 result.append({ 'id': linkId,
                                 'mmoid': userid,
