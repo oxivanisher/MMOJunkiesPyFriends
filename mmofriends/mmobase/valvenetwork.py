@@ -149,8 +149,11 @@ class ValveNetwork(MMONetwork):
                                                                                           'relationship': 'friend'})
                     if steamFriends != False:
                         if 'friends' not in steamFriends:
-                                steamFriends['friends'] = []
-                        self.cache['users'][steamId]['friends'] = steamFriends['friends']
+                            steamFriends['friends'] = []
+                        try:
+                            self.cache['users'][steamId]['friends'] = steamFriends['friends']
+                        except KeyError:
+                            pass
 
                 if 'ownedGames' not in self.cache['users'][player]:
                     logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
