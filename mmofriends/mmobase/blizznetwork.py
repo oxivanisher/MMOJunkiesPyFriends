@@ -31,10 +31,11 @@ class BlizzNetwork(MMONetwork):
         super(BlizzNetwork, self).__init__(app, session, handle)
 
         self.description = "Battle.Net from Blizzard Entertainment"
-        # self.setLogLevel(logging.DEBUG)
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
         self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
+
+        self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
@@ -59,6 +60,10 @@ class BlizzNetwork(MMONetwork):
         self.adminMethods.append((self.updateAllUserResources, 'Recache all user resources'))
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
+        # background updater methods
+        self.registerWorker(self.updateBaseResources, 10800)
+        self.registerWorker(self.updateAllUserResources, 3600)
+
         # setup batttleNet service
         self.battleNet = OAuth2Service(
             client_id=self.config['apikey'],
@@ -74,7 +79,6 @@ class BlizzNetwork(MMONetwork):
             htmlFields['link'] = {'comment': "Click to login with Battle.Net.",
                                   'image': "//%s.battle.net/mashery-assets/static/images/bnet-logo.png" % self.config['region'],
                                   'url': self.requestAuthorizationUrl()}
-        # print "url", self.requestAuthorizationUrl()
         return htmlFields
 
     # Oauth2 helper
@@ -101,45 +105,51 @@ class BlizzNetwork(MMONetwork):
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
-        self.updateBaseResources(False)
+        # self.updateBaseResources(False)
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
     # update resource helpers
     def updateBaseResources(self, force = True):
-        if force:
-            for entry in self.wowDataResourcesList.keys():
-                self.forceCacheUpdate(entry)
-
-            for entry in self.sc2DataResourcesList.keys():
-                self.forceCacheUpdate(entry)
+        for link in self.getNetworkLinks():
+            accessToken = link['network_data']
 
         for entry in self.wowDataResourcesList.keys():
-            self.updateResource(entry, self.wowDataResourcesList[entry])
+            self.forceCacheUpdate(entry)
 
         for entry in self.sc2DataResourcesList.keys():
-            self.updateResource(entry, self.sc2DataResourcesList[entry])
+            self.forceCacheUpdate(entry)
+
+        for entry in self.wowDataResourcesList.keys():
+            self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
+
+        for entry in self.sc2DataResourcesList.keys():
+            self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
 
         # self.saveAllData()
-        return (True, "All resources updated")
+        return "All resources updated"
 
-    def updateAllUserResources(self):
+    def updateAllUserResources(self, logger = None):
+        if not logger:
+            logger = self.log
         self.getCache('battletags')
+
         for link in self.getNetworkLinks():
-            self.log.debug("Updating user resources for userid %s" % link['user_id'])
-            self.updateUserResources(link['user_id'])
+            logger.debug("Updating user resources for userid %s" % link['user_id'])
+            self.updateUserResources(link['user_id'], link['network_data'])
         return (True, "All user resources updated")
 
-    def updateUserResources(self, userid = None):
+    def updateUserResources(self, userid = None, accessToken = None):
         if not userid:
             userid = self.session['userid']
         self.log.debug("Updating resources for userid %s" % userid)
 
-        if userid != self.session['userid']:
-            link = self.getNetworkLinks(userid)
-            accessToken = link[0]['network_data']
-        else:
-            accessToken = self.getSessionValue(self.linkIdName)
+        if not accessToken:
+            if userid != self.session['userid']:
+                link = self.getNetworkLinks(userid)
+                accessToken = link[0]['network_data']
+            else:
+                accessToken = self.getSessionValue(self.linkIdName)
 
         # fetching battle tag
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
@@ -175,25 +185,26 @@ class BlizzNetwork(MMONetwork):
 
         return (True, "All resources updated")
 
-    def updateResource(self, entry, location):
+    def updateResource(self, entry, location, accessToken = None):
         self.log.debug("Updating resource from %s" % (location))
         self.getCache(entry)
-        if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300) or len(self.cache[entry]) == 0:
-            (resValue, resData)  = self.queryBlizzardApi(location)
-            if resValue:
-                self.cache[entry] = resData
-                self.setCache(entry)
-                self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resData)))
-            else:
-                self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
-                return (False, resData)
-        return (True, "Resource updated from %s" % location)
+        # if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300) or len(self.cache[entry]) == 0:
+        (resValue, resData)  = self.queryBlizzardApi(location, accessToken)
+        if resValue:
+            self.cache[entry] = resData
+            self.setCache(entry)
+            self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resData)))
+            return (True, "Resource updated from %s" % location)
+        else:
+            self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
+            return (False, resData)
 
     # Query Blizzard
     def queryBlizzardApi(self, what, accessToken = None):
         self.log.debug("Query Blizzard API for %s" % what)
         if not accessToken:
-            accessToken = self.getSessionValue(self.linkIdName)
+            self.getSessionValue(self.linkIdName)
+
         payload = {'access_token': accessToken,
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
@@ -201,7 +212,7 @@ class BlizzNetwork(MMONetwork):
      
         try:
             if r['code']:
-                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=self.getSessionValue(self.linkIdName)).first()
+                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
                 # self.unlink(self.session['userid'], link.id)
                 self.log.debug("queryBlizzardApi found code: %s" % r['code'])
                 self.requestAuthorizationUrl()
@@ -218,7 +229,7 @@ class BlizzNetwork(MMONetwork):
         # self.saveAllData()
         return (True, r)
 
-    def cacheAvatarFile(self, origUrl, race, gender):
+    def cacheWowAvatarFile(self, origUrl, race, gender):
         avatarUrl = None
 
         # missing (oxivanisher)
@@ -257,7 +268,7 @@ class BlizzNetwork(MMONetwork):
                 avatarFile.retrieve(avatarUrl, outputFilePath)
             except Exception:
                 self.log.warning("Not existing avatar (BUG: http://us.battle.net/en/forum/topic/14525622754)! Force fetching general avatar.")
-                savePath = self.cacheAvatarFile('internal-record', race, gender)
+                savePath = self.cacheWowAvatarFile('internal-record', race, gender)
 
         return savePath
 
@@ -305,11 +316,11 @@ class BlizzNetwork(MMONetwork):
     def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
 
-        self.updateBaseResources(False)
-        self.getCache('battletags')
-        if len(self.cache['battletags']) < len(self.getNetworkLinks()):
-            self.log.info("Battletags missing in cache. Forced update initiated")
-            self.updateAllUserResources()
+        # self.updateBaseResources(False)
+        # self.getCache('battletags')
+        # if len(self.cache['battletags']) < len(self.getNetworkLinks()):
+        #     self.log.info("Battletags missing in cache. Forced update initiated")
+            # self.updateAllUserResources()
 
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
@@ -341,7 +352,7 @@ class BlizzNetwork(MMONetwork):
 
                         for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
                             friendImgs.append({ 'type': 'cache',
-                                                'name': self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']),
+                                                'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
                                                 'title': char['name'] + '@' + char['realm'] })
 
                 # Starcraft 2
@@ -417,7 +428,7 @@ class BlizzNetwork(MMONetwork):
                                                                                          char['level']))
                     chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                     for char in chars:
-                        self.setPartnerAvatar(moreInfo, self.cacheAvatarFile(char['thumbnail'], char['race'], char['gender']))
+                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']))
         
         return moreInfo
 
