@@ -35,7 +35,8 @@ class BlizzNetwork(MMONetwork):
         self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
 
-        self.setLogLevel(logging.DEBUG)
+        # activate debug while development
+        # self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",

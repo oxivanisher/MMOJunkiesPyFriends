@@ -25,7 +25,8 @@ class TS3Network(MMONetwork):
 
         self.description = "Team Speak 3 is like skype for gamers."
 
-        # self.setLogLevel(logging.INFO)
+        # activate debug while development
+        # self.setLogLevel(logging.DEBUG)
 
         self.server = None
         self.connected = False

@@ -28,7 +28,7 @@ class ValveNetwork(MMONetwork):
         self.maxUpdateUsers = 99
 
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         self.onlineStates = {}
         self.onlineStates[0] = "Offline"
