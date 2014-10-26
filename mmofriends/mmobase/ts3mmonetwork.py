@@ -207,7 +207,7 @@ class TS3Network(MMONetwork):
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
-                    if channel['cid'] == self.cache['onlineClients'][cldbid]['cid
+                    if channel['cid'] == self.cache['onlineClients'][cldbid]['cid']:
                         try:
                             channelName = channel['channel_name'].decode('utf-8')
                         except UnicodeEncodeError:
