@@ -207,14 +207,11 @@ def background_worker():
     work = True
     while work:
         for net in MMONetworks.keys():
-            try:
-                ret = None
-                ret = MMONetworks[net].background_worker(log)
-                if ret:
-                    log.info("[%s] -> Result: %s" % (net, ret))
-            except Exception as e:
-                log.warning("[%s] -> Exception: %s" % (net, e))
-        # log.warning("Test Worker sleeping")
+            ret = None
+            ret = MMONetworks[net].background_worker(log)
+            if ret:
+                log.info("[%s] -> Result: %s" % (net, ret))
+
         time.sleep(1)
 background_worker.delay()
 
