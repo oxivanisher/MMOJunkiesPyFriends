@@ -347,20 +347,27 @@ class BlizzNetwork(MMONetwork):
                                             'name': 'worldofwarcraft',
                                             'title': 'World of Warcraft' })
 
-                        for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
-                            friendImgs.append({ 'type': 'cache',
-                                                'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
-                                                'title': char['name'] + '@' + char['realm'] })
+                        try:
+                            for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
+                                friendImgs.append({ 'type': 'cache',
+                                                    'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
+                                                    'title': char['name'] + '@' + char['realm'] })
+                        except KeyError:
+                            pass
+
 
                 # Starcraft 2
                 if userid in self.cache['sc2Profiles'].keys():
                     myProducts.append({ 'type': 'product',
                                         'name': 'starcraft2',
                                         'title': 'Starcraft 2' })
-                    for character in self.cache['sc2Profiles'][userid]['characters']:
-                        friendImgs.append({ 'type': 'cache',
-                                            'name': self.cacheFile(character['avatar']['url']),
-                                            'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
+                    try:
+                        for character in self.cache['sc2Profiles'][userid]['characters']:
+                            friendImgs.append({ 'type': 'cache',
+                                                'name': self.cacheFile(character['avatar']['url']),
+                                                'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
+                    except KeyError:
+                        pass
 
                 # Diablo 3
                 if userid in self.cache['d3Profiles'].keys():
