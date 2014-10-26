@@ -153,35 +153,31 @@ class BlizzNetwork(MMONetwork):
 
         # fetching battle tag
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
-        if not retValue:
-            return (False, retMessage)
-        self.getCache('battletags')
-        self.cache['battletags'][userid] = retMessage['battletag']
-        self.setCache('battletags')
+        if retValue != False:
+            self.getCache('battletags')
+            self.cache['battletags'][userid] = retMessage['battletag']
+            self.setCache('battletags')
 
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
-        if not retValue:
-            return (False, retMessage)
-        self.getCache('wowProfiles')
-        self.cache['wowProfiles'][userid] = retMessage
-        self.setCache('wowProfiles')
+        if retValue != False:
+            self.getCache('wowProfiles')
+            self.cache['wowProfiles'][userid] = retMessage
+            self.setCache('wowProfiles')
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
-        if not retValue:
-            return (False, retMessage)
-        self.getCache('d3Profiles')
-        self.cache['d3Profiles'][userid] = retMessage
-        self.setCache('d3Profiles')
+        if retValue != False:
+            self.getCache('d3Profiles')
+            self.cache['d3Profiles'][userid] = retMessage
+            self.setCache('d3Profiles')
 
         # fetching sc2
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
-        if not retValue:
-            return (False, retMessage)
-        self.getCache('sc2Profiles')
-        self.cache['sc2Profiles'][userid] = retMessage
-        self.setCache('sc2Profiles')
+        if retValue != False:
+            self.getCache('sc2Profiles')
+            self.cache['sc2Profiles'][userid] = retMessage
+            self.setCache('sc2Profiles')
 
         return (True, "All resources updated")
 
