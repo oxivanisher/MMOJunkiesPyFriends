@@ -416,26 +416,36 @@ class BlizzNetwork(MMONetwork):
             if battletag == self.cache['battletags'][userid]:
                 # Starcraft 2
                 if userid in self.cache['sc2Profiles'].keys():
-                    for char in self.cache['sc2Profiles'][userid]['characters']:
-                        self.setPartnerDetail(moreInfo, "SC 2", "[%s] %s" % (char['clanTag'], char['displayName']))
-                        self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
+                    try:
+                        for char in self.cache['sc2Profiles'][userid]['characters']:
+                            self.setPartnerDetail(moreInfo, "SC 2", "[%s] %s" % (char['clanTag'], char['displayName']))
+                            self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
+                    except KeyError:
+                        pass
+
 
                 # Diablo 3
                 if userid in self.cache['d3Profiles'].keys():
-                    for hero in self.cache['d3Profiles'][userid]['heroes']:
-                        self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+                    try:
+                        for hero in self.cache['d3Profiles'][userid]['heroes']:
+                            self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+                    except KeyError:
+                        pass
 
                 # World of Warcraft
                 if userid in self.cache['wowProfiles'].keys():
-                    for char in self.cache['wowProfiles'][userid]['characters']:
-                        self.setPartnerDetail(moreInfo, "WoW", "%s@%s: %s %s lvl: %s" % (char['name'],
-                                                                                         char['realm'],
-                                                                                         char['gender'],
-                                                                                         char['race'],
-                                                                                         char['level']))
-                    chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                    for char in chars:
-                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']))
+                    try:
+                        for char in self.cache['wowProfiles'][userid]['characters']:
+                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s: %s %s lvl: %s" % (char['name'],
+                                                                                             char['realm'],
+                                                                                             char['gender'],
+                                                                                             char['race'],
+                                                                                             char['level']))
+                        chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                        for char in chars:
+                            self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']))
+                    except KeyError:
+                        pass
         
         return moreInfo
 
