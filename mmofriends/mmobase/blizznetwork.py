@@ -215,8 +215,9 @@ class BlizzNetwork(MMONetwork):
                 link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
                 # self.unlink(self.session['userid'], link.id)
                 self.log.debug("queryBlizzardApi found code: %s" % r['code'])
-                self.requestAuthorizationUrl()
-                return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
+                with self.app.test_request_context():
+                    self.requestAuthorizationUrl()
+                    return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
                 return (False, r['detail'])
             elif 'error' in r.keys():
                 self.log.debug("queryBlizzardApi found error: %s" % r['error_description'])
