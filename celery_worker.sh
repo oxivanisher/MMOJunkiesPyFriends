@@ -10,7 +10,7 @@ ORIGDIR=$(pwd)
 cd ${DIR}
 
 # Checking if MMOFRIENDS_CFG is set. If not, use the provided example file.
-if [ -z "$MMOFRIENDS_CFG"]; then
+if [ -z "$MMOFRIENDS_CFG" ]; then
 	if [ -f "dist/mmofriends.cfg" ]; then
 		echo "Setting MMOFRIENDS_CFG for you. Please use your own settings for production!"
 		export MMOFRIENDS_CFG="../dist/mmofriends.cfg"

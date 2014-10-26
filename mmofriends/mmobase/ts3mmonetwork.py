@@ -347,6 +347,7 @@ class TS3Network(MMONetwork):
         return htmlFields
 
     def doLink(self, userId):
+        self.connect()
         self.log.debug("Link user %s to network %s" % (userId, self.name))
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
