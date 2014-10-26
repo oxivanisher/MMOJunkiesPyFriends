@@ -379,7 +379,7 @@ class BlizzNetwork(MMONetwork):
                             #                     'name': 'diablo3',
                             #                     'title': 'Diablo 3' })
                     except KeyError:
-                            pass
+                        pass
 
                 result.append({ 'id': linkId,
                                 'mmoid': userid,
