@@ -254,8 +254,8 @@ class TS3Network(MMONetwork):
             except KeyError:
                 pass
 
-            # user froup
-            if userGroupIcon != 'icon_0':
+            # user group
+            if userGroupIcon != '0':
                 friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
             # client channel group
