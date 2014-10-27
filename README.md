@@ -44,7 +44,11 @@ http://flask.pocoo.org/snippets/42/
 # Ideas:
 - make a comment on all sites (logged in) to the dev
 - make network inking with a dialog popup and finally reload the page
-- admin methods in networks
 - statistic and/or ranking feature (lol, starcraft, ...)
-¨
+
+# ToDo:
+- TS3: Change user group on registration, spam unregistred users
+- TS3: Display DND (not only online and offline)
+- 
+
 # todo stoef

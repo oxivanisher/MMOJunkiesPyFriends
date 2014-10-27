@@ -267,6 +267,21 @@ class ValveNetwork(MMONetwork):
             except KeyError:
                 pass
 
+            unknownOnly = False
+            try:
+                kwargs['unknownOnly']
+                unknownOnly = True
+            except KeyError:
+                pass
+
+            if unknownOnly:
+                friendsList = []
+                for friend in self.cache['users'].keys():
+                    if friend not in self.cache['users'][steamId]['friends']:
+                        friendsList.append(friend)
+            else:
+                friendsList = self.cache['users'][steamId]['friends']
+
             result = []
             allLinks = self.getNetworkLinks()
             friends = []
@@ -276,10 +291,10 @@ class ValveNetwork(MMONetwork):
                 self.log.info("User probably not yet cached")
                 return (False, False)
 
-            for friend in self.cache['users'][steamId]['friends']:
+            for friend in friendsList:
                 onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
 
-            for friend in self.cache['users'][steamId]['friends']:
+            for friend in friendsList:
                 friendSteamId = friend['steamid']
                 if onlineOnly:
                     if onlineFriends[friendSteamId] == 0:
@@ -405,34 +420,4 @@ class ValveNetwork(MMONetwork):
 
     def findPartners(self):
         self.log.debug("Searching for new partners to play with")
-        return ( True, [])
-        return ( False, "Network not yet programmed")
-        return ( True, {'id': 'someId',
-                        'mmoid': internalId,
-                        'nick': 'nickName',
-                        'state': 'State',
-                        'netHandle': self.handle,
-                        'networkText': 'Product',
-                        'networkImgs': [{
-                            'type': 'network',
-                            'name': self.handle,
-                            'title': self.name
-                        },{
-                            'type': 'cache',
-                            'name': 'gameIconPath',
-                            'title': 'gameName'
-                        },{
-                            'type': 'cache',
-                            'name': 'mapIconPath',
-                            'title': 'mapName'
-                        }],
-                        'friendImgs': [{
-                            'type': 'cache',
-                            'name': 'rankIconPath',
-                            'title': 'rankIcon'
-                        },{
-                            'type': 'cache',
-                            'name': 'someImagePath',
-                            'title': 'someImage'
-                        }]
-                    })
+        return self.getPartners(unknownOnly=True)
