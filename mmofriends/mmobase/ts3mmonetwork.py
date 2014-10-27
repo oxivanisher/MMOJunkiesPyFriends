@@ -212,7 +212,7 @@ class TS3Network(MMONetwork):
                 pass
 
             # Get channel details
-            channelName = self.cache['serverInfo']['serverinfo']['virtualserver_name']
+            channelName = self.cache['serverInfo']['serverInfo']['virtualserver_name']
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
