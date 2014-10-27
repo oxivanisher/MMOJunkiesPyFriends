@@ -252,10 +252,7 @@ class TS3Network(MMONetwork):
             except KeyError:
                 pass
 
-            try:
-                nick = self.cache['onlineClients'][cldbid]['client_nickname']
-            except KeyError:
-                nick = "Unknown"
+            nick = self.cache['clientInfoDatabase'][cldbid]['client_nickname']
             if cldbid in self.cache['onlineClients']:
                 state = "Online"
             else:
