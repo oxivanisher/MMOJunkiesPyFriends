@@ -259,6 +259,11 @@ class ValveNetwork(MMONetwork):
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
         if self.getSessionValue(self.linkIdName):
+            result = []
+            allLinks = self.getNetworkLinks()
+            friends = []
+            onlineFriends = {}
+            steamId = self.getSessionValue(self.linkIdName)
 
             onlineOnly = False
             try:
@@ -282,11 +287,6 @@ class ValveNetwork(MMONetwork):
             else:
                 friendsList = self.cache['users'][steamId]['friends']
 
-            result = []
-            allLinks = self.getNetworkLinks()
-            friends = []
-            onlineFriends = {}
-            steamId = self.getSessionValue(self.linkIdName)
             if steamId not in self.cache['users']:
                 self.log.info("User probably not yet cached")
                 return (False, False)
