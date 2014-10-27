@@ -40,7 +40,7 @@ class ValveNetwork(MMONetwork):
         self.onlineStates[6] = "Looking to play"
 
         # background updater methods
-        self.registerWorker(self.updateUsers, 300)
+        self.registerWorker(self.updateUsers, 3600)
         self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
@@ -83,7 +83,7 @@ class ValveNetwork(MMONetwork):
             if link['network_data'] not in self.cache['users']:
                 check = True
         if check:
-            logger.info("Force updating users")
+            logger.info("[%s] New use(r)s found. Forcing update" % (self.handle))
             self.updateUsers()
 
     def updateUsers(self, logger = None):
