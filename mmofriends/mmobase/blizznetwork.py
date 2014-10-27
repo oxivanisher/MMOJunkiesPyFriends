@@ -121,11 +121,12 @@ class BlizzNetwork(MMONetwork):
         for entry in self.sc2DataResourcesList.keys():
             self.forceCacheUpdate(entry)
 
-        for entry in self.wowDataResourcesList.keys():
-            self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
+        if accessToken:
+            for entry in self.wowDataResourcesList.keys():
+                self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
 
-        for entry in self.sc2DataResourcesList.keys():
-            self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
+            for entry in self.sc2DataResourcesList.keys():
+                self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
 
         # self.saveAllData()
         return "All resources updated"
