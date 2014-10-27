@@ -80,7 +80,7 @@ class TS3Network(MMONetwork):
 
             for client in self.cache['onlineClients']:
                 logger.debug("[%s] Updating online client info for: %s" % (self.handle, self.cache['onlineClients'][client]['client_database_id']))
-                self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
+                self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['clid'])
             return "All %s online clients fetched" % len(self.cache['onlineClients'])
 
     def cacheAvailableClients(self, logger = None):
@@ -101,8 +101,6 @@ class TS3Network(MMONetwork):
             for client in allClients:
                 self.cache['clientDatabase'][client['cldbid']] = client
             self.setCache('clientDatabase')
-            for client in allClients:
-                self.fetchUserDetatilsByCldbid(client['cldbid'])
 
             logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
             return "All %s clients fetched" % len(allClients)
@@ -293,6 +291,11 @@ class TS3Network(MMONetwork):
         self.getCache('serverInfo')
 
         try:
+            self.fetchUserInfo(self.cache['onlineClients'][cldbid]['clid'], cldbid)
+        except KeyError:
+            pass
+
+        try:
             #fetch avatar
             if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
                 avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
@@ -442,7 +445,6 @@ class TS3Network(MMONetwork):
 
         updateUserDetails = False
         self.getCache('clientDatabase')
-        self.getCache('onlineClients')
 
         try:
             if self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
@@ -465,23 +467,33 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
-            try:
-                self.getCache('clientInfoDatabase')
-                clid = self.cache['clientInfoDatabase'][cldbid]['cid']
-                self.cache['clientInfoDatabase'][cldbid] = {}
-                self.cache['clientInfoDatabase'][cldbid]['cid'] = clid
-                logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
-                response = self.sendCommand('clientinfo clid=%s' % clid)
-                if response:
-                    self.cache['clientInfoDatabase'][cldbid] = response.data[0]
-                    logger.debug("[%s] Updated info for cldbid: %s" % (self.handle, clid))
-                    self.setCache('clientInfoDatabase')
-            except KeyError:
-                pass
         else:
             logger.debug("[%s] Not fetching user details for cldbid: %s" % (self.handle, cldbid))
 
         self.setCache('clientDatabase')
+
+    def fetchUserInfo(self, clid, cldbid):
+        self.getCache('clientInfoDatabase')
+        updateUserInfo = False
+        try:
+            if self.cache['clientInfoDatabase'][cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
+                updateUserInfo = True
+        except KeyError:
+            updateUserInfo = True
+
+        if updateUserInfo:
+            self.cache['clientInfoDatabase'][cldbid] = {}
+            self.log.info("Fetching client info for clid: %s" % clid)
+            response = self.sendCommand('clientinfo clid=%s' % clid)
+            if response:
+                self.cache['clientInfoDatabase'][cldbid] = response.data[0]
+                self.cache['clientInfoDatabase'][cldbid]['lastUpdateUserInfo'] = time.time()
+                self.log.info("Updated infor for cldbid: %s" % cldbid)
+
+        else:
+            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
+
+        self.setCache('clientInfoDatabase')
 
     def devTest(self):
         # self.log.error("Registring worker!")
