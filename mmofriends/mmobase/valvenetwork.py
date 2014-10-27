@@ -280,9 +280,12 @@ class ValveNetwork(MMONetwork):
                 pass
 
             if unknownOnly:
+                myFriends = []
+                for friend in self.cache['users'][steamId]['friends']:
+                    myFriends.append(friend['steamid'])
                 friendsList = []
                 for friend in self.cache['users'].keys():
-                    if friend not in self.cache['users'][steamId]['friends']:
+                    if friend not in myFriends:
                         friendsList.append({ 'steamid': friend })
             else:
                 friendsList = self.cache['users'][steamId]['friends']
