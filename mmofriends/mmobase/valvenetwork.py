@@ -268,7 +268,6 @@ class ValveNetwork(MMONetwork):
             for friend in self.cache['users'][steamId]['friends']:
                 friendSteamId = friend['steamid']
                 if onlineOnly:
-                    self.log.warning("%s|%s" % (friendSteamId, onlineFriends[friendSteamId]))
                     if onlineFriends[friendSteamId] == 0:
                         continue
 
