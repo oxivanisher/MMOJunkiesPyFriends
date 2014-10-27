@@ -254,7 +254,7 @@ class TS3Network(MMONetwork):
                 pass
 
             # user froup
-            if userGroupIcon != 'icon_0':
+            if int(userGroupIcon) != 0:
                 friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
             # client channel group
