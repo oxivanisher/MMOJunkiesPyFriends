@@ -403,13 +403,13 @@ class ValveNetwork(MMONetwork):
                     self.log.debug("Ignoring game ID %s" % gameid)
             self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
 
-            games = []
-            for gameid in self.cache['users'][partnerId]['recentlyplayed']:
-                try:
-                    games.append(self.cache['games'][str(gameid)]['name'])
-                except KeyError:
-                    self.log.debug("Ignoring game ID %s" % gameid)
-            self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(games))
+            # games = []
+            # for gameid in self.cache['users'][partnerId]['recentlyplayed']:
+            #     try:
+            #         games.append(self.cache['games'][str(gameid)]['name'])
+            #     except KeyError:
+            #         self.log.debug("Ignoring game ID %s" % gameid)
+            # self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(games))
         
         # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
 
