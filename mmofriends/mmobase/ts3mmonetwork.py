@@ -465,17 +465,19 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
-            self.getCache('clientInfoDatabase')
-            clid = self.cache['clientInfoDatabase'][cldbid]['cid']
-            self.cache['clientInfoDatabase'][cldbid] = {}
-            self.cache['clientInfoDatabase'][cldbid]['cid'] = clid
-            logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
-            response = self.sendCommand('clientinfo clid=%s' % clid)
-            if response:
-                self.cache['clientInfoDatabase'][cldbid] = response.data[0]
-                logger.debug("[%s] Updated infor for cldbid: %s" % (self.handle, clid))
-                self.setCache('clientInfoDatabase')
-
+            try:
+                self.getCache('clientInfoDatabase')
+                clid = self.cache['clientInfoDatabase'][cldbid]['cid']
+                self.cache['clientInfoDatabase'][cldbid] = {}
+                self.cache['clientInfoDatabase'][cldbid]['cid'] = clid
+                logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
+                response = self.sendCommand('clientinfo clid=%s' % clid)
+                if response:
+                    self.cache['clientInfoDatabase'][cldbid] = response.data[0]
+                    logger.debug("[%s] Updated infor for cldbid: %s" % (self.handle, clid))
+                    self.setCache('clientInfoDatabase')
+            except KeyError:
+                pass
         else:
             logger.debug("[%s] Not fetching user details for cldbid: %s" % (self.handle, cldbid))
 
