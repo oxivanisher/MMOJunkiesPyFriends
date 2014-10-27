@@ -37,7 +37,7 @@
 					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
 				{%- endfor -%}
 				{{ friend.nick }}
-				{% if friend.mmoid -%}
+				{%- if friend.mmoid -%}
 					</a>
 				{%- endif -%}</td>
 			<td>{{ friend.state }}</td>

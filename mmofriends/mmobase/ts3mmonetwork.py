@@ -168,7 +168,6 @@ class TS3Network(MMONetwork):
     # Class overwrites
     def getPartners(self, **kwargs):
         self.getCache('onlineClients')
-        # if self.refresh():
         allLinks = self.getNetworkLinks()
         self.getCache('clientDatabase')
         self.getCache('clientInfoDatabase')
@@ -189,15 +188,24 @@ class TS3Network(MMONetwork):
             if myself:
                 continue
 
+            # player state
+            nick = self.cache['clientDatabase'][cldbid]['client_nickname']
+            if cldbid in self.cache['onlineClients']:
+                state = "Online"
+            else:
+                state = "Offline"
+
+            # user server group
             try:
                 userGroups = []
                 userGroupIcon = 0
                 userGroupName = ""
                 for group in self.cache['clientDatabase'][cldbid]['groups']:
                     for g in self.cache['serverInfo']['groupList'].keys():
-                        if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
+                        if g == group['sgid']:
                             userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
                             self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
+                            continue
                     userGroups.append(group['name'])
                     userGroupName = group['name']
             except KeyError:
@@ -208,16 +216,23 @@ class TS3Network(MMONetwork):
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
-                    if channel['cid'] == self.cache['onlineClients'][cldbid]['cid']:
+                    # print "channel", channel
+                    # print "cid1", channel['cid']
+                    # print "cid2", self.cache['clientInfoDatabase'][cldbid]
+                    if channel['cid'] == self.cache['clientInfoDatabase'][cldbid]['cid']:
                         try:
                             channelName = channel['channel_name'].decode('utf-8')
                         except UnicodeEncodeError:
                             channelName = channel['channel_name']
                         channelIcon = channel['channel_icon_id']
+                        # print "channelName:", channelName
+                        # print "channelIcon:", channelIcon
                         self.cacheIcon(channelIcon)
+                        continue
             except (IndexError, KeyError):
                 pass
 
+            # network icons
             networkImgs = [{
                             'type': 'network',
                             'name': self.handle,
@@ -228,11 +243,13 @@ class TS3Network(MMONetwork):
                             'title': channelName
                         }]
             try:
+                print "channelIcon 2:", channelIcon
                 if int(channelIcon) != 0:
                     networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
             except TypeError:
                 pass
 
+            # country flags
             friendImgs = []
             try:
                 if self.cache['clientInfoDatabase'][cldbid]['client_country']:
@@ -242,21 +259,17 @@ class TS3Network(MMONetwork):
             except KeyError:
                 pass
 
+            # user froup
             if userGroupIcon != 'icon_0':
                 friendImgs.append({ 'type': 'cache', 'name': userGroupIcon, 'title': userGroupName })
 
+            # client channel group
             try:
                 cgid = self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']
                 if int(self.cache['serverInfo']['channelGroupList'][cgid]['iconid']) != 0:
                     friendImgs.append({ 'type': 'cache', 'name': 'icon_' + self.cache['serverInfo']['channelGroupList'][cgid]['iconid'], 'title': self.cache['serverInfo']['channelGroupList'][cgid]['name'] })
             except KeyError:
                 pass
-
-            nick = self.cache['clientDatabase'][cldbid]['client_nickname']
-            if cldbid in self.cache['onlineClients']:
-                state = "Online"
-            else:
-                state = "Offline"
 
             linkId = None
             for link in allLinks:
