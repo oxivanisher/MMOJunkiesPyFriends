@@ -212,7 +212,7 @@ class TS3Network(MMONetwork):
                 pass
 
             # Get channel details
-            channelName = "Offline"
+            channelName = self.cache['serverInfo']['serverinfo']['virtualserver_name']
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
@@ -238,8 +238,7 @@ class TS3Network(MMONetwork):
                             'title': channelName
                         }]
             try:
-                print "channelIcon 2:", channelIcon
-                if int(channelIcon) != 0:
+                if int(channelIcon) != 0 and channelIcon:
                     networkImgs.append({'type': 'cache', 'name': 'icon_' + channelIcon, 'title': channelName })
             except TypeError:
                 pass
