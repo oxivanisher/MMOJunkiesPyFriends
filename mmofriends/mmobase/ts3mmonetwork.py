@@ -465,9 +465,10 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
-            clid = self.cache['onlineClients'][cldbid]['clid']
             self.getCache('clientInfoDatabase')
+            clid = self.cache['clientInfoDatabase'][cldbid]['cid']
             self.cache['clientInfoDatabase'][cldbid] = {}
+            self.cache['clientInfoDatabase'][cldbid]['cid'] = clid
             logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
             response = self.sendCommand('clientinfo clid=%s' % clid)
             if response:
