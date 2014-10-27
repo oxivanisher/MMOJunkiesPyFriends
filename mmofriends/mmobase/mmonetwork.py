@@ -35,7 +35,7 @@ class MMONetworkCache(db.Model):
     network_handle = db.Column(db.String(20))
     entry_name = db.Column(db.String(20))
     last_update = db.Column(db.Integer)
-    cache_data = db.Column(db.UnicodeText)
+    cache_data = db.Column(db.UnicodeText) #MEDIUMTEXT
     
     __table_args__ = (db.UniqueConstraint(network_handle, entry_name, name="handle_name_uc"), )
 
