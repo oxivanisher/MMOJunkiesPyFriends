@@ -112,6 +112,7 @@ class BlizzNetwork(MMONetwork):
 
     # update resource helpers
     def updateBaseResources(self, force = True):
+        accessToken = False
         for link in self.getNetworkLinks():
             accessToken = link['network_data']
 
