@@ -38,7 +38,7 @@ class TS3Network(MMONetwork):
 
         # background updater methods
         self.registerWorker(self.updateServerInfo, 900)
-        self.registerWorker(self.cacheAvailableClients, 900)
+        self.registerWorker(self.cacheAvailableClients, 10800)
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
@@ -100,9 +100,9 @@ class TS3Network(MMONetwork):
                 allClients += newClients
             for client in allClients:
                 self.cache['clientDatabase'][client['cldbid']] = client
-            logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
-
             self.setCache('clientDatabase')
+
+            logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
             return "All %s clients fetched" % len(allClients)
             # return (True, "All clients fetched: %s" % len(allClients))
             # return "all clients fetched: %s" % len(allClients)
@@ -216,17 +216,12 @@ class TS3Network(MMONetwork):
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
-                    # print "channel", channel
-                    # print "cid1", channel['cid']
-                    # print "cid2", self.cache['clientInfoDatabase'][cldbid]
                     if channel['cid'] == self.cache['clientInfoDatabase'][cldbid]['cid']:
                         try:
                             channelName = channel['channel_name'].decode('utf-8')
                         except UnicodeEncodeError:
                             channelName = channel['channel_name']
                         channelIcon = channel['channel_icon_id']
-                        # print "channelName:", channelName
-                        # print "channelIcon:", channelIcon
                         self.cacheIcon(channelIcon)
                         continue
             except (IndexError, KeyError):
@@ -294,11 +289,6 @@ class TS3Network(MMONetwork):
         self.getCache('clientDatabase')
         self.getCache('clientInfoDatabase')
         self.getCache('serverInfo')
-
-        try:
-            self.fetchUserInfo(self.cache['onlineClients'][cldbid]['clid'], cldbid)
-        except KeyError:
-            pass
 
         try:
             #fetch avatar
@@ -450,6 +440,7 @@ class TS3Network(MMONetwork):
 
         updateUserDetails = False
         self.getCache('clientDatabase')
+        self.getCache('onlineClients')
 
         try:
             if self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
@@ -472,33 +463,20 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
+            clid = self.cache['onlineClients'][cldbid]['clid']
+            self.getCache('clientInfoDatabase')
+            self.cache['clientInfoDatabase'][cldbid] = {}
+            logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
+            response = self.sendCommand('clientinfo clid=%s' % clid)
+            if response:
+                self.cache['clientInfoDatabase'][cldbid] = response.data[0]
+                logger.debug("[%s] Updated infor for cldbid: %s" % (self.handle, clid))
+                self.setCache('clientInfoDatabase')
+
         else:
             logger.debug("[%s] Not fetching user details for cldbid: %s" % (self.handle, cldbid))
 
         self.setCache('clientDatabase')
-
-    def fetchUserInfo(self, clid, cldbid):
-        self.getCache('clientInfoDatabase')
-        updateUserInfo = False
-        try:
-            if self.cache['clientInfoDatabase'][cldbid]['lastUpdateUserInfo'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
-                updateUserInfo = True
-        except KeyError:
-            updateUserInfo = True
-
-        if updateUserInfo:
-            self.cache['clientInfoDatabase'][cldbid] = {}
-            self.log.info("Fetching client info for clid: %s" % clid)
-            response = self.sendCommand('clientinfo clid=%s' % clid)
-            if response:
-                self.cache['clientInfoDatabase'][cldbid] = response.data[0]
-                self.cache['clientInfoDatabase'][cldbid]['lastUpdateUserInfo'] = time.time()
-                self.log.info("Updated infor for cldbid: %s" % cldbid)
-
-        else:
-            self.log.debug("Not fetching user details for cldbid: %s" % cldbid)
-
-        self.setCache('clientInfoDatabase')
 
     def devTest(self):
         # self.log.error("Registring worker!")
