@@ -474,7 +474,7 @@ class TS3Network(MMONetwork):
                 response = self.sendCommand('clientinfo clid=%s' % clid)
                 if response:
                     self.cache['clientInfoDatabase'][cldbid] = response.data[0]
-                    logger.debug("[%s] Updated infor for cldbid: %s" % (self.handle, clid))
+                    logger.debug("[%s] Updated info for cldbid: %s" % (self.handle, clid))
                     self.setCache('clientInfoDatabase')
             except KeyError:
                 pass
