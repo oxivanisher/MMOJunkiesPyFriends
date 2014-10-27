@@ -101,6 +101,8 @@ class TS3Network(MMONetwork):
             for client in allClients:
                 self.cache['clientDatabase'][client['cldbid']] = client
             self.setCache('clientDatabase')
+            for client in allClients:
+                self.fetchUserDetatilsByCldbid(client['cldbid'])
 
             logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
             return "All %s clients fetched" % len(allClients)
