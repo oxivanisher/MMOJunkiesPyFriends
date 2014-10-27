@@ -395,8 +395,8 @@ class ValveNetwork(MMONetwork):
         self.setPartnerDetail(moreInfo, "Online/Offline", self.onlineStates[self.cache['users'][partnerId]['personastate']])
 
         games = []
-        if 'games' in self.cache['users'][partnerId]:
-            for gameid in self.cache['users'][partnerId]['games']:
+        if 'ownedGames' in self.cache['users'][partnerId]:
+            for gameid in self.cache['users'][partnerId]['ownedGames']:
                 try:
                     games.append(self.cache['games'][str(gameid)]['name'])
                 except KeyError:
