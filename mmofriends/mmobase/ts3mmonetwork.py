@@ -344,7 +344,10 @@ class TS3Network(MMONetwork):
                 currentLinks.append(link['network_data'])
             for cldbid in self.cache['onlineClients'].keys():
                 if cldbid not in currentLinks:
-                    htmlFields['dropdown'].append({ 'name': self.cache['onlineClients'][cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
+                    try:
+                        htmlFields['dropdown'].append({ 'name': self.cache['onlineClients'][cldbid]['client_nickname'].decode('utf-8'), 'value': cldbid })
+                    except UnicodeEncodeError:
+                        htmlFields['dropdown'].append({ 'name': self.cache['onlineClients'][cldbid]['client_nickname'], 'value': cldbid })
             if not len(htmlFields['dropdown']):
                 htmlFields = {}
                 htmlFields['text'] = "Please connect to the Teamspeak Server"
