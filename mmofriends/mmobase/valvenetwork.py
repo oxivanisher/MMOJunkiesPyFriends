@@ -41,6 +41,7 @@ class ValveNetwork(MMONetwork):
 
         # background updater methods
         self.registerWorker(self.updateUsers, 300)
+        self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
     # steam helper
@@ -72,6 +73,19 @@ class ValveNetwork(MMONetwork):
             return False
 
     # background worker
+    def checkForNewUsers(self, logger = None):
+        if not logger:
+            logger = self.log
+        self.getCache('users')
+        allLinks = self.getNetworkLinks()
+        check = False
+        for link in allLinks:
+            if link['network_data'] not in self.cache['users']:
+                check = True
+        if check:
+            logger.info("Force updating users")
+            self.updateUsers()
+
     def updateUsers(self, logger = None):
         if not logger:
             logger = self.log

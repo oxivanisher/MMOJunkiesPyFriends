@@ -53,7 +53,7 @@ class TS3Network(MMONetwork):
                 logger.warning("[%s] Not refreshing online clients because we are disconnected" % (self.handle))
                 return False
 
-            logger.info("[%s] Fetching online clients from server" % (self.handle))
+            logger.debug("[%s] Fetching online clients from server" % (self.handle))
             response = self.sendCommand("clientlist -icon")
             self.cache['onlineClients'] = {}
             clients = {}
