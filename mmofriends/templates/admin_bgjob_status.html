@@ -26,7 +26,7 @@
 				{%- if task.end > task.start -%}
 					{{ task.end-task.start }} Seconds
 				{%- elif task.start > task.end -%}
-					Now Running
+					<strong>Active</strong>
 				{%- else -%}
 					Waiting
 				{%- endif -%}
