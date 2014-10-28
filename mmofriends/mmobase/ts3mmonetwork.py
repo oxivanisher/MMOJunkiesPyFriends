@@ -561,7 +561,7 @@ class TS3Network(MMONetwork):
         if self.connect():
             response = self.sendCommand("ftinitdownload clientftfid=%s name=%s cid=%s cpw=%s seekpos=%s" % (self.clientftfid, name, cid, cpw, seekpos))
             if not response:
-                self.log.warning("Recieved no response to download file %s from TS3 Server" % name)
+                self.log.warning("[%s] Recieved no response to download file %s from TS3 Server" % (self.handle, name))
                 return False
             fileinfo = response.data[0]
 
