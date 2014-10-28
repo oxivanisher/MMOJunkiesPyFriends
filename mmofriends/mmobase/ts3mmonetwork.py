@@ -30,7 +30,7 @@ class TS3Network(MMONetwork):
 
         self.server = None
         self.connected = False
-        self.clientftfid = 0
+        self.clientftfid = random.randint(1, 100000)
 
         # admin methods
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
