@@ -421,7 +421,19 @@ class TS3Network(MMONetwork):
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
         if self.getSessionValue('doLinkKey') == userKey:
-            self.saveLink(self.getSessionValue(self.linkIdName))
+            cldbid = self.getSessionValue(self.linkIdName)
+            self.saveLink(cldbid)
+            self.connect()
+            self.fetchUserDetatilsByCldbid(cldbid)
+            memberGroupId = 9
+            guestGroups = [7, 8]
+            self.getCache('clientDatabase')
+            for group in self.cache['clientDatabase'][cldbid]['groups']:
+                if group['sgid'] in guestGroups:
+                    self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (memberGroupId, cldbid))
+                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
+            self.fetchUserDetatilsByCldbid(cldbid)
+
             return True
         else:
             return False
