@@ -367,10 +367,11 @@ class MMONetwork(object):
             self.getCache('backgroundTasks')
             if method.func_name not in self.cache['backgroundTasks']:
                 self.cache['backgroundTasks'][method.func_name] = {}
-                self.cache['backgroundTasks'][method.func_name]['funcName'] = method.func_name
+                self.cache['backgroundTasks'][method.func_name]['handle'] = self.handle
+                self.cache['backgroundTasks'][method.func_name]['method'] = method.func_name
                 self.cache['backgroundTasks'][method.func_name]['timeout'] = timeout
-                self.cache['backgroundTasks'][method.func_name]['lastStart'] = 0
-                self.cache['backgroundTasks'][method.func_name]['lastEnd'] = 0
+                self.cache['backgroundTasks'][method.func_name]['start'] = 0
+                self.cache['backgroundTasks'][method.func_name]['end'] = 0
 
             self.cache['backgroundTasks']
             run = False
@@ -384,7 +385,7 @@ class MMONetwork(object):
                     run = True
                     self.backgroundTasks[index] = (method, timeout, time.time())
 
-            self.cache['backgroundTasks'][method.func_name]['lastStart'] = time.time()
+            self.cache['backgroundTasks'][method.func_name]['start'] = time.time()
             self.setCache('backgroundTasks')
 
             if run:
@@ -395,8 +396,8 @@ class MMONetwork(object):
                     logger.info("[%s] -> %s" % (self.handle, ret))
 
                 self.getCache('backgroundTasks')
-                self.cache['backgroundTasks'][method.func_name]['lastEnd'] = time.time()
-                self.cache['backgroundTasks'][method.func_name]['lastResult'] = ret
+                self.cache['backgroundTasks'][method.func_name]['end'] = time.time()
+                self.cache['backgroundTasks'][method.func_name]['result'] = ret
                 self.setCache('backgroundTasks')
 
             if remove:

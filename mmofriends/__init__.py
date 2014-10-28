@@ -305,41 +305,13 @@ def get_image(imgType, imgId):
     abort(404)
 
 # admin routes
-
-@app.route('/Administration/Status')
-def admin_status():
+@app.route('/Administration/System_Status')
+def admin_system_status():
     if not session.get('logged_in'):
         abort(401)
     if not session.get('admin'):
         log.warning("<%s> tried to access admin without permission!")
         abort(403)
-
-    registeredWorkers = []
-    i = celery.control.inspect()
-    for worker in i.registered().keys():
-        for task in i.registered()[worker]:
-            registeredWorkers.append({ 'worker': worker,
-                                       'task': task })
-
-    avtiveTasks = []
-    for worker in i.active().keys():
-        for task in i.active()[worker]:
-            avtiveTasks.append({ 'worker': worker,
-                                 'name': task['name'],
-                                 'id': task['id'],
-                                 'args': task['args'],
-                                 'kwargs': task['kwargs'] })
-
-    scheduledTasks = []
-    for worker in i.scheduled().keys():
-        for task in i.scheduled()[worker]:
-            scheduledTasks.append({ 'worker': worker,
-                                    'eta': task['eta'],
-                                    'priority': task['priority'],
-                                    'name': task['request']['name'],
-                                    'id': task['request']['id'],
-                                    'args': task['request']['args'],
-                                    'kwargs': task['request']['kwargs'] })
 
     loadedNets = []
     for handle in MMONetworks.keys():
@@ -373,10 +345,56 @@ def admin_status():
     infos = {}
     infos['loadedNets'] = loadedNets
     infos['registredUsers'] = registredUsers
+    return render_template('admin_system_status.html', infos = infos)
+
+@app.route('/Administration/Celery_Status')
+def admin_celery_status():
+    if not session.get('logged_in'):
+        abort(401)
+    if not session.get('admin'):
+        log.warning("<%s> tried to access admin without permission!")
+        abort(403)
+
+    registeredWorkers = []
+    i = celery.control.inspect()
+    for worker in i.registered().keys():
+        for task in i.registered()[worker]:
+            registeredWorkers.append({ 'worker': worker,
+                                       'task': task })
+
+    avtiveTasks = []
+    for worker in i.active().keys():
+        for task in i.active()[worker]:
+            avtiveTasks.append({ 'worker': worker,
+                                 'name': task['name'],
+                                 'id': task['id'],
+                                 'args': task['args'],
+                                 'kwargs': task['kwargs'] })
+
+    scheduledTasks = []
+    for worker in i.scheduled().keys():
+        for task in i.scheduled()[worker]:
+            scheduledTasks.append({ 'worker': worker,
+                                    'eta': task['eta'],
+                                    'priority': task['priority'],
+                                    'name': task['request']['name'],
+                                    'id': task['request']['id'],
+                                    'args': task['request']['args'],
+                                    'kwargs': task['request']['kwargs'] })
+
+    methodStats = []
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        network.getCache('backgroundTasks')
+        for task in network.cache['backgroundTasks']:
+            methodStats.append(task)
+
+    infos = {}
     infos['registeredWorkers'] = registeredWorkers
     infos['avtiveTasks'] = avtiveTasks
     infos['scheduledTasks'] = scheduledTasks
-    return render_template('admin_status.html', infos = infos)
+    infos['methodStats'] = methodStats
+    return render_template('admin_celery_status.html', infos = infos)
 
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
