@@ -11,7 +11,7 @@
 			<th>Last Start</th>
 			<th>Last End</th>
 			<th>Duration</th>
-			<th>Return Message</th>
+			<th>Result</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -31,7 +31,7 @@
 					Waiting
 				{%- endif -%}
 			</td>
-			<td>{{ task.return }}</td>
+			<td>{{ task.result }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
