@@ -389,8 +389,8 @@ def admin_celery_status():
     for handle in MMONetworks.keys():
         network = MMONetworks[handle]
         network.getCache('backgroundTasks')
-        for task in network.cache['backgroundTasks']:
-            methodStats.append(task)
+        for task in network.cache['backgroundTasks'].keys():
+            methodStats.append(network.cache['backgroundTasks'][task])
 
     infos = {}
     infos['registeredWorkers'] = registeredWorkers
