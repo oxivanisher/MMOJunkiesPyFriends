@@ -111,6 +111,22 @@ class TS3Network(MMONetwork):
         else:
             return "Not connected to TS3 Server"
 
+    def loadMissingClientInformations(self, logger = None):
+        if self.connect():
+            if not logger:
+                logger = self.log
+            count = 0
+
+            self.getCache('clientDatabase')
+            self.getCache('clientInfoDatabase')
+            for client in self.cache['clientDatabase'].keys():
+                if client not in self.cache['clientInfoDatabase'].keys():
+                    self.fetchUserDetatilsByCldbid(client['client_database_id'])
+
+            return "%s client(s) updated" % count
+        else:
+            return "Not connected to TS3 Server"
+
     def updateServerInfo(self, logger = None):
         if not logger:
             logger = self.log
@@ -469,7 +485,9 @@ class TS3Network(MMONetwork):
 
         if updateUserDetails:
             self.cache['clientDatabase'][cldbid] = {}
-            logger.debug("[%s] Fetching client db info for cldbid: %s" % (self.handle, cldbid))
+            self.cache['clientDatabase'][cldbid]['cldbid'] = cldbid
+
+            logger.info("[%s] Fetching client db info for cldbid: %s" % (self.handle, cldbid))
             response = self.sendCommand('clientdbinfo cldbid=%s' % cldbid)
             if response:
                 self.cache['clientDatabase'][cldbid] = response.data[0]
