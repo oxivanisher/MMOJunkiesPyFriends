@@ -16,25 +16,23 @@
 	</thead>
 	<tbody>
 		{% for task in infos.methodStats %}
-			{%  %}
-			<tr>
-				<td>{{ task.handle }}</td>
-				<td>{{ task.method }}</td>
-				<td>{{ task.timeout }}</td>
-				<td>{{ timestampToString(task.start) }}</td>
-				<td>{{ timestampToString(task.end) }}</td>
-				<td>
-					{%- if task.end > task.start -%}
-						{{ task.end-task.start }} Seconds
-					{%- elif task.start < task.end -%}
-						Now Running
-					{%- else -%}
-						Waiting
-					{%- endif -%}
-				</td>
-				<td>{{ task.return }}</td>
-			</tr>
-			{% endfor %}
+		<tr>
+			<td>{{ task.handle }}</td>
+			<td>{{ task.method }}</td>
+			<td>{{ task.timeout }}</td>
+			<td>{{ timestampToString(task.start) }}</td>
+			<td>{{ timestampToString(task.end) }}</td>
+			<td>
+				{%- if task.end > task.start -%}
+					{{ task.end-task.start }} Seconds
+				{%- elif task.start < task.end -%}
+					Now Running
+				{%- else -%}
+					Waiting
+				{%- endif -%}
+			</td>
+			<td>{{ task.return }}</td>
+		</tr>
 		{% endfor %}
 	</tbody>
 </table>
