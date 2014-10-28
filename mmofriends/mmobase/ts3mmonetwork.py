@@ -429,7 +429,7 @@ class TS3Network(MMONetwork):
             guestGroups = [7, 8]
             self.getCache('clientDatabase')
             for group in self.cache['clientDatabase'][cldbid]['groups']:
-                if group['sgid'] in guestGroups:
+                if int(group['sgid']) in guestGroups:
                     self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (memberGroupId, cldbid))
                     self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
             self.fetchUserDetatilsByCldbid(cldbid)
