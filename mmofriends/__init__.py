@@ -357,10 +357,11 @@ def admin_celery_status():
 
     registeredWorkers = []
     i = celery.control.inspect()
-    for worker in i.registered().keys():
-        for task in i.registered()[worker]:
-            registeredWorkers.append({ 'worker': worker,
-                                       'task': task })
+    if i.registered():
+        for worker in i.registered().keys():
+            for task in i.registered()[worker]:
+                registeredWorkers.append({ 'worker': worker,
+                                           'task': task })
 
     avtiveTasks = []
     for worker in i.active().keys():
