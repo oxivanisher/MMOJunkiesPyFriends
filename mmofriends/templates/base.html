@@ -163,6 +163,7 @@
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Administration <span class="caret"></span></a>
 		         				<ul class="dropdown-menu" role="menu">
 									<li class="{% if url_for('admin_system_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_system_status') }}"><span class="glyphicon glyphicon-eye-open"></span> System Status</a></li>
+									<li class="{% if url_for('admin_bgjob_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_bgjob_status') }}"><span class="glyphicon glyphicon-eye-open"></span> BG Jobs Status</a></li>
 									<li class="{% if url_for('admin_celery_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_celery_status') }}"><span class="glyphicon glyphicon-eye-open"></span> Celery Status</a></li>
 									<li class="{% if url_for('network_admin') == request.path %}active{% endif %}"><a href="{{ url_for('network_admin') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
 									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}"><span class="glyphicon glyphicon-wrench"></span> Developer Tools</a></li>
