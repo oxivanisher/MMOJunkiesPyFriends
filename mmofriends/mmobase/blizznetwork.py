@@ -142,10 +142,14 @@ class BlizzNetwork(MMONetwork):
             self.updateUserResources(link['user_id'], link['network_data'])
         return (True, "All user resources updated")
 
-    def updateUserResources(self, userid = None, accessToken = None):
+    def updateUserResources(self, userid = None, accessToken = None, logger = None):
+        if not logger:
+            logger = self.log
+
         if not userid:
             userid = self.session['userid']
-        self.log.debug("Updating resources for userid %s" % userid)
+            userNick = userid
+        logger.debug("Updating resources for userid %s" % userid)
 
         if not accessToken:
             if userid != self.session['userid']:
@@ -158,8 +162,12 @@ class BlizzNetwork(MMONetwork):
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
         if retValue != False:
             self.getCache('battletags')
-            self.cache['battletags'][userid] = retMessage['battletag']
-            self.setCache('battletags')
+            if 'battletag' in retMessage:
+                self.cache['battletags'][userid] = retMessage['battletag']
+                self.setCache('battletags')
+                userNick = retMessage['battletag']
+            else:
+                return (False, "Unable to update Battletag for user %s (%s)" % (userid, retMessage))
 
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
@@ -182,7 +190,7 @@ class BlizzNetwork(MMONetwork):
             self.cache['sc2Profiles'][userid] = retMessage
             self.setCache('sc2Profiles')
 
-        return (True, "All resources updated")
+        return (True, "All resources updated for %s" % userNick)
 
     def updateResource(self, entry, location, accessToken = None):
         self.log.debug("Updating resource from %s" % (location))
