@@ -24,7 +24,7 @@
 			<td>{{ timestampToString(task.end) }}</td>
 			<td>
 				{%- if task.end > task.start -%}
-					{{ task.end-task.start }} Seconds
+					{{ round(task.end-task.start, 4) }} Seconds
 				{%- elif task.start > task.end -%}
 					<strong>Active</strong>
 				{%- else -%}
