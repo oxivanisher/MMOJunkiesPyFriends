@@ -1,15 +1,31 @@
+# base settings
 DEBUG = True
-ROOTUSER = "oxi"
-APPSECRET = ''
-ADMINS = ['yourname@example.com']
-WEBURL = "http://localhost:5000"
+ROOTUSER = "admin"
+APPSECRET = 'some key'
+ADMINS = ['you@email.com']
+WEBURL = "https://localhost:5000"
+
+# email
 EMAILSERVER = "127.0.0.1"
 EMAILFROM = "yourname@example.com"
 EMAILREPLYTO = ""
 EMAILLOGIN = ""
 EMAILPASSWORD = ""
+
+# database
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmofriends.db'
-TWITTERURL = ""
-TWITTERWIDGETID = ""
-GOOGLEANALYTICS = ""
 #with mysql: SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/mmofriends'
+
+# celery (queuing)
+CELERY_TIMEZONE = 'Europe/Zurich'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
+#CELERY_BROKER_URL = 'sqla+sqlite:////tmp/mmofriends_celery_broker.sqlite'
+#CELERY_RESULT_BACKEND = 'db+sqlite:////tmp/mmofriends_celery_results.sqlite'
+
+TWITTERURL = "https://twitter.com/realMMOJunkies/lists/news"
+TWITTERWIDGETID = "512207381640404992"
+
+# google analytics
+GOOGLEANALYTICS = "UA-55575556-1"
