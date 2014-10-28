@@ -385,6 +385,20 @@ def admin_celery_status():
                                         'args': task['request']['args'],
                                         'kwargs': task['request']['kwargs'] })
 
+    infos = {}
+    infos['registeredWorkers'] = registeredWorkers
+    infos['avtiveTasks'] = avtiveTasks
+    infos['scheduledTasks'] = scheduledTasks
+    return render_template('admin_celery_status.html', infos = infos)
+
+@app.route('/Administration/Background_Jobs_Status')
+def admin_bgjob_status():
+    if not session.get('logged_in'):
+        abort(401)
+    if not session.get('admin'):
+        log.warning("<%s> tried to access admin without permission!")
+        abort(403)
+
     methodStats = []
     for handle in MMONetworks.keys():
         network = MMONetworks[handle]
@@ -393,11 +407,8 @@ def admin_celery_status():
             methodStats.append(network.cache['backgroundTasks'][task])
 
     infos = {}
-    infos['registeredWorkers'] = registeredWorkers
-    infos['avtiveTasks'] = avtiveTasks
-    infos['scheduledTasks'] = scheduledTasks
     infos['methodStats'] = methodStats
-    return render_template('admin_celery_status.html', infos = infos)
+    return render_template('admin_bgjob_status.html', infos = infos)
 
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
