@@ -122,7 +122,7 @@ class TS3Network(MMONetwork):
             self.getCache('clientInfoDatabase')
             for client in self.cache['clientDatabase'].keys():
                 if client not in self.cache['clientInfoDatabase'].keys():
-                    self.fetchUserDetatilsByCldbid(client['client_database_id'])
+                    self.fetchUserDetatilsByCldbid(client)
                     count += 1
 
             return "%s client(s) updated" % count
