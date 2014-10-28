@@ -30,7 +30,7 @@ class TS3Network(MMONetwork):
 
         self.server = None
         self.connected = False
-        self.clientftfid = random.randint(1, 100000)
+        self.clientftfid = random.randint(1, 999999)
 
         # admin methods
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
@@ -177,28 +177,37 @@ class TS3Network(MMONetwork):
             logger = self.log
         self.getCache('onlineClients')
         self.getCache('serverInfo')
+        self.getCache('clientDatabase')
         if self.connect():
-            logger.debug("[%s] Caching server icon" % (self.handle))
+            logger.info("[%s] Caching server icon" % (self.handle))
             self.cacheServerIcon(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id'])
 
-            self.log.debug("[%s] Caching channel icons" % (self.handle))
+            logger.info("[%s] Caching channel icons" % (self.handle))
             for channel in self.cache['serverInfo']['channelList']:
                 logger.debug("[%s] Caching file for channel: %s" % (self.handle, channel['channel_name']))
                 self.cacheIcon(channel['channel_icon_id'])
                 count += 1
 
-            self.log.debug("[%s] Caching client icons" % (self.handle))
+            logger.info("[%s] Caching client icons" % (self.handle))
             for client in self.cache['onlineClients'].keys():
                 logger.debug("[%s] Caching file for client: %s" % (self.handle, self.cache['onlineClients'][client]['client_nickname']))
                 self.cacheIcon(self.cache['onlineClients'][client]['client_icon_id'])
                 count += 1
 
-            self.log.debug("[%s] Caching group icons" % (self.handle))
+            logger.info("[%s] Caching group icons" % (self.handle))
             for group in self.cache['serverInfo']['groupList'].keys():
                 logger.debug("[%s] Caching file for group: %s" % (self.handle, self.cache['serverInfo']['groupList'][group]['name']))
                 if int(self.cache['serverInfo']['groupList'][group]['iconid']):
                     self.cacheIcon(self.cache['serverInfo']['groupList'][group]['iconid'])
                     count += 1
+
+            logger.info("[%s] Caching user avatars" % (self.handle))
+            for client in self.cache['clientDatabase'].keys():
+                if self.cache['clientDatabase'][client]['client_flag_avatar']:
+                    logger.debug("[%s] Caching avatar for client: %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
+                    self.cacheFlagAvatar(self.cache['clientDatabase'][client]['client_flag_avatar'])
+                    count += 1
+
             return "%s files cached" % count
         else:
             return "Not connected to TS3 Server"
