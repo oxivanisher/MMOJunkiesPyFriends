@@ -574,7 +574,7 @@ class TS3Network(MMONetwork):
             try:
                 fileinfo['port'], fileinfo['size'], fileinfo['ftkey']
             except KeyError:
-                self.log.warning("No response recieved")
+                self.log.warning("No response recieved for filename %s" % name)
                 return False
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
