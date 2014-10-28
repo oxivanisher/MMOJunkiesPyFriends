@@ -237,11 +237,9 @@ class TS3Network(MMONetwork):
                 continue
 
             # player state
-            if 'client_nickname' in self.cache['clientDatabase'][cldbid]:
-                nick = self.cache['clientDatabase'][cldbid]['client_nickname']
-            else:
-                nick = cldbid
-                self.log.warning("Nickname not found! Using ID %s" % nick)
+            if 'client_nickname' not in self.cache['clientDatabase'][cldbid]:
+                self.log.warning("Nickname not found! Skipping ID %s" % nick)
+                continue
 
             if cldbid in self.cache['onlineClients']:
                 state = "Online"
