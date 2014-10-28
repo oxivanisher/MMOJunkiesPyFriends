@@ -17,7 +17,13 @@
 		{% for detail in details.details -%}
 		<tr>
 			<td nowrap style="vertical-align: top; padding-right: 6px">{{ detail.key }}</td>
-			<td>{{ detail.value|truncate(50, True) }}</td>
+			<td>
+				{%- if detail.value.startswith('http://') or detail.value.startswith('https://') -%}
+					<a href="detail.value" target="_new">{{ detail.value|truncate(50, True) }}</a>
+				{%- else -%}
+					{{ detail.value|truncate(50, True) }}
+				{%- endif -%}
+			</td>
 		</tr>
 		{%- endfor -%}
 	</tbody>
