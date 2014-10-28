@@ -238,7 +238,7 @@ class TS3Network(MMONetwork):
 
             # player state
             if 'client_nickname' not in self.cache['clientDatabase'][cldbid]:
-                self.log.warning("Nickname not found! Skipping ID %s" % nick)
+                self.log.warning("Nickname not found! Skipping ID %s" % cldbid)
                 continue
 
             if cldbid in self.cache['onlineClients']:
