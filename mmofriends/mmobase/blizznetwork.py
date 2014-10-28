@@ -266,10 +266,10 @@ class BlizzNetwork(MMONetwork):
         # FIXME bug 2 http://us.battle.net/en/forum/topic/14525912884 !
         tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)
         savePath = tmpUrl.replace('/', '-')
-        avatarUrl = self.avatarUrl + tmpUrl
-
+        
         if 'internal-record' in origUrl:
             self.log.debug("Found non existing avatar url")
+            avatarUrl = self.avatarUrl + tmpUrl
         else:
             savePath = origUrl.replace('/', '-')
             avatarUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + origUrl
@@ -285,8 +285,9 @@ class BlizzNetwork(MMONetwork):
                 avatarFile.retrieve(avatarUrl, outputFilePath)
             except Exception:
                 # BUG: http://us.battle.net/en/forum/topic/14525622754
+                avatarUrl = self.avatarUrl + tmpUrl
                 self.log.warning("Not existing avatar! Saving general avatar %s to %s" % (avatarUrl, outputFilePath))
-                avatarFile.retrieve(self.avatarUrl + tmpUrl, outputFilePath)
+                avatarFile.retrieve(avatarUrl, outputFilePath)
                 # savePath = self.cacheWowAvatarFile('internal-record', race, gender)
 
         return savePath
