@@ -364,24 +364,26 @@ def admin_celery_status():
                                            'task': task })
 
     avtiveTasks = []
-    for worker in i.active().keys():
-        for task in i.active()[worker]:
-            avtiveTasks.append({ 'worker': worker,
-                                 'name': task['name'],
-                                 'id': task['id'],
-                                 'args': task['args'],
-                                 'kwargs': task['kwargs'] })
+    if i.active():
+        for worker in i.active().keys():
+            for task in i.active()[worker]:
+                avtiveTasks.append({ 'worker': worker,
+                                     'name': task['name'],
+                                     'id': task['id'],
+                                     'args': task['args'],
+                                     'kwargs': task['kwargs'] })
 
     scheduledTasks = []
-    for worker in i.scheduled().keys():
-        for task in i.scheduled()[worker]:
-            scheduledTasks.append({ 'worker': worker,
-                                    'eta': task['eta'],
-                                    'priority': task['priority'],
-                                    'name': task['request']['name'],
-                                    'id': task['request']['id'],
-                                    'args': task['request']['args'],
-                                    'kwargs': task['request']['kwargs'] })
+    if i.scheduled():
+        for worker in i.scheduled().keys():
+            for task in i.scheduled()[worker]:
+                scheduledTasks.append({ 'worker': worker,
+                                        'eta': task['eta'],
+                                        'priority': task['priority'],
+                                        'name': task['request']['name'],
+                                        'id': task['request']['id'],
+                                        'args': task['request']['args'],
+                                        'kwargs': task['request']['kwargs'] })
 
     methodStats = []
     for handle in MMONetworks.keys():
