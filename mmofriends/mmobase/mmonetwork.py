@@ -394,14 +394,14 @@ class MMONetwork(object):
                 if ret:
                     logger.info("[%s] -> %s" % (self.handle, ret))
 
+                self.getCache('backgroundTasks')
+                self.cache['backgroundTasks'][method.func_name]['lastEnd'] = time.time()
+                self.cache['backgroundTasks'][method.func_name]['lastResult'] = ret
+                self.setCache('backgroundTasks')
+
             if remove:
                 logger.info("[%s] -> Removing task %s" % (self.handle, method.func_name))
                 self.backgroundTasks.pop(index)
-
-            self.getCache('backgroundTasks')
-            self.cache['backgroundTasks'][method.func_name]['lastEnd'] = time.time()
-            self.cache['backgroundTasks'][method.func_name]['lastResult'] = ret
-            self.setCache('backgroundTasks')
 
     def registerWorker(self, method, timeout):
         self.log.info("%s Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
