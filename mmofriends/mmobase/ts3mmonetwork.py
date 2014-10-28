@@ -70,7 +70,9 @@ class TS3Network(MMONetwork):
                     self.cache['onlineClients'][clients[client]['client_database_id']] = clients[client]
 
             self.setCache('onlineClients')
-            return "Found %s online client(s)" % len(self.cache['onlineClients'])
+            return "%s online client(s) updated" % len(self.cache['onlineClients'])
+        else:
+            return "Not connected to TS3 Server"
 
     def updateOnlineClientInfos(self, logger = None):
         if self.connect():
@@ -81,7 +83,9 @@ class TS3Network(MMONetwork):
             for client in self.cache['onlineClients']:
                 logger.debug("[%s] Updating online client info for: %s" % (self.handle, self.cache['onlineClients'][client]['client_database_id']))
                 self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
-            return "All %s online clients fetched" % len(self.cache['onlineClients'])
+            return "%s online client(s) updated" % len(self.cache['onlineClients'])
+        else:
+            return "Not connected to TS3 Server"
 
     def cacheAvailableClients(self, logger = None):
         if self.connect():
@@ -103,9 +107,9 @@ class TS3Network(MMONetwork):
             self.setCache('clientDatabase')
 
             logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
-            return "All %s clients fetched" % len(allClients)
-            # return (True, "All clients fetched: %s" % len(allClients))
-            # return "all clients fetched: %s" % len(allClients)
+            return "%s client(s) updated" % len(allClients)
+        else:
+            return "Not connected to TS3 Server"
 
     def updateServerInfo(self, logger = None):
         if not logger:
@@ -139,6 +143,10 @@ class TS3Network(MMONetwork):
             for group in result.data:
                 self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
             self.setCache('serverInfo')
+
+            return "Server info for updated"
+        else:
+            return "Not connected to TS3 Server"
 
     def cacheFiles(self, logger = None):
         if not logger:

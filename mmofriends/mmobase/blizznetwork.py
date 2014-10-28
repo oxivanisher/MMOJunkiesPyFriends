@@ -112,6 +112,7 @@ class BlizzNetwork(MMONetwork):
 
     # update resource helpers
     def updateBaseResources(self, force = True):
+        count = 0
         accessToken = False
         for link in self.getNetworkLinks():
             accessToken = link['network_data']
@@ -124,23 +125,27 @@ class BlizzNetwork(MMONetwork):
 
         if accessToken:
             for entry in self.wowDataResourcesList.keys():
+                count += 1
                 self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
 
             for entry in self.sc2DataResourcesList.keys():
+                count += 1
                 self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
 
         # self.saveAllData()
-        return "All resources updated"
+        return "%s base resources updated" % count
 
     def updateAllUserResources(self, logger = None):
         if not logger:
             logger = self.log
         self.getCache('battletags')
 
+        count = 0
         for link in self.getNetworkLinks():
             logger.debug("Updating user resources for userid %s" % link['user_id'])
             self.updateUserResources(link['user_id'], link['network_data'])
-        return (True, "All user resources updated")
+            count += 1
+        return "%s user resources updated" % count
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
@@ -323,12 +328,6 @@ class BlizzNetwork(MMONetwork):
 
     def getPartners(self, **kwargs):
         self.log.debug("List all partners for given user")
-
-        # self.updateBaseResources(False)
-        # self.getCache('battletags')
-        # if len(self.cache['battletags']) < len(self.getNetworkLinks()):
-        #     self.log.info("Battletags missing in cache. Forced update initiated")
-            # self.updateAllUserResources()
 
         if not self.getSessionValue(self.linkIdName):
             return (False, False)

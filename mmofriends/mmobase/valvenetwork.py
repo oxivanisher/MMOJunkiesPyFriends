@@ -85,6 +85,9 @@ class ValveNetwork(MMONetwork):
         if check:
             logger.info("[%s] New use(r)s found. Forcing update" % (self.handle))
             self.updateUsers()
+            return "New users found"
+        else:
+            return "No new users found"
 
     def updateUsers(self, logger = None):
         if not logger:
@@ -196,8 +199,12 @@ class ValveNetwork(MMONetwork):
             self.setCache('users')
             self.setCache('games')
             logger.info("[%s] Updated %s users" % (self.handle, len(steamData['players'])))
+            return "%s users updated" % len(steamData['players'])
+        else:
+            return "Unable to recieve data from Steam"
 
     def updateUsersOnlineState(self, logger = None):
+        count = 0
         if not logger:
             logger = self.log
 
@@ -211,6 +218,7 @@ class ValveNetwork(MMONetwork):
         while run:
             fetchFriends = allUsers[:self.maxUpdateUsers]
             allUsers = allUsers[self.maxUpdateUsers:]
+            count += len(fetchFriends)
             if len(fetchFriends) == 0:
                 run = False
             else:
@@ -218,6 +226,8 @@ class ValveNetwork(MMONetwork):
                 steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
                 for friend in steamFriends['players']:
                     self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
+
+        return "%s user states updated" % count
 
     # oid methods
     def oid_login(self, oid):
