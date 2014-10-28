@@ -151,9 +151,11 @@ class BlizzNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
+        background = True
         if not userid:
             userid = self.session['userid']
             userNick = userid
+            background = False
         logger.debug("Updating resources for userid %s" % userid)
 
         if not accessToken:
@@ -180,8 +182,9 @@ class BlizzNetwork(MMONetwork):
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
-            for char in retMessage['characters']:
-                self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
+            if background:
+                for char in retMessage['characters']:
+                    self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
@@ -261,13 +264,12 @@ class BlizzNetwork(MMONetwork):
 
         # FIXME against bug http://us.battle.net/en/forum/topic/14525622754 !
         # FIXME bug 2 http://us.battle.net/en/forum/topic/14525912884 !
-        if 'internal-record' in origUrl:
-            # http://eu.battle.net/wow/static/images/2d/avatar/4-0.jpg
-            tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)
-            savePath = tmpUrl.replace('/', '-')
-            avatarUrl = self.avatarUrl + tmpUrl
-            self.log.debug("Found non existing avatar url")
+        tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)
+        savePath = tmpUrl.replace('/', '-')
+        avatarUrl = self.avatarUrl + tmpUrl
 
+        if 'internal-record' in origUrl:
+            self.log.debug("Found non existing avatar url")
         else:
             savePath = origUrl.replace('/', '-')
             avatarUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + origUrl
@@ -283,6 +285,7 @@ class BlizzNetwork(MMONetwork):
                 avatarFile.retrieve(avatarUrl, outputFilePath)
             except Exception:
                 self.log.warning("Not existing avatar (BUG: http://us.battle.net/en/forum/topic/14525622754)! Force fetching general avatar.")
+                avatarFile.retrieve(avatarUrl, outputFilePath)
                 savePath = self.cacheWowAvatarFile('internal-record', race, gender)
 
         return savePath
