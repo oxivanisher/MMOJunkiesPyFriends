@@ -418,6 +418,19 @@ class TS3Network(MMONetwork):
         self.log.debug("Searching for new partners to play with")
         return self.getPartners(onlineOnly=True)
 
+    def devTest(self):
+        # self.log.error("Registring worker!")
+        # self.registerWorker(self.cacheAvailableClients, 0)
+        try:
+            return "cldbid: %s" % self.getSessionValue(self.linkIdName)
+        except Exception as e:
+            return "%s" % e
+
+    def prepareForFirstRequest(self):
+        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
+        # This is done to set "More Info"
+        self.connect()
+
     # helper methods
     def connect(self, logger = None):
         if not logger:
@@ -517,14 +530,6 @@ class TS3Network(MMONetwork):
             logger.debug("[%s] Not fetching user details for cldbid: %s" % (self.handle, cldbid))
 
         self.setCache('clientDatabase')
-
-    def devTest(self):
-        # self.log.error("Registring worker!")
-        # self.registerWorker(self.cacheAvailableClients, 0)
-        try:
-            return "cldbid: %s" % self.getSessionValue(self.linkIdName)
-        except Exception as e:
-            return "%s" % e
 
     # file transfer methods
     def cacheFile(self, name, cid = 0, cpw = "", seekpos = 0):
