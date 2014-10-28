@@ -180,6 +180,8 @@ class BlizzNetwork(MMONetwork):
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
+            for char in retMessage['characters']:
+                self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
