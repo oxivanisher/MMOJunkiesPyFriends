@@ -203,10 +203,11 @@ class TS3Network(MMONetwork):
 
             logger.info("[%s] Caching user avatars" % (self.handle))
             for client in self.cache['clientDatabase'].keys():
-                if self.cache['clientDatabase'][client]['client_flag_avatar']:
-                    logger.debug("[%s] Caching avatar for client: %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
-                    self.cacheFlagAvatar(self.cache['clientDatabase'][client]['client_flag_avatar'])
-                    count += 1
+                if 'client_flag_avatar' in self.cache['clientDatabase'][client]:
+                    if self.cache['clientDatabase'][client]['client_flag_avatar']:
+                        logger.debug("[%s] Caching avatar for client: %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
+                        self.cacheFlagAvatar(self.cache['clientDatabase'][client]['client_flag_avatar'])
+                        count += 1
 
             return "%s files cached" % count
         else:
