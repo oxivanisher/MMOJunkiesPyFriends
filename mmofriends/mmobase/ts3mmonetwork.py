@@ -344,9 +344,10 @@ class TS3Network(MMONetwork):
         try:
         #fetch avatar
             if 'client_flag_avatar' in self.cache['clientDatabase'][cldbid].keys():
-                avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
-                self.cacheFile(avatar)
-                self.setPartnerAvatar(moreInfo, avatar)
+                if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
+                    avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
+                    self.cacheFile(avatar)
+                    self.setPartnerAvatar(moreInfo, avatar)
 
             self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
             self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
@@ -382,7 +383,8 @@ class TS3Network(MMONetwork):
             self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
             self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
 
-        except KeyError:
+        except KeyError as e:
+            self.log.info("Missing client information to show in details: %s" % e)
             pass
         return moreInfo
 
