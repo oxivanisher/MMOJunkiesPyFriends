@@ -341,49 +341,49 @@ class TS3Network(MMONetwork):
         self.getCache('clientInfoDatabase')
         self.getCache('serverInfo')
 
-        # try:
+        try:
         #fetch avatar
-        if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
-            avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
-            self.cacheFile(avatar)
-            self.setPartnerAvatar(moreInfo, avatar)
+            if 'client_flag_avatar' in self.cache['clientDatabase'][cldbid].keys():
+                avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
+                self.cacheFile(avatar)
+                self.setPartnerAvatar(moreInfo, avatar)
 
-        self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
-        self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
-        self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][cldbid]['client_away_message'])
-        self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
-        self.setPartnerDetail(moreInfo, "Last Connection", timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))
-        self.setPartnerDetail(moreInfo, "Total Connections", self.cache['clientDatabase'][cldbid]['client_totalconnections'])
+            self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
+            self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
+            self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][cldbid]['client_away_message'])
+            self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
+            self.setPartnerDetail(moreInfo, "Last Connection", timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))
+            self.setPartnerDetail(moreInfo, "Total Connections", self.cache['clientDatabase'][cldbid]['client_totalconnections'])
 
-        userGroups = []
-        userGroupIcon = 0
-        userGroupName = "Unknown"
-        for group in self.cache['clientDatabase'][cldbid]['groups']:
-            for g in self.cache['serverInfo']['groupList'].keys():
-                if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
-                    userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
-                    self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
-            userGroups.append(group['name'])
-            userGroupName = group['name']
-        self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
-        self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']]['name'])
+            userGroups = []
+            userGroupIcon = 0
+            userGroupName = "Unknown"
+            for group in self.cache['clientDatabase'][cldbid]['groups']:
+                for g in self.cache['serverInfo']['groupList'].keys():
+                    if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
+                        userGroupIcon = 'icon_' + self.cache['serverInfo']['groupList'][g]['iconid']
+                        self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
+                userGroups.append(group['name'])
+                userGroupName = group['name']
+            self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
+            self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']]['name'])
 
-        if self.session.get('admin'):
-            self.setPartnerDetail(moreInfo, "Last IP", self.cache['clientDatabase'][cldbid]['client_lastip'])
-            self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_uploaded']))
-            self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_downloaded']))
-            self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
-            self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
+            if self.session.get('admin'):
+                self.setPartnerDetail(moreInfo, "Last IP", self.cache['clientDatabase'][cldbid]['client_lastip'])
+                self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_downloaded']))
+                self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
 
-        self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][cldbid]['client_output_muted'])
-        self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][cldbid]['client_outputonly_muted'])
-        self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][cldbid]['client_input_muted'])
-        self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][cldbid]['client_is_channel_commander'])
-        self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
-        self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
+            self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][cldbid]['client_output_muted'])
+            self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][cldbid]['client_outputonly_muted'])
+            self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][cldbid]['client_input_muted'])
+            self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][cldbid]['client_is_channel_commander'])
+            self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
+            self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
 
-        # except KeyError:
-        #     pass
+        except KeyError:
+            pass
         return moreInfo
 
     def getLinkHtml(self):
