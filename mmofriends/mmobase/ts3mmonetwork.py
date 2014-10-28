@@ -143,12 +143,12 @@ class TS3Network(MMONetwork):
             for group in result.data:
                 self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
             self.setCache('serverInfo')
-
             return "Server info for updated"
         else:
             return "Not connected to TS3 Server"
 
     def cacheFiles(self, logger = None):
+        count = 0
         if not logger:
             logger = self.log
         self.getCache('onlineClients')
@@ -161,17 +161,23 @@ class TS3Network(MMONetwork):
             for channel in self.cache['serverInfo']['channelList']:
                 logger.debug("[%s] Caching file for channel: %s" % (self.handle, channel['channel_name']))
                 self.cacheIcon(channel['channel_icon_id'])
+                count += 1
 
             self.log.debug("[%s] Caching client icons" % (self.handle))
             for client in self.cache['onlineClients'].keys():
                 logger.debug("[%s] Caching file for client: %s" % (self.handle, self.cache['onlineClients'][client]['client_nickname']))
                 self.cacheIcon(self.cache['onlineClients'][client]['client_icon_id'])
+                count += 1
 
             self.log.debug("[%s] Caching group icons" % (self.handle))
             for group in self.cache['serverInfo']['groupList'].keys():
                 logger.debug("[%s] Caching file for group: %s" % (self.handle, self.cache['serverInfo']['groupList'][group]['name']))
                 if int(self.cache['serverInfo']['groupList'][group]['iconid']):
                     self.cacheIcon(self.cache['serverInfo']['groupList'][group]['iconid'])
+                    count += 1
+            return "%s files cached" % count
+        else:
+            return "Not connected to TS3 Server"
 
     # Class overwrites
     def getPartners(self, **kwargs):
