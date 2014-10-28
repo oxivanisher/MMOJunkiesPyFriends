@@ -182,7 +182,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
-            if background:
+            if background and 'characters' in retMessage:
                 for char in retMessage['characters']:
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
