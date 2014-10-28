@@ -372,8 +372,8 @@ class MMONetwork(object):
                 self.cache['backgroundTasks'][method.func_name]['timeout'] = timeout
                 self.cache['backgroundTasks'][method.func_name]['start'] = 0
                 self.cache['backgroundTasks'][method.func_name]['end'] = 0
+                self.setCache('backgroundTasks')
 
-            self.cache['backgroundTasks']
             run = False
             remove = False
             index = self.backgroundTasks.index((method, timeout, lastCheck))
@@ -385,10 +385,10 @@ class MMONetwork(object):
                     run = True
                     self.backgroundTasks[index] = (method, timeout, time.time())
 
-            self.cache['backgroundTasks'][method.func_name]['start'] = time.time()
-            self.setCache('backgroundTasks')
-
             if run:
+                self.cache['backgroundTasks'][method.func_name]['start'] = time.time()
+                self.setCache('backgroundTasks')
+
                 ret = None
                 logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
                 ret = method(logger)
