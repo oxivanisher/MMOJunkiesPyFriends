@@ -352,18 +352,18 @@ class BlizzNetwork(MMONetwork):
 
                 # World of warcraft
                 if userid in self.cache['wowProfiles'].keys():
-                    if self.cache['wowProfiles'][userid]['characters']:
-                        try:
-                            for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
-                                friendImgs.append({ 'type': 'cache',
-                                                    'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
-                                                    'title': char['name'] + '@' + char['realm'] })
-                            myProducts.append({ 'type': 'product',
-                                                'name': 'worldofwarcraft',
-                                                'title': 'World of Warcraft' })
-                        except KeyError:
-                            pass
-
+                    if 'characters' in self.cache['wowProfiles'][userid]:
+                        if self.cache['wowProfiles'][userid]['characters']:
+                            try:
+                                for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
+                                    friendImgs.append({ 'type': 'cache',
+                                                        'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
+                                                        'title': char['name'] + '@' + char['realm'] })
+                                myProducts.append({ 'type': 'product',
+                                                    'name': 'worldofwarcraft',
+                                                    'title': 'World of Warcraft' })
+                            except KeyError:
+                                pass
 
                 # Starcraft 2
                 if userid in self.cache['sc2Profiles'].keys():
