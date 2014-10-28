@@ -259,7 +259,7 @@ class BlizzNetwork(MMONetwork):
 
         # FIXME against bug http://us.battle.net/en/forum/topic/14525622754 !
         # FIXME bug 2 http://us.battle.net/en/forum/topic/14525912884 !
-        if 'internal-record' in origUrl or 'azshara' in origUrl or 'arthas' in origUrl or 'dethecus' in origUrl:
+        if 'internal-record' in origUrl:
             # http://eu.battle.net/wow/static/images/2d/avatar/4-0.jpg
             tmpUrl = 'wow/static/images/2d/avatar/%s-%s.jpg' % (race, gender)
             savePath = tmpUrl.replace('/', '-')

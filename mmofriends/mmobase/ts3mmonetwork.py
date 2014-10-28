@@ -39,6 +39,7 @@ class TS3Network(MMONetwork):
         # background updater methods
         self.registerWorker(self.updateServerInfo, 900)
         self.registerWorker(self.cacheAvailableClients, 10800)
+        self.registerWorker(self.loadMissingClientInformations, 10800)
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
@@ -122,6 +123,7 @@ class TS3Network(MMONetwork):
             for client in self.cache['clientDatabase'].keys():
                 if client not in self.cache['clientInfoDatabase'].keys():
                     self.fetchUserDetatilsByCldbid(client['client_database_id'])
+                    count += 1
 
             return "%s client(s) updated" % count
         else:
