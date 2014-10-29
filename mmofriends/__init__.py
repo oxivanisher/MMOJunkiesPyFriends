@@ -84,6 +84,7 @@ MMONetworks = {}
 
 # jinja2 methods
 app.jinja_env.globals.update(timestampToString=timestampToString)
+app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
 
 # initialize database
