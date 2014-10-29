@@ -90,8 +90,9 @@ def getLogger(level=logging.INFO):
     return logging.getLogger(__name__)
 
 def get_short_age(timestamp):
-    age = int(time.time() - int(timestamp))
+    return get_short_duration(int(time.time() - int(timestamp)))
 
+def get_short_duration(age):
     if age < 0:
         age = age * -1
 
