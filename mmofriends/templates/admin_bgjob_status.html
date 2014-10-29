@@ -19,7 +19,7 @@
 		<tr>
 			<td>{{ task.handle }}</td>
 			<td>{{ task.method }}</td>
-			<td>{{ task.timeout }}</td>
+			<td>{{ get_short_age(task.timeout) }}</td>
 			<td>{{ timestampToString(task.start) }}</td>
 			<td>{{ timestampToString(task.end) }}</td>
 			<td>
