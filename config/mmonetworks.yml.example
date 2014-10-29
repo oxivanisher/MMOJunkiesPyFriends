@@ -10,6 +10,10 @@ TS3:
   username: serveradmin
   password: secret
   icon: ts3.png
+  guestGroups:
+   - 7
+   - 8
+  memberGroupId: 9
 Blizz:
   name: Battle.Net
   class: BlizzNetwork
@@ -19,6 +23,7 @@ Blizz:
   apikey: secret
   apisecret: secret
   icon: battlenet.png
+  region: eu
 Valve:
   name: Steam
   class: ValveNetwork

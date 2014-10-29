@@ -237,7 +237,11 @@ class TS3Network(MMONetwork):
                 continue
 
             # player state
+            if 'client_nickname' not in self.cache['clientDatabase'][cldbid]:
+                self.log.warning("Nickname of cldbid %s not found. Ignoring this user." % cldbid)
+                continue
             nick = self.cache['clientDatabase'][cldbid]['client_nickname']
+
             if cldbid in self.cache['onlineClients']:
                 state = "Online"
             else:
@@ -338,11 +342,12 @@ class TS3Network(MMONetwork):
         self.getCache('serverInfo')
 
         try:
-            #fetch avatar
-            if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
-                avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
-                self.cacheFile(avatar)
-                self.setPartnerAvatar(moreInfo, avatar)
+        #fetch avatar
+            if 'client_flag_avatar' in self.cache['clientDatabase'][cldbid].keys():
+                if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
+                    avatar = "/avatar_%s" % self.cache['clientDatabase'][cldbid]['client_base64HashClientUID']
+                    self.cacheFile(avatar)
+                    self.setPartnerAvatar(moreInfo, avatar)
 
             self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
             self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
@@ -378,7 +383,8 @@ class TS3Network(MMONetwork):
             self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
             self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
 
-        except KeyError:
+        except KeyError as e:
+            self.log.info("Missing client information to show in details: %s" % e)
             pass
         return moreInfo
 
@@ -415,7 +421,17 @@ class TS3Network(MMONetwork):
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
         if self.getSessionValue('doLinkKey') == userKey:
-            self.saveLink(self.getSessionValue(self.linkIdName))
+            cldbid = self.getSessionValue(self.linkIdName)
+            self.saveLink(cldbid)
+            self.connect()
+            self.fetchUserDetatilsByCldbid(cldbid)
+            self.getCache('clientDatabase')
+            for group in self.cache['clientDatabase'][cldbid]['groups']:
+                if int(group['sgid']) in self.config['guestGroups']:
+                    self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], cldbid))
+                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
+            self.fetchUserDetatilsByCldbid(cldbid)
+
             return True
         else:
             return False
