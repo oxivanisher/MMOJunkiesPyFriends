@@ -89,6 +89,27 @@ def getLogger(level=logging.INFO):
     logging.getLogger('').addHandler(console)
     return logging.getLogger(__name__)
 
+def get_short_age(timestamp):
+    age = int(time.time() - timestamp)
+
+    if age < 0:
+        age = age * -1
+
+    if age == 0:
+        return ''
+    elif age < 60:
+        return '%ss' % (age)
+    elif age > 59 and age < 3600:
+        return '%sm' % (int(age / 60))
+    elif age >= 3600 and age < 86400:
+        return '%sh' % (int(age / 3600))
+    elif age >= 86400 and age < 604800:
+        return '%sd' % (int(age / 86400))
+    elif age >= 604800 and age < 31449600:
+        return '%sw' % (int(age / 604800))
+    else:
+        return '%sy' % (int(age / 31449600))
+
 # emailer functions
 def load_file(app, msgRoot, filename):
     fp = open(os.path.join(app.root_path, 'static/img/', filename), 'rb')

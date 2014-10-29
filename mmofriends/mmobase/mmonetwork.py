@@ -109,6 +109,7 @@ class MMONetwork(object):
         self.lastRefreshDate = 0
         self.backgroundWorkerTime = 0
         self.adminMethods = []
+        self.userMethods = []
         self.backgroundTasks = []
         self.cache = {}
 
