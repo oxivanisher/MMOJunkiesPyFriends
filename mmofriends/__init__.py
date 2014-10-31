@@ -831,7 +831,23 @@ def dashboard():
     return render_template('dashboard.html', boxes = boxes)
 
 # JSON API
-@app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
+@app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
+def json_dashboard_method(netHandle, methodHandle):
+    loggedIn = True
+    if not session.get('logged_in'):
+        loggedIn = False
+    admin = True
+    if not session.get('admin'):
+        admin = False
+
+    box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+
+    if box['status']['loggedin'] == loggedIn and box['status']['admin'] == admin:
+        return jsonify(box['method'](request))
+    else:
+        return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
+
+@app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['POST'])
 def json_partner_details(netHandle, partnerId):
     log.info("Trying to show JSON partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
     if not session.get('logged_in'):

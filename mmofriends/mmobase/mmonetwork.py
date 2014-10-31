@@ -432,6 +432,13 @@ class MMONetwork(object):
         self.log.info("%s Get dashboard boxes" % self.handle)
         return self.dashboardBoxes
 
+    def getDashboardBox(self, handle):
+        self.log.info("%s Get dashboard box %s" % (self.handle, handle))
+        if handle in self.dashboardBoxes.keys():
+            return self.dashboardBoxes[handle]
+        else:
+            return None
+
     # # MMONetworkItemCache methods
     # def getItemCache(self, name, item):
     #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
