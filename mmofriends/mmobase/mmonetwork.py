@@ -111,7 +111,7 @@ class MMONetwork(object):
         self.adminMethods = []
         self.userMethods = []
         self.backgroundTasks = []
-        self.dashboardBoxes = []
+        self.dashboardBoxes = {}
         self.cache = {}
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
@@ -411,9 +411,22 @@ class MMONetwork(object):
         self.backgroundTasks.append((method, timeout, 0))
 
     # Dashboard methods
-    def registerDashboardBox(self, method):
+    def registerDashboardBox(self, method, handle, status = {}):
         self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
-        self.dashboardBoxes.append(method)
+        self.dashboardBoxes[handle] = {}
+        self.dashboardBoxes[handle]['method'] = method
+        self.dashboardBoxes[handle]['handle'] = handle
+
+        newStatus = {}
+        newStatus['admin'] = False
+        newStatus['loggedin'] = False
+
+        if 'admin' in status:
+            newStatus['admin'] = status['admin']
+        if 'loggedin' in status:
+            newStatus['loggedin'] = status['loggedin']
+
+        self.dashboardBoxes[handle]['status'] = newStatus
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes %s" % (self.handle, method.func_name))

@@ -812,12 +812,21 @@ def partner_details(netHandle, partnerId):
 # Dashboard
 @app.route('/Dashboard')
 def dashboard():
+    # if not session.get('logged_in'):
+    #     abort(401)
+
+    loggedIn = True
     if not session.get('logged_in'):
-        abort(401)
+        loggedIn = False
+    admin = True
+    if not session.get('admin'):
+        admin = False
 
     boxes = []
     for net in MMONetworks.keys():
-        boxes += MMONetworks[net].getDashboardBoxes()
+        for box in MMONetworks[net].getDashboardBoxes():
+            if box['status']['loggedin'] == loggedIn and box['status']['admin'] == admin:
+                boxes.append(box)
 
     return render_template('dashboard.html', boxes = boxes)
 
