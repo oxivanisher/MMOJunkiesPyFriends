@@ -841,7 +841,7 @@ def dashboard():
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
-    if show:
+    if box:
         return render_template(box['template'], boxes = boxes)
     else:
         abort(401)
@@ -850,7 +850,7 @@ def dashboard_method(netHandle, methodHandle):
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
-    if show:
+    if box:
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
