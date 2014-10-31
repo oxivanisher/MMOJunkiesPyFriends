@@ -83,21 +83,28 @@
 				       $(this).children('ul.dropdown-menu').slideUp(); 
 				});
 
-				// stoef stuff
+				/* 
+					stoef stuff
+				*/
+
+				// expand / compress dashboard box
 				$('.fa-expand').click(function(){
 					$(this).toggleClass('fa-compress').parents('.col').toggleClass('col-md-8', 200).toggleClass('col-md-4', 200);
 				});
 
+				// close dashboard box
 				$(".fa-close").click(function(){
-					$(this).parents('.col').toggle();
 					hiddenBox = $(this).parents('.col');
-					$('.status').css('visibility','visible').delay(50000).fadeTo(500, 0, function(){
-						$('.status').css("visibility", "hidden");   
+					hiddenBox.toggle();
+					$('.status').css('visibility','visible').delay(10000).fadeTo(function(){
+						$('.status').css("visibility", "hidden");
+						hiddenBox.remove();
 					});
 				});
 				
+				// undo close dashboard box
 				$(".undo").click(function(){
-					$(hiddenbox).toggle();
+					hiddenBox.toggle();
 				});
 
 			});
