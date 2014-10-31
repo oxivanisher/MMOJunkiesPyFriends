@@ -840,7 +840,7 @@ def dashboard():
 # HTML API
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
 def dashboard_method(netHandle, methodHandle):
-    box = dashboard_get_box(app, netHandle, methodHandle)
+    box = dashboard_get_box(session, netHandle, methodHandle)
     if box:
         return render_template(box['template'], box = box)
     else:
@@ -849,14 +849,14 @@ def dashboard_method(netHandle, methodHandle):
 # JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
-    box = dashboard_get_box(app, netHandle, methodHandle)
+    box = dashboard_get_box(session, netHandle, methodHandle)
     log.warning("dashboard_get_box ret %s" % box)
     if box:
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
 
-def dashboard_get_box(app, netHandle, methodHandle):
+def dashboard_get_box(session, netHandle, methodHandle):
     log.warning("dashboard_get_box in %s/%s" % (netHandle, methodHandle))
     with app.test_request_context():
         loggedIn = True
