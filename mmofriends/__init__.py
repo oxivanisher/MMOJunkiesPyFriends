@@ -824,7 +824,7 @@ def dashboard():
 
     boxes = []
     for net in MMONetworks.keys():
-        for boxKey in MMONetworks[net].getDashboardBoxes().keys():
+        for boxKey in MMONetworks[net].getDashboardBoxes():
             box = MMONetworks[net].getDashboardBox(boxKey)
             if box:
                 if box['settings']['loggedin'] == loggedIn:
@@ -837,9 +837,25 @@ def dashboard():
 
     return render_template('dashboard.html', boxes = boxes)
 
+# HTML API
+@app.route('/Dashboard/<netHandle>/<methodHandle>/', methods = ['POST'])
+def dashboard_method(netHandle, methodHandle):
+    box = dashboard_get_box(netHandle, methodHandle)
+    if show:
+        return render_template(box['template'], boxes = boxes)
+    else:
+        abort(401)
+
 # JSON API
-@app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
+@app.route('/Api/Dashboard/<netHandle>/<methodHandle>/', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
+    box = dashboard_get_box(netHandle, methodHandle)
+    if show:
+        return jsonify(box['method'](request))
+    else:
+        return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
+
+def dashboard_get_box(netHandle, methodHandle):
     loggedIn = True
     if not session.get('logged_in'):
         loggedIn = False
@@ -856,9 +872,9 @@ def json_dashboard_method(netHandle, methodHandle):
             show = False
 
     if show:
-        return jsonify(box['method'](request))
+        return box
     else:
-        return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
+        return False
 
 @app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['POST'])
 def json_partner_details(netHandle, partnerId):
