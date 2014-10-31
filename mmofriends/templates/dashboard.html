@@ -10,6 +10,7 @@
 			</div>
 		</div>
 	
+		{% for box in boxes %}
 		<div class="col-md-4 col">
 			<div class="box">
 				
@@ -21,9 +22,11 @@
 				
 				<section>
 					
-					<h3>Box One</h3>
+					<h3>{{ box.title }}</h3>
 					
-					<p><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+					<p>Handle: {{ box.handle }}<br />
+					loggedIn: {{ box.loggedin }}<br />
+					admin: {{ box.admin }}<br /><br /><br /><br /><br /><br /><br /></p>
 					
 				</section>
 				<footer>
@@ -32,6 +35,7 @@
 				
 			</div>
 		</div>
+		{% endfor %}
 	</div>
 
 {% endif -%}
