@@ -855,7 +855,7 @@ def dashboard_method(netHandle, methodHandle):
             show = False
 
     if 'template' not in box['settings'].keys():
-        box['settings']['template'] = "box_" + netHandle + "_" + box['handle']
+        box['settings']['template'] =  "box_%s_%s.html" % (netHandle, box['handle'])
 
     if show:
         return render_template(box['settings']['template'], box = box)
