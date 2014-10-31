@@ -838,7 +838,7 @@ def dashboard():
     return render_template('dashboard.html', boxes = boxes)
 
 # HTML API
-@app.route('/Dashboard/<netHandle>/<methodHandle>/', methods = ['POST'])
+@app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
     if show:
@@ -847,7 +847,7 @@ def dashboard_method(netHandle, methodHandle):
         abort(401)
 
 # JSON API
-@app.route('/Api/Dashboard/<netHandle>/<methodHandle>/', methods = ['POST'])
+@app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
     if show:
@@ -856,25 +856,26 @@ def json_dashboard_method(netHandle, methodHandle):
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
 
 def dashboard_get_box(netHandle, methodHandle):
-    loggedIn = True
-    if not session.get('logged_in'):
-        loggedIn = False
-    admin = True
-    if not session.get('admin'):
-        admin = False
+    with app.test_request_context():
+        loggedIn = True
+        if not session.get('logged_in'):
+            loggedIn = False
+        admin = True
+        if not session.get('admin'):
+            admin = False
 
-    box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+        box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
-    show = False
-    if box['settings']['loggedin'] == loggedIn:
-        show = True
-        if box['settings']['admin'] and not admin:
-            show = False
+        show = False
+        if box['settings']['loggedin'] == loggedIn:
+            show = True
+            if box['settings']['admin'] and not admin:
+                show = False
 
-    if show:
-        return box
-    else:
-        return False
+        if show:
+            return box
+        else:
+            return False
 
 @app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['POST'])
 def json_partner_details(netHandle, partnerId):
