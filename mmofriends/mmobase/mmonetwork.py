@@ -429,7 +429,7 @@ class MMONetwork(object):
         self.dashboardBoxes[handle]['status'] = newStatus
 
     def getDashboardBoxes(self):
-        self.log.info("%s Get dashboard boxes %s" % (self.handle, method.func_name))
+        self.log.info("%s Get dashboard boxes" % self.handle)
         return self.dashboardBoxes
 
     # # MMONetworkItemCache methods
