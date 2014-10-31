@@ -25,8 +25,12 @@
 					<h3>{{ box.title }}</h3>
 					
 					<p>Handle: {{ box.handle }}<br />
+					NetHandle: {{ box.netHandle }}<br />
 					loggedIn: {{ box.settings.loggedin }}<br />
-					admin: {{ box.settings.admin }}<br /><br /><br /><br /><br /><br /><br /></p>
+					admin: {{ box.settings.admin }}<br />
+					JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
+					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
+					<br /><br /><br /></p>
 					
 				</section>
 				<footer>
