@@ -824,9 +824,11 @@ def dashboard():
 
     boxes = []
     for net in MMONetworks.keys():
-        for box in MMONetworks[net].getDashboardBoxes():
-            if box['settings']['loggedin'] == loggedIn and box['settings']['admin'] == admin:
-                boxes.append(box)
+        for boxKey in MMONetworks[net].getDashboardBoxes().keys():
+            box = MMONetworks[net].getDashboardBox(boxKey)
+            if box:
+                if box['settings']['loggedin'] == loggedIn and box['settings']['admin'] == admin:
+                    boxes.append(box)
 
     return render_template('dashboard.html', boxes = boxes)
 
