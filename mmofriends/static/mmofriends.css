@@ -78,3 +78,10 @@ body { padding-bottom: 22px; }
   max-width: 120px;
   max-height: 120px;
 }
+
+.box {
+  padding: 10px;
+}
+.box header {
+  text-align: right;
+}
