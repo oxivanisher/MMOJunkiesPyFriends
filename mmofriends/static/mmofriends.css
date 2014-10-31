@@ -92,6 +92,7 @@ body { padding-bottom: 22px; }
   .box header {
     background: #efefef;
     padding: 10px;
+    text-align: right;
   }
   
   .box section {
