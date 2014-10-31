@@ -854,11 +854,11 @@ def dashboard_method(netHandle, methodHandle):
         if box['settings']['admin'] and not admin:
             show = False
 
-    if 'template' not in box['setting'].keys():
-        box['setting']['template'] = "box_" + netHandle + "_" + box['handle']
+    if 'template' not in box['settings'].keys():
+        box['settings']['template'] = "box_" + netHandle + "_" + box['handle']
 
     if show:
-        return render_template(box['setting']['template'], box = box)
+        return render_template(box['settings']['template'], box = box)
     else:
         abort(401)
 
