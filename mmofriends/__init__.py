@@ -865,7 +865,7 @@ def dashboard_get_box(netHandle, methodHandle):
         admin = True
         if not session.get('admin'):
             admin = False
-        log.warning("dashboard_get_box session %s / %s" (loggedIn, admin))
+        log.warning("dashboard_get_box session %s / %s" % (loggedIn, admin))
 
         box = MMONetworks[netHandle].getDashboardBox(methodHandle)
         log.warning("dashboard_get_box %s" % box)
