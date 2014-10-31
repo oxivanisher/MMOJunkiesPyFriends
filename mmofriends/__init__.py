@@ -808,3 +808,12 @@ def partner_details(netHandle, partnerId):
     if not session.get('logged_in'):
         abort(401)
     return render_template('partner_details.html', details = MMONetworks[netHandle].getPartnerDetails(partnerId))
+
+# JSON API
+@app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['GET', 'POST'])
+
+def json_partner_details(netHandle, partnerId):
+    log.info("Trying to show JSON partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
+    if not session.get('logged_in'):
+        abort(401)
+    return flask.jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
