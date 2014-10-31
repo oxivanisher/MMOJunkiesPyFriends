@@ -417,16 +417,19 @@ class MMONetwork(object):
         self.dashboardBoxes[handle]['method'] = method
         self.dashboardBoxes[handle]['handle'] = handle
 
-        newStatus = {}
-        newStatus['admin'] = False
-        newStatus['loggedin'] = False
+        newSettings = {}
+        newSettings['admin'] = False
+        newSettings['loggedin'] = False
+        newSettings['title'] = "Title %s" % handle
 
         if 'admin' in settings:
-            newStatus['admin'] = settings['admin']
+            newSettings['admin'] = settings['admin']
         if 'loggedin' in settings:
-            newStatus['loggedin'] = settings['loggedin']
+            newSettings['loggedin'] = settings['loggedin']
+        if 'title' in settings:
+            newSettings['title'] = settings['title']
 
-        self.dashboardBoxes[handle]['settings'] = newStatus
+        self.dashboardBoxes[handle]['settings'] = newSettings
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes" % self.handle)
