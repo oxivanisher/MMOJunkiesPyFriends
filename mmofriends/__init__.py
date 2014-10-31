@@ -18,7 +18,7 @@ log = getLogger(level=logging.INFO)
 
 # flask imports
 try:
-    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app
+    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify
 except ImportError:
     log.error("Please install flask")
     sys.exit(2)
@@ -816,4 +816,4 @@ def json_partner_details(netHandle, partnerId):
     log.info("Trying to show JSON partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
     if not session.get('logged_in'):
         abort(401)
-    return flask.jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
+    return jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
