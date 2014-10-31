@@ -1,17 +1,38 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-<h2>About</h2>
-What is this all about. But please <a href="{{ url_for('profile_register') }}">register</a>.
-<h2>Libs used</h2>
-<ul>
-<li><a href="http://getbootstrap.com/" target="_blank">http://getbootstrap.com/</a></li>
-<li><a href="http://glyphicons.com/" target="_blank">http://glyphicons.com/</a></li>
-</ul>
-{%- if config.TWITTERURL and config.TWITTERWIDGETID %}
-<div class="twitter_news">
-<a class="twitter-timeline" href="{{ config.TWITTERURL }}" data-widget-id="{{ config.TWITTERWIDGETID }}">&nbsp;</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</div>
+
+	<div class="row">
+	
+		<div class="col-md-12 status">
+			<div class="box">
+				<a href"javascript:void(0);" class="undo">Undo last changes.</a>
+			</div>
+		</div>
+	
+		<div class="col-md-4 col">
+			<div class="box">
+				
+				<header>
+					<a href="javascript:void(0);" class="fa fa-edit"></a>
+					<a href="javascript:void(0);" class="fa fa-expand"></a>
+					<a href="javascript:void(0);" class="fa fa-close"></a>
+				</header>
+				
+				<section>
+					
+					<h3>Box One</h3>
+					
+					<p><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+					
+				</section>
+				<footer>
+														
+				</footer>	
+				
+			</div>
+		</div>
+	</div>
+
 {% endif -%}
 {% endblock %}
