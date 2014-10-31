@@ -44,6 +44,9 @@ class ValveNetwork(MMONetwork):
         self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
+        # dashboard boxes
+        self.registerDashboardBox(self.dashboard_online_users, 'Online Users', {})
+
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
         if not logger:
@@ -434,3 +437,8 @@ class ValveNetwork(MMONetwork):
     def findPartners(self):
         self.log.debug("Searching for new partners to play with")
         return self.getPartners(unknownOnly=True)
+
+    # Dashboard
+    def dashboard_online_users(self, request):
+        self.log.debug("Dashboard online users")
+        return {'message': 'This is a test box'}

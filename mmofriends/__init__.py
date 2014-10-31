@@ -825,7 +825,7 @@ def dashboard():
     boxes = []
     for net in MMONetworks.keys():
         for box in MMONetworks[net].getDashboardBoxes():
-            if box['status']['loggedin'] == loggedIn and box['status']['admin'] == admin:
+            if box['settings']['loggedin'] == loggedIn and box['settings']['admin'] == admin:
                 boxes.append(box)
 
     return render_template('dashboard.html', boxes = boxes)
@@ -842,7 +842,7 @@ def json_dashboard_method(netHandle, methodHandle):
 
     box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
-    if box['status']['loggedin'] == loggedIn and box['status']['admin'] == admin:
+    if box['settings']['loggedin'] == loggedIn and box['settings']['admin'] == admin:
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})

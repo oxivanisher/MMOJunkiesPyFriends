@@ -411,7 +411,7 @@ class MMONetwork(object):
         self.backgroundTasks.append((method, timeout, 0))
 
     # Dashboard methods
-    def registerDashboardBox(self, method, handle, status = {}):
+    def registerDashboardBox(self, method, handle, settings = {}):
         self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
         self.dashboardBoxes[handle] = {}
         self.dashboardBoxes[handle]['method'] = method
@@ -421,12 +421,12 @@ class MMONetwork(object):
         newStatus['admin'] = False
         newStatus['loggedin'] = False
 
-        if 'admin' in status:
-            newStatus['admin'] = status['admin']
-        if 'loggedin' in status:
-            newStatus['loggedin'] = status['loggedin']
+        if 'admin' in settings:
+            newStatus['admin'] = settings['admin']
+        if 'loggedin' in settings:
+            newStatus['loggedin'] = settings['loggedin']
 
-        self.dashboardBoxes[handle]['status'] = newStatus
+        self.dashboardBoxes[handle]['settings'] = newStatus
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes" % self.handle)
