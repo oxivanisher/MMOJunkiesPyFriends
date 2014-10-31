@@ -111,6 +111,7 @@ class MMONetwork(object):
         self.adminMethods = []
         self.userMethods = []
         self.backgroundTasks = []
+        self.dashboardBoxes = []
         self.cache = {}
 
         self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
@@ -408,6 +409,15 @@ class MMONetwork(object):
     def registerWorker(self, method, timeout):
         self.log.info("%s Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))
+
+    # Dashboard methods
+    def registerDashboardBox(self, method):
+        self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
+        self.dashboardBoxes.append(method)
+
+    def getDashboardBoxes(self):
+        self.log.info("%s Get dashboard boxes %s" % (self.handle, method.func_name))
+        return self.dashboardBoxes
 
     # # MMONetworkItemCache methods
     # def getItemCache(self, name, item):
