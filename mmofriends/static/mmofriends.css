@@ -79,9 +79,36 @@ body { padding-bottom: 22px; }
   max-height: 120px;
 }
 
+.col {
+  border-bottom: 20px solid transparent;
+}
+
+
+/* stoef css */
 .box {
-  padding: 10px;
-}
-.box header {
-  text-align: right;
-}
+  border: 1px solid black;
+  padding: 0;
+  }
+  .box header {
+    background: #efefef;
+    padding: 10px;
+  }
+  
+  .box section {
+    background: white;
+    padding: 0 10px 10px 10px;
+  }
+  
+  .box footer {
+    background: #87CE36;
+    padding: 5px;
+  }
+
+
+  .status { border-bottom: 20px solid transparent; visibility: hidden; }
+  .status .box {
+    border: 1px solid black;
+    background: #87CE36;
+    padding: 20px;
+    text-align: center;
+  }
