@@ -840,8 +840,21 @@ def dashboard():
 # HTML API
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
 def dashboard_method(netHandle, methodHandle):
-    box = dashboard_get_box(session, netHandle, methodHandle)
-    if box:
+    loggedIn = True
+    if not session.get('logged_in'):
+        loggedIn = False
+    admin = True
+    if not session.get('admin'):
+        admin = False
+    box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+
+    show = False
+    if box['settings']['loggedin'] == loggedIn:
+        show = True
+        if box['settings']['admin'] and not admin:
+            show = False
+
+    if show:
         return render_template(box['template'], box = box)
     else:
         abort(401)
@@ -849,38 +862,24 @@ def dashboard_method(netHandle, methodHandle):
 # JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
-    box = dashboard_get_box(session, netHandle, methodHandle)
-    log.warning("dashboard_get_box ret %s" % box)
-    if box:
+    loggedIn = True
+    if not session.get('logged_in'):
+        loggedIn = False
+    admin = True
+    if not session.get('admin'):
+        admin = False
+    box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+
+    show = False
+    if box['settings']['loggedin'] == loggedIn:
+        show = True
+        if box['settings']['admin'] and not admin:
+            show = False
+
+    if show:
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
-
-def dashboard_get_box(session, netHandle, methodHandle):
-    log.warning("dashboard_get_box in %s/%s" % (netHandle, methodHandle))
-    with app.test_request_context():
-        loggedIn = True
-        if not session.get('logged_in'):
-            loggedIn = False
-        admin = True
-        if not session.get('admin'):
-            admin = False
-        log.warning("dashboard_get_box session %s / %s" % (loggedIn, admin))
-
-        box = MMONetworks[netHandle].getDashboardBox(methodHandle)
-        log.warning("dashboard_get_box %s" % box)
-
-        show = False
-        if box['settings']['loggedin'] == loggedIn:
-            show = True
-            if box['settings']['admin'] and not admin:
-                show = False
-
-        log.warning("show %s" % show)
-        if show:
-            return box
-        else:
-            return False
 
 @app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['POST'])
 def json_partner_details(netHandle, partnerId):
