@@ -838,11 +838,11 @@ def dashboard():
     return render_template('dashboard.html', boxes = boxes)
 
 # HTML API
-@app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
+@app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
 def dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
     if box:
-        return render_template(box['template'], boxes = boxes)
+        return render_template(box['template'], box = box)
     else:
         abort(401)
 
@@ -850,12 +850,14 @@ def dashboard_method(netHandle, methodHandle):
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
 def json_dashboard_method(netHandle, methodHandle):
     box = dashboard_get_box(netHandle, methodHandle)
+    log.warning("dashboard_get_box ret %s" % box)
     if box:
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})
 
 def dashboard_get_box(netHandle, methodHandle):
+    log.warning("dashboard_get_box in %s/%s" % (netHandle, methodHandle))
     with app.test_request_context():
         loggedIn = True
         if not session.get('logged_in'):
@@ -865,6 +867,7 @@ def dashboard_get_box(netHandle, methodHandle):
             admin = False
 
         box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+        log.warning("dashboard_get_box %s" % box)
 
         show = False
         if box['settings']['loggedin'] == loggedIn:
@@ -872,6 +875,7 @@ def dashboard_get_box(netHandle, methodHandle):
             if box['settings']['admin'] and not admin:
                 show = False
 
+        log.warning("show %s" % show)
         if show:
             return box
         else:
