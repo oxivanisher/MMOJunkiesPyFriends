@@ -417,11 +417,14 @@ class MMONetwork(object):
         self.dashboardBoxes[handle]['method'] = method
         self.dashboardBoxes[handle]['handle'] = handle
 
-        newSettings = settings
+        newSettings = {}
         newSettings['admin'] = False
         newSettings['loggedin'] = False
         newSettings['title'] = "Title %s" % handle
+        newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
 
+        if 'template' in settings:
+            newSettings['template'] = settings['template']
         if 'admin' in settings:
             newSettings['admin'] = settings['admin']
         if 'loggedin' in settings:

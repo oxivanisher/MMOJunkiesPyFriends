@@ -854,9 +854,6 @@ def dashboard_method_html(netHandle, methodHandle):
         if box['settings']['admin'] and not admin:
             show = False
 
-    if 'template' not in box['settings'].keys():
-        box['settings']['template'] =  "box_%s_%s.html" % (netHandle, box['handle'])
-
     if show:
         return render_template(box['settings']['template'], box = box)
     else:
