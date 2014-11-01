@@ -22,13 +22,13 @@
 				
 				<section>
 					
-					<h3>{{ box.title }}</h3>
+					<h3>{{ box.settings.title }}</h3>
 					
 					<p>Handle: {{ box.handle }}<br />
 					NetHandle: {{ box.netHandle }}<br />
+					template: {{ box.settings.template }}<br />
 					loggedIn: {{ box.settings.loggedin }}<br />
 					admin: {{ box.settings.admin }}<br />
-					template: {{ box.settings.template }}<br />
 					JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
 					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
 					<br /><br /><br /></p>
