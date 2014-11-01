@@ -849,10 +849,14 @@ def dashboard_method_html(netHandle, methodHandle):
     box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
     show = False
-    if box['settings']['loggedin'] == loggedIn:
-        show = True
-        if box['settings']['admin'] and not admin:
-            show = False
+    try:
+        if box['settings']['loggedin'] == loggedIn:
+            show = True
+            if box['settings']['admin'] and not admin:
+                show = False
+    except KeyError as e:
+        log.warning("Unable to load box %s beacuase %s" % (box, e))
+        pass
 
     if show:
         return render_template(box['settings']['template'], box = box)
@@ -871,10 +875,14 @@ def dashboard_method_json(netHandle, methodHandle):
     box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
     show = False
-    if box['settings']['loggedin'] == loggedIn:
-        show = True
-        if box['settings']['admin'] and not admin:
-            show = False
+    try:
+        if box['settings']['loggedin'] == loggedIn:
+            show = True
+            if box['settings']['admin'] and not admin:
+                show = False
+    except KeyError:
+        log.warning("Unable to load box %s beacuase %s" % (box, e))
+        pass
 
     if show:
         return jsonify(box['method'](request))
