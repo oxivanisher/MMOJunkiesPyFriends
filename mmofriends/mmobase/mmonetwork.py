@@ -417,7 +417,7 @@ class MMONetwork(object):
         self.dashboardBoxes[handle]['method'] = method
         self.dashboardBoxes[handle]['handle'] = handle
 
-        newSettings = {}
+        newSettings = settings
         newSettings['admin'] = False
         newSettings['loggedin'] = False
         newSettings['title'] = "Title %s" % handle
