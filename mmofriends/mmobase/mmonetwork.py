@@ -430,7 +430,7 @@ class MMONetwork(object):
             newSettings['title'] = settings['title']
 
         self.dashboardBoxes[handle]['settings'] = newSettings
-        self.dashboardBoxes[handle]['settings']['net'] = self.handle
+        self.dashboardBoxes[handle]['netHandle'] = self.handle
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes" % self.handle)

@@ -839,7 +839,7 @@ def dashboard():
 
 # HTML API
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
-def dashboard_method(netHandle, methodHandle):
+def dashboard_method_html(netHandle, methodHandle):
     loggedIn = True
     if not session.get('logged_in'):
         loggedIn = False
@@ -864,7 +864,7 @@ def dashboard_method(netHandle, methodHandle):
 
 # JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
-def json_dashboard_method(netHandle, methodHandle):
+def dashboard_method_json(netHandle, methodHandle):
     loggedIn = True
     if not session.get('logged_in'):
         loggedIn = False
