@@ -148,7 +148,7 @@ def send_email(app, msgto, msgsubject, msgtext):
                 position: relative; 
                 margin-left: auto; 
                 margin-right: auto; 
-                width: 600px;
+                width: 601px;
                 height: 500px; 
                 overflow: hidden;
                 z-index:0;
@@ -157,19 +157,19 @@ def send_email(app, msgto, msgsubject, msgtext):
                 left: 0px; 
                 top: 0px; 
                 position: absolute; 
-                width: 600px;
-                height: 150px;
+                width: 601px;
+                height: 181px;
                 z-index:2;
             } 
             #content {
-                top: 160px;
+                top: 185px;
                 position: absolute;
             }
         </style>
     </head>
     <body>
         <div id="background">
-            <div id="logo"><img src="cid:email_header@mmofriends.local"></div>
+            <div id="logo"><img src="cid:logo_banner1_mmo_color_qr@mmofriends.local"></div>
             <div id="content">%s</div>
         </div>
     </body>
@@ -184,7 +184,7 @@ def send_email(app, msgto, msgsubject, msgtext):
         msgAlternative.attach(part1)
         msgAlternative.attach(part2)
 
-        load_file(app, msgRoot, 'email_header.png')
+        load_file(app, msgRoot, 'logo_banner1_mmo_color_qr.png')
 
         s = smtplib.SMTP(app.config['EMAILSERVER'])
         if len(app.config['EMAILLOGIN']) and len(app.config['EMAILPASSWORD']):
