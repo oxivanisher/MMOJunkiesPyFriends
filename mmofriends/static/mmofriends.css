@@ -23,6 +23,15 @@ body { padding-bottom: 22px; }
   margin-right: 2px;
 }
 
+.home_icon {
+  /*display: block;*/
+  max-width:20px;
+  max-height:20px;
+  width: auto;
+  height: auto;
+  margin-right: 2px;
+}
+
 .link_network_list_icon {
   /*display: block;*/
   max-width:30px;

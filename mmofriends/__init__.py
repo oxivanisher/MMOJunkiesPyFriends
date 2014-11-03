@@ -255,9 +255,7 @@ def before_request():
 # main routes
 @app.route('/')
 def index():
-    if session.get('logged_in'):
-        return redirect(url_for('dashboard'))
-    return redirect(url_for('about'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/About')
 def about():
