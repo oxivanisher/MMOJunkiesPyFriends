@@ -589,8 +589,8 @@ class TS3Network(MMONetwork):
 
             try:
                 fileinfo['port'], fileinfo['size'], fileinfo['ftkey']
-            except KeyError:
-                self.log.warning("[%s] Unable to fetch %s (port: %s, size: %s, ftkey: %s)" % (self.handle, name, fileinfo['port'], fileinfo['size'], fileinfo['ftkey']))
+            except KeyError as e:
+                self.log.warning("[%s] Unable to fetch %s (%s | %s)" % (self.handle, name, e, response.data))
                 return False
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
