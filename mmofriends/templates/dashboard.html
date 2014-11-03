@@ -12,7 +12,7 @@
 	
 		{% for box in boxes %}
 		<div class="col-md-4 col">
-			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}-">
+			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}">
 				
 				<header>
 					<a href="javascript:void(0);" class="fa fa-edit"></a>
@@ -20,7 +20,7 @@
 					<a href="javascript:void(0);" class="fa fa-close"></a>
 				</header>
 				
-				<section>
+				<section id="{{ box.netHandle }}-{{ box.handle }}-content">
 					
 					<h3>{{ box.settings.title }}</h3>
 					
@@ -42,5 +42,11 @@
 		</div>
 		{% endfor %}
 	</div>
-
+	<script>
+		$(function() {
+		{% for box in boxes %}
+			$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+		{% endfor %}
+		});
+	</script>
 {% endblock %}

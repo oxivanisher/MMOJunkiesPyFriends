@@ -724,14 +724,14 @@ def profile_login():
                     log.debug("Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
                     MMONetworks[net].loadNetworkToSession()
 
-                return redirect(url_for('index'))                
             else:
                 log.info("Invalid password for %s" % myUser.nick)
                 flash('Invalid login', 'error')
         else:
             flash('Invalid login', 'error')
 
-    return render_template('profile_login.html')
+    return redirect(url_for('index'))
+    # return render_template('profile_login.html')
 
 @app.route('/Profile/Logout')
 @app.route('/Logout')
