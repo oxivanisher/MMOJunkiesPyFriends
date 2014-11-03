@@ -814,7 +814,9 @@ def partner_details(netHandle, partnerId):
     return render_template('partner_details.html', details = MMONetworks[netHandle].getPartnerDetails(partnerId))
 
 # Dashboard boxes
-SystemBoxes["login"] = createDashboardBox(method, "system", "login", {'loggedin': True, 'template': 'box_Valve_online1.html'})
+def tmpFunc():
+    return True
+SystemBoxes["login"] = createDashboardBox(tmpFunc, "system", "login", {'loggedin': True, 'template': 'box_Valve_online1.html'})
 
 @app.route('/Dashboard')
 def dashboard():
