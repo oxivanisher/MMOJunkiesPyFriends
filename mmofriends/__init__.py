@@ -81,6 +81,7 @@ if not len(app.config['APPSECRET']):
 else:
     app.secret_key = app.config['APPSECRET']
 MMONetworks = {}
+SystemBoxes = {}
 
 # jinja2 methods
 app.jinja_env.globals.update(timestampToString=timestampToString)
@@ -812,31 +813,38 @@ def partner_details(netHandle, partnerId):
         abort(401)
     return render_template('partner_details.html', details = MMONetworks[netHandle].getPartnerDetails(partnerId))
 
-# Dashboard
+# Dashboard boxes
+SystemBoxes["login"] = createDashboardBox(method, "system", "login", {'loggedin': True, 'template': 'box_Valve_online1.html'})
+
 @app.route('/Dashboard')
 def dashboard():
     # if not session.get('logged_in'):
     #     abort(401)
 
-    loggedIn = True
-    if not session.get('logged_in'):
-        loggedIn = False
-    admin = True
-    if not session.get('admin'):
-        admin = False
+    def checkBox(box):
+        show = False
+        loggedIn = True
+        if not session.get('logged_in'):
+            loggedIn = False
+        admin = True
+        if not session.get('admin'):
+            admin = False
+        if not box:
+            return False
+
+        if box['settings']['loggedin'] == loggedIn:
+            show = True
+            if box['settings']['admin'] and not admin:
+                show = False
+
+        return show
 
     boxes = []
     for net in MMONetworks.keys():
         for boxKey in MMONetworks[net].getDashboardBoxes():
             box = MMONetworks[net].getDashboardBox(boxKey)
-            if box:
-                if box['settings']['loggedin'] == loggedIn:
-                    show = True
-                    if box['settings']['admin'] and not admin:
-                        show = False
-
-                    if show:
-                        boxes.append(box)
+            if checkBox(box):
+                boxes.append(box)
 
     return render_template('dashboard.html', boxes = boxes)
 
