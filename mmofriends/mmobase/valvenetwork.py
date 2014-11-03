@@ -325,8 +325,8 @@ class ValveNetwork(MMONetwork):
 
                 linkId = None
                 for link in allLinks:
-                    if friend == link['network_data']:
-                        linkId = friend
+                    if friendSteamId == link['network_data']:
+                        linkId = link['user_id']
 
                 self.getPartnerDetails(friendSteamId)
                 self.getCache('users')
