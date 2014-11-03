@@ -65,9 +65,14 @@ class ValveNetwork(MMONetwork):
             steamData = json.load(urllib2.urlopen(url))
             logger.debug("Recieved %s Bytes" % (len(str(steamData))))
         except urllib2.URLError as e:
-            if e.code == 401:
-                logger.info("Unauthorized")
-                return {}
+            if hasattr(e, 'code'): 
+                if e.code == 401:
+                    logger.info("[%s] Unauthorized" % (self.handle))
+                else:
+                    logger.warning("[%s] Unhandled code: %s" % (self.handle, e))
+            else:
+                logger.warning("[%s] Unhandled error: %s" % (self.handle, e))
+            return {}
         except Exception as e:
             logger.warning("[%s] Unable to fetch %s because: %s" % (self.handle, url, e))
 
