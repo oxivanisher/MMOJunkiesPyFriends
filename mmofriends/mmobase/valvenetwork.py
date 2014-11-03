@@ -65,9 +65,14 @@ class ValveNetwork(MMONetwork):
             steamData = json.load(urllib2.urlopen(url))
             logger.debug("Recieved %s Bytes" % (len(str(steamData))))
         except urllib2.URLError as e:
-            if e.code == 401:
-                logger.info("Unauthorized")
-                return {}
+            if hasattr(e, 'code'): 
+                if e.code == 401:
+                    logger.info("[%s] Unauthorized" % (self.handle))
+                else:
+                    logger.warning("[%s] Unhandled code: %s" % (self.handle, e))
+            else:
+                logger.warning("[%s] Unhandled error: %s" % (self.handle, e))
+            return {}
         except Exception as e:
             logger.warning("[%s] Unable to fetch %s because: %s" % (self.handle, url, e))
 
@@ -175,6 +180,9 @@ class ValveNetwork(MMONetwork):
                         if 'friends' not in steamFriends:
                             steamFriends['friends'] = []
                         self.cache['users'][steamId]['friends'] = steamFriends['friends']
+                        logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
+                    else:
+                        logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
 
                 if 'ownedGames' not in self.cache['users'][steamId]:
                     logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
@@ -322,8 +330,8 @@ class ValveNetwork(MMONetwork):
 
                 linkId = None
                 for link in allLinks:
-                    if friend == link['network_data']:
-                        linkId = friend
+                    if friendSteamId == link['network_data']:
+                        linkId = link['user_id']
 
                 self.getPartnerDetails(friendSteamId)
                 self.getCache('users')

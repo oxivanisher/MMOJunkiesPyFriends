@@ -30,7 +30,7 @@ class TS3Network(MMONetwork):
 
         self.server = None
         self.connected = False
-        self.clientftfid = random.randint(1, 999999)
+        self.clientftfid = 0
 
         # admin methods
         self.adminMethods.append((self.cacheAvailableClients, 'Recache available clients'))
@@ -206,7 +206,8 @@ class TS3Network(MMONetwork):
                 if 'client_flag_avatar' in self.cache['clientDatabase'][client]:
                     if self.cache['clientDatabase'][client]['client_flag_avatar']:
                         logger.debug("[%s] Caching avatar for client: %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
-                        self.cacheFlagAvatar(self.cache['clientDatabase'][client]['client_flag_avatar'])
+                        avatar = "/avatar_%s" % self.cache['clientDatabase'][client]['client_base64HashClientUID']
+                        self.cacheFile(avatar)
                         count += 1
 
             return "%s files cached" % count
@@ -350,8 +351,6 @@ class TS3Network(MMONetwork):
                     self.setPartnerAvatar(moreInfo, avatar)
 
             self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
-            self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
-            self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][cldbid]['client_away_message'])
             self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
             self.setPartnerDetail(moreInfo, "Last Connection", timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))
             self.setPartnerDetail(moreInfo, "Total Connections", self.cache['clientDatabase'][cldbid]['client_totalconnections'])
@@ -367,7 +366,6 @@ class TS3Network(MMONetwork):
                 userGroups.append(group['name'])
                 userGroupName = group['name']
             self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
-            self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']]['name'])
 
             if self.session.get('admin'):
                 self.setPartnerDetail(moreInfo, "Last IP", self.cache['clientDatabase'][cldbid]['client_lastip'])
@@ -376,12 +374,16 @@ class TS3Network(MMONetwork):
                 self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
                 self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
 
-            self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][cldbid]['client_output_muted'])
-            self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][cldbid]['client_outputonly_muted'])
-            self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][cldbid]['client_input_muted'])
-            self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][cldbid]['client_is_channel_commander'])
-            self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
-            self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
+            if cldbid in self.cache['clientInfoDatabase'].keys():
+                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
+                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][cldbid]['client_away_message'])
+                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']]['name'])
+                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][cldbid]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][cldbid]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][cldbid]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][cldbid]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
 
         except KeyError as e:
             self.log.info("Missing client information to show in details: %s" % e)
@@ -589,8 +591,8 @@ class TS3Network(MMONetwork):
 
             try:
                 fileinfo['port'], fileinfo['size'], fileinfo['ftkey']
-            except KeyError:
-                self.log.warning("[%s] No response recieved for filename %s" % (self.handle, name))
+            except KeyError as e:
+                self.log.warning("[%s] Unable to fetch %s (%s | %s)" % (self.handle, name, e, response.data))
                 return False
 
             self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
