@@ -113,15 +113,17 @@ def get_short_duration(age):
         return '%sy' % (int(age / 31449600))
 
 # emailer functions
-def load_file(app, msgRoot, filename):
+def load_image_file_to_email(app, msgRoot, filename):
     fp = open(os.path.join(app.root_path, 'static/img/', filename), 'rb')
     msgImage = MIMEImage(fp.read())
+    newImageName = os.path.splitext(filename)[0]
     fp.close()
     msgImage.add_header('Content-Disposition', 'inline', filename=filename)
-    msgImage.add_header('Content-ID', '<' + os.path.splitext(filename)[0] + '@mmofriends.local>')
+    msgImage.add_header('Content-ID', '<' + newImageName + '@mmofriends.local>')
     msgRoot.attach(msgImage)
+    return newImageName
 
-def send_email(app, msgto, msgsubject, msgtext):
+def send_email(app, msgto, msgsubject, msgtext, image):
     try:
         msgRoot = MIMEMultipart('related', type="text/html")
         msgRoot['Subject'] = msgsubject
@@ -139,8 +141,8 @@ def send_email(app, msgto, msgsubject, msgtext):
         <title>%s</title>
         <style type="text/css" media="screen">
             body {
-                margin: 0;
-                padding: 0;
+                margin: 0px;
+                padding: 0px;
             }
             #background { 
                 left: 0px; 
@@ -149,7 +151,7 @@ def send_email(app, msgto, msgsubject, msgtext):
                 margin-left: auto; 
                 margin-right: auto; 
                 width: 601px;
-                height: 500px; 
+                height: 500px;
                 overflow: hidden;
                 z-index:0;
             }
@@ -164,16 +166,19 @@ def send_email(app, msgto, msgsubject, msgtext):
             #content {
                 top: 185px;
                 position: absolute;
+                font-size: x-large;
             }
         </style>
     </head>
     <body>
         <div id="background">
-            <div id="logo"><img src="cid:logo_banner1_mmo_color_qr@mmofriends.local"></div>
+            <div id="logo"><img src="cid:%s@mmofriends.local" alt="Header Image"></div>
             <div id="content">%s</div>
         </div>
     </body>
-    </html>""" % (msgsubject, msgtext.replace('\n', '<br />').encode('ascii', 'xmlcharrefreplace'))
+    </html>""" % (msgsubject,
+                  load_image_file_to_email(app, msgRoot, image),
+                  msgtext.replace('\n', '<br />').encode('ascii', 'xmlcharrefreplace'))
 
         newplaintext = ""
         for line in msgtext.split("\n"):
@@ -183,8 +188,6 @@ def send_email(app, msgto, msgsubject, msgtext):
         part2 = MIMEText(htmltext.replace('\n', '\r\n').encode('UTF-8'), 'html', 'UTF-8')
         msgAlternative.attach(part1)
         msgAlternative.attach(part2)
-
-        load_file(app, msgRoot, 'logo_banner1_mmo_color_qr.png')
 
         s = smtplib.SMTP(app.config['EMAILSERVER'])
         if len(app.config['EMAILLOGIN']) and len(app.config['EMAILPASSWORD']):
