@@ -411,29 +411,35 @@ class MMONetwork(object):
         self.backgroundTasks.append((method, timeout, 0))
 
     # Dashboard methods
+    # def registerDashboardBox(self, method, handle, settings = {}):
+    #     self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
+    #     self.dashboardBoxes[handle] = {}
+    #     self.dashboardBoxes[handle]['method'] = method
+    #     self.dashboardBoxes[handle]['handle'] = handle
+
+    #     newSettings = {}
+    #     newSettings['admin'] = False
+    #     newSettings['loggedin'] = False
+    #     newSettings['development'] = False
+    #     newSettings['title'] = "Title %s" % handle
+    #     newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
+
+    #     if 'template' in settings:
+    #         newSettings['template'] = settings['template']
+    #     if 'admin' in settings:
+    #         newSettings['admin'] = settings['admin']
+    #     if 'loggedin' in settings:
+    #         newSettings['loggedin'] = settings['loggedin']
+    #     if 'development' in settings:
+    #         newSettings['development'] = settings['development']
+    #     if 'title' in settings:
+    #         newSettings['title'] = settings['title']
+
+    #     self.dashboardBoxes[handle]['settings'] = newSettings
+    #     self.dashboardBoxes[handle]['netHandle'] = self.handle
+
     def registerDashboardBox(self, method, handle, settings = {}):
-        self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
-        self.dashboardBoxes[handle] = {}
-        self.dashboardBoxes[handle]['method'] = method
-        self.dashboardBoxes[handle]['handle'] = handle
-
-        newSettings = {}
-        newSettings['admin'] = False
-        newSettings['loggedin'] = False
-        newSettings['title'] = "Title %s" % handle
-        newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
-
-        if 'template' in settings:
-            newSettings['template'] = settings['template']
-        if 'admin' in settings:
-            newSettings['admin'] = settings['admin']
-        if 'loggedin' in settings:
-            newSettings['loggedin'] = settings['loggedin']
-        if 'title' in settings:
-            newSettings['title'] = settings['title']
-
-        self.dashboardBoxes[handle]['settings'] = newSettings
-        self.dashboardBoxes[handle]['netHandle'] = self.handle
+        self.dashboardBoxes += registerDashboardBox(method, handle, settings)
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes" % self.handle)

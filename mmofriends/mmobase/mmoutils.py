@@ -207,3 +207,34 @@ def send_email(app, msgto, msgsubject, msgtext, image):
     except Exception as e:
         print 'Email ERROR: ' + str(e) + ' on line ' + str(sys.exc_traceback.tb_lineno)
         return False
+
+# Dashboard methods
+def registerDashboardBox(method, handle, settings = {}):
+    logging.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
+    box = {}
+    box[handle] = {}
+    box[handle]['method'] = method
+    box[handle]['handle'] = handle
+
+    newSettings = {}
+    newSettings['admin'] = False
+    newSettings['loggedin'] = False
+    newSettings['development'] = False
+    newSettings['title'] = "Title %s" % handle
+    newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
+
+    if 'template' in settings:
+        newSettings['template'] = settings['template']
+    if 'admin' in settings:
+        newSettings['admin'] = settings['admin']
+    if 'loggedin' in settings:
+        newSettings['loggedin'] = settings['loggedin']
+    if 'development' in settings:
+        newSettings['development'] = settings['development']
+    if 'title' in settings:
+        newSettings['title'] = settings['title']
+
+    box[handle]['settings'] = newSettings
+    box[handle]['netHandle'] = self.handle
+
+    return box
