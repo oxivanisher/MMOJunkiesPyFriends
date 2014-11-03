@@ -863,7 +863,7 @@ def dashboard_method_html(netHandle, methodHandle):
     if not session.get('admin'):
         admin = False
     if netHandle == "System":
-        box = SystemBoxes[handle]
+        box = SystemBoxes[methodHandle]
     else:
         box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
