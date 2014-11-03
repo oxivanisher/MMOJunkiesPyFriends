@@ -741,7 +741,7 @@ def profile_logout():
     session.pop('admin', None)
     session.pop('logindate', None)
     session.clear()
-    return redirect(url_for('profile_login'))
+    return redirect(url_for('index'))
 
 # partner routes
 @app.route('/Partner/List')
