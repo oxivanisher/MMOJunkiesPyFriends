@@ -842,6 +842,9 @@ def dashboard():
         return show
 
     boxes = []
+    for box in SystemBoxes:
+        if checkBox(box):
+            boxes.append(box)
     for net in MMONetworks.keys():
         for boxKey in MMONetworks[net].getDashboardBoxes():
             box = MMONetworks[net].getDashboardBox(boxKey)
