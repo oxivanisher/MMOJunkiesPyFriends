@@ -439,7 +439,7 @@ class MMONetwork(object):
     #     self.dashboardBoxes[handle]['netHandle'] = self.handle
 
     def registerDashboardBox(self, method, handle, settings = {}):
-        self.dashboardBoxes += registerDashboardBox(self.handle, method, handle, settings)
+        self.dashboardBoxes += createDashboardBox(method, self.handle, handle, settings)
 
     def getDashboardBoxes(self):
         self.log.info("%s Get dashboard boxes" % self.handle)

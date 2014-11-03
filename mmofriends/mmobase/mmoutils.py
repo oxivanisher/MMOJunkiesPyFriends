@@ -209,8 +209,8 @@ def send_email(app, msgto, msgsubject, msgtext, image):
         return False
 
 # Dashboard methods
-def registerDashboardBox(method, handle, settings = {}):
-    logging.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
+def createDashboardBox(method, netHandle, handle, settings = {}):
+    logging.info("%s Registered dashboard box %s" % (handle, method.func_name))
     box = {}
     box[handle] = {}
     box[handle]['method'] = method
@@ -221,7 +221,7 @@ def registerDashboardBox(method, handle, settings = {}):
     newSettings['loggedin'] = False
     newSettings['development'] = False
     newSettings['title'] = "Title %s" % handle
-    newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
+    newSettings['template'] = "box_%s_%s.html" % (netHandle, handle)
 
     if 'template' in settings:
         newSettings['template'] = settings['template']
@@ -235,6 +235,6 @@ def registerDashboardBox(method, handle, settings = {}):
         newSettings['title'] = settings['title']
 
     box[handle]['settings'] = newSettings
-    box[handle]['netHandle'] = self.handle
+    box[handle]['netHandle'] = netHandle
 
     return box
