@@ -21,9 +21,11 @@
 				</header>
 				
 				<section id="{{ box.netHandle }}-{{ box.handle }}-content">
-					
+
 					<h3>{{ box.settings.title }}</h3>
-					
+
+					<p>{% include box.settings.template %}</p>					
+					<!--
 					<p>Handle: {{ box.handle }}<br />
 					NetHandle: {{ box.netHandle }}<br />
 					template: {{ box.settings.template }}<br />
@@ -32,6 +34,7 @@
 					JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
 					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
 					<br /><br /><br /></p>
+					-->
 					
 				</section>
 				<footer>
@@ -42,11 +45,13 @@
 		</div>
 		{% endfor %}
 	</div>
-	<script>
-		$(function() {
-		{% for box in boxes %}
-			$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
-		{% endfor %}
-		});
-	</script>
+	<!--
+	// <script>
+	// 	$(function() {
+	// 	{% for box in boxes %}
+	// 		$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+	// 	{% endfor %}
+	// 	});
+	// </script>
+	-->
 {% endblock %}

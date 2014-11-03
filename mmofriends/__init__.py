@@ -814,7 +814,7 @@ def partner_details(netHandle, partnerId):
 # Dashboard boxes
 def tmpFunc():
     return True
-SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False})
+SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 
 @app.route('/Dashboard')
 def dashboard():
