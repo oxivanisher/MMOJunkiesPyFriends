@@ -165,8 +165,16 @@ def send_email(app, msgto, msgsubject, msgtext, image):
             } 
             #content {
                 top: 185px;
+                width: 601px;
                 position: absolute;
                 font-size: x-large;
+            }
+            #footer {
+                top: 480px;
+                width: 601px;
+                font-size: small;
+                position: absolute;
+                text-align: center;
             }
         </style>
     </head>
@@ -174,6 +182,7 @@ def send_email(app, msgto, msgsubject, msgtext, image):
         <div id="background">
             <div id="logo"><img src="cid:%s@mmofriends.local" alt="Header Image"></div>
             <div id="content">%s</div>
+            <div id="footer">MMOJunkies Friends <a href="https://github.com/oxivanisher/MMOJunkiesPyFriends">github.com/oxivanisher/MMOJunkiesPyFriends</a></div>
         </div>
     </body>
     </html>""" % (msgsubject,
