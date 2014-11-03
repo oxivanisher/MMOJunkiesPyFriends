@@ -175,6 +175,9 @@ class ValveNetwork(MMONetwork):
                         if 'friends' not in steamFriends:
                             steamFriends['friends'] = []
                         self.cache['users'][steamId]['friends'] = steamFriends['friends']
+                        logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
+                    else:
+                        logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
 
                 if 'ownedGames' not in self.cache['users'][steamId]:
                     logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
