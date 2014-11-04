@@ -122,7 +122,7 @@ class TS3Network(MMONetwork):
             self.getCache('clientInfoDatabase')
             for client in self.cache['clientDatabase'].keys():
                 if client not in self.cache['clientInfoDatabase'].keys():
-                    self.fetchUserDetatilsByCldbid(client)
+                    self.fetchUserDetatilsByCldbid(client, True)
                     count += 1
 
             return "%s client(s) updated" % count
@@ -446,13 +446,13 @@ class TS3Network(MMONetwork):
             cldbid = self.getSessionValue(self.linkIdName)
             self.saveLink(cldbid)
             self.connect()
-            self.fetchUserDetatilsByCldbid(cldbid)
+            self.fetchUserDetatilsByCldbid(cldbid, True)
             self.getCache('clientDatabase')
             for group in self.cache['clientDatabase'][cldbid]['groups']:
                 if int(group['sgid']) in self.config['guestGroups']:
                     self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], cldbid))
                     self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
-            self.fetchUserDetatilsByCldbid(cldbid)
+            self.fetchUserDetatilsByCldbid(cldbid, True)
 
             return True
         else:
@@ -532,7 +532,7 @@ class TS3Network(MMONetwork):
             self.log.warning("[%s] TS3 Server connection error - Exception: %s" % (self.handle, e))
             return False
 
-    def fetchUserDetatilsByCldbid(self, cldbid, logger = None):
+    def fetchUserDetatilsByCldbid(self, cldbid, force = False, logger = None):
         if not logger:
             logger = self.log
 
@@ -544,6 +544,9 @@ class TS3Network(MMONetwork):
             if self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] < (time.time() - self.config['updateLock'] - random.randint(1, 30)):
                 updateUserDetails = True
         except KeyError:
+            updateUserDetails = True
+
+        if force:
             updateUserDetails = True
 
         if updateUserDetails:
@@ -563,7 +566,14 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
+
+            updateDetails = False
             if cldbid in self.cache['onlineClients']:
+                updateDetails = True
+            if force:
+                updateDetails = True
+
+            if updateDetails:
                 clid = self.cache['onlineClients'][cldbid]['clid']
                 self.getCache('clientInfoDatabase')
                 self.cache['clientInfoDatabase'][cldbid] = {}
