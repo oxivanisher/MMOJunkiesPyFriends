@@ -388,6 +388,23 @@ class TS3Network(MMONetwork):
                 self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][entry]['client_is_recording'])
                 self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][entry]['client_is_talker'])
 
+            tmpCldbid = cldbid
+            if cldbid not in self.cache['clientInfoDatabase'].keys():
+                for entry in self.cache['clientInfoDatabase'].keys():
+                    if self.cache['clientInfoDatabase'][entry]['client_unique_identifier'] == self.cache['clientDatabase'][cldbid]['client_unique_identifier']:
+                        tmpCldbid = entry
+    
+            if tmpCldbid in self.cache['clientInfoDatabase'].keys():
+                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][tmpCldbid]['client_away'])
+                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][tmpCldbid]['client_away_message'])
+                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][tmpCldbid]['client_channel_group_id']]['name'])
+                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_talker'])
+
         except KeyError as e:
             self.log.info("Missing client information to show in details: %s" % e)
             pass
