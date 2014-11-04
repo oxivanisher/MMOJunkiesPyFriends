@@ -566,14 +566,7 @@ class TS3Network(MMONetwork):
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserGroupDetails'] = time.time()
 
-
-            updateDetails = False
             if cldbid in self.cache['onlineClients']:
-                updateDetails = True
-            if force:
-                updateDetails = True
-
-            if updateDetails:
                 clid = self.cache['onlineClients'][cldbid]['clid']
                 self.getCache('clientInfoDatabase')
                 self.cache['clientInfoDatabase'][cldbid] = {}
