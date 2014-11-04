@@ -374,16 +374,19 @@ class TS3Network(MMONetwork):
                 self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
                 self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
 
-            if cldbid in self.cache['clientInfoDatabase'].keys():
-                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][cldbid]['client_away'])
-                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][cldbid]['client_away_message'])
-                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][cldbid]['client_channel_group_id']]['name'])
-                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][cldbid]['client_output_muted'])
-                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][cldbid]['client_outputonly_muted'])
-                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][cldbid]['client_input_muted'])
-                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][cldbid]['client_is_channel_commander'])
-                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][cldbid]['client_is_recording'])
-                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][cldbid]['client_is_talker'])
+            for entry in self.cache['clientInfoDatabase'].keys():
+                if self.cache['clientInfoDatabase'][entry]['client_unique_identifier'] == self.cache['clientDatabase'][cldbid]['client_unique_identifier']:
+                    clientInfoDatabaseId = entry
+            if entry in self.cache['clientInfoDatabase'].keys():
+                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][entry]['client_away'])
+                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][entry]['client_away_message'])
+                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][entry]['client_channel_group_id']]['name'])
+                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][entry]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][entry]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][entry]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][entry]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][entry]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][entry]['client_is_talker'])
 
         except KeyError as e:
             self.log.info("Missing client information to show in details: %s" % e)
