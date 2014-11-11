@@ -43,6 +43,7 @@ class TS3Network(MMONetwork):
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
+        self.registerWorker(self.userWatchdog, 30)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):
@@ -213,6 +214,21 @@ class TS3Network(MMONetwork):
             return "%s files cached" % count
         else:
             return "Not connected to TS3 Server"
+
+    def userWatchdog(self, logger = None):
+        if not logger:
+            logger = self.log
+        links = []
+
+        self.getCache('onlineClients')
+        self.getCache('userWatchdog')
+        for link in self.getNetworkLinks():
+            links.append(link['network_data'])
+        for client in self.cache['onlineClients'].keys():
+            if client not in links:
+                logger.info("Need to spam user: %s" % client)
+
+            
 
     # Class overwrites
     def getPartners(self, **kwargs):
