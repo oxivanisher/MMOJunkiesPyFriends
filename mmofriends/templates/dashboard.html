@@ -15,14 +15,17 @@
 			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}">
 				
 				<header>
-					<a href="javascript:void(0);" class="fa fa-edit"></a>
-					<a href="javascript:void(0);" class="fa fa-expand"></a>
-					<a href="javascript:void(0);" class="fa fa-close"></a>
+					<span style="text-align: left;">
+						<h3>{{ box.settings.title }}</h3>
+					</span>
+					<span style="text-align: right;">
+						<a href="javascript:void(0);" class="fa fa-edit"></a>
+						<a href="javascript:void(0);" class="fa fa-expand"></a>
+						<a href="javascript:void(0);" class="fa fa-close"></a>
+					</span>
 				</header>
 				
 				<section id="{{ box.netHandle }}-{{ box.handle }}-content">
-
-					<h3>{{ box.settings.title }}</h3>
 
 					<p>{% include box.settings.template %}</p>					
 					<!--
