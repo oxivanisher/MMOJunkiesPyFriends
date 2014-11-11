@@ -209,7 +209,7 @@ def send_email(app, msgto, msgsubject, msgtext, image):
         return False
 
 # Dashboard methods
-def createDashboardBox(method, netHandle, handle, settings = {}):
+def createDashboardBox(method, netHandle, handle, settings = {}, data = {}):
     logging.info("%s Registered dashboard box %s (%s)" % (netHandle, handle, method.func_name))
     box = {}
     box['method'] = method
