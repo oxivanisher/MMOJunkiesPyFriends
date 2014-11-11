@@ -226,6 +226,8 @@ class TS3Network(MMONetwork):
             links.append(link['network_data'])
         for client in self.cache['onlineClients'].keys():
             if client not in links:
+                if client not in self.cache['userWatchdog']:
+                    self.cache['userWatchdog'][client] = 0
                 if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
                     logger.info("Need to spam user: %s" % client)
                     self.cache['userWatchdog'][client] = time.time()
