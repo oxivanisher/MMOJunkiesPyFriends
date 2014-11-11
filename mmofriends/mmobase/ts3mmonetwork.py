@@ -235,7 +235,7 @@ class TS3Network(MMONetwork):
                     logger.info("Not spaming user right now: %s" % client)
             else:
                 logger.info("Not spaming user because linked: %s" % client)
-
+        self.setCache('userWatchdog')
 
     # Class overwrites
     def getPartners(self, **kwargs):
