@@ -47,9 +47,6 @@ class ValveNetwork(MMONetwork):
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
         self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_online_users, 'online3', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_online_users, 'online4', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_online_users, 'online5', {'loggedin': True, 'template': 'box_Valve_online1.html'})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
