@@ -43,7 +43,7 @@ class TS3Network(MMONetwork):
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
-        self.registerWorker(self.userWatchdog, 30)
+        self.registerWorker(self.userWatchdog, 900)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):
@@ -216,6 +216,7 @@ class TS3Network(MMONetwork):
             return "Not connected to TS3 Server"
 
     def userWatchdog(self, logger = None):
+        spamedCount = 0
         if not logger:
             logger = self.log
         links = []
@@ -229,13 +230,16 @@ class TS3Network(MMONetwork):
                 if client not in self.cache['userWatchdog']:
                     self.cache['userWatchdog'][client] = 0
                 if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
-                    logger.info("Need to spam user: %s" % client)
+                    logger.info("Spamming user: %s" % client)
                     self.cache['userWatchdog'][client] = time.time()
+                    self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])
+                    spamedCount += 1
                 else:
-                    logger.info("Not spaming user right now: %s" % client)
+                    logger.debug("Not spaming (timeout): %s" % client)
             else:
-                logger.info("Not spaming user because linked: %s" % client)
+                logger.debug("Not spaming (linked): %s" % client)
         self.setCache('userWatchdog')
+        return "%s users spamed" % (spamedCount)
 
     # Class overwrites
     def getPartners(self, **kwargs):
