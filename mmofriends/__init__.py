@@ -697,7 +697,13 @@ def profile_login():
     if request.method == 'POST':
         log.info("Trying to login user: %s" % request.form['nick'])
         myUser = False
-        myUser = getUserByNick(request.form['nick'])
+        try:
+            myUser = getUserByNick(request.form['nick'])
+        except Exception as e:
+            log.warning('Error finding user: "%s" -> %s' % (request.form['nick'], e))
+            flash('Error locating your user', 'error')
+            
+            return redirect(url_for('profile_logout'))
 
         if myUser:
             myUser.load()
