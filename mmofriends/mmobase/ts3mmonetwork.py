@@ -62,7 +62,12 @@ class TS3Network(MMONetwork):
 
             try:
                 for client in response.data:
-                    clients[client['clid']] = client
+                    try:
+                        clients[client['clid']] = client
+                    except KeyError:
+                        logger.warning("refreshOnlineClients: Removing missing client %s" % client['clid'])
+                        clients.pop(client['clid'], None)
+                        pass
             except AttributeError:
                 return True
 
@@ -105,7 +110,12 @@ class TS3Network(MMONetwork):
                 clientNum += len(newClients)
                 allClients += newClients
             for client in allClients:
-                self.cache['clientDatabase'][client['cldbid']] = client
+                try:
+                    self.cache['clientDatabase'][client['cldbid']] = client
+                except KeyError:
+                    logger.warning("cacheAvailableClients: Removing missing client %s" % client)
+                    self.cache['clientDatabase'].pop(client['cldbid'], None)
+                    pass
             self.setCache('clientDatabase')
 
             logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
