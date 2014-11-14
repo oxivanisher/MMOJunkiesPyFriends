@@ -885,7 +885,7 @@ def dashboard_method_html(netHandle, methodHandle):
         pass
 
     if show:
-        return render_template(box['settings']['template'], box = box)
+        return render_template(box['settings']['template'], box = box, boxData = box['method'](request))
     else:
         abort(401)
 

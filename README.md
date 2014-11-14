@@ -51,4 +51,7 @@ http://flask.pocoo.org/snippets/42/
 - TS3: Display DND (not only online and offline)
 - 
 
+# start redis server on osx
+sudo redis-server /opt/local/etc/redis.conf
+
 # todo stoef

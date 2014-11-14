@@ -303,8 +303,11 @@ class ValveNetwork(MMONetwork):
 
             if unknownOnly:
                 myFriends = [steamId]
-                for friend in self.cache['users'][steamId]['friends']:
-                    myFriends.append(friend['steamid'])
+                try:
+                    for friend in self.cache['users'][steamId]['friends']:
+                        myFriends.append(friend['steamid'])
+                except KeyError:
+                    pass
                 friendsList = []
                 for friend in self.cache['users'].keys():
                     if friend not in myFriends:

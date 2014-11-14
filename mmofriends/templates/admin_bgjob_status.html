@@ -21,7 +21,7 @@
 			<td>{{ task.method }}</td>
 			<td>{{ get_short_duration(task.timeout) }}</td>
 			<td>{{ timestampToString(task.start) }}</td>
-			<td>{{ timestampToString(task.end) }}</td>
+			<td>{{ get_short_age(task.end) }}</td>
 			<td>
 				{%- if task.end > task.start -%}
 					{{ (task.end-task.start)|round(3, 'ceil') }} sec
