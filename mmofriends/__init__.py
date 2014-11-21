@@ -252,7 +252,7 @@ def before_request():
         for handle in MMONetworks.keys():
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
-                flash("%s: %s" % (handle, message), 'error')
+                flash("%s" % (message), 'error')
 
 # main routes
 @app.route('/')

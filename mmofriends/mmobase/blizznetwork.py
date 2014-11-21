@@ -155,7 +155,7 @@ class BlizzNetwork(MMONetwork):
                 okCount += 1
             else:
                 nokCount += 1
-        return "%s user resources updated, %s not" % (okCount, nokCount)
+        return "%s user resources updated, %s ignored" % (okCount, nokCount)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:

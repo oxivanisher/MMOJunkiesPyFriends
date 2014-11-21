@@ -24,6 +24,9 @@
 		<script src="{{ url_for('static', filename='jquery/jquery.dataTables.min.js') }}"></script>
 		<link href="{{ url_for('static', filename='friendstable.css') }}" rel="stylesheet" media="all" type="text/css" />
 		<script src="{{ url_for('static', filename='friendstable.js') }}"></script>
+
+		<script src="{{ url_for('static', filename='mmofriends.js') }}"></script>
+
 		<!-- <link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" /> -->
 		<link href="{{ url_for('static', filename='mmofriends.css') }}" rel="stylesheet" media="all" type="text/css" />
 
@@ -222,7 +225,7 @@
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->
 		</nav>
-		<div class="container">
+		<div class="container" id="flashMessages">
 			{%- block content %}{% endblock -%}
 		</div>
 		{%- with messages = get_flashed_messages(category_filter=["success"]) %}
@@ -230,7 +233,7 @@
 				<div id="flashDialogSuccess" title="Success message">
 				<ul>
 				{%- for message in messages %}
-					<p>{{ message }}</p>
+					<p class="flashMessage">{{ message }}</p>
 				{% endfor -%}
 				</ul>
 				</div>
@@ -241,7 +244,7 @@
 				<div id="flashDialogError" title="Error message">
 				<ul>
 				{%- for message in messages %}
-					<p>{{ message }}</p>
+					<p class="flashMessage">{{ message }}</p>
 				{% endfor -%}
 				</ul>
 				</div>
@@ -252,7 +255,7 @@
 				<div id="flashDialogInfo" title="Info message">
 				<ul>
 				{%- for message in messages %}
-					<p>{{ message }}</p>
+					<p class="flashMessage">{{ message }}</p>
 				{% endfor -%}
 				</ul>
 				</div>
