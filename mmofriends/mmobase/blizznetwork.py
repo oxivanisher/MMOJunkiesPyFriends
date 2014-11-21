@@ -98,7 +98,7 @@ class BlizzNetwork(MMONetwork):
         # if not self.battleNet:
         #     self.requestAuthorizationUrl()
         self.getCache('battletags')
-        self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
+        self.log.debug("%s is requesting a Access Token (Step 2/3) with code %s" % (self.session['nick'], code))
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
@@ -118,7 +118,7 @@ class BlizzNetwork(MMONetwork):
     def updateAccessToken(self, userid, network_data, logger = None):
         if not logger:
             logger = self.log
-        logger.debug("Updating access_token for user %s" % userid)
+        logger.debug("Updating access_token for user %s with code %s" % (userid, network_data['code']))
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
