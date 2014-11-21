@@ -130,22 +130,22 @@ def fetchFriendsList(netHandle = None):
 def loadNetworks():
     for handle in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][handle]
-        log.info("Trying to initialize MMONetwork %s (%s)" % (network['name'], handle))
+        log.info("[%s] Trying to initialize MMONetwork %s" % (handle, network['name']))
         if network['active']:
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
-                log.info("Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
+                log.info("[%s] Initialization of MMONetwork %s completed" % (handle, network['name']))
                 # MMONetworks[handle].setLogLevel(logging.INFO)
                 # log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
-                message = "Unable to initialize MMONetwork %s because: %s" % (network['name'], e)
+                message = "[%s] Unable to initialize MMONetwork %s because: %s" % (handle, network['name'], e)
                 with app.test_request_context():
                     if session.get('admin'):
                         flash(message, 'error')
                 log.error(message)
         else:
-            log.info("MMONetwork %s (%s) is deactivated" % (network['name'], handle))
+            log.info("[%s] MMONetwork %s is deactivated" % (handle, network['name']))
     return MMONetworks
 
 def getUserByNick(nick = None):
@@ -250,6 +250,7 @@ def before_request():
 
     if session.get('logged_in'):
         for handle in MMONetworks.keys():
+            print handle
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
                 flash(message, 'error')
@@ -697,12 +698,12 @@ def profile_verify(userId, verifyKey):
 @app.route('/Login', methods=['GET', 'POST'])
 def profile_login():
     if request.method == 'POST':
-        log.info("Trying to login user: %s" % request.form['nick'])
+        log.info("[Login] Trying to login user: %s" % request.form['nick'])
         myUser = False
         try:
             myUser = getUserByNick(request.form['nick'])
         except Exception as e:
-            log.warning('Error finding user: "%s" -> %s' % (request.form['nick'], e))
+            log.warning('[Login] Error finding user: "%s" -> %s' % (request.form['nick'], e))
             flash('Error locating your user', 'error')
             
             return redirect(url_for('profile_logout'))
@@ -716,7 +717,7 @@ def profile_login():
                 flash("User locked. Please contact an administrator.", 'info')
                 return redirect(url_for('index'))
             elif myUser.checkPassword(request.form['password']):
-                log.info("<%s> logged in" % myUser.nick)
+                log.info("[Login] <%s> logged in" % myUser.nick)
                 session['logged_in'] = True
                 session['userid'] = myUser.id
                 session['nick'] = myUser.nick
@@ -728,12 +729,12 @@ def profile_login():
                 session['requests'] = 0
                 
                 #loading network links:
-                for net in MMONetworks.keys():
-                    log.debug("Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
-                    MMONetworks[net].loadNetworkToSession()
+                # for net in MMONetworks.keys():
+                #     log.debug("[Login] Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
+                #     MMONetworks[net].loadNetworkToSession()
 
             else:
-                log.info("Invalid password for %s" % myUser.nick)
+                log.info("[Login] Invalid password for %s" % myUser.nick)
                 flash('Invalid login', 'error')
         else:
             flash('Invalid login', 'error')

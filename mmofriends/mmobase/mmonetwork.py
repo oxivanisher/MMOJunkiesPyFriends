@@ -101,7 +101,7 @@ class MMONetwork(object):
         self.linkIdName = 'userToken'
 
         self.log = logging.getLogger(__name__ + "." + self.handle.lower())
-        self.log.info("Initializing MMONetwork %s (%s)" % (self.name, self.handle))
+        self.log.info("[%s] Initializing MMONetwork %s" % (self.handle, self.name))
 
         self.description = "Unset"
         self.moreInfo = 'NoMoreInfo'
@@ -114,26 +114,26 @@ class MMONetwork(object):
         self.dashboardBoxes = {}
         self.cache = {}
 
-        self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
+        # self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
     def setLogLevel(self, level):
-        self.log.info("Setting loglevel to %s" % level)
+        self.log.info("[%s] Setting loglevel to %s" % (self.handle, level))
         self.log.setLevel(level)
 
     def refresh(self):
-        self.log.debug("Refresh data from source")
+        self.log.debug("[%s] Refresh data from source" % (self.handle))
 
     def getLinkHtml(self):
-        self.log.debug("Show linkHtml %s" % self.name)
+        self.log.debug("[%s] Show linkHtml %s" % (self.handle, self.name))
 
     def doLink(self, userId):
-        self.log.debug("Link user %s to network %s" % (userId, self.name))
+        self.log.debug("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
 
     def finalizeLink(self, userKey):
-        self.log.debug("Finalize user link to network %s" % self.name)
+        self.log.debug("[%s] Finalize user link to network %s" % (self.handle, self.name))
 
     def saveLink(self, network_data):
-        self.log.debug("Saving network link for user %s" % (self.session['nick']))
+        self.log.debug("[%s] Saving network link for user %s" % (self.handle, self.session['nick']))
         netLink = MMONetLink(self.session['userid'], self.handle, network_data)
         db.session.add(netLink)
         db.session.flush()
@@ -142,11 +142,11 @@ class MMONetwork(object):
     def updateLink(self, userid, network_data, logger = None):
         if not logger:
             logger = self.log
-        logger.debug("Updating network link for user %s" % (userid))
+        logger.debug("[%s] Updating network link for user %s" % (self.handle, userid))
         netLink = MMONetLink(userid, self.handle, network_data)
         ret = MMONetLink.query.filter_by(network_handle=self.handle, user_id=userid).first()
         if not ret:
-            logger.warning("Unable to update network link for user %s, no existing link found." % userid)
+            logger.warning("[%s] Unable to update network link for user %s, no existing link found." % (self.handle, userid))
             return False
 
         ret.network_data = network_data
@@ -156,7 +156,7 @@ class MMONetwork(object):
         return True
 
     def loadLinks(self, userId):
-        self.log.debug("Loading user links for userId %s" % userId)
+        self.log.debug("[%s] Loading user links for userId %s" % (self.handle, userId))
         self.setSessionValue(self.linkIdName, None)
         for link in self.getNetworkLinks(userId):
             self.setSessionValue(self.linkIdName, link['network_data'])
@@ -164,11 +164,11 @@ class MMONetwork(object):
     def getNetworkLinks(self, userId = None):
         netLinks = []
         if userId:
-            self.log.debug("Loading network links for userId %s" % (userId))
+            self.log.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
             for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         else:
-            self.log.debug("Loading all network links")
+            self.log.debug("[%s] Getting all network links" % (self.handle))
             for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         return netLinks
@@ -180,14 +180,14 @@ class MMONetwork(object):
             db.session.delete(link)
             db.session.flush()
             db.session.commit()
-            self.log.info("Unlinked network with userid %s and netLinkId %s" % (user_id, netLinkId))
+            self.log.info("[%s] Unlinked network with userid %s and netLinkId %s" % (self.handle, user_id, netLinkId))
             return True
         except Exception as e:
-            self.log.info("Unlinking network with userid %s and netLinkId %s failed" % (user_id, netLinkId))
+            self.log.info("[%s] Unlinking network with userid %s and netLinkId %s failed" % (self.handle, user_id, netLinkId))
             return False
 
     def getPartners(self, **kwargs):
-        self.log.debug("List all partners for given user")
+        self.log.debug("[%s] List all partners for given user" % (self.handle))
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
                         'mmoid': internalId,
@@ -220,7 +220,7 @@ class MMONetwork(object):
                     })
 
     def findPartners(self):
-        self.log.debug("Searching for new partners to play with")
+        self.log.debug("[%s] Searching for new partners to play with" % (self.handle))
         return ( False, "Network not yet programmed")
         return ( True, {'id': 'someId',
                         'mmoid': internalId,
@@ -253,7 +253,7 @@ class MMONetwork(object):
                     })
 
     def getPartnerDetails(self, partnerId):
-        self.log.debug("List partner details")
+        self.log.debug("[%s] List partner details" % (self.handle))
 
     def setPartnerFlag(self, myDict, key, value):
         try:
@@ -276,14 +276,11 @@ class MMONetwork(object):
             avatarName = avatarName[1:]
         myDict['avatar'] = avatarName
 
-    def getProducts(self):
-        self.log.debug("MMONetwork %s: Fetching products" % self.handle)
-
     def setNetworkMoreInfo(self, moreInfo):
         self.moreInfo = moreInfo
 
     def admin(self):
-        self.log.debug("Loading admin stuff")
+        self.log.debug("[%s] Loading admin stuff" % (self.handle))
 
     def getSessionValue(self, name):
         try:
@@ -301,13 +298,13 @@ class MMONetwork(object):
 
     def loadNetworkToSession(self):
         if not self.getSessionValue('loaded'):
-            self.log.info("Loading MMONetwork to session")
+            self.log.info("[%s] Loading MMONetwork to session" % (self.handle))
             self.loadLinks(self.session.get('userid'))
             self.setSessionValue('loaded', True)
-        return (True, "%s loaded to session" % self.handle)
+        return (True, "[%s] loaded to session" % (self.handle))
 
     def prepareForFirstRequest(self):
-        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
+        self.log.info("[%s] Running prepareForFirstRequest." % (self.handle))
 
     def cacheFile(self, url):
         newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
@@ -315,9 +312,9 @@ class MMONetwork(object):
         # outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
 
         if os.path.isfile(outputFilePath):
-            self.log.debug("Not downloading %s" % url)
+            self.log.debug("[%s] Not downloading %s" % (self.handle, url))
         else:
-            self.log.info("Downloading %s" % url)
+            self.log.info("[%s] Downloading %s" % (self.handle, url))
 
             avatarFile = urllib.URLopener()
             avatarFile.retrieve(url, outputFilePath)
@@ -362,7 +359,7 @@ class MMONetwork(object):
         return ret.last_update
 
     def forceCacheUpdate(self, name):
-        self.log.debug("Forcing cache update: %s" % name)
+        self.log.debug("[%s] Forcing cache update: %s" % (self.handle, name))
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             try:
@@ -381,7 +378,7 @@ class MMONetwork(object):
 
     # Background worker methods
     def background_worker(self, logger):
-        logger.debug("Background worker is working")
+        logger.debug("[%s] Background worker is working" % (self.handle))
         for (method, timeout, lastCheck) in self.backgroundTasks:
             self.getCache('backgroundTasks')
             if method.func_name not in self.cache['backgroundTasks']:
@@ -424,7 +421,7 @@ class MMONetwork(object):
                 self.backgroundTasks.pop(index)
 
     def registerWorker(self, method, timeout):
-        self.log.info("%s Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
+        self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))
 
     # Dashboard methods
@@ -459,11 +456,11 @@ class MMONetwork(object):
         self.dashboardBoxes[handle] = createDashboardBox(method, self.handle, handle, settings)
 
     def getDashboardBoxes(self):
-        self.log.info("%s Get dashboard boxes" % self.handle)
+        self.log.info("[%s] Get dashboard boxes" % self.handle)
         return self.dashboardBoxes.keys()
 
     def getDashboardBox(self, handle):
-        self.log.info("%s Get dashboard box %s" % (self.handle, handle))
+        self.log.info("[%s] Get dashboard box %s" % (self.handle, handle))
         if handle in self.dashboardBoxes.keys():
             return self.dashboardBoxes[handle]
         else:

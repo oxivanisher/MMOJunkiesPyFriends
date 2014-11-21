@@ -512,7 +512,7 @@ class TS3Network(MMONetwork):
             return "%s" % e
 
     def prepareForFirstRequest(self):
-        self.log.info("%s: Running prepareForFirstRequest." % self.handle)
+        self.log.info("[%s] Running prepareForFirstRequest." % self.handle)
         # This is done to set "More Info"
         self.connect()
 

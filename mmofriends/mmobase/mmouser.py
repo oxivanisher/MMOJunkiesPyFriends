@@ -77,7 +77,7 @@ class MMOUser(db.Model):
 
     def __init__(self, nick):
         self.log = logging.getLogger(__name__)
-        self.log.debug("Initializing MMOUser: %s" % nick)
+        self.log.debug("[User] Initializing MMOUser: %s" % nick)
         self.nick = nick
         self.name = None
         self.email = None
@@ -98,14 +98,14 @@ class MMOUser(db.Model):
 
     def load(self):
         self.log = logging.getLogger(__name__)
-        self.log.debug("Loaded MMOUser: %s" % self.nick)
+        self.log.debug("[User] Loaded MMOUser: %s" % self.nick)
 
     def lock(self):
-        self.log.debug("Lock MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Lock MMOUser %s" % self.getDisplayName())
         self.locked = True
 
     def unlock(self):
-        self.log.debug("Unlock MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Unlock MMOUser %s" % self.getDisplayName())
         self.locked = False
 
     def verify(self, key):
@@ -117,19 +117,19 @@ class MMOUser(db.Model):
             return False
 
     def refreshNetworks(self):
-        self.log.debug("Refresh MMONetwork for MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Refresh MMONetwork for MMOUser %s" % self.getDisplayName())
         pass
 
     def getDisplayName(self):
         return self.nick + " (" + self.name + ")"
 
     def setPassword(self, password):
-        self.log.info("Setting new Password")
+        self.log.info("[User] Setting new Password")
         hash_object = hashlib.sha512(password)
         self.password = hash_object.hexdigest()
 
     def checkPassword(self, password):
-        self.log.info("Checking password")
+        self.log.info("[User] Checking password")
         hash_object = hashlib.sha512(password)
         if self.password == hash_object.hexdigest():
             return True
@@ -137,7 +137,7 @@ class MMOUser(db.Model):
             return False
 
     def addNick(self, nick = None):
-        self.log.info("Adding Nick: %s" % nick)
+        self.log.info("[User] Adding Nick: %s" % nick)
         if nick:
             newNick = MMOUserNick(self.id, nick)
             try:
@@ -146,13 +146,13 @@ class MMOUser(db.Model):
                 db.session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
-                self.log.warning("SQL Alchemy Error: %s" % e)
+                self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
         return False
 
     def removeNick(self, nickId = None):
-        self.log.info("Removing NickID: %s" % nickId)
+        self.log.info("[User] Removing NickID: %s" % nickId)
         if nickId:
             oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
             try:
@@ -161,7 +161,7 @@ class MMOUser(db.Model):
                 db.session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
-                self.log.warning("SQL Alchemy Error: %s" % e)
+                self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
         return False
