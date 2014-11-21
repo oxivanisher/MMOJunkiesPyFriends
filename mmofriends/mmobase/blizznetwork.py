@@ -241,7 +241,7 @@ class BlizzNetwork(MMONetwork):
 
     # Query Blizzard
     def queryBlizzardApi(self, what, accessToken = None):
-        self.log.debug("[%s] Query Blizzard API for %s" % (Self.handle, what))
+        self.log.debug("[%s] Query Blizzard API for %s" % (self.handle, what))
         if not accessToken:
             self.getSessionValue(self.linkIdName)
 
