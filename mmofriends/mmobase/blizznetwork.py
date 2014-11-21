@@ -180,14 +180,14 @@ class BlizzNetwork(MMONetwork):
             if userid != self.session['userid']:
                 link = self.getNetworkLinks(userid)
                 accessToken = link[0]['network_data']
-
-                accessToken = self.updateAccessToken(userid, link[0]['network_data'])
-
-                if not accessToken:
-                    message = "No accessToken was available to update user %s" % userid
-                    return (False, message)
             else:
                 accessToken = self.getSessionValue(self.linkIdName)
+
+        if background:
+            accessToken = self.updateAccessToken(userid, link[0]['network_data'])
+            if not accessToken:
+                message = "No accessToken was available to update user %s" % userid
+                return (False, message)
 
         # fetching battle tag
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
