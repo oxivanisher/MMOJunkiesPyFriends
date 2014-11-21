@@ -107,7 +107,7 @@ class BlizzNetwork(MMONetwork):
         access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
         # print "access_token", access_token
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
-        network_data = {'code': code, 'access_token': access_token}
+        network_data = json.dumps({'code': code, 'access_token': access_token})
         self.saveLink(network_data)
         self.setSessionValue(self.linkIdName, network_data)
         # self.updateBaseResources(False)
