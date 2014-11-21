@@ -211,6 +211,10 @@ class BlizzNetwork(MMONetwork):
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
                 logger.debug(message)
                 return (False, message)
+        else:
+            message = "Unable to request Battletag for user %s (%s)" % (userid, retMessage)
+            logger.warning(message)
+            return (False, message)
 
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
