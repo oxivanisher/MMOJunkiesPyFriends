@@ -1,7 +1,7 @@
 // Make links klickable in flash messages
 $('#flashMessages').ready(function(){
     // Get each div
-    $('. class="flashMessage"').each(function(){
+    $('.flashMessage').each(function(){
         // Get the content
         var str = $(this).html();
         // Set the regex string
