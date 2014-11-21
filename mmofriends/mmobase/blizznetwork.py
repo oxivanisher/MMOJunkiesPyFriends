@@ -82,6 +82,13 @@ class BlizzNetwork(MMONetwork):
                                   'url': self.requestAuthorizationUrl()}
         return htmlFields
 
+    def loadNetworkToSession(self):
+        for link in self.getNetworkLinks(self.session['userid']):
+            if not link.network_data:
+                return self.requestAuthorizationUrl()
+        super(BlizzNetwork, self).loadNetworkToSession()
+        return True
+
     # Oauth2 helper
     def requestAuthorizationUrl(self):
         self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
