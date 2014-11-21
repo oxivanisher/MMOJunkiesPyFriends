@@ -146,12 +146,16 @@ class BlizzNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
-        count = 0
+        okCount = 0
+        nokCount = 0
         for link in self.getNetworkLinks():
             logger.debug("Updating user resources for userid %s" % link['user_id'])
-            self.updateUserResources(link['user_id'], link['network_data'])
-            count += 1
-        return "%s user resources updated" % count
+            if link['network_data']:
+                self.updateUserResources(link['user_id'], link['network_data'])
+                okCount += 1
+            else:
+                nokCount += 1
+        return "%s user resources updated, %s not" % (okCount, nokCount)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
