@@ -188,7 +188,7 @@ class BlizzNetwork(MMONetwork):
             else:
                 network_data = json.loads(self.getSessionValue(self.linkIdName))
 
-        accessToken = network_data['access_token']
+            accessToken = network_data['access_token']
 
         if background:
             newAccessToken = self.updateAccessToken(userid, network_data)
