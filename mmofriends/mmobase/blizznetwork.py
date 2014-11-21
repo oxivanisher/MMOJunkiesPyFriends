@@ -196,9 +196,9 @@ class BlizzNetwork(MMONetwork):
                 accessToken = newAccessToken
 
         # fetching battle tag
+        self.getCache('battletags')
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
         if retValue != False:
-            self.getCache('battletags')
             if 'battletag' in retMessage:
                 if userid in self.cache['battletags']:
                     if self.cache['battletags'][userid] != retMessage['battletag']:
