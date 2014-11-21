@@ -83,7 +83,7 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     def loadNetworkToSession(self):
-        links = self.getNetworkLinks(self.session['userid']):
+        links = self.getNetworkLinks(self.session['userid'])
         if links:
             for link in links:
                 if not link['network_data']:
