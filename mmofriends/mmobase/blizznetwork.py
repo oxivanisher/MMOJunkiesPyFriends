@@ -114,7 +114,7 @@ class BlizzNetwork(MMONetwork):
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    def updateAccessToken(self, userid, access_token, code, logger = None):
+    def updateAccessToken(self, userid, network_data, logger = None):
         if not logger:
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
@@ -122,7 +122,7 @@ class BlizzNetwork(MMONetwork):
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
                 'grant_type': 'authorization_code',
-                'code': code}
+                'code': network_data['code']}
 
         new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
         print new_access_token
@@ -183,12 +183,14 @@ class BlizzNetwork(MMONetwork):
         if not accessToken:
             if userid != self.session['userid']:
                 link = self.getNetworkLinks(userid)
-                accessToken = link[0]['network_data']
+                network_data = json.loads(link[0]['network_data'])
             else:
-                accessToken = self.getSessionValue(self.linkIdName)
+                network_data = json.loads(self.getSessionValue(self.linkIdName))
+
+        accessToken = network_data['access_token']
 
         if background:
-            newAccessToken = self.updateAccessToken(userid, accessToken)
+            newAccessToken = self.updateAccessToken(userid, network_data)
             if not newAccessToken:
                 message = "No accessToken was available to update user %s" % userid
                 return (False, message)
