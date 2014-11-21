@@ -250,9 +250,9 @@ def before_request():
 
     if session.get('logged_in'):
         for handle in MMONetworks.keys():
-            ret = MMONetworks[handle].loadNetworkToSession()
-            if ret:
-                return redirect(ret)
+            (ret, message) = MMONetworks[handle].loadNetworkToSession()
+            if not ret:
+                flash("%s: %s" (handle, message), 'error')
 
 # main routes
 @app.route('/')

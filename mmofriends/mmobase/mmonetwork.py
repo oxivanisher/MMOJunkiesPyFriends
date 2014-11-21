@@ -304,7 +304,7 @@ class MMONetwork(object):
             self.log.info("Loading MMONetwork to session")
             self.loadLinks(self.session.get('userid'))
             self.setSessionValue('loaded', True)
-        return True
+        return (True, "%s loaded to session" % self.handle)
 
     def prepareForFirstRequest(self):
         self.log.info("%s: Running prepareForFirstRequest." % self.handle)

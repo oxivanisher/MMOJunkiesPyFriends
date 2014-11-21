@@ -86,9 +86,8 @@ class BlizzNetwork(MMONetwork):
         for link in self.getNetworkLinks(self.session['userid']):
             if not link['network_data']:
                 # return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
-                return self.requestAuthorizationUrl()
+                return (False, self.requestAuthorizationUrl())
         super(BlizzNetwork, self).loadNetworkToSession()
-        return True
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
