@@ -183,7 +183,7 @@ class BlizzNetwork(MMONetwork):
                 self.cache['battletags'][userid] = retMessage['battletag']
                 self.setCache('battletags')
                 userNick = retMessage['battletag']
-                logger.info("[%s] Updated battletag " % (self.handle, retMessage['battletag']))
+                logger.info("[%s] Updated battletag %s" % (self.handle, retMessage['battletag']))
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
                 logger.debug(message)
