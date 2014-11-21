@@ -189,7 +189,7 @@ class BlizzNetwork(MMONetwork):
                 try:
                     if retMessage['code'] == 403:
                         self.updateLink(userid, None)
-                        logger.warning("Removed access token for %s because %s" % (userid, retMessage['detail']))
+                        logger.warning("[%s] Removed access token for %s because %s" % (self.handle, userid, retMessage['detail']))
                 except KeyError:
                     pass
                 
@@ -205,7 +205,7 @@ class BlizzNetwork(MMONetwork):
                 wowCount = 0
                 for char in retMessage['characters']:
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
-                logger.debug("Updated %s WoW characters" % wowCount)
+                logger.debug("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][userid])))
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
@@ -213,7 +213,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('d3Profiles')
             self.cache['d3Profiles'][userid] = retMessage
             self.setCache('d3Profiles')
-            logger.debug("Updated D3 Profile")
+            logger.debug("[%s] Updated D3 Profile" % (self.handle))
 
         # fetching sc2
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
@@ -221,7 +221,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('sc2Profiles')
             self.cache['sc2Profiles'][userid] = retMessage
             self.setCache('sc2Profiles')
-            logger.debug("Updated SC2 Profile")
+            logger.debug("[%s] Updated SC2 Profile" % (self.handle))
 
         return (True, "All resources updated for %s" % userNick)
 
@@ -233,15 +233,15 @@ class BlizzNetwork(MMONetwork):
         if resValue:
             self.cache[entry] = resData
             self.setCache(entry)
-            self.log.debug("Fetched %s from %s with %s result length" % (entry, location, len(resData)))
+            self.log.debug("[%s] Fetched %s from %s with %s result length" % (self.handle, entry, location, len(resData)))
             return (True, "Resource updated from %s" % location)
         else:
-            self.log.warning("Unable to update resource from %s because: %s" % (location, resData))
+            self.log.warning("[%s] Unable to update resource from %s because: %s" % (self.handle, location, resData))
             return (False, resData)
 
     # Query Blizzard
     def queryBlizzardApi(self, what, accessToken = None):
-        self.log.debug("Query Blizzard API for %s" % what)
+        self.log.debug("[%s] Query Blizzard API for %s" % (Self.handle, what))
         if not accessToken:
             self.getSessionValue(self.linkIdName)
 
@@ -260,12 +260,12 @@ class BlizzNetwork(MMONetwork):
                     return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
                 return (False, r['detail'])
             elif 'error' in r.keys():
-                self.log.debug("queryBlizzardApi found error: %s" % r['error_description'])
+                self.log.debug("[%s] queryBlizzardApi found error: %s" % (self.handle, r['error_description']))
                 return (False, r['error_description'])
         except KeyError:
             pass
         except Exception as e:
-            self.log.warning("Please handle exception %s on in queryBlizzardApi!" % e)
+            self.log.warning("[%s] Please handle exception %s on in queryBlizzardApi!" % (self.handle, e))
 
         # self.saveAllData()
         return (True, r)
@@ -296,20 +296,20 @@ class BlizzNetwork(MMONetwork):
         else:
             savePath = origUrl.replace('/', '-')
             avatarUrl = self.avatarUrl + 'static-render/%s/' % self.config['region'] + origUrl
-            self.log.debug("Downloading existing avatar url")
+            self.log.debug("[%s] Downloading existing avatar url" % (self.handle))
 
         outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', savePath)
         if os.path.isfile(outputFilePath):
-            self.log.debug("Not downloading %s, it already exists" % savePath)
+            self.log.debug("[%s] Not downloading %s, it already exists" % (self.handle, savePath))
         else:
-            self.log.info("Downloading %s to %s" % (avatarUrl, savePath))
+            self.log.info("[%s] Downloading %s to %s" % (self.handle, avatarUrl, savePath))
             avatarFile = urllib.URLopener()
             try:
                 avatarFile.retrieve(avatarUrl, outputFilePath)
             except Exception:
                 # BUG: http://us.battle.net/en/forum/topic/14525622754
                 avatarUrl = self.avatarUrl + tmpUrl
-                self.log.warning("Not existing avatar! Saving general avatar %s to %s" % (avatarUrl, outputFilePath))
+                self.log.warning("[%s] Not existing avatar! Saving general avatar %s to %s" % (self.handle, avatarUrl, outputFilePath))
                 avatarFile.retrieve(avatarUrl, outputFilePath)
                 # savePath = self.cacheWowAvatarFile('internal-record', race, gender)
 
@@ -357,7 +357,7 @@ class BlizzNetwork(MMONetwork):
         return finalChars
 
     def getPartners(self, **kwargs):
-        self.log.debug("List all partners for given user")
+        self.log.debug("[%s] List all partners for given user" % (self.handle))
 
         if not self.getSessionValue(self.linkIdName):
             return (False, False)
@@ -490,5 +490,5 @@ class BlizzNetwork(MMONetwork):
         return moreInfo
 
     def findPartners(self):
-        self.log.debug("Searching for new partners to play with")
+        self.log.debug("[%s] Searching for new partners to play with" % (self.handle))
         return self.getPartners()
