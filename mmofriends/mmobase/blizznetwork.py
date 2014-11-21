@@ -147,7 +147,7 @@ class BlizzNetwork(MMONetwork):
         okCount = 0
         nokCount = 0
         for link in self.getNetworkLinks():
-            logger.debug("Updating user resources for userid %s" % link['user_id'])
+            logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
             if link['network_data']:
                 self.updateUserResources(link['user_id'], link['network_data'])
                 okCount += 1
@@ -164,9 +164,9 @@ class BlizzNetwork(MMONetwork):
             userid = self.session['userid']
             userNick = userid
             background = False
-            logger.debug("Foreground updating the resources for userid %s" % userid)
+            logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
         else:
-            logger.debug("Background updating the resources for userid %s" % userid)
+            logger.debug("[%s] Background updating the resources for userid %s" % (self.handle, userid))
 
         if not accessToken:
             if userid != self.session['userid']:
