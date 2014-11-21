@@ -20,26 +20,26 @@ log = getLogger(level=logging.INFO)
 try:
     from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify
 except ImportError:
-    log.error("Please install flask")
+    log.error("[System] Please install flask")
     sys.exit(2)
 
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
     from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 except ImportError:
-    log.error("Please install the sqlalchemy extension for flask")
+    log.error("[System] Please install the sqlalchemy extension for flask")
     sys.exit(2)
 
 try:
     from flask.ext.openid import OpenID
 except ImportError:
-    log.error("Please install the openid extension for flask")
+    log.error("[System] Please install the openid extension for flask")
     sys.exit(2)
 
 try:
     from celery import Celery
 except ImportError:
-    log.error("Please install Celery")
+    log.error("[System] Please install Celery")
     sys.exit(2)
 
 # try:
@@ -55,9 +55,9 @@ app.config['startupDate'] = time.time()
 
 try:
     os.environ['MMOFRIENDS_CFG']
-    log.info("Loading config from: %s" % os.environ['MMOFRIENDS_CFG'])
+    log.info("[System] Loading config from: %s" % os.environ['MMOFRIENDS_CFG'])
 except KeyError:
-    log.warning("Loading config from dist/mmofriends.cfg.example becuase MMOFRIENDS_CFG environment variable is not set.")
+    log.warning("[System] Loading config from dist/mmofriends.cfg.example becuase MMOFRIENDS_CFG environment variable is not set.")
     os.environ['MMOFRIENDS_CFG'] = "../dist/mmofriends.cfg.example"
 
 try:
@@ -76,7 +76,7 @@ with app.test_request_context():
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 if not len(app.config['APPSECRET']):
-    log.warning("Generating random secret_key. All older cookies will be invalid, but i will NOT work with multiple processes (WSGI).")
+    log.warning("[System] Generating random secret_key. All older cookies will be invalid, but i will NOT work with multiple processes (WSGI).")
     app.secret_key = os.urandom(24)
 else:
     app.secret_key = app.config['APPSECRET']
@@ -130,22 +130,22 @@ def fetchFriendsList(netHandle = None):
 def loadNetworks():
     for handle in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][handle]
-        log.info("[%s] Trying to initialize MMONetwork %s" % (handle, network['name']))
+        log.info("[System] Trying to initialize MMONetwork %s (%s)" % (network['name'], handle))
         if network['active']:
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
-                log.info("[%s] Initialization of MMONetwork %s completed" % (handle, network['name']))
+                log.info("[System] Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
                 # MMONetworks[handle].setLogLevel(logging.INFO)
                 # log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
-                message = "[%s] Unable to initialize MMONetwork %s because: %s" % (handle, network['name'], e)
+                message = "[System] Unable to initialize MMONetwork %s (%s) because: %s" % (network['name'], handle, e)
                 with app.test_request_context():
                     if session.get('admin'):
                         flash(message, 'error')
                 log.error(message)
         else:
-            log.info("[%s] MMONetwork %s is deactivated" % (handle, network['name']))
+            log.info("[System] MMONetwork %s (%s) is deactivated" % (network['name'], handle))
     return MMONetworks
 
 def getUserByNick(nick = None):
@@ -204,9 +204,9 @@ celery = make_celery(app)
 @celery.task()
 def background_worker():
     log.setLevel(logging.INFO)
-    log.info("Background worker is loading the MMONetworks")
+    log.info("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
-    log.info("Background worker starts looping")
+    log.info("[System] Background worker starts looping")
     work = True
     while work:
         for net in MMONetworks.keys():
@@ -270,7 +270,7 @@ def dev():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     if not session.get('admin'):
-        log.warning("<%s> tried to access admin without permission!")
+        log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
     ret = []
     for handle in MMONetworks.keys():
@@ -285,7 +285,7 @@ def dev():
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
 def get_image(imgType, imgId):
     filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
-    log.debug("Requesting img type <%s> id <%s>" % (imgType, imgId))
+    log.debug("[System] Requesting img type <%s> id <%s>" % (imgType, imgId))
 
     try:
         if imgType == 'avatar':
@@ -302,10 +302,10 @@ def get_image(imgType, imgId):
         if os.path.isfile(os.path.join(filePath, fileName)):
             return send_from_directory(filePath, fileName)
         else:
-            log.warning("Image not found: %s/%s" % (filePath, fileName))
+            log.warning("[System] Image not found: %s/%s" % (filePath, fileName))
 
     except IndexError:
-        log.warning("Unknown ID for img type %s: %s" % (imgType, imgId))
+        log.warning("[System] Unknown ID for img type %s: %s" % (imgType, imgId))
     abort(404)
 
 # admin routes
@@ -314,7 +314,7 @@ def admin_system_status():
     if not session.get('logged_in'):
         abort(401)
     if not session.get('admin'):
-        log.warning("<%s> tried to access admin without permission!")
+        log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
 
     loadedNets = []
@@ -356,7 +356,7 @@ def admin_celery_status():
     if not session.get('logged_in'):
         abort(401)
     if not session.get('admin'):
-        log.warning("<%s> tried to access admin without permission!")
+        log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
 
     registeredWorkers = []
@@ -400,7 +400,7 @@ def admin_bgjob_status():
     if not session.get('logged_in'):
         abort(401)
     if not session.get('admin'):
-        log.warning("<%s> tried to access admin without permission!")
+        log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
 
     methodStats = []
@@ -503,25 +503,25 @@ def network_unlink(netHandle, netLinkId):
 @app.route('/Network/OID/Login/<netHandle>')
 @oid.loginhandler
 def oid_login(netHandle):
-    log.debug("OpenID login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    log.debug("[System] OpenID login for MMONetwork %s from user %s" % (netHandle, session['nick']))
     session['OIDAuthInProgress'] = netHandle
     (doRedirect, retValue) = MMONetworks[netHandle].oid_login(oid)
     if doRedirect:
-        log.info("OID redirecting to: %s" % retValue)
+        log.info("[System] OID redirecting to: %s" % retValue)
         return redirect(retValue)
     else:
-        log.info("OID not redirecting...")
+        log.info("[System] OID not redirecting...")
         return retValue
 
 @app.route('/Network/OID/Logout')
 def oid_logout():
-    log.debug("OpenID logout from user %s" % (session['nick']))
+    log.debug("[System] OpenID logout from user %s" % (session['nick']))
     netHandle = session.get('OIDAuthInProgress')
     return redirect(MMONetworks[netHandle].oid_logout(oid))
 
 @oid.after_login
 def oid_create_or_login(resp):
-    log.debug("OpenID create_or_login from user %s" % (session['nick']))
+    log.debug("[System] OpenID create_or_login from user %s" % (session['nick']))
     netHandle = session.get('OIDAuthInProgress')
     flashMessage, returnUrl = MMONetworks[netHandle].oid_create_or_login(oid, resp)
     session.pop('OIDAuthInProgress')
@@ -531,7 +531,7 @@ def oid_create_or_login(resp):
 # oauth2 methods
 @app.route('/Network/Oauth2/Login/<netHandle>', methods=['GET', 'POST'])
 def oauth2_login(netHandle):
-    log.debug("OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
+    log.debug("[System] OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
     # print "request.args", request.args
     # print "code", request.args.get("code")
     name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
@@ -540,11 +540,11 @@ def oauth2_login(netHandle):
     # print "requestAccessToken returned:", name
     if name:
         message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
-        log.info(message)
+        log.info("[System] " + message)
         flash(message, 'success')
     else:
         message = "Authentication with %s  NOT successfull" % MMONetworks[netHandle].name
-        log.warning(message)
+        log.warning("[System] " + message)
         flash(message, 'error')
     return redirect(url_for('network_link'))
 
@@ -591,7 +591,7 @@ def profile_register():
                 newUser.website = "http://" + request.form['website']
             newUser.setPassword(request.form['password'])
             if request.form['nick'] == app.config['ROOTUSER']:
-                log.info("Registred root user: %s" % request.form['nick'])
+                log.info("[System] Registred root user: %s" % request.form['nick'])
                 newUser.admin = True
                 newUser.locked = False
                 newUser.veryfied = True
@@ -613,7 +613,7 @@ def profile_register():
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
                 flash("SQL Alchemy Error: %s" % e, 'error')
-                log.warning("SQL Alchemy Error: %s" % e)
+                log.warning("[System] SQL Alchemy Error: %s" % e)
             # db.session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
@@ -677,7 +677,7 @@ def profile_nick(do, nick = None):
 
 @app.route('/Profile/Verify/<userId>/<verifyKey>', methods=['GET'])
 def profile_verify(userId, verifyKey):
-    log.info("Verify userid %s" % userId)
+    log.info("[System] Verify userid %s" % userId)
     verifyUser = getUserById(userId)
     if not verifyUser:
         flash("User not found to verify.")
@@ -698,12 +698,12 @@ def profile_verify(userId, verifyKey):
 @app.route('/Login', methods=['GET', 'POST'])
 def profile_login():
     if request.method == 'POST':
-        log.info("[Login] Trying to login user: %s" % request.form['nick'])
+        log.info("[System] Trying to login user: %s" % request.form['nick'])
         myUser = False
         try:
             myUser = getUserByNick(request.form['nick'])
         except Exception as e:
-            log.warning('[Login] Error finding user: "%s" -> %s' % (request.form['nick'], e))
+            log.warning('[System] Error finding user: "%s" -> %s' % (request.form['nick'], e))
             flash('Error locating your user', 'error')
             
             return redirect(url_for('profile_logout'))
@@ -717,24 +717,24 @@ def profile_login():
                 flash("User locked. Please contact an administrator.", 'info')
                 return redirect(url_for('index'))
             elif myUser.checkPassword(request.form['password']):
-                log.info("[Login] <%s> logged in" % myUser.nick)
+                log.info("[System] <%s> logged in" % myUser.nick)
                 session['logged_in'] = True
                 session['userid'] = myUser.id
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
-                session['networks'] = []
-                for net in MMONetworks.keys():
-                    session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
+                # session['networks'] = []
+                # for net in MMONetworks.keys():
+                #     session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
                 session['requests'] = 0
                 
                 #loading network links:
                 # for net in MMONetworks.keys():
-                #     log.debug("[Login] Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
+                #     log.debug("[System] Loading links for %s@%s" % (myUser.nick, MMONetworks[net].name))
                 #     MMONetworks[net].loadNetworkToSession()
 
             else:
-                log.info("[Login] Invalid password for %s" % myUser.nick)
+                log.info("[System] Invalid password for %s" % myUser.nick)
                 flash('Invalid login', 'error')
         else:
             flash('Invalid login', 'error')
@@ -910,7 +910,7 @@ def dashboard_method_json(netHandle, methodHandle):
             if box['settings']['admin'] and not admin:
                 show = False
     except KeyError:
-        log.warning("Unable to load box %s beacuase %s" % (box, e))
+        log.warning("[System] Unable to load box %s beacuase %s" % (box, e))
         pass
 
     if show:
@@ -920,7 +920,7 @@ def dashboard_method_json(netHandle, methodHandle):
 
 @app.route('/Api/Partner/Details/<netHandle>/<partnerId>', methods = ['POST'])
 def json_partner_details(netHandle, partnerId):
-    log.info("Trying to show JSON partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
+    log.info("[System] Trying to show JSON partner details for netHandle %s and partnerId %s" % (netHandle, partnerId))
     if not session.get('logged_in'):
         abort(401)
     return jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
