@@ -139,6 +139,20 @@ class MMONetwork(object):
         db.session.flush()
         db.session.commit()
 
+    def updateLink(self, network_data, userid):
+        self.log.debug("Updating network link for user %s" % (self.session['nick']))
+        netLink = MMONetLink(self.session['userid'], self.handle, network_data)
+        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, userid=userid).first()
+        if not ret:
+            self.log.warning("Unable to update network link for user %s, no existing link found." % userid)
+            return False
+
+        ret.network_data = network_data
+        db.session.merge(ret)
+        db.session.flush()
+        db.session.commit()
+        return True
+
     def loadLinks(self, userId):
         self.log.debug("Loading user links for userId %s" % userId)
         self.setSessionValue(self.linkIdName, None)
