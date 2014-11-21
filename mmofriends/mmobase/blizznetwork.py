@@ -36,7 +36,7 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
 
         # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+        self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
@@ -138,7 +138,6 @@ class BlizzNetwork(MMONetwork):
     def updateAllUserResources(self, logger = None):
         if not logger:
             logger = self.log
-        self.getCache('battletags')
 
         count = 0
         for link in self.getNetworkLinks():
@@ -156,7 +155,9 @@ class BlizzNetwork(MMONetwork):
             userid = self.session['userid']
             userNick = userid
             background = False
-        logger.debug("Updating resources for userid %s" % userid)
+            logger.debug("Foreground updating the resources for userid %s" % userid)
+        else:
+            logger.debug("Background updating the resources for userid %s" % userid)
 
         if not accessToken:
             if userid != self.session['userid']:
@@ -174,7 +175,9 @@ class BlizzNetwork(MMONetwork):
                 self.setCache('battletags')
                 userNick = retMessage['battletag']
             else:
-                return (False, "Unable to update Battletag for user %s (%s)" % (userid, retMessage))
+                message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
+                logger.debug(message)
+                return (False, message)
 
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
@@ -183,8 +186,10 @@ class BlizzNetwork(MMONetwork):
             self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
+                wowCount = 0
                 for char in retMessage['characters']:
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
+                logger.debug("Updated %s WoW characters" % wowCount)
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
@@ -192,6 +197,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('d3Profiles')
             self.cache['d3Profiles'][userid] = retMessage
             self.setCache('d3Profiles')
+            logger.debug("Updated D3 Profile")
 
         # fetching sc2
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
@@ -199,6 +205,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('sc2Profiles')
             self.cache['sc2Profiles'][userid] = retMessage
             self.setCache('sc2Profiles')
+            logger.debug("Updated SC2 Profile")
 
         return (True, "All resources updated for %s" % userNick)
 
