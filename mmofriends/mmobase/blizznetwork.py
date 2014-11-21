@@ -115,10 +115,12 @@ class BlizzNetwork(MMONetwork):
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
 
+        print self.requestAuthorizationUrl()
+
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
-                'grant_type': 'authorization_code' }
-                # 'code': code}
+                'grant_type': 'authorization_code',
+                'code': code}
 
         new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
         print new_access_token
