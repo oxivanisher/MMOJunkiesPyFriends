@@ -113,7 +113,7 @@ class BlizzNetwork(MMONetwork):
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    def updateAccessToken(self, userid, access_token, code, logger = None):
+    def updateAccessToken(self, userid, access_token, logger = None):
         if not logger:
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
