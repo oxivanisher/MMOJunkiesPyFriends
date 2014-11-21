@@ -250,7 +250,6 @@ def before_request():
 
     if session.get('logged_in'):
         for handle in MMONetworks.keys():
-            print handle
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
                 flash(message, 'error')
@@ -723,9 +722,9 @@ def profile_login():
                 session['nick'] = myUser.nick
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
-                # session['networks'] = []
-                # for net in MMONetworks.keys():
-                #     session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
+                session['networks'] = []
+                for net in MMONetworks.keys():
+                    session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
                 session['requests'] = 0
                 
                 #loading network links:

@@ -86,7 +86,7 @@ class BlizzNetwork(MMONetwork):
         for link in self.getNetworkLinks(self.session['userid']):
             if not link['network_data']:
                 return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick this %s to reauthorize." % self.requestAuthorizationUrl())
-        super(BlizzNetwork, self).loadNetworkToSession()
+        return super(BlizzNetwork, self).loadNetworkToSession()
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
@@ -108,7 +108,6 @@ class BlizzNetwork(MMONetwork):
                 'code': code}
 
         access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
-        # print "access_token", access_token
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
