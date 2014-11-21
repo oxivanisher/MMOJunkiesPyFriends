@@ -83,12 +83,14 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     # Oauth2 helper
-    def requestAuthorizationUrl(self):
-        self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
+    def requestAuthorizationUrl(self, logger = None):
+        if not logger:
+            logger = self.log
+        logger.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
         params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                   'scope': 'wow.profile sc2.profile',
                   'response_type': 'code'}
-        self.log.debug("Generating Authorization Url")
+        logger.debug("Generating Authorization Url")
         return self.battleNet.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
@@ -115,7 +117,7 @@ class BlizzNetwork(MMONetwork):
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
 
-        print self.requestAuthorizationUrl()
+        print self.requestAuthorizationUrl(logger)
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
