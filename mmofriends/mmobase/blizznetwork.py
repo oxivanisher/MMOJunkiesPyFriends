@@ -97,6 +97,7 @@ class BlizzNetwork(MMONetwork):
     def requestAccessToken(self, code):
         # if not self.battleNet:
         #     self.requestAuthorizationUrl()
+        self.getCache('battletags')
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
@@ -202,10 +203,10 @@ class BlizzNetwork(MMONetwork):
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
         if retValue != False:
             if 'battletag' in retMessage:
-                if userid in self.cache['battletags']:
-                    if self.cache['battletags'][userid] != retMessage['battletag']:
-                        self.cache['battletags'][userid] = retMessage['battletag']
-                        self.setCache('battletags')
+                # fuck unicode ...
+                self.cache['battletags'][userid] = retMessage['battletag']
+                self.setCache('battletags')
+
                 userNick = retMessage['battletag']
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
