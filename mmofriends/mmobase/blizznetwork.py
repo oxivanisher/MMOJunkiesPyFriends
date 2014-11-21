@@ -113,12 +113,15 @@ class BlizzNetwork(MMONetwork):
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    def updateAccessToken(self, userid, access_token, logger = None):
+    def updateAccessToken(self, userid, access_token, code, logger = None):
         if not logger:
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
 
-        print self.requestAuthorizationUrl(logger)
+        authUrl = self.requestAuthorizationUrl(logger)
+        r = requests.get(authUrl).json()
+        print r
+        code = ""
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
