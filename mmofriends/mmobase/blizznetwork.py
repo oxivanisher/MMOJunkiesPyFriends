@@ -177,6 +177,13 @@ class BlizzNetwork(MMONetwork):
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
                 logger.debug(message)
+                try:
+                    if retMessage['code'] == 403:
+                        self.updateLink(userid, None)
+                        logger.warning("Removed access token for %s because %s" % (userid, retMessage['detail']))
+                except KeyError:
+                    pass
+                
                 return (False, message)
 
         # fetching wow chars
