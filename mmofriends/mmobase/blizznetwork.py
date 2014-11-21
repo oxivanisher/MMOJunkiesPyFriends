@@ -254,7 +254,7 @@ class BlizzNetwork(MMONetwork):
             if r['code']:
                 link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
                 # self.unlink(self.session['userid'], link.id)
-                self.log.debug("queryBlizzardApi found code: %s" % r['code'])
+                self.log.debug("[%s] queryBlizzardApi found code: %s" % (self.handle, r['code']))
                 with self.app.test_request_context():
                     self.requestAuthorizationUrl()
                     return (False, "<a href='%s'>Please reauthorize this page.</a>" % self.requestAuthorizationUrl())
@@ -291,7 +291,7 @@ class BlizzNetwork(MMONetwork):
         savePath = tmpUrl.replace('/', '-')
         
         if 'internal-record' in origUrl:
-            self.log.debug("Found non existing avatar url")
+            self.log.debug("[%s] Found non existing avatar url" % (self.handle))
             avatarUrl = self.avatarUrl + tmpUrl
         else:
             savePath = origUrl.replace('/', '-')
