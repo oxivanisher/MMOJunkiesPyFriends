@@ -115,22 +115,19 @@ class BlizzNetwork(MMONetwork):
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    def updateAccessToken(self, userid, network_data, logger = None):
-        if not logger:
-            logger = self.log
-        logger.debug("Updating access_token for user %s with code %s" % (userid, network_data['code']))
-
-        data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
-                'scope': 'wow.profile sc2.profile',
-                'grant_type': 'authorization_code',
-                'code': network_data['code']}
-
-        new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
-        print new_access_token
-
-        self.updateLink(userid, json.dumps({'code': code, 'access_token': new_access_token}))
-        return new_access_token
-
+    # #http://us.battle.net/en/forum/topic/14997089672#1
+    # def updateAccessToken(self, userid, network_data, logger = None):
+    #     # blizzard has not implemented something like this :(
+    #     if not logger:
+    #         logger = self.log
+    #     logger.debug("Updating access_token for user %s with code %s" % (userid, network_data['code']))
+    #     data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
+    #             'scope': 'wow.profile sc2.profile',
+    #             'grant_type': 'authorization_code',
+    #             'code': network_data['code']}
+    #     new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
+    #     self.updateLink(userid, json.dumps({'code': code, 'access_token': new_access_token}))
+    #     return new_access_token
 
     # update resource helpers
     def updateBaseResources(self, force = True):
@@ -190,13 +187,13 @@ class BlizzNetwork(MMONetwork):
 
         accessToken = network_data['access_token']
 
-        if background:
-            newAccessToken = self.updateAccessToken(userid, network_data)
-            if not newAccessToken:
-                message = "No accessToken was available to update user %s" % userid
-                return (False, message)
-            else:
-                accessToken = newAccessToken
+        # if background:
+        #     newAccessToken = self.updateAccessToken(userid, network_data)
+        #     if not newAccessToken:
+        #         message = "No accessToken was available to update user %s" % userid
+        #         return (False, message)
+        #     else:
+        #         accessToken = newAccessToken
 
         # fetching battle tag
         self.getCache('battletags')
