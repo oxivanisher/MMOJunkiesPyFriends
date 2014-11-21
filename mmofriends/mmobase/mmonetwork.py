@@ -143,7 +143,7 @@ class MMONetwork(object):
         if not logger:
             logger = self.log
         logger.debug("Updating network link for user %s" % (self.session['nick']))
-        netLink = MMONetLink(self.session['userid'], self.handle, network_data)
+        netLink = MMONetLink(userid, self.handle, network_data)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, userid=userid).first()
         if not ret:
             logger.warning("Unable to update network link for user %s, no existing link found." % userid)
