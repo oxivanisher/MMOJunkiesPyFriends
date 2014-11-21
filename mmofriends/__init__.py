@@ -246,13 +246,13 @@ def before_request():
     try:
         session['requests'] += 1
     except KeyError:
-        pass
+        session['requests'] = 0
 
     if session.get('logged_in'):
         for handle in MMONetworks.keys():
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
-                flash("%s" % (message), 'error')
+                flash(message, 'error')
 
 # main routes
 @app.route('/')
