@@ -56,7 +56,7 @@ class BlizzNetwork(MMONetwork):
             'sc2Rewards': "/sc2/data/rewards"
         }
 
-        # admin methods
+        # admin methods
         self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
         self.adminMethods.append((self.updateAllUserResources, 'Recache all user resources'))
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
@@ -83,22 +83,18 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     # Oauth2 helper
-    def requestAuthorizationUrl(self, logger = None):
-        if not logger:
-            logger = self.log
-
-        logger.debug("Requesting the Authorization URL (Step 1/3)")
+    def requestAuthorizationUrl(self):
+        self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
         params = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                   'scope': 'wow.profile sc2.profile',
                   'response_type': 'code'}
-        logger.debug("Generating Authorization Url")
+        self.log.debug("Generating Authorization Url")
         return self.battleNet.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
         # if not self.battleNet:
         #     self.requestAuthorizationUrl()
-        self.getCache('battletags')
-        self.log.debug("%s is requesting a Access Token (Step 2/3) with code %s" % (self.session['nick'], code))
+        self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
@@ -108,33 +104,18 @@ class BlizzNetwork(MMONetwork):
         access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
         # print "access_token", access_token
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
-        network_data = json.dumps({'code': code, 'access_token': access_token})
-        self.saveLink(network_data)
-        self.setSessionValue(self.linkIdName, network_data)
+        self.saveLink(access_token)
+        self.setSessionValue(self.linkIdName, access_token)
         # self.updateBaseResources(False)
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    # #http://us.battle.net/en/forum/topic/14997089672#1
-    # def updateAccessToken(self, userid, network_data, logger = None):
-    #     # blizzard has not implemented something like this :(
-    #     if not logger:
-    #         logger = self.log
-    #     logger.debug("Updating access_token for user %s with code %s" % (userid, network_data['code']))
-    #     data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
-    #             'scope': 'wow.profile sc2.profile',
-    #             'grant_type': 'authorization_code',
-    #             'code': network_data['code']}
-    #     new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
-    #     self.updateLink(userid, json.dumps({'code': code, 'access_token': new_access_token}))
-    #     return new_access_token
-
-    # update resource helpers
+    # update resource helpers
     def updateBaseResources(self, force = True):
         count = 0
         accessToken = False
         for link in self.getNetworkLinks():
-            accessToken = json.loads(link['network_data'])['access_token']
+            accessToken = link['network_data']
 
         for entry in self.wowDataResourcesList.keys():
             self.forceCacheUpdate(entry)
@@ -161,11 +142,11 @@ class BlizzNetwork(MMONetwork):
         count = 0
         for link in self.getNetworkLinks():
             logger.debug("Updating user resources for userid %s" % link['user_id'])
-            self.updateUserResources(link['user_id'], json.loads(link['network_data']))
+            self.updateUserResources(link['user_id'], link['network_data'])
             count += 1
         return "%s user resources updated" % count
 
-    def updateUserResources(self, userid = None, network_data = None, logger = None):
+    def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
             logger = self.log
 
@@ -178,41 +159,25 @@ class BlizzNetwork(MMONetwork):
         else:
             logger.debug("Background updating the resources for userid %s" % userid)
 
-        if not network_data:
+        if not accessToken:
             if userid != self.session['userid']:
                 link = self.getNetworkLinks(userid)
-                network_data = json.loads(link[0]['network_data'])
+                accessToken = link[0]['network_data']
             else:
-                network_data = json.loads(self.getSessionValue(self.linkIdName))
-
-        accessToken = network_data['access_token']
-
-        # if background:
-        #     newAccessToken = self.updateAccessToken(userid, network_data)
-        #     if not newAccessToken:
-        #         message = "No accessToken was available to update user %s" % userid
-        #         return (False, message)
-        #     else:
-        #         accessToken = newAccessToken
+                accessToken = self.getSessionValue(self.linkIdName)
 
         # fetching battle tag
-        self.getCache('battletags')
         (retValue, retMessage) = self.queryBlizzardApi('/account/user/battletag', accessToken)
         if retValue != False:
+            self.getCache('battletags')
             if 'battletag' in retMessage:
-                # fuck unicode ...
                 self.cache['battletags'][userid] = retMessage['battletag']
                 self.setCache('battletags')
-
                 userNick = retMessage['battletag']
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
                 logger.debug(message)
                 return (False, message)
-        else:
-            message = "Unable to request Battletag for user %s (%s)" % (userid, retMessage)
-            logger.warning(message)
-            return (False, message)
 
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
@@ -326,7 +291,7 @@ class BlizzNetwork(MMONetwork):
             try:
                 avatarFile.retrieve(avatarUrl, outputFilePath)
             except Exception:
-                # BUG: http://us.battle.net/en/forum/topic/14525622754
+                # BUG: http://us.battle.net/en/forum/topic/14525622754
                 avatarUrl = self.avatarUrl + tmpUrl
                 self.log.warning("Not existing avatar! Saving general avatar %s to %s" % (avatarUrl, outputFilePath))
                 avatarFile.retrieve(avatarUrl, outputFilePath)
@@ -468,7 +433,7 @@ class BlizzNetwork(MMONetwork):
         self.getCache('d3Profiles')
 
         for link in self.getNetworkLinks():
-            if json.loads(link['network_data'])['access_token'] == battletag:
+            if link['network_data'] == battletag:
                 battletag = self.cache['battletags'][str(link['user_id'])]
 
         for userid in self.cache['battletags'].keys():
