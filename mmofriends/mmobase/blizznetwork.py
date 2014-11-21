@@ -34,6 +34,7 @@ class BlizzNetwork(MMONetwork):
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
         self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
+        self.loadError = False
 
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
@@ -83,12 +84,12 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     def loadNetworkToSession(self):
-        if not self.getSessionValue('loaded'):
+        if not self.loadError:
             for link in self.getNetworkLinks(self.session['userid']):
                 if not link['network_data']:
-                    self.setSessionValue('loaded', True)
+                    self.loadError = True
                     return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick this %s to reauthorize." % self.requestAuthorizationUrl())
-        super(BlizzNetwork, self).loadNetworkToSession()
+            super(BlizzNetwork, self).loadNetworkToSession()
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
