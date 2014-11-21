@@ -171,8 +171,6 @@ class BlizzNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
-        self.getCache('battletags')
-
         background = True
         if not userid:
             userid = self.session['userid']
@@ -202,8 +200,10 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             self.getCache('battletags')
             if 'battletag' in retMessage:
-                self.cache['battletags'][userid] = retMessage['battletag']
-                self.setCache('battletags')
+                if userid in self.cache['battletags']:
+                    if self.cache['battletags'][userid] != retMessage['battletag']:
+                        self.cache['battletags'][userid] = retMessage['battletag']
+                        self.setCache('battletags')
                 userNick = retMessage['battletag']
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
