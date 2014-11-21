@@ -226,7 +226,7 @@ class BlizzNetwork(MMONetwork):
         return (True, "All resources updated for %s" % userNick)
 
     def updateResource(self, entry, location, accessToken = None):
-        self.log.debug("Updating resource from %s" % (location))
+        self.log.debug("[%s] Updating resource from %s" % (self.handle, location))
         self.getCache(entry)
         # if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300) or len(self.cache[entry]) == 0:
         (resValue, resData)  = self.queryBlizzardApi(location, accessToken)
