@@ -114,15 +114,10 @@ class BlizzNetwork(MMONetwork):
         self.updateUserResources()
         return self.cache['battletags'][self.session['userid']]
 
-    def updateAccessToken(self, userid, access_token, logger = None):
+    def updateAccessToken(self, userid, access_token, code, logger = None):
         if not logger:
             logger = self.log
         logger.debug("Updating access_token for user %s" % userid)
-
-        authUrl = self.requestAuthorizationUrl(logger)
-        r = requests.get(authUrl).json()
-        print r
-        code = ""
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
                 'scope': 'wow.profile sc2.profile',
@@ -132,7 +127,7 @@ class BlizzNetwork(MMONetwork):
         new_access_token = self.battleNet.get_access_token(decoder = json.loads, data=data)
         print new_access_token
 
-        self.updateLink(userid, new_access_token)
+        self.updateLink(userid, json.dumps({'code': code, 'access_token': new_access_token}))
         return new_access_token
 
 
@@ -141,7 +136,7 @@ class BlizzNetwork(MMONetwork):
         count = 0
         accessToken = False
         for link in self.getNetworkLinks():
-            accessToken = link['network_data']
+            accessToken = json.loads(link['network_data'])['access_token']
 
         for entry in self.wowDataResourcesList.keys():
             self.forceCacheUpdate(entry)
@@ -168,13 +163,15 @@ class BlizzNetwork(MMONetwork):
         count = 0
         for link in self.getNetworkLinks():
             logger.debug("Updating user resources for userid %s" % link['user_id'])
-            self.updateUserResources(link['user_id'], link['network_data'])
+            self.updateUserResources(link['user_id'], json.loads(link['network_data'])['access_token'])
             count += 1
         return "%s user resources updated" % count
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
             logger = self.log
+
+        self.getCache('battletags')
 
         background = True
         if not userid:
@@ -467,7 +464,7 @@ class BlizzNetwork(MMONetwork):
         self.getCache('d3Profiles')
 
         for link in self.getNetworkLinks():
-            if link['network_data'] == battletag:
+            if json.loads(link['network_data'])['access_token'] == battletag:
                 battletag = self.cache['battletags'][str(link['user_id'])]
 
         for userid in self.cache['battletags'].keys():
