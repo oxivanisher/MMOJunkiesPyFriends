@@ -250,8 +250,11 @@ def before_request():
 
     if session.get('logged_in'):
         for handle in MMONetworks.keys():
+            messages = []
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
+                messages.append(message)
+            for message in list(set(messages)):
                 flash("%s" % (message), 'error')
 
 # main routes
