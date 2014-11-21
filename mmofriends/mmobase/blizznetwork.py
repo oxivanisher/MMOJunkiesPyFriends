@@ -164,9 +164,9 @@ class BlizzNetwork(MMONetwork):
             userid = self.session['userid']
             userNick = userid
             background = False
-            logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
+            logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
         else:
-            logger.debug("[%s] Background updating the resources for userid %s" % (self.handle, userid))
+            logger.info("[%s] Background updating the resources for userid %s" % (self.handle, userid))
 
         if not accessToken:
             if userid != self.session['userid']:
@@ -183,6 +183,7 @@ class BlizzNetwork(MMONetwork):
                 self.cache['battletags'][userid] = retMessage['battletag']
                 self.setCache('battletags')
                 userNick = retMessage['battletag']
+                logger.info("[%s] Updated battletag " % (self.handle, retMessage['battletag']))
             else:
                 message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
                 logger.debug(message)
@@ -202,10 +203,9 @@ class BlizzNetwork(MMONetwork):
             self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
-                wowCount = 0
                 for char in retMessage['characters']:
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
-                logger.debug("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][userid])))
+                logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][userid]['characters'])))
 
         # fetching d3 profile
         (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
@@ -213,7 +213,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('d3Profiles')
             self.cache['d3Profiles'][userid] = retMessage
             self.setCache('d3Profiles')
-            logger.debug("[%s] Updated D3 Profile" % (self.handle))
+            logger.info("[%s] Updated D3 Profile" % (self.handle))
 
         # fetching sc2
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
@@ -221,7 +221,7 @@ class BlizzNetwork(MMONetwork):
             self.getCache('sc2Profiles')
             self.cache['sc2Profiles'][userid] = retMessage
             self.setCache('sc2Profiles')
-            logger.debug("[%s] Updated SC2 Profile" % (self.handle))
+            logger.info("[%s] Updated SC2 Profile" % (self.handle))
 
         return (True, "All resources updated for %s" % userNick)
 
