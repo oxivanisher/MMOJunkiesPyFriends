@@ -164,11 +164,11 @@ class BlizzNetwork(MMONetwork):
         count = 0
         for link in self.getNetworkLinks():
             logger.debug("Updating user resources for userid %s" % link['user_id'])
-            self.updateUserResources(link['user_id'], json.loads(link['network_data'])['access_token'])
+            self.updateUserResources(link['user_id'], json.loads(link['network_data']))
             count += 1
         return "%s user resources updated" % count
 
-    def updateUserResources(self, userid = None, accessToken = None, logger = None):
+    def updateUserResources(self, userid = None, network_data = None, logger = None):
         if not logger:
             logger = self.log
 
@@ -181,14 +181,14 @@ class BlizzNetwork(MMONetwork):
         else:
             logger.debug("Background updating the resources for userid %s" % userid)
 
-        if not accessToken:
+        if not network_data:
             if userid != self.session['userid']:
                 link = self.getNetworkLinks(userid)
                 network_data = json.loads(link[0]['network_data'])
             else:
                 network_data = json.loads(self.getSessionValue(self.linkIdName))
 
-            accessToken = network_data['access_token']
+        accessToken = network_data['access_token']
 
         if background:
             newAccessToken = self.updateAccessToken(userid, network_data)
