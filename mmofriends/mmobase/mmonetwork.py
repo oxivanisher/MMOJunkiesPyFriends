@@ -139,7 +139,7 @@ class MMONetwork(object):
         db.session.flush()
         db.session.commit()
 
-    def updateLink(self, network_data, userid):
+    def updateLink(self, userid, network_data):
         self.log.debug("Updating network link for user %s" % (self.session['nick']))
         netLink = MMONetLink(self.session['userid'], self.handle, network_data)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, userid=userid).first()
