@@ -18,7 +18,7 @@ log = getLogger(level=logging.INFO)
 
 # flask imports
 try:
-    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify
+    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
 except ImportError:
     log.error("[System] Please install flask")
     sys.exit(2)
@@ -252,7 +252,7 @@ def before_request():
         for handle in MMONetworks.keys():
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
-                flash(message, 'error')
+                flash(Markup(message), 'error')
 
 # main routes
 @app.route('/')

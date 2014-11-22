@@ -12,7 +12,7 @@ import json
 import requests
 import urllib
 
-from flask import current_app
+from flask import current_app, url_for
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
@@ -85,8 +85,150 @@ class BlizzNetwork(MMONetwork):
     def loadNetworkToSession(self):
         for link in self.getNetworkLinks(self.session['userid']):
             if not link['network_data']:
-                return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick this %s to reauthorize." % self.requestAuthorizationUrl())
+                return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick <a href='%s' target='_blank'>this link</a> to reauthorize." % self.requestAuthorizationUrl())
         return super(BlizzNetwork, self).loadNetworkToSession()
+
+    def getPartners(self, **kwargs):
+        self.log.debug("[%s] List all partners for given user" % (self.handle))
+
+        if not self.getSessionValue(self.linkIdName):
+            return (False, False)
+        result = []
+
+        self.getCache('battletags')
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+        self.getCache('d3Profiles')
+
+        try:
+            allLinks = self.getNetworkLinks()
+            for userid in self.cache['battletags'].keys():
+                if str(userid) == str(self.session['userid']):
+                    continue
+
+                myProducts = [{ 'type': 'network',
+                                'name': self.handle,
+                                'title': self.name }]
+                friendImgs = []
+                linkId = self.cache['battletags'][userid]
+
+                # World of warcraft
+                if userid in self.cache['wowProfiles'].keys():
+                    if 'characters' in self.cache['wowProfiles'][userid]:
+                        if self.cache['wowProfiles'][userid]['characters']:
+                            try:
+                                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                                friendImgs.append({ 'type': 'cache',
+                                                    'name': self.cacheWowAvatarFile(bestChar['thumbnail'],
+                                                                                    self.getWowRace(bestChar['race']),
+                                                                                    self.getWowGender(bestChar['gender'])),
+                                                    'title': bestChar['name'] + '@' + bestChar['realm'] })
+                                myProducts.append({ 'type': 'product',
+                                                    'name': 'worldofwarcraft',
+                                                    'title': 'World of Warcraft' })
+                            except KeyError:
+                                pass
+
+                # Starcraft 2
+                if userid in self.cache['sc2Profiles'].keys():
+                    try:
+                        for character in self.cache['sc2Profiles'][userid]['characters']:
+                            friendImgs.append({ 'type': 'cache',
+                                                'name': self.cacheFile(character['avatar']['url']),
+                                                'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
+                        myProducts.append({ 'type': 'product',
+                                            'name': 'starcraft2',
+                                            'title': 'Starcraft 2' })
+                    except KeyError:
+                        pass
+
+                # Diablo 3 heroes
+                if userid in self.cache['d3Profiles'].keys():
+                    try:
+                        if len(self.cache['d3Profiles'][userid]['heroes']) > 0:
+                            myProducts.append({ 'type': 'product',
+                                                'name': 'diablo3',
+                                                'title': 'Diablo 3' })
+                            # friendImgs.append({ 'type': 'product',
+                            #                     'name': 'diablo3',
+                            #                     'title': 'Diablo 3' })
+                    except KeyError:
+                        pass
+
+                result.append({ 'id': linkId,
+                                'mmoid': userid,
+                                'nick': self.cache['battletags'][userid],
+                                'state': 'No info available',
+                                'netHandle': self.handle,
+                                'networkText': self.name,
+                                'networkImgs': myProducts,
+                                'friendImgs': friendImgs
+                            })
+
+            return (True, result)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
+            self.log.warning(message)
+            return (False, message)
+
+    def getPartnerDetails(self, battletag):
+        self.log.debug("List partner details")
+        moreInfo = {}
+
+        self.getCache('battletags')
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+        self.getCache('d3Profiles')
+
+        for link in self.getNetworkLinks():
+            if link['network_data'] == battletag:
+                battletag = self.cache['battletags'][str(link['user_id'])]
+
+        for userid in self.cache['battletags'].keys():
+            if battletag == self.cache['battletags'][userid]:
+                # Starcraft 2
+                if userid in self.cache['sc2Profiles'].keys():
+                    try:
+                        for char in self.cache['sc2Profiles'][userid]['characters']:
+                            clantag = ""
+                            if char['clanTag']:
+                                clantag = "[%s] " % char['clanTag']
+                            self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
+                            self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
+                    except KeyError:
+                        pass
+
+
+                # Diablo 3
+                if userid in self.cache['d3Profiles'].keys():
+                    try:
+                        for hero in self.cache['d3Profiles'][userid]['heroes']:
+                            self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+                    except KeyError:
+                        pass
+
+                # World of Warcraft
+                if userid in self.cache['wowProfiles'].keys():
+                    try:
+                        for char in self.cache['wowProfiles'][userid]['characters']:
+                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s Level %s %s %s %s" % (char['name'],
+                                                                                                char['realm'],
+                                                                                                char['level'],
+                                                                                                self.getWowGender(char['gender']),
+                                                                                                self.getWowRace(char['race']),
+                                                                                                self.getWowClass(char['class'])))
+                        bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
+                    except KeyError:
+                        pass
+        
+        return moreInfo
+
+    def findPartners(self):
+        self.log.debug("[%s] Searching for new partners to play with" % (self.handle))
+        return self.getPartners()
 
     def devTest(self):
         ret = []
@@ -379,144 +521,3 @@ class BlizzNetwork(MMONetwork):
         # unable to locate some prefered char. just return the first one.
         return chars[0]
 
-    def getPartners(self, **kwargs):
-        self.log.debug("[%s] List all partners for given user" % (self.handle))
-
-        if not self.getSessionValue(self.linkIdName):
-            return (False, False)
-        result = []
-
-        self.getCache('battletags')
-        self.getCache('wowProfiles')
-        self.getCache('sc2Profiles')
-        self.getCache('d3Profiles')
-
-        try:
-            allLinks = self.getNetworkLinks()
-            for userid in self.cache['battletags'].keys():
-                if str(userid) == str(self.session['userid']):
-                    continue
-
-                myProducts = [{ 'type': 'network',
-                                'name': self.handle,
-                                'title': self.name }]
-                friendImgs = []
-                linkId = self.cache['battletags'][userid]
-
-                # World of warcraft
-                if userid in self.cache['wowProfiles'].keys():
-                    if 'characters' in self.cache['wowProfiles'][userid]:
-                        if self.cache['wowProfiles'][userid]['characters']:
-                            try:
-                                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                                friendImgs.append({ 'type': 'cache',
-                                                    'name': self.cacheWowAvatarFile(bestChar['thumbnail'],
-                                                                                    self.getWowRace(bestChar['race']),
-                                                                                    self.getWowGender(bestChar['gender'])),
-                                                    'title': bestChar['name'] + '@' + bestChar['realm'] })
-                                myProducts.append({ 'type': 'product',
-                                                    'name': 'worldofwarcraft',
-                                                    'title': 'World of Warcraft' })
-                            except KeyError:
-                                pass
-
-                # Starcraft 2
-                if userid in self.cache['sc2Profiles'].keys():
-                    try:
-                        for character in self.cache['sc2Profiles'][userid]['characters']:
-                            friendImgs.append({ 'type': 'cache',
-                                                'name': self.cacheFile(character['avatar']['url']),
-                                                'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
-                        myProducts.append({ 'type': 'product',
-                                            'name': 'starcraft2',
-                                            'title': 'Starcraft 2' })
-                    except KeyError:
-                        pass
-
-                # Diablo 3 heroes
-                if userid in self.cache['d3Profiles'].keys():
-                    try:
-                        if len(self.cache['d3Profiles'][userid]['heroes']) > 0:
-                            myProducts.append({ 'type': 'product',
-                                                'name': 'diablo3',
-                                                'title': 'Diablo 3' })
-                            # friendImgs.append({ 'type': 'product',
-                            #                     'name': 'diablo3',
-                            #                     'title': 'Diablo 3' })
-                    except KeyError:
-                        pass
-
-                result.append({ 'id': linkId,
-                                'mmoid': userid,
-                                'nick': self.cache['battletags'][userid],
-                                'state': 'No info available',
-                                'netHandle': self.handle,
-                                'networkText': self.name,
-                                'networkImgs': myProducts,
-                                'friendImgs': friendImgs
-                            })
-
-            return (True, result)
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
-            self.log.warning(message)
-            return (False, message)
-
-    def getPartnerDetails(self, battletag):
-        self.log.debug("List partner details")
-        moreInfo = {}
-
-        self.getCache('battletags')
-        self.getCache('wowProfiles')
-        self.getCache('sc2Profiles')
-        self.getCache('d3Profiles')
-
-        for link in self.getNetworkLinks():
-            if link['network_data'] == battletag:
-                battletag = self.cache['battletags'][str(link['user_id'])]
-
-        for userid in self.cache['battletags'].keys():
-            if battletag == self.cache['battletags'][userid]:
-                # Starcraft 2
-                if userid in self.cache['sc2Profiles'].keys():
-                    try:
-                        for char in self.cache['sc2Profiles'][userid]['characters']:
-                            clantag = ""
-                            if char['clanTag']:
-                                clantag = "[%s] " % char['clanTag']
-                            self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
-                            self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
-                    except KeyError:
-                        pass
-
-
-                # Diablo 3
-                if userid in self.cache['d3Profiles'].keys():
-                    try:
-                        for hero in self.cache['d3Profiles'][userid]['heroes']:
-                            self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
-                    except KeyError:
-                        pass
-
-                # World of Warcraft
-                if userid in self.cache['wowProfiles'].keys():
-                    try:
-                        for char in self.cache['wowProfiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s Level %s %s %s %s" % (char['name'],
-                                                                                                char['realm'],
-                                                                                                char['level'],
-                                                                                                self.getWowGender(char['gender']),
-                                                                                                self.getWowRace(char['race']),
-                                                                                                self.getWowClass(char['class'])))
-                        bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
-                    except KeyError:
-                        pass
-        
-        return moreInfo
-
-    def findPartners(self):
-        self.log.debug("[%s] Searching for new partners to play with" % (self.handle))
-        return self.getPartners()
