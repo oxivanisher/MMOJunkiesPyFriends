@@ -88,6 +88,25 @@ class BlizzNetwork(MMONetwork):
                 return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick this %s to reauthorize." % self.requestAuthorizationUrl())
         return super(BlizzNetwork, self).loadNetworkToSession()
 
+    def devTest(self):
+        ret = []
+
+        self.getCache('battletags')
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+        for userid in self.cache['wowProfiles'].keys():
+
+            ret.append("WOW Account: %s" % self.cache['battletags'][userid])
+            for char in self.cache['wowProfiles'][userid]['characters']:
+                ret.append("    WOW Toon: %s@%s" % (char['name'], char['realm']))
+
+            # ret.append("WOW Account: %s" % self.cache['battletags'][userid])
+            # for char in self.cache['sc2Profiles'][userid]['characters']:
+            #     ret.append("    SC2: %s" % (char['name']))
+
+        print json.dumps(self.cache['sc2Profiles'])
+        return '\n'.join(ret)
+
     # Oauth2 helper
     def requestAuthorizationUrl(self):
         self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
@@ -315,46 +334,50 @@ class BlizzNetwork(MMONetwork):
 
         return savePath
 
-    def devTest(self):
-        ret = []
+    # Helpers
+    def getWowRace(self, race):
+        self.getCache('wowCharRaces')
+        for wowRace in self.cache['wowCharRaces']['races']:
+            if wowRace['id'] == race:
+                return wowRace['name']
+        return "Unknown"
 
-        self.getCache('battletags')
-        self.getCache('wowProfiles')
-        self.getCache('sc2Profiles')
-        for userid in self.cache['wowProfiles'].keys():
+    def getWowGender(self, gender):
+        if gender:
+            return "Female"
+        else:
+            return "Male"
 
-            ret.append("WOW Account: %s" % self.cache['battletags'][userid])
-            for char in self.cache['wowProfiles'][userid]['characters']:
-                ret.append("    WOW Toon: %s@%s" % (char['name'], char['realm']))
-
-            # ret.append("WOW Account: %s" % self.cache['battletags'][userid])
-            # for char in self.cache['sc2Profiles'][userid]['characters']:
-            #     ret.append("    SC2: %s" % (char['name']))
-
-        print json.dumps(self.cache['sc2Profiles'])
-        return '\n'.join(ret)
+    def getWowClass(self, charClass):
+        self.getCache('wowCharClasses')
+        for wowClass in self.cache['wowCharClasses']['classes']:
+            if wowClass['id'] == charClass:
+                return wowClass['name']
+        return "Unknown"
 
     def getBestWowChar(self, chars):
-        achievmentPoints = -1
-        preferedChars = []
-        for char in chars:
-            if char['achievementPoints'] > achievmentPoints:
-                preferedChars = [char]
-                achievmentPoints = char['achievementPoints']
-            elif char['achievementPoints'] == achievmentPoints:
-                preferedChars.append(char)
-
         level = -1
+        achievmentPoints = -1
         finalChars = []
-        for char in preferedChars:
-            if char['level'] > level:
-                finalChars = [char]
-            elif char['level'] == level:
+        # get max level
+        for char in chars:
+            if int(char['level']) > level:
+                level = int(char['level'])
+        # get chars with max level
+        for char in chars:
+            if int(char['level']) == level:
                 finalChars.append(char)
-        if len(finalChars) == 0:
-            finalChars = preferedChars
+        # get max achievment points
+        for char in finalChars:
+            if int(char['achievementPoints']) > int(achievmentPoints):
+                achievmentPoints = int(char['achievementPoints'])
+        # get char with highest achievment points
+        for char in finalChars:
+            if int(char['achievementPoints']) == int(achievmentPoints):
+                return char
 
-        return finalChars
+        # unable to locate some prefered char. just return the first one.
+        return chars[0]
 
     def getPartners(self, **kwargs):
         self.log.debug("[%s] List all partners for given user" % (self.handle))
@@ -458,7 +481,10 @@ class BlizzNetwork(MMONetwork):
                 if userid in self.cache['sc2Profiles'].keys():
                     try:
                         for char in self.cache['sc2Profiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "SC 2", "[%s] %s" % (char['clanTag'], char['displayName']))
+                            clantag = ""
+                            if char['clanTag']:
+                                clantag = "[%s] " % char['clanTag']
+                            self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
                             self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
                     except KeyError:
                         pass
@@ -476,14 +502,14 @@ class BlizzNetwork(MMONetwork):
                 if userid in self.cache['wowProfiles'].keys():
                     try:
                         for char in self.cache['wowProfiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s: %s %s lvl: %s" % (char['name'],
-                                                                                             char['realm'],
-                                                                                             char['gender'],
-                                                                                             char['race'],
-                                                                                             char['level']))
-                        chars = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                        for char in chars:
-                            self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']))
+                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s Level %s %s %s %s" % (char['name'],
+                                                                                                char['realm'],
+                                                                                                char['level'],
+                                                                                                self.getWowGender(char['gender']),
+                                                                                                self.getWowRace(char['race']),
+                                                                                                self.getWowClass(char['class'])))
+                        bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
                     except KeyError:
                         pass
         

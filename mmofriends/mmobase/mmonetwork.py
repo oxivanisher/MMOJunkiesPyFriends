@@ -133,9 +133,22 @@ class MMONetwork(object):
         self.log.debug("[%s] Finalize user link to network %s" % (self.handle, self.name))
 
     def saveLink(self, network_data):
-        self.log.debug("[%s] Saving network link for user %s" % (self.handle, self.session['nick']))
-        netLink = MMONetLink(self.session['userid'], self.handle, network_data)
-        db.session.add(netLink)
+        updateLink = False
+
+        ret = MMONetLink.query.filter_by(network_handle=self.handle, user_id=self.session['userid']).first()
+        if ret:
+            if not ret.network_data:
+                updateLink = True
+                
+        if updateLink:
+            self.log.debug("[%s] Updating network link for user %s" % (self.handle, self.session['nick']))
+            ret.network_data = network_data
+            db.session.merge(ret)
+        else:
+            self.log.debug("[%s] Saving network link for user %s" % (self.handle, self.session['nick']))
+            netLink = MMONetLink(self.session['userid'], self.handle, network_data)
+            db.session.add(netLink)
+
         db.session.flush()
         db.session.commit()
 
