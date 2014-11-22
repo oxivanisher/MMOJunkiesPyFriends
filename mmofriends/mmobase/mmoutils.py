@@ -112,6 +112,12 @@ def get_short_duration(age):
     else:
         return '%sy' % (int(age / 31449600))
 
+def convertToInt(s):
+    try:
+        return int(s)
+    except ValueError:
+        return s
+
 # emailer functions
 def load_image_file_to_email(app, msgRoot, filename):
     fp = open(os.path.join(app.root_path, 'static/img/', filename), 'rb')

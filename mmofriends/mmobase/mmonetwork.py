@@ -327,8 +327,14 @@ class MMONetwork(object):
         if ret:
             # self.log.debug("Loading cache: %s" % name)
             try:
-                self.cache[name] = json.loads(ret.cache_data)
-            except ValueError:
+                output_dict = {}
+                for key, value in json.loads(ret.cache_data).iteritems():
+                    output_dict[convertToInt(key)] = value
+                self.cache[name] = output_dict
+
+                # self.cache[name] = json.loads(ret.cache_data)
+            except ValueError as e:
+                print "e", e
                 self.cache[name] = {}
         else:
             # self.log.debug("Setting up new cache: %s" % name)
