@@ -408,7 +408,7 @@ class BlizzNetwork(MMONetwork):
                     if 'characters' in self.cache['wowProfiles'][userid]:
                         if self.cache['wowProfiles'][userid]['characters']:
                             try:
-                                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
+                                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                                 friendImgs.append({ 'type': 'cache',
                                                     'name': self.cacheWowAvatarFile(bestChar['thumbnail'],
                                                                                     self.getWowRace(bestChar['race']),
