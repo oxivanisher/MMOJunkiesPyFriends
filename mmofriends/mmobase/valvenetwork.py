@@ -47,9 +47,9 @@ class ValveNetwork(MMONetwork):
         # dashboard boxes
         # self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
         # self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Steam: Minutes played last two weeks', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Steam: Minutes played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Steam: Users own', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Steam: MMO minutes played last two weeks','template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Steam: MMO minutes played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Steam: MMO users own', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
@@ -492,19 +492,28 @@ class ValveNetwork(MMONetwork):
         for game in self.cache['games']:
             try:
                 if games2weeks[game] > 0:
-                    return2weeks.append({ 'text': self.cache['games'][game]['name'], 'weight': games2weeks[game]})
+                    return2weeks.append({ 'text': self.cache['games'][game]['name'],
+                                          'weight': games2weeks[game],
+                                          'link': { 'href': 'http://store.steampowered.com/app/' + game + '/',
+                                                    'target': '_blank'}})
             except KeyError as e:
                 pass
 
             try:
                 if gamesForever[game] > 0:
-                    returnForever.append({ 'text': self.cache['games'][game]['name'], 'weight': gamesForever[game]})
+                    returnForever.append({ 'text': self.cache['games'][game]['name'],
+                                           'weight': gamesForever[game],
+                                           'link': { 'href': 'http://store.steampowered.com/app/' + game + '/',
+                                                     'target': '_blank'}})
             except KeyError as e:
                 pass
 
             try:
                 if gamesUsers[game] > 0:
-                    returnUsers.append({ 'text': self.cache['games'][game]['name'], 'weight': gamesUsers[game]})
+                    returnUsers.append({ 'text': self.cache['games'][game]['name'],
+                                         'weight': gamesUsers[game],
+                                         'link': { 'href': 'http://store.steampowered.com/app/' + game + '/',
+                                                   'target': '_blank'}})
             except KeyError as e:
                 pass
 
