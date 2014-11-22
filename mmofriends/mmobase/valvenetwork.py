@@ -47,8 +47,8 @@ class ValveNetwork(MMONetwork):
         # dashboard boxes
         # self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
         # self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Played last two weeks', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Minutes played last two weeks', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Minutes played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Users own', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
 
     # steam helper
