@@ -408,10 +408,12 @@ class BlizzNetwork(MMONetwork):
                     if 'characters' in self.cache['wowProfiles'][userid]:
                         if self.cache['wowProfiles'][userid]['characters']:
                             try:
-                                for char in self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
-                                    friendImgs.append({ 'type': 'cache',
-                                                        'name': self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender']),
-                                                        'title': char['name'] + '@' + char['realm'] })
+                                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters']):
+                                friendImgs.append({ 'type': 'cache',
+                                                    'name': self.cacheWowAvatarFile(bestChar['thumbnail'],
+                                                                                    self.getWowRace(bestChar['race']),
+                                                                                    self.getWowGender(bestChar['gender'])),
+                                                    'title': bestChar['name'] + '@' + bestChar['realm'] })
                                 myProducts.append({ 'type': 'product',
                                                     'name': 'worldofwarcraft',
                                                     'title': 'World of Warcraft' })
