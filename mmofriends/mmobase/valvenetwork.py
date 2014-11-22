@@ -45,8 +45,11 @@ class ValveNetwork(MMONetwork):
         self.registerWorker(self.updateUsersOnlineState, 60)
 
         # dashboard boxes
-        self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
-        self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
+        # self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
+        # self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Played last two weeks', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Users own', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
@@ -450,7 +453,76 @@ class ValveNetwork(MMONetwork):
         self.log.debug("Searching for new partners to play with")
         return self.getPartners(unknownOnly=True)
 
+    # Helper
+    def getGameStats(self):
+        self.getCache('users')
+        self.getCache('games')
+
+        games2weeks = {}
+        return2weeks = []
+
+        gamesForever = {}
+        returnForever = []
+
+        gamesUsers = {}
+        returnUsers = []
+        for user in self.cache['users']:
+            for game in self.cache['users'][user]['ownedGames']:
+                if game not in games2weeks:
+                    games2weeks[game] = 0
+                try:
+                    games2weeks[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_2weeks'])
+                except KeyError as e:
+                    pass
+
+                if game not in gamesForever:
+                    gamesForever[game] = 0
+                try:
+                    gamesForever[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_forever'])
+                except KeyError as e:
+                    pass
+
+                if game not in gamesUsers:
+                    gamesUsers[game] = 0
+                try:
+                    gamesUsers[game] += 1
+                except KeyError as e:
+                    pass
+
+        for game in self.cache['games']:
+            try:
+                if games2weeks[game] > 0:
+                    return2weeks.append({ 'text': self.cache['games'][game]['name'], 'weight': games2weeks[game]})
+            except KeyError as e:
+                pass
+
+            try:
+                if gamesForever[game] > 0:
+                    returnForever.append({ 'text': self.cache['games'][game]['name'], 'weight': gamesForever[game]})
+            except KeyError as e:
+                pass
+
+            try:
+                if gamesUsers[game] > 0:
+                    returnUsers.append({ 'text': self.cache['games'][game]['name'], 'weight': gamesUsers[game]})
+            except KeyError as e:
+                pass
+
+        return { 'games2weeks': return2weeks, 'gamesForever': returnForever, 'gamesUsers': returnUsers }
+
     # Dashboard
     def dashboard_online_users(self, request):
         self.log.debug("Dashboard online users")
         return {'message': 'This is a test box'}
+
+    def dashboard_games2weeks(self, request):
+        self.log.debug("Dashboard games2weeks")
+        return self.getGameStats()
+
+    def dashboard_gamesForever(self, request):
+        self.log.debug("Dashboard gamesForever")
+        return self.getGameStats()
+
+    def dashboard_gamesUsers(self, request):
+        self.log.debug("Dashboard gamesUsers")
+        return self.getGameStats()

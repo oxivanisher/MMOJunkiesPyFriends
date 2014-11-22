@@ -1,0 +1,8 @@
+<div id="{{ box.netHandle }}-{{ box.handle }}-content" style="width: 550px; height: 350px;"></div>
+<script type="text/javascript">
+	(function() {
+		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+		$.getJSON( dataUrl ).done( function( data ) {
+			$("#{{ box.netHandle }}-{{ box.handle }}-content").jQCloud( data.{{ box.handle }} );
+		})})();
+</script>

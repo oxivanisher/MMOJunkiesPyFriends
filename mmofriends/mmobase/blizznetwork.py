@@ -85,7 +85,7 @@ class BlizzNetwork(MMONetwork):
     def loadNetworkToSession(self):
         for link in self.getNetworkLinks(self.session['userid']):
             if not link['network_data']:
-                return (False, "Blizzard automatically removes permission to view your data after 30 days. Please klick <a href='%s' target='_blank'>this link</a> to reauthorize." % self.requestAuthorizationUrl())
+                return (False, "Blizzard automatically removes permission to fetch your data after 30 days. Please klick <a href='%s' target='_blank'>this link</a> to reauthorize." % self.requestAuthorizationUrl())
         return super(BlizzNetwork, self).loadNetworkToSession()
 
     def getPartners(self, **kwargs):
@@ -520,4 +520,3 @@ class BlizzNetwork(MMONetwork):
 
         # unable to locate some prefered char. just return the first one.
         return chars[0]
-

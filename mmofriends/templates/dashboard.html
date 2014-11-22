@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
-{% block content %}
-
+{% block content -%}
 	<div class="row">
 	
 		<div class="col-md-12 status">
@@ -10,11 +9,11 @@
 			</div>
 		</div>
 	
-		{% for box in boxes %}
+		{%- for box in boxes -%}
 		<div class="col-md-4 col">
 			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}">
-				
-				<header><table style="width: 100%;">
+				<header>
+					<table style="width: 100%;">
 						<tr>
 							<td style="text-align: left; vertical-align: baseline; font-size: 18px; margin: 5px;">{{ box.settings.title }}</td>
 							<td style="text-align: right; vertical-align: baseline;">
@@ -23,11 +22,11 @@
 								<!-- <a href="javascript:void(0);" class="fa fa-close"></a> -->
 							</td>
 						</tr>
-					</table></header>
-				
-				<section id="{{ box.netHandle }}-{{ box.handle }}-content">
-
-					<p>{% include box.settings.template %}</p>					
+					</table>
+				</header>
+				<section id="{{ box.netHandle }}-{{ box.handle }}-section">
+					{%- include box.settings.template -%}
+				</section>
 					<!--
 					<p>Handle: {{ box.handle }}<br />
 					NetHandle: {{ box.netHandle }}<br />
@@ -39,15 +38,10 @@
 					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
 					<br /><br /><br /></p>
 					-->
-					
-				</section>
-				<footer>
-														
-				</footer>	
-				
+				<footer></footer>	
 			</div>
 		</div>
-		{% endfor %}
+		{%- endfor -%}
 	</div>
 	<!--
 	// <script>
@@ -58,4 +52,4 @@
 	// 	});
 	// </script>
 	-->
-{% endblock %}
+{%- endblock -%}

@@ -892,7 +892,7 @@ def dashboard_method_html(netHandle, methodHandle):
         abort(401)
 
 # JSON API
-@app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST'])
+@app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST', 'GET'])
 def dashboard_method_json(netHandle, methodHandle):
     loggedIn = True
     if not session.get('logged_in'):
