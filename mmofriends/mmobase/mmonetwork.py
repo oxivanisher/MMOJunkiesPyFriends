@@ -186,7 +186,7 @@ class MMONetwork(object):
         else:
             logger.debug("[%s] Getting all network links" % (self.handle))
             logger.debug("blah: %s" % db.session.query(MMONetLink).filter_by(network_handle=self.handle))
-            for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
+            for link in db.session.query(MMONetLink).filter_by(network_handle=str(self.handle)):
                 logger.debug("aa")
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         logger.debug("returning %s" % netLinks)
