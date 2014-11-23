@@ -36,7 +36,7 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
 
         # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+        self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
@@ -362,6 +362,7 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][unicode(userid)] = retMessage
+            print self.cache['wowProfiles'].keys()
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
                 for char in retMessage['characters']:
