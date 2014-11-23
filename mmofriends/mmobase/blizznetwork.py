@@ -362,16 +362,6 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][unicode(userid)] = retMessage
-
-            for char in self.cache['wowProfiles']['1']['characters']:
-                if char['name'] ==  "Cernunnos":
-                    print char['name']
-                    print char['level']
-            for char in retMessage['characters']:
-                if char['name'] ==  "Cernunnos":
-                    print char['name']
-                    print char['level']
-
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
                 for char in retMessage['characters']:
