@@ -174,10 +174,7 @@ class MMONetwork(object):
         for link in self.getNetworkLinks(userId):
             self.setSessionValue(self.linkIdName, link['network_data'])
 
-    def getNetworkLinks(self, userId = None, logger = None):
-        if not logger:
-            logger = self.log
-
+    def getNetworkLinks(self, userId = None):
         netLinks = []
         if userId:
             logger.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
@@ -186,7 +183,7 @@ class MMONetwork(object):
         else:
             logger.debug("[%s] Getting all network links" % (self.handle))
             logger.debug("blah: %s" % db.session.query(MMONetLink).filter_by(network_handle=self.handle))
-            for link in db.session.query(MMONetLink).filter_by(network_handle=str(self.handle)):
+            for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
                 logger.debug("aa")
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         logger.debug("returning %s" % netLinks)
