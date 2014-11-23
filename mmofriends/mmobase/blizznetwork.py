@@ -307,6 +307,7 @@ class BlizzNetwork(MMONetwork):
 
         okCount = 0
         nokCount = 0
+        print self.getNetworkLinks()
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
             if link['network_data']:
