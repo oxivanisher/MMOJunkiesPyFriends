@@ -177,16 +177,16 @@ class MMONetwork(object):
     def getNetworkLinks(self, userId = None):
         netLinks = []
         if userId:
-            logger.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
+            self.log.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
             for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         else:
-            logger.debug("[%s] Getting all network links" % (self.handle))
-            logger.debug("blah: %s" % db.session.query(MMONetLink).filter_by(network_handle=self.handle))
+            self.log.debug("[%s] Getting all network links" % (self.handle))
+            self.log.debug("blah: %s" % db.session.query(MMONetLink).filter_by(network_handle=self.handle))
             for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
-                logger.debug("aa")
+                self.log.debug("aa")
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
-        logger.debug("returning %s" % netLinks)
+        self.log.debug("returning %s" % netLinks)
         return netLinks
 
     def unlink(self, user_id, netLinkId):
