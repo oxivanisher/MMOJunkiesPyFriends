@@ -66,7 +66,7 @@ class BlizzNetwork(MMONetwork):
         self.registerWorker(self.updateAllUserResources, 3600)
 
         # dashboard boxes
-        self.registerDashboardBox(self.dashboard_games2weeks, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_Valve_currently_playing.html'})
+        self.registerDashboardBox(self.dashboard_wowChars, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_jQCloud.html'})
 
         # setup batttleNet service
         self.battleNet = OAuth2Service(
@@ -523,3 +523,18 @@ class BlizzNetwork(MMONetwork):
 
         # unable to locate some prefered char. just return the first one.
         return chars[0]
+
+    # Dashboard
+    def dashboard_wowChars(self, request):
+        self.log.debug("Dashboard wowChars")
+
+        self.getCache('wowProfiles')
+
+        chars = []
+        for profile in self.cache['wowProfiles'].keys():
+            myChar = self.getBestWowChar(self.cache['wowProfiles'][profile]['characters'])
+            chars.append({ 'text': myChar['name'],
+                           'weight': myChar['level'],
+                           'link': { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
+                                     'target': '_blank'}})
+        return { 'wowChars': chars }
