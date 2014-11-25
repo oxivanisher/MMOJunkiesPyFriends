@@ -47,9 +47,9 @@ class ValveNetwork(MMONetwork):
         # dashboard boxes
         # self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
         # self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Steam: MMO minutes played last two weeks','template': 'box_Valve_currently_playing.html', 'loggedin': True})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Steam: MMO minutes played forever', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Steam: MMO users own', 'template': 'box_Valve_currently_playing.html', 'loggedin': True})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Steam: MMO minutes played last two weeks','template': 'box_Valve_currently_playing.html'})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Steam: MMO minutes played forever', 'template': 'box_Valve_currently_playing.html'})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Steam: MMO users own', 'template': 'box_Valve_currently_playing.html'})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
@@ -517,7 +517,9 @@ class ValveNetwork(MMONetwork):
             except KeyError as e:
                 pass
 
-        return { 'games2weeks': return2weeks, 'gamesForever': returnForever, 'gamesUsers': returnUsers }
+        return { 'games2weeks': getHighestRated(return2weeks, 'weight'),
+                 'gamesForever': getHighestRated(returnForever, 'weight'),
+                 'gamesUsers': getHighestRated(returnUsers, 'weight') }
 
     # Dashboard
     def dashboard_online_users(self, request):
