@@ -118,7 +118,7 @@ def convertToInt(s):
     except ValueError:
         return s
 
-def getHighestRated(myList, sortKey, amount = 50):
+def getHighestRated(myList, sortKey, amount = 75):
     return sorted(myList, key=lambda k: k[sortKey])[::-1][:amount]
 
 # emailer functions
