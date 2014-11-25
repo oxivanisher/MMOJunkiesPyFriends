@@ -540,4 +540,4 @@ class BlizzNetwork(MMONetwork):
                                              'target': '_blank'}})
             except KeyError:
                 pass
-        return { 'wowChars': chars }
+        return { 'wowChars': getHighestRated(chars, 'weight') }
