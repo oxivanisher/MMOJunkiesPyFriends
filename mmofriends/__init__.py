@@ -290,7 +290,11 @@ def get_image(imgType, imgId):
         if imgType == 'avatar':
             fileName = MMOFriends[int(imgId)].avatar
         elif imgType == 'network':
-            fileName = MMONetworks[imgId].icon
+            if imgId == 'System':
+                fileName = 'favicon.ico'
+                filePath = os.path.join(app.config['scriptPath'], 'static')
+            else:
+                fileName = MMONetworks[imgId].icon
         elif imgType == 'cache':
             fileName = imgId
         elif imgType == 'flag':
@@ -832,32 +836,14 @@ def dashboard():
     # if not session.get('logged_in'):
     #     abort(401)
 
-    def checkBox(box):
-        show = False
-        loggedIn = True
-        if not session.get('logged_in'):
-            loggedIn = False
-        admin = True
-        if not session.get('admin'):
-            admin = False
-        if not box:
-            return False
-
-        if box['settings']['loggedin'] == loggedIn:
-            show = True
-            if box['settings']['admin'] and not admin:
-                show = False
-
-        return show
-
     boxes = []
     for box in SystemBoxes.keys():
-        if checkBox(SystemBoxes[box]):
+        if checkShowBox(session, SystemBoxes[box]):
             boxes.append(SystemBoxes[box])
     for net in MMONetworks.keys():
         for boxKey in MMONetworks[net].getDashboardBoxes():
             box = MMONetworks[net].getDashboardBox(boxKey)
-            if checkBox(box):
+            if checkShowBox(session, box):
                 boxes.append(box)
 
     return render_template('dashboard.html', boxes = boxes)
@@ -894,25 +880,26 @@ def dashboard_method_html(netHandle, methodHandle):
 # JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST', 'GET'])
 def dashboard_method_json(netHandle, methodHandle):
-    loggedIn = True
-    if not session.get('logged_in'):
-        loggedIn = False
-    admin = True
-    if not session.get('admin'):
-        admin = False
+    # loggedIn = True
+    # if not session.get('logged_in'):
+    #     loggedIn = False
+    # admin = True
+    # if not session.get('admin'):
+    #     admin = False
     box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
-    show = False
-    try:
-        if box['settings']['loggedin'] == loggedIn:
-            show = True
-            if box['settings']['admin'] and not admin:
-                show = False
-    except KeyError:
-        log.warning("[System] Unable to load box %s beacuase %s" % (box, e))
-        pass
+    # show = False
+    # try:
 
-    if show:
+    #     if box['settings']['loggedin'] == loggedIn:
+    #         show = True
+    #         if box['settings']['admin'] and not admin:
+    #             show = False
+    # except KeyError:
+    #     log.warning("[System] Unable to load box %s beacuase %s" % (box, e))
+    #     pass
+
+    if checkShowBox(session, box):
         return jsonify(box['method'](request))
     else:
         return jsonify({'error': True, 'message': 'You are not allowed to request this box'})

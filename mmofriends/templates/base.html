@@ -6,159 +6,60 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="MMOJunkies Friends">
 		<meta name="author" content="Marc Urben">
-
+		{# Favicon -#}
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
+		{# jQuery and jQueryUI -#}
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
-		<!-- <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" /> -->
+		{# <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" /> -#}
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.structure.min.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.theme.min.css') }}" rel="stylesheet" />
-
+		{# Bootstrap -#}
 		<link href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}" rel="stylesheet" media="screen">
 		<script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
-
+		{# Font Awesome -#}
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet" />
-		
+		{# DataTable (will be replaced with inet include) -#}
 		<script src="{{ url_for('static', filename='jquery/jquery.dataTables.min.js') }}"></script>
 		<link href="{{ url_for('static', filename='friendstable.css') }}" rel="stylesheet" media="all" type="text/css" />
 		<script src="{{ url_for('static', filename='friendstable.js') }}"></script>
-
-		<!-- <script src="{{ url_for('static', filename='mmofriends.js') }}"></script> -->
+		{# jQCloud -#}
 		<script src="{{ url_for('static', filename='jquery/jqcloud-1.0.4.min.js') }}"></script>
 		<link href="{{ url_for('static', filename='jquery/jqcloud.css') }}" rel="stylesheet" media="all" type="text/css" />
-
-		<!-- <link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" /> -->
+		{# MMOFriends internal stuff -#}
+		{# <link href="{{ url_for('static', filename='bootstrap/bottombar.css') }}" rel="stylesheet" media="all" type="text/css" /> -#}
 		<link href="{{ url_for('static', filename='mmofriends.css') }}" rel="stylesheet" media="all" type="text/css" />
-
-		<script>
-			$(function() {
-				$( "#flashDialogSuccess" ).dialog({
-					autoOpen: true,
-					dialogClass: 'success',
-					modal: true,
-					open: function(event, ui) {
-						setTimeout(function(){
-						$('#dialog').dialog('close');                
-						}, 5000);
-					},
-					buttons: {
-						Close: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-				$( "#flashDialogError" ).dialog({
-					autoOpen: true,
-					dialogClass: 'error',
-					modal: true,
-					// open: function(event, ui) {
-					// 	setTimeout(function(){
-					// 	$('#dialog').dialog('close');                
-					// 	}, 3000);
-					// },
-					buttons: {
-						Close: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-				$( "#flashDialogInfo" ).dialog({
-					autoOpen: true,
-					dialogClass: 'info',
-					modal: true,
-					open: function(event, ui) {
-						setTimeout(function(){
-						$('#dialog').dialog('close');                
-						}, 5000);
-					},
-					buttons: {
-						Close: function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-				// $( "#loadingOverlay" ).modal({
-				// 	modal: true
-				// });
-				$('ul.nav li.dropdown').hover(function(){
-				       $(this).children('ul.dropdown-menu').slideDown(); 
-				    }, function(){
-				       $(this).children('ul.dropdown-menu').slideUp(); 
-				});
-
-				/* 
-					stoef stuff
-				*/
-
-				// expand / compress dashboard box
-				$('.fa-expand').click(function(){
-					$(this).toggleClass('fa-compress').parents('.col').toggleClass('col-md-8', 200).toggleClass('col-md-4', 200);
-				});
-
-				// close dashboard box
-				$(".fa-close").click(function(){
-					hiddenBox = $(this).parents('.col');
-					hiddenBox.toggle();
-					$('.status').css('visibility','visible').delay(10000).fadeTo(function(){
-						$('.status').css("visibility", "hidden");
-						hiddenBox.remove();
-					});
-				});
-				
-				// undo close dashboard box
-				$(".undo").click(function(){
-					hiddenBox.toggle();
-				});
-
-			});
-            function showImgPopup(imgSrc) {
-            	$('img#popupimg').attr( "src", imgSrc );
-            	$("#imgpopup").show();
-            }
-            function hideImgPopup() {
-            	$("#imgpopup").hide();
-            }
-            function showInfoPopup(infoContentURL) {
-            	$("#infopopup").load( infoContentURL );
-            	$("#infopopup").show();
-            }
-            function hideInfoPopup() {
-            	$("#infopopup").hide();
-            }
-            function popUpChat () {
-            	url = "https://chat.mmojunkies.net/?server=oxi&css=darkness
-						{%- if session.nick -%}
-						&name={{ session.nick }}
-						{%- endif -%}"
-				chatWin = window.open(url, "MMOJunkies Chat", "location=no,directories=no,toolbar=no,status=no,menubar=no,scrollbars=no,width=1000,height=700,resizable=yes");
-				chatWin.focus();
-				return false;
+		<script src="{{ url_for('static', filename='mmofriends.js') }}"></script>
+		<script type="text/javascript">
+			function popUpChat () {
+			    url = "https://chat.mmojunkies.net/?server=oxi&css=darkness
+			            {%- if session.nick -%}
+			            &name={{ session.nick }}
+			            {%- endif -%}"
+			    chatWin = window.open(url, "MMOJunkies Chat", "location=no,directories=no,toolbar=no,status=no,menubar=no,scrollbars=no,width=1000,height=700,resizable=yes");
+			    chatWin.focus();
+			    return false;
 			}
-			$(window).load(function(){
-			   $('#loadingOverlay').fadeOut();
-			   $('#loadingOverlay').modal('hide');
-			});
-			{% if config.GOOGLEANALYTICS %}
-				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-				})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			{% if config.GOOGLEANALYTICS -%}
+			    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-				ga('create', '{{ config.GOOGLEANALYTICS }}', 'auto');
-				ga('send', 'pageview');
-			{% endif %}
+			    ga('create', '{{ config.GOOGLEANALYTICS }}', 'auto');
+			    ga('send', 'pageview');
+			{%- endif %}
 		</script>
 		{%- endblock %}
 	</head>
 	<body>
-		<!-- <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />Loading...</div> -->
+		{# <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />Loading...</div> -#}
 		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none;"><img id="popupimg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D" alt="PopUp"/></span></div>
 		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none;"></span></div>
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="container-fluid">
-			<!-- Brand and toggle get grouped for better mobile display -->
+				{# Brand and toggle get grouped for better mobile display -#}
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 				 	<span class="sr-only">Toggle navigation</span>
@@ -167,24 +68,22 @@
 			        <span class="icon-bar"></span>
 				    </button>
 				    <a class="navbar-brand" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='favicon.ico') }}" class="home_icon" alt="Logo"> MMOFriends</a>
-				    <!-- <span class="glyphicon glyphicon-home"> -->
+				    {#- <span class="glyphicon glyphicon-home"> #}
 				</div>
 
-				<!-- Collect the nav links, forms, and other content for toggling -->
+				{# Collect the nav links, forms, and other content for toggling -#}
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						{% if session.logged_in -%}
-<!-- 						<li class="dropdown">
+						{#
+ 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Friends <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu"> -->
 								<li class="{% if url_for('partner_find') == request.path %}active{% endif %}"><a href="{{ url_for('partner_find') }}"><span class="glyphicon glyphicon-user"></span> Find new friends</a></li>
 								<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Online Friends</a></li>
-<!-- 							</ul>
+ 							</ul>
 						</li>
- -->
-<!-- 						<li class="dropdown">
-
-						</li> -->
+						<li class="dropdown"></li> -#}
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
 					</ul>
@@ -224,8 +123,8 @@
 						<li><a href="{{ url_for('profile_login') }}"><span class="glyphicon glyphicon-off"></span> Login</a></li>
 					{% endif -%}
 					</ul>
-				</div><!-- /.navbar-collapse -->
-			</div><!-- /.container-fluid -->
+				</div>{# /.navbar-collapse #}
+			</div>{# /.container-fluid #}
 		</nav>
 		<div class="container" id="flashMessages">
 			{%- block content %}{% endblock -%}
@@ -257,7 +156,8 @@
 				</div>
 			{% endif -%}
 		{% endwith -%}
-<!-- 		{%- block footer -%}
+		{#
+ 		{%- block footer -%}
 		<div class="bottombar">
 			<div class="fill">
 				<div class="container">
@@ -265,7 +165,8 @@
 				</div>
 			</div>
 		</div>
-		{%- endblock %} -->
+		{%- endblock %}
+		-#}
 		<script>
 			var seen = {};
 			$('.flashMessage').each(function() {
@@ -276,5 +177,5 @@
 			        seen[txt] = true;
 			});
 		</script>
-		</body>
+	</body>
 </html>

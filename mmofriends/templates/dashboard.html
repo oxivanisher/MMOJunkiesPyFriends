@@ -2,24 +2,24 @@
 {% block title %}About{% endblock %}
 {% block content -%}
 	<div class="row">
-	
 		<div class="col-md-12 status">
 			<div class="box">
 				<a href"javascript:void(0);" class="undo">Undo last changes.</a>
 			</div>
 		</div>
-	
-		{%- for box in boxes -%}
+
+	{% for box in boxes -%}
 		<div class="col-md-4 col">
 			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}">
 				<header>
 					<table style="width: 100%;">
 						<tr>
-							<td style="text-align: left; vertical-align: baseline; font-size: 18px; margin: 5px;">{{ box.settings.title }}</td>
+							<td style="text-align: left; vertical-align: baseline; font-size: 18px; margin: 5px;">
+							<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" />{{ box.settings.title }}</td>
 							<td style="text-align: right; vertical-align: baseline;">
-								<!-- <a href="javascript:void(0);" class="fa fa-edit"></a> -->
+								{# <a href="javascript:void(0);" class="fa fa-edit"></a> -#}
 								<a href="javascript:void(0);" class="fa fa-expand"></a>
-								<!-- <a href="javascript:void(0);" class="fa fa-close"></a> -->
+								{# <a href="javascript:void(0);" class="fa fa-close"></a> -#}
 							</td>
 						</tr>
 					</table>
@@ -27,29 +27,29 @@
 				<section id="{{ box.netHandle }}-{{ box.handle }}-section">
 					{%- include box.settings.template -%}
 				</section>
-					<!--
-					<p>Handle: {{ box.handle }}<br />
-					NetHandle: {{ box.netHandle }}<br />
-					template: {{ box.settings.template }}<br />
-					loggedIn: {{ box.settings.loggedin }}<br />
-					admin: {{ box.settings.admin }}<br />
-					development: {{ box.settings.development }}<br />
-					JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
-					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}<br />
-					<br /><br /><br /></p>
-					-->
-				<footer></footer>	
+				{#
+					Handle: {{ box.handle }}
+					NetHandle: {{ box.netHandle }}
+					template: {{ box.settings.template }}
+					loggedIn: {{ box.settings.loggedin }}
+					admin: {{ box.settings.admin }}
+					development: {{ box.settings.development }}
+					JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}
+					HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}
+				-#}
+				<footer></footer>
 			</div>
 		</div>
-		{%- endfor -%}
+	{% endfor -%}
+
 	</div>
-	<!--
-	// <script>
-	// 	$(function() {
-	// 	{% for box in boxes %}
-	// 		$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
-	// 	{% endfor %}
-	// 	});
-	// </script>
-	-->
+	{#-
+	<script>
+		$(function() {
+		{% for box in boxes %}
+			$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+		{% endfor %}
+		});
+	</script>
+	-#}
 {%- endblock -%}

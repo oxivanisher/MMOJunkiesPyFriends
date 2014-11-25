@@ -226,7 +226,7 @@ def createDashboardBox(method, netHandle, handle, settings = {}, data = {}):
 
     newSettings = {}
     newSettings['admin'] = False
-    newSettings['loggedin'] = False
+    newSettings['loggedin'] = None
     newSettings['development'] = False
     newSettings['title'] = "Title %s" % handle
     newSettings['template'] = "box_%s_%s.html" % (netHandle, handle)
@@ -246,3 +246,27 @@ def createDashboardBox(method, netHandle, handle, settings = {}, data = {}):
     box['netHandle'] = netHandle
 
     return box
+
+def checkShowBox(session, box):
+    if not box:
+        return False
+    show = True
+
+    # set them empty for not logged in users -> aka no session vars available
+    loggedIn = True
+    if not session.get('logged_in'):
+        loggedIn = False
+    admin = True
+    if not session.get('admin'):
+        admin = False
+
+    # checking if loggedin is set
+    if box['settings']['loggedin'] is not None:
+        if box['settings']['loggedin'] != loggedIn:
+            show = False
+
+    # if we need to be admin, only show it then
+    if box['settings']['admin'] and not admin:
+        show = False
+
+    return show

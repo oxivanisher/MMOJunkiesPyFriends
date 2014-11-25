@@ -65,6 +65,9 @@ class BlizzNetwork(MMONetwork):
         self.registerWorker(self.updateBaseResources, 10800)
         self.registerWorker(self.updateAllUserResources, 3600)
 
+        # dashboard boxes
+        self.registerDashboardBox(self.dashboard_games2weeks, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_Valve_currently_playing.html'})
+
         # setup batttleNet service
         self.battleNet = OAuth2Service(
             client_id=self.config['apikey'],
