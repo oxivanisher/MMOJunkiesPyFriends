@@ -118,6 +118,9 @@ def convertToInt(s):
     except ValueError:
         return s
 
+def getHighestRated(myList, sortKey, amount = 50):
+    return sorted(myList, key=lambda k: k[sortKey])[::-1][:amount]
+
 # emailer functions
 def load_image_file_to_email(app, msgRoot, filename):
     fp = open(os.path.join(app.root_path, 'static/img/', filename), 'rb')
