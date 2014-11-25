@@ -532,9 +532,12 @@ class BlizzNetwork(MMONetwork):
 
         chars = []
         for profile in self.cache['wowProfiles'].keys():
-            myChar = self.getBestWowChar(self.cache['wowProfiles'][profile]['characters'])
-            chars.append({ 'text': myChar['name'],
-                           'weight': myChar['level'],
-                           'link': { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
-                                     'target': '_blank'}})
+            try:
+                for myChar in self.cache['wowProfiles'][profile]['characters']:
+                    chars.append({ 'text': myChar['name'],
+                                   'weight': myChar['level'],
+                                   'link': { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
+                                             'target': '_blank'}})
+            except KeyError:
+                pass
         return { 'wowChars': chars }
