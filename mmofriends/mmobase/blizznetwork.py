@@ -216,12 +216,7 @@ class BlizzNetwork(MMONetwork):
                 if userid in self.cache['wowProfiles'].keys():
                     try:
                         for char in self.cache['wowProfiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "WoW", "%s@%s Level %s %s %s %s" % (char['name'],
-                                                                                                char['realm'],
-                                                                                                char['level'],
-                                                                                                self.getWowGender(char['gender']),
-                                                                                                self.getWowRace(char['race']),
-                                                                                                self.getWowClass(char['class'])))
+                            self.setPartnerDetail(moreInfo, "WoW", self.getWowCharDescription(char))
                         bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                         self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
                     except KeyError:
@@ -500,6 +495,12 @@ class BlizzNetwork(MMONetwork):
                 return wowClass['name']
         return "Unknown"
 
+    def getWowCharDescription(self, wowChar):
+        return "%s@%s Level %s %s %s %s" % (wowChar['name'], wowChar['realm'], wowChar['level'],
+                                            self.getWowGender(wowChar['gender']),
+                                            self.getWowRace(wowChar['race']),
+                                            self.getWowClass(wowChar['class']))
+
     def getBestWowChar(self, chars):
         level = -1
         achievmentPoints = -1
@@ -537,7 +538,8 @@ class BlizzNetwork(MMONetwork):
                     chars.append({ 'text': myChar['name'],
                                    'weight': myChar['level'],
                                    'link': { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
-                                             'target': '_blank'}})
+                                             'target': '_blank',
+                                             'title': self.getWowCharDescription(myChar) }})
             except KeyError:
                 pass
         return { 'wowChars': getHighestRated(chars, 'weight') }
