@@ -216,7 +216,7 @@ class BlizzNetwork(MMONetwork):
                 if userid in self.cache['wowProfiles'].keys():
                     try:
                         for char in self.cache['wowProfiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "WoW", self.getWowCharDescription(char))
+                            self.setPartnerDetail(moreInfo, "WoW", char['name'] + ": " + self.getWowCharDescription(char))
                         bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                         self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
                     except KeyError:
@@ -496,10 +496,11 @@ class BlizzNetwork(MMONetwork):
         return "Unknown"
 
     def getWowCharDescription(self, wowChar):
-        return "%s@%s Level %s %s %s %s" % (wowChar['name'], wowChar['realm'], wowChar['level'],
+        return "Level %s %s %s %s on %s" % (wowChar['level'],
                                             self.getWowGender(wowChar['gender']),
                                             self.getWowRace(wowChar['race']),
-                                            self.getWowClass(wowChar['class']))
+                                            self.getWowClass(wowChar['class']),
+                                            wowChar['realm'])
 
     def getBestWowChar(self, chars):
         level = -1
