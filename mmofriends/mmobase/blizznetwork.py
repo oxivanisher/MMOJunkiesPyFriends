@@ -123,8 +123,8 @@ class BlizzNetwork(MMONetwork):
                                 bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
                                 friendImgs.append({ 'type': 'cache',
                                                     'name': self.cacheWowAvatarFile(bestChar['thumbnail'],
-                                                                                    self.getWowRace(bestChar['race']),
-                                                                                    self.getWowGender(bestChar['gender'])),
+                                                                                    bestChar['race'],
+                                                                                    bestChar['gender']),
                                                     'title': bestChar['name'] + '@' + bestChar['realm'] })
                                 myProducts.append({ 'type': 'product',
                                                     'name': 'worldofwarcraft',
