@@ -469,7 +469,11 @@ class BlizzNetwork(MMONetwork):
                 # BUG: http://us.battle.net/en/forum/topic/14525622754
                 avatarUrl = self.avatarUrl + tmpUrl
                 self.log.warning("[%s] Not existing avatar! Saving general avatar %s to %s" % (self.handle, avatarUrl, outputFilePath))
-                avatarFile.retrieve(avatarUrl, outputFilePath)
+                try:
+                    avatarFile.retrieve(avatarUrl, outputFilePath)
+                except Exception as e:
+                    self.log.error("[%s] Unable to fetch file from %s to %s: %s" % (self.handle, avatarUrl, outputFilePath, e))
+                
                 # savePath = self.cacheWowAvatarFile('internal-record', race, gender)
 
         return savePath
