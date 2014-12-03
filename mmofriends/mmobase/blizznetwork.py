@@ -482,7 +482,7 @@ class BlizzNetwork(MMONetwork):
                 return wowRace['name']
         return "Unknown"
 
-    def getWowGender(self, gender):
+    def getWowGender(self, gender = False):
         if gender:
             return "Female"
         else:
