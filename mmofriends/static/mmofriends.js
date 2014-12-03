@@ -7,7 +7,8 @@ $('#flashMessages').ready(function(){
         // Set the regex string
         var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
         // Replace plain text links by hyperlinks
-        var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>link</a>");
+        //  target='_blank' to fight link error on battle net
+        var replaced_text = str.replace(regex, "<a href='$1'>link</a>");
         // Echo link
         $(this).html(replaced_text);
     });
@@ -63,10 +64,10 @@ $(function() {
     // $( "#loadingOverlay" ).modal({
     //     modal: true
     // });
-    $('ul.nav li.dropdown').hover(function(){
-           $(this).children('ul.dropdown-menu').slideDown(); 
-        }, function(){
-           $(this).children('ul.dropdown-menu').slideUp(); 
+    // $('ul.nav li.dropdown').hover(function(){
+    //        $(this).children('ul.dropdown-menu').slideDown(); 
+    //     }, function(){
+    //        $(this).children('ul.dropdown-menu').slideUp(); 
     });
 
     /* 
