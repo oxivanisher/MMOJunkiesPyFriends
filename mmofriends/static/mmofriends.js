@@ -68,7 +68,7 @@ $(function() {
     //        $(this).children('ul.dropdown-menu').slideDown(); 
     //     }, function(){
     //        $(this).children('ul.dropdown-menu').slideUp(); 
-    });
+    // });
 
     /* 
         stoef stuff
