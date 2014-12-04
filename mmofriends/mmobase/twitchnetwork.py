@@ -73,7 +73,6 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
-                'scope': 'user_read channel_read',
                 'grant_type': 'authorization_code',
                 'code': code}
 
