@@ -30,7 +30,7 @@ class TwitchNetwork(MMONetwork):
     def __init__(self, app, session, handle):
         super(TwitchNetwork, self).__init__(app, session, handle)
         # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+        self.setLogLevel(logging.DEBUG)
 
         # admin methods
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
@@ -69,6 +69,7 @@ class TwitchNetwork(MMONetwork):
     def requestAccessToken(self, code):
         # if not self.twitchApi:
         #     self.requestAuthorizationUrl()
+        self.log.debug("recieved code: %s" % code)
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
