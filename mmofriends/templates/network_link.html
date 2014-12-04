@@ -21,7 +21,7 @@
 					<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.description }}" />
 				</td>
 				<td style="vertical-align: top;">
-					<h4>{{ net.name }}: {{ net.description }}</h4>
+					<h4>{{ net.name }} {{ net.description }}</h4>
 					{%- if net.linkNetwork.dropdown -%}
 						<table>
 							<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
@@ -44,7 +44,10 @@
 					{%- elif net.linkNetwork.oid -%}
 						<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
 					{%- elif net.linkNetwork.link -%}
-						<a href="{{ net.linkNetwork.link.url }}"><img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/> {{ net.linkNetwork.link.comment }}</a>
+						<a href="{{ net.linkNetwork.link.url }}">
+						{%- if net.linkNetwork.link.image -%}
+							<img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/>
+						{% endif %} {{ net.linkNetwork.link.comment }}</a>
 					{%- elif net.linkNetwork.text -%}
 						{{ net.linkNetwork.text }}
 	        		{% endif %}
@@ -60,11 +63,9 @@
 <h3>Linked Networks</h3>
 <ul>
 {% for net in linkedNetworks %}
-<li><a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}"
-       title="Unlink {{ net.name }}: {{ net.description }}"><img
-       src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}"
-	   class="partner_list_icon" title="{{ net.name }}"
-	   />{{ net.name }}: {{ net.description }} since {{ net.linked_date }}</a></li>
+<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="" />
+	{{- net.name }} {{ net.description }}
+	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}">Unlink</a></li>
 {% endfor %}
 </ul>
 {% endif %}

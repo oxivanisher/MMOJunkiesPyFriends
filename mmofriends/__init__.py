@@ -223,17 +223,20 @@ background_worker.delay()
 @app.errorhandler(404)
 def not_found(error):
     flash("Page not found!", 'error')
-    return render_template('profile_login.html'), 404
+    # return render_template('profile_login.html'), 404
+    return redirect(url_for('index'))
 
 @app.errorhandler(401)
 def not_found(error):
-    # flash("Unauthorized!", 'error')
-    return render_template('profile_login.html'), 401
+    flash("Unauthorized request", 'error')
+    # return render_template('profile_login.html'), 401
+    return redirect(url_for('index'))
 
 @app.errorhandler(403)
 def not_found(error):
-    flash("Forbidden!", 'error')
-    return render_template('profile_login.html'), 403
+    flash("Forbidden request", 'error')
+    # return render_template('profile_login.html'), 403
+    return redirect(url_for('index'))
 
 # app routes
 @app.before_first_request
@@ -535,7 +538,11 @@ def oauth2_login(netHandle):
     log.debug("[System] OpenID2 login for MMONetwork %s from user %s" % (netHandle, session['nick']))
     # print "request.args", request.args
     # print "code", request.args.get("code")
-    name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
+    try:
+        name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
+    except KeyError:
+        log.warning("[System] OpenID2 login failes because MMONetwork %s was not found" % (netHandle))
+        return redirect(url_for('index'))
     # for arg in request.args:
     #     print arg, request.args[arg]
     # print "requestAccessToken returned:", name
@@ -609,7 +616,8 @@ def profile_register():
                     flash("Please check your mails at %s" % newUser.email, 'info')
                 else:
                     flash("Error sending the email to you.", 'error')
-                return redirect(url_for('profile_login'))
+                # return redirect(url_for('profile_login'))
+                return redirect(url_for('dashboard'))
 
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
@@ -689,7 +697,8 @@ def profile_verify(userId, verifyKey):
         if verifyUser.veryfied:
             # db.session.expire(verifyUser)
             flash("Verification ok. Please log in.", 'success')
-            return redirect(url_for('profile_login'))
+            # return redirect(url_for('profile_login'))
+            return redirect(url_for('dashboard'))
         else:
             flash("Verification NOT ok. Please try again.", 'error')
     # db.session.expire(verifyUser)

@@ -51,6 +51,9 @@ http://flask.pocoo.org/snippets/42/
 - TS3: Display DND (not only online and offline)
 - 
 
+# Twitch URL
+https://github.com/justintv/Twitch-API/blob/master/authentication.md
+
 # start redis server on osx
 sudo redis-server /opt/local/etc/redis.conf
 
