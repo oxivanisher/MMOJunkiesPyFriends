@@ -541,8 +541,10 @@ def oauth2_login(netHandle):
     try:
         name = MMONetworks[netHandle].requestAccessToken(request.args.get("code"))
     except KeyError:
-        log.warning("[System] OpenID2 login failes because MMONetwork %s was not found" % (netHandle))
+        log.warning("[System] OpenID2 login failed because MMONetwork %s was not found" % (netHandle))
         return redirect(url_for('index'))
+    except Exception as e:
+        log.error("[System] OpenID2 login for %s failed because: %s" % (netHandle, e))
     # for arg in request.args:
     #     print arg, request.args[arg]
     # print "requestAccessToken returned:", name
