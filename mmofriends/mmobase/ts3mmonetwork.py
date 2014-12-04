@@ -22,9 +22,6 @@ class TS3Network(MMONetwork):
     # class overwrites
     def __init__(self, app, session, handle):
         super(TS3Network, self).__init__(app, session, handle)
-
-        self.description = "Team Speak 3 is like skype for gamers."
-
         # activate debug while development
         # self.setLogLevel(logging.DEBUG)
 
@@ -302,7 +299,7 @@ class TS3Network(MMONetwork):
                 pass
 
             # Get channel details
-            channelName = self.moreInfo
+            channelName = self.description
             channelIcon = None
             try:
                 for channel in self.cache['serverInfo']['channelList']:
@@ -546,8 +543,8 @@ class TS3Network(MMONetwork):
             for serverData in result.data:
                 if int(serverData['virtualserver_id']) == self.config['serverid']:
                     self.cache['serverInfo']['serverInfo'] = serverData
-                    self.setNetworkMoreInfo(serverData['virtualserver_name'])
-                    logger.info("[%s] Connected to: %s" % (self.handle, self.moreInfo))
+                    self.description = serverData['virtualserver_name']
+                    logger.info("[%s] Connected to: %s" % (self.handle, self.description))
                     self.setCache('serverInfo')
 
             self.connected = True

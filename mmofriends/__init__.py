@@ -14,6 +14,7 @@ from mmobase.mmoutils import *
 from mmobase.ts3mmonetwork import *
 from mmobase.valvenetwork import *
 from mmobase.blizznetwork import *
+from mmobase.twitchnetwork import *
 log = getLogger(level=logging.INFO)
 
 # flask imports
@@ -326,7 +327,6 @@ def admin_system_status():
         loadedNets.append({ 'handle': handle,
                             'name': network.name,
                             'className': network.__class__.__name__,
-                            'moreInfo': network.moreInfo,
                             'description': network.description })
 
     loadedNets = []
@@ -335,7 +335,6 @@ def admin_system_status():
         loadedNets.append({ 'handle': handle,
                             'name': network.name,
                             'className': network.__class__.__name__,
-                            'moreInfo': network.moreInfo,
                             'description': network.description })
     registredUsers = []
     with app.test_request_context():
@@ -455,13 +454,13 @@ def network_link():
             return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
                                                                         'handle': net.handle,
                                                                         'name': net.name,
-                                                                        'moreInfo': net.moreInfo})
+                                                                        'description': net.description})
         elif request.form['do'] == 'finalize':
             if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
-                flash('Successfully linked to network %s' % net.moreInfo, 'success')
+                flash('Successfully linked to network %s' % net.description, 'success')
                 return redirect(url_for('network_link'))
             else:
-                flash('Unable to link network %s. Please try again.' % net.moreInfo, 'error')
+                flash('Unable to link network %s. Please try again.' % net.description, 'error')
                 return redirect(url_for('network_link'))
         else:
             abort(404)
@@ -472,7 +471,7 @@ def network_link():
             netInfo = MMONetworks[net]
             for link in fetchNetworkLinksData[net]:
                 linkedNetworks.append({'name': netInfo.name,
-                                       'moreInfo': netInfo.moreInfo,
+                                       'description': netInfo.description,
                                        'handle': netInfo.handle,
                                        'icon': netInfo.icon,
                                        'network_data': link['network_data'],
@@ -487,7 +486,6 @@ def network_link():
                                   'name': net.name,
                                   'handle': net.handle,
                                   'description': net.description,
-                                  'moreInfo': net.moreInfo,
                                   'linkNetwork': net.getLinkHtml() })
         return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
 

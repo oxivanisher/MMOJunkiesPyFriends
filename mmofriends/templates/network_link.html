@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if doLinkReturn %}
-	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.moreInfo }}</h3>
+	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.description }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 		<input type="hidden" name="do" value="finalize" />
@@ -21,7 +21,7 @@
 					<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.description }}" />
 				</td>
 				<td style="vertical-align: top;">
-					<h4>{{ net.name }}: {{ net.moreInfo }}</h4>
+					<h4>{{ net.name }}: {{ net.description }}</h4>
 					{%- if net.linkNetwork.dropdown -%}
 						<table>
 							<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
@@ -61,10 +61,10 @@
 <ul>
 {% for net in linkedNetworks %}
 <li><a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}"
-       title="Unlink {{ net.name }}: {{ net.moreInfo }}"><img
+       title="Unlink {{ net.name }}: {{ net.description }}"><img
        src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}"
 	   class="partner_list_icon" title="{{ net.name }}"
-	   />{{ net.name }}: {{ net.moreInfo }} since {{ net.linked_date }}</a></li>
+	   />{{ net.name }}: {{ net.description }} since {{ net.linked_date }}</a></li>
 {% endfor %}
 </ul>
 {% endif %}

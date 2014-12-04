@@ -62,8 +62,7 @@ class MMONetwork(object):
         self.log = logging.getLogger(__name__ + "." + self.handle.lower())
         self.log.info("[%s] Initializing MMONetwork %s" % (self.handle, self.name))
 
-        self.description = "Unset"
-        self.moreInfo = 'NoMoreInfo'
+        self.description = self.config['description']
         self.varsToSave = []
         self.lastRefreshDate = 0
         self.backgroundWorkerTime = 0
@@ -245,9 +244,6 @@ class MMONetwork(object):
         if avatarName[0] == '/':
             avatarName = avatarName[1:]
         myDict['avatar'] = avatarName
-
-    def setNetworkMoreInfo(self, moreInfo):
-        self.moreInfo = moreInfo
 
     def admin(self):
         self.log.debug("[%s] Loading admin stuff" % (self.handle))

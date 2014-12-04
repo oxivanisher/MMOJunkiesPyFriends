@@ -16,7 +16,6 @@
 			<th>Class</th>
 			<th>Handle</th>
 			<th>Name</th>
-			<th>More Info</th>
 			<th>Description</th>
 		</tr>
 	</thead>
@@ -27,7 +26,6 @@
 			<td>{{ net.className }}</td>
 			<td>{{ net.handle }}</td>
 			<td><a href="{{ url_for('network_admin', networkHandle=net.handle) }}">{{ net.name }}</a></td>
-			<td>{{ net.moreInfo }}</td>
 			<td>{{ net.description }}</td>
 		</tr>
 		{% endfor %}
