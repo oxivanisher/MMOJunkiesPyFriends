@@ -545,7 +545,7 @@ def oauth2_login(netHandle):
         return redirect(url_for('index'))
     except Exception as e:
         log.error("[System] OpenID2 login for user %s and MMONetwork %s failed because: %s (%s)" % (session['nick'], netHandle, request.args.get("error_description"), request.args.get("error")))
-        flash("Unable to link network. The administrator was informed of this bug.", 'error')
+        flash("Unable to link network %s. The administrator was informed of this bug." % netHandle, 'error')
         return redirect(url_for('index'))
     # for arg in request.args:
     #     print arg, request.args[arg]
