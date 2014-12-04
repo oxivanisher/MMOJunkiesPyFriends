@@ -16,18 +16,6 @@ from mmoutils import *
 from mmouser import *
 from mmofriends import db
 
-# class MMONetworkProduct(object):
-
-#     def __init__(self, name):
-#         self.log = logging.getLogger(__name__)
-#         self.log.debug("Initializing MMONetwork product %s" % name)
-#         self.name = name
-#         self.fields = []
-
-#     def addField(self, name, comment = "", fieldType = str):
-#         self.log.debug("Add a field with name, comment and fieldType")
-#         self.fields.append((name, fieldType))
-
 class MMONetworkCache(db.Model):
     __tablename__ = 'mmonetcache'
     
@@ -57,35 +45,6 @@ class MMONetworkCache(db.Model):
     def age(self):
         return int(time.time()) - self.last_update
 
-# class MMONetworkItemCache(db.Model):
-#     __tablename__ = 'mmonetitemcache'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     network_handle = db.Column(db.String(20))
-#     entry_name = db.Column(db.String(20))
-#     item_name = db.Column(db.String(20))
-#     last_update = db.Column(db.Integer)
-#     cache_data = db.Column(db.Text)
-
-#     def __init__(self, network_handle, entry_name, item_name, cache_data = ""):
-#         self.network_handle = network_handle
-#         self.entry_name = entry_name
-#         self.item_name = item_name
-#         self.last_update = 0
-#         self.cache_data = cache_data
-
-#     def __repr__(self):
-#         return '<MMONetworkItemCache %r>' % self.id
-
-#     def get(self):
-#         return json.loads(self.cache_data)
-
-#     def set(self, cache_data):
-#         self.cache_data = json.dumps(cache_data)
-
-#     def age(self):
-#         return int(time.time()) - self.last_update
-
 class MMONetwork(object):
 
     def __init__(self, app, session, handle):
@@ -113,8 +72,6 @@ class MMONetwork(object):
         self.backgroundTasks = []
         self.dashboardBoxes = {}
         self.cache = {}
-
-        # self.products = self.getProducts() #Fields: Name, Type (realm, char, comment)
 
     def setLogLevel(self, level):
         self.log.info("[%s] Setting loglevel to %s" % (self.handle, level))
@@ -444,34 +401,6 @@ class MMONetwork(object):
         self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))
 
-    # Dashboard methods
-    # def registerDashboardBox(self, method, handle, settings = {}):
-    #     self.log.info("%s Registered dashboard box %s" % (self.handle, method.func_name))
-    #     self.dashboardBoxes[handle] = {}
-    #     self.dashboardBoxes[handle]['method'] = method
-    #     self.dashboardBoxes[handle]['handle'] = handle
-
-    #     newSettings = {}
-    #     newSettings['admin'] = False
-    #     newSettings['loggedin'] = False
-    #     newSettings['development'] = False
-    #     newSettings['title'] = "Title %s" % handle
-    #     newSettings['template'] = "box_%s_%s.html" % (self.handle, handle)
-
-    #     if 'template' in settings:
-    #         newSettings['template'] = settings['template']
-    #     if 'admin' in settings:
-    #         newSettings['admin'] = settings['admin']
-    #     if 'loggedin' in settings:
-    #         newSettings['loggedin'] = settings['loggedin']
-    #     if 'development' in settings:
-    #         newSettings['development'] = settings['development']
-    #     if 'title' in settings:
-    #         newSettings['title'] = settings['title']
-
-    #     self.dashboardBoxes[handle]['settings'] = newSettings
-    #     self.dashboardBoxes[handle]['netHandle'] = self.handle
-
     def registerDashboardBox(self, method, handle, settings = {}):
         self.dashboardBoxes[handle] = createDashboardBox(method, self.handle, handle, settings)
 
@@ -485,60 +414,3 @@ class MMONetwork(object):
             return self.dashboardBoxes[handle]
         else:
             return None
-
-    # # MMONetworkItemCache methods
-    # def getItemCache(self, name, item):
-    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
-    #     if not name in self.cache.keys():
-    #         self.cache[name] = {}
-    #     if ret:
-    #         self.log.debug("Loading cache item %s>%s from database" % (name, item))
-    #         self.cache[name][item] = json.loads(ret.cache_data)
-    #     else:
-    #         self.log.debug("Setting up new cache named %s>%s" % (name, item))
-    #         self.cache[name][item] = {}
-
-    # def setItemCache(self, name, item):
-    #     self.log.debug("Saving cache item named %s>%s" % (name, item))
-    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
-    #     if ret:
-    #         ret.set(self.cache[name][item])
-    #     else:
-    #         ret = MMONetworkItemCache(self.handle, name)
-    #         ret.set(self.cache[name][item])
-    #     ret.last_update = int(time.time())
-    #     db.session.add(ret)
-    #     db.session.commit()
-
-    # def getItemCacheAge(self, name, item):
-    #     self.log.debug("Getting age of cache item %s>%s" % (name, item))
-    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
-    #     if not ret:
-    #         return int(time.time())
-    #     return ret.last_update
-
-    # def forceItemCacheUpdate(self, name, item):
-    #     self.log.debug("Forcing cache item %s>%s to update" % (name, item))
-    #     ret = MMONetworkItemCache.query.filter_by(network_handle=self.handle, entry_name=name, item_name=item).first()
-    #     if ret:
-    #         self.cache[name][item] = json.loads(ret.cache_data)
-    #     else:
-    #         self.cache[name][item] = {}
-    #     ret.last_update = 0
-    #     db.session.add(ret)
-    #     db.session.commit()
-        
-    # saver and loader methods
-    # def registerToAutosaveAndLoad(self, var, fileName, default):
-    #     self.log.debug("Registring %s to save on exit." % fileName)
-    #     self.varsToSave.append((var, fileName, default))
-
-    # def loadFromSave(self):
-    #     self.log.debug("MMONetwork loading data from file")
-    #     for var, fileName, default in self.varsToSave:
-    #         var = loadJSON(self.handle, fileName, default)
-
-    # def saveAtExit(self):
-    #     self.log.debug("MMONetwork saving data on exit")
-    #     for var, fileName, default in self.varsToSave:
-    #         saveJSON(self.handle, fileName, var)
