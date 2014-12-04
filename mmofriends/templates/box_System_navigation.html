@@ -1,6 +1,7 @@
 <ul>
 <li><a href="{{ url_for('about') }}">&Uuml;ber</a></li>
 <li><a href="{{ url_for('network_link') }}">(Un)link Network</a></li>
-<li><a href="{{ url_for('profile_show') }}">Profil</a></li>
+<li><a href="{{ url_for('profile_show') }}">Profil Einstellungen</a></li>
+<li><a href="{{ url_for('partner_show', partnerId=session.userid) }}">Gamer Profil</a></li>
 <li><a href="http://open.soundrop.fm/s/XwG6lvAe96XtrMLG" target="_blank">Radio (Spotify und Deezer)</a></li>
 </ul>

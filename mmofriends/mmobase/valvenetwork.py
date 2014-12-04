@@ -22,13 +22,11 @@ class ValveNetwork(MMONetwork):
 
     def __init__(self, app, session, handle):
         super(ValveNetwork, self).__init__(app, session, handle)
-
-        self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
-        self.description = "Steam network from Valve"
-        self.maxUpdateUsers = 99
-
         # activate debug while development
         # self.setLogLevel(logging.DEBUG)
+
+        self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
+        self.maxUpdateUsers = 99
 
         self.onlineStates = {}
         self.onlineStates[0] = "Offline"

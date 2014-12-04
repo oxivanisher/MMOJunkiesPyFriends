@@ -76,7 +76,7 @@ $(function() {
 
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
-        $(this).toggleClass('fa-compress').parents('.col').toggleClass('col-md-8', 200).toggleClass('col-md-4', 200);
+        $(this).parents('.col').toggleClass('col-md-4 col-md-8', 200);
     });
 
     // close dashboard box

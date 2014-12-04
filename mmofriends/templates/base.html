@@ -105,7 +105,8 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu">
-								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Profile Settings</a></li>
+								<li class="{% if url_for('partner_show', partnerId=session.userid) == request.path %}active{% endif %}"><a href="{{ url_for('partner_show', partnerId=session.userid) }}"><span class="glyphicon glyphicon-user"></span> Gamer Profile</a></li>
 
 								<li class="divider"></li>
 
