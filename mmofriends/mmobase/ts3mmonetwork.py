@@ -529,7 +529,7 @@ class TS3Network(MMONetwork):
                     return False
                     
                 if not self.server.login(self.config['username'], self.config['password']):
-                    loggerlogger.warning("[%s] TS3 Server connection error: Unable to login" % (self.handle))
+                    logger.warning("[%s] TS3 Server connection error: Unable to login" % (self.handle))
                     return False
 
             except ts3.ConnectionError as e:
