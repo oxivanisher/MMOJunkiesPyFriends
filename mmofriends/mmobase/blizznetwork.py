@@ -261,7 +261,7 @@ class BlizzNetwork(MMONetwork):
         #     self.requestAuthorizationUrl()
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
-        data = {'redirect_uri': '%s/Network/Oauth2/Login/Blizz' % self.app.config['WEBURL'],
+        data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
                 'scope': 'wow.profile sc2.profile',
                 'grant_type': 'authorization_code',
                 'code': code}
