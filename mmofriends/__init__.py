@@ -271,7 +271,7 @@ def about():
 @app.route('/Development')
 def dev():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
     if not session.get('admin'):
         log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
@@ -544,7 +544,7 @@ def oauth2_login(netHandle):
         log.warning("[System] OpenID2 login failed because MMONetwork %s was not found" % (netHandle))
         return redirect(url_for('index'))
     except Exception as e:
-        log.error("[System] OpenID2 login for user %s and MMONetwork %s failed because: %s (%s)\n%s" % (session['nick'], netHandle, request.args.get("error_description"), request.args.get("error"), request.args))
+        log.error("[System] OpenID2 login for user %s and MMONetwork %s failed because: %s (%s)\n%s\n%s" % (session['nick'], netHandle, request.args.get("error_description"), request.args.get("error"), request.args, e))
         flash("Unable to link network %s. The administrator was informed of this bug." % netHandle, 'error')
         return redirect(url_for('index'))
     # for arg in request.args:

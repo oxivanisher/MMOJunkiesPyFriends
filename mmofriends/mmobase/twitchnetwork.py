@@ -36,16 +36,18 @@ class TwitchNetwork(MMONetwork):
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
 
         # background updater methods
-        # self.registerWorker(self.updateBaseResources, 10800)
+        self.registerWorker(self.updateAllUserResources, 60)
 
         # dashboard boxes
         # self.registerDashboardBox(self.dashboard_liveStreams, 'liveStreams', {'title': 'Currently live','template': 'box_jQCloud.html'})
 
         # setup twitch service
+        self.baseUrl = 'https://api.twitch.tv/kraken'
         self.twitchApi = OAuth2Service(
             client_id=self.config['apikey'],
             client_secret=self.config['apisecret'],
-            authorize_url='https://api.twitch.tv/kraken/oauth2/authorize')
+            authorize_url='%s/oauth2/authorize' % self.baseUrl,
+            access_token_url='%s/oauth2/token' % self.baseUrl)
 
     # overwritten class methods
     def getLinkHtml(self):
@@ -67,8 +69,6 @@ class TwitchNetwork(MMONetwork):
         return self.twitchApi.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
-        # if not self.twitchApi:
-        #     self.requestAuthorizationUrl()
         self.log.debug("recieved code: %s" % code)
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
@@ -80,6 +80,70 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
-        # self.updateBaseResources(False)
-        # self.updateUserResources()
-        # return self.cache['battletags'][unicode(self.session['userid'])]
+        self.updateUserResources()
+        self.getCache("channels")
+        return self.cache['channels'][self.session['userid']]['display_name']
+
+    # twitch api methods
+    def queryTwitchApi(self, what, accessToken = None):
+        self.log.debug("[%s] Query Twitch API for %s" % (self.handle, what))
+        if not accessToken:
+            accessToken = self.getSessionValue(self.linkIdName)
+
+        headers = {'Accept': 'application/vnd.twitchtv.v2+json',
+                   'Authorization': 'OAuth %s' % accessToken}
+        r = requests.get(self.baseUrl + what, headers=headers).json()
+        return (True, r)
+
+    def updateUserResources(self, userid = None, accessToken = None, logger = None):
+        if not logger:
+            logger = self.log
+
+        background = True
+        if not userid:
+            userid = self.session['userid']
+            background = False
+            logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
+        else:
+            logger.info("[%s] Background updating the resources for userid %s" % (self.handle, userid))
+
+        if not accessToken:
+            if userid != self.session['userid']:
+                link = self.getNetworkLinks(userid)
+                accessToken = link[0]['network_data']
+            else:
+                accessToken = self.getSessionValue(self.linkIdName)
+
+        self.log.debug("[%s] Fetching channel for %s" % (self.handle, userid))
+        self.getCache("channels")
+        (ret, channel) = self.queryTwitchApi("/channel", accessToken)
+        if ret and len(channel):
+            self.cache['channels'][userid] = channel
+            self.setCache("channels")
+            self.log.info("[%s] Fetched channel for %s" % (self.handle, userid))
+            if 'logo' in channel:
+                self.cacheFile(channel['logo'])
+
+        return (True, "All resources updated for %s" % self.cache['channels'][userid]['display_name'])
+
+    # background worker only
+    def updateAllUserResources(self, logger = None):
+        if not logger:
+            logger = self.log
+
+        okCount = 0
+        nokCount = 0
+        for link in self.getNetworkLinks():
+            logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
+            if link['network_data']:
+                self.updateUserResources(link['user_id'], link['network_data'])
+                okCount += 1
+            else:
+                nokCount += 1
+        return "%s user resources updated, %s ignored" % (okCount, nokCount)
+
+    def devTest(self):
+        ret = []
+        ret.append("netLinks: %s" % self.getSessionValue(self.linkIdName))
+        ret.append("updateUserResources: %s" % self.updateUserResources())
+        return '\n'.join(ret)
