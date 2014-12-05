@@ -540,14 +540,17 @@ class BlizzNetwork(MMONetwork):
             try:
                 for myChar in self.cache['wowProfiles'][profile]['characters']:
                     if 'logged_in' in self.session:
-                        link = url_for('partner_show', partnerId=profile, netHandle=self.handle)
+                        user = self.getUserById(profile)
+                        link = { 'href': url_for('partner_show', partnerId=profile, netHandle=self.handle),
+                                 'title': self.getWowCharDescription(myChar) + " (" + user.nick + ")"}
                     else:
-                        link = "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name'])
+                        link = { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
+                                 'target': '_blank',
+                                 'title': self.getWowCharDescription(myChar) }
+
                     chars.append({ 'text': myChar['name'],
                                    'weight': myChar['level'],
-                                   'link': { 'href': link,
-                                             'target': '_blank',
-                                             'title': self.getWowCharDescription(myChar) }})
+                                   'link': link})
             except KeyError:
                 pass
         return { 'wowChars': getHighestRated(chars, 'weight') }
