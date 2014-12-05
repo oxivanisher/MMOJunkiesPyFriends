@@ -4,13 +4,14 @@
 		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 
 		$.getJSON( dataUrl ).done( function( data ) {
-			for (channel in data.channels) {
-				var streamText = ""
+			for (c in data.channels) {
+				channel = data.channels[c];
+				var streamText = "";
 				if (channel.stream) {
-					liText = liText + "<br /><img src='" + channel.stream.preview.medium + "' />'"
+					liText = liText + "<br /><img src='" + channel.stream.preview.medium + "' />'";
 				}
 
-				var liText = "<a href='" + channel.url + "' target='_blank'>" + channel.display_name + streamText + "</a>"
+				var liText = "<a href='" + channel.url + "' target='_blank'>" + channel.display_name + streamText + "</a>";
 
 				$('<li />', { html: liText }).appendTo('ul.twitchChannels');
 			}
