@@ -189,25 +189,26 @@ class ValveNetwork(MMONetwork):
                                                                                             'include_appinfo': '1' })
                     self.cache['users'][steamId]['ownedGames'] = {}
                     if ownedGames:
-                        for game in ownedGames['games']:
-                            # updating games in general
-                            self.cache['games'][game['appid']] = {}
-                            self.cache['games'][game['appid']]['appid'] = game['appid']
-                            self.cache['games'][game['appid']]['name'] = game['name']
-                            self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                            self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                        if 'games' in ownedGames:
+                            for game in ownedGames['games']:
+                                # updating games in general
+                                self.cache['games'][game['appid']] = {}
+                                self.cache['games'][game['appid']]['appid'] = game['appid']
+                                self.cache['games'][game['appid']]['name'] = game['name']
+                                self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
+                                self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
 
-                            # updating games of the user
-                            self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
-                            if 'playtime_2weeks' in game:
-                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = game['playtime_2weeks']
-                            else:
-                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = 0
-                                
-                            if 'playtime_forever' in game:
-                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = game['playtime_forever']
-                            else:
-                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = 0
+                                # updating games of the user
+                                self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
+                                if 'playtime_2weeks' in game:
+                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = game['playtime_2weeks']
+                                else:
+                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = 0
+                                    
+                                if 'playtime_forever' in game:
+                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = game['playtime_forever']
+                                else:
+                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = 0
 
             self.setCache('users')
             self.setCache('games')
