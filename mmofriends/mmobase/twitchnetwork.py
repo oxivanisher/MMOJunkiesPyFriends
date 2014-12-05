@@ -123,6 +123,7 @@ class TwitchNetwork(MMONetwork):
                 logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
                 return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
             self.cache['channels'][unicode(userid)] = channel
+            print self.cache['channels']
             self.setCache("channels")
             logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
             if 'logo' in channel:
