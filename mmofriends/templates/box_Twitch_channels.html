@@ -8,9 +8,9 @@
 				s = data.streams[id];
 				c = data.channels[id];
 				var onlineText = "";
-				console.log(Object.keys(s.stream))
+				// console.log(Object.keys(s.stream.preview))
 				if (s.stream) {
-					onlineText = "<br /><img src='" + s.preview + "' title='" + s.game + "'/>'";
+					onlineText = "<br /><img src='" + s.stream.preview + "' title='" + s.stream.game + "'/>'";
 				}
 
 				var liText = "<a href='" + c.url + "' target='_blank'>" + c.display_name + onlineText + "</a>";
