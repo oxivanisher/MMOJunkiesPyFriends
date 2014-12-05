@@ -667,8 +667,8 @@ class TS3Network(MMONetwork):
                 return False
 
             # possible bug
-            # self.log.debug("[%s] Recieved informations to fetch file %s, Port: %s, Size: %s" % (self.handle, name, fileinfo['port'], fileinfo['size']))
-            self.log.info("[%s] Saving file to static/cache/%s" % (self.handle, filename))
+            self.log.debug("[%s] Recieved informations to fetch file %s, Port: %s, Size: %s" % (self.handle, name.decode("utf8"), fileinfo['port'], fileinfo['size']))
+            self.log.info("[%s] Saving file to static/cache/%s" % (self.handle, filename.decode("utf8")))
             read_size = seekpos
             block_size = 4096
             try:
