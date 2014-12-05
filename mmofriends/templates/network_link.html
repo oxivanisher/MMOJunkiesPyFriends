@@ -13,13 +13,14 @@
 {% else %}
 	{% if linkNetwork|count %}
 	<h3>Connect Network</h3>
-	<ul>
+	<dl>
 
 		{% for net in linkNetwork %}
 			{% if net.linkNetwork %}
-				<li style="list-style-type: none;"><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
-				{{- net.name }} {{ net.description }}<br />
+				<dt><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+				{{- net.name }} {{ net.description }}</dt>
 				{%- if net.linkNetwork.dropdown -%}
+					<dd>
 					<table>
 						<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 							<input type="hidden" name="do" value="link" />
@@ -38,30 +39,31 @@
 							</tr>
 						</form>
 					</table>
+					</dd>
 				{%- elif net.linkNetwork.oid -%}
-					<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
+					<dd><a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a></dd>
 				{%- elif net.linkNetwork.link -%}
-					<a href="{{ net.linkNetwork.link.url }}">
+					<dd><a href="{{ net.linkNetwork.link.url }}">
 					{%- if net.linkNetwork.link.image -%}
 						<img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/>
-					{% endif %} {{ net.linkNetwork.link.comment }}</a>
+					{% endif %} {{ net.linkNetwork.link.comment }}</a></dd>
 				{%- elif net.linkNetwork.text -%}
-					{{ net.linkNetwork.text }}
+					<dd>{{ net.linkNetwork.text }}</dd>
 	    		{% endif %}
 			{% endif %}
 		{% endfor %}
-	</ul>
+	</dl>
 	{%- endif %}
 {%- endif %}
 {%- if linkedNetworks %}
 <br />
 <h3>Connected Networks</h3>
-<ul>
+<dl>
 {% for net in linkedNetworks %}
-<li style="list-style-type: none;"><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+<dt><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
 	{{- net.name }} {{ net.description }}
-	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}"><span class="glyphicon glyphicon-remove"></span></a></li>
+	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}"><span class="glyphicon glyphicon-remove"></span></a></dt>
 {% endfor %}
-</ul>
+</dl>
 {% endif %}
 {% endblock %}
