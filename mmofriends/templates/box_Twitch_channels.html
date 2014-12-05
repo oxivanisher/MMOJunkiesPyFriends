@@ -14,7 +14,7 @@
 					status = "Online";
 				}
 
-				var liText = "<a href='" + c.url + "' target='_blank'>" + c.display_name + " (" + staus + ")" + onlineText + "</a>";
+				var liText = "<a href='" + c.url + "' target='_blank'>" + c.display_name + " (" + status + ")" + onlineText + "</a>";
 
 				$('<li class="list-group-item">' + liText + '</li>').appendTo('ul.twitchChannels');
 			}
