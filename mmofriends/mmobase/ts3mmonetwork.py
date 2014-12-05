@@ -666,7 +666,8 @@ class TS3Network(MMONetwork):
                 self.log.warning("[%s] Unable to fetch %s (%s | %s)" % (self.handle, name, e, response.data))
                 return False
 
-            self.log.debug("[%s] Recieved informations to fetch file %s, Port: %s, Size: %s" % (self.handle, name, fileinfo['port'], fileinfo['size']))
+            # possible bug
+            # self.log.debug("[%s] Recieved informations to fetch file %s, Port: %s, Size: %s" % (self.handle, name, fileinfo['port'], fileinfo['size']))
             self.log.info("[%s] Saving file to static/cache/%s" % (self.handle, filename))
             read_size = seekpos
             block_size = 4096
