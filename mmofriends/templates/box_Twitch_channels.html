@@ -6,6 +6,7 @@
 		$.getJSON( dataUrl ).done( function( data ) {
 			for (c in data.channels) {
 				stream = data.streams[c];
+				channel = data.channel[c];
 				var streamText = "";
 				if (stream.stream) {
 					liText = liText + "<br /><img src='" + stream.stream.preview.medium + "' />'";
