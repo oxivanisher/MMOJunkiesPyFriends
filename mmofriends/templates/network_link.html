@@ -5,12 +5,14 @@
 	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.description }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off" class="form-inline" role="form">
+		<input type="hidden" name="do" value="finalize" />
+		<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
 		<div class="form-group">
-			<input type="hidden" name="do" value="finalize" />
-			<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
-			<div class="input-group-addon">Code</div>
-			<input type="text" name="userKey" class="form-control" placeholder="Code from teamspeak chat"/>
-			<button class="btn btn-sm btn-default" type="submit">submit</button>
+			<div class="input-group">
+				<div class="input-group-addon">Code</div>
+				<input type="text" name="userKey" class="form-control" placeholder="Code from teamspeak chat"/>
+				<button class="btn btn-sm btn-default" type="submit">submit</button>
+			</div>
 		</div>
 	</form>
 {% else %}
