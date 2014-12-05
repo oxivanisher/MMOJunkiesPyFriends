@@ -126,7 +126,8 @@ class TwitchNetwork(MMONetwork):
             self.setCache("channels")
             logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
             if 'logo' in channel:
-                self.cacheFile(channel['logo'])
+                if channel['logo']:
+                    self.cacheFile(channel['logo'])
 
         return (True, "All resources updated for %s" % userNick)
 
