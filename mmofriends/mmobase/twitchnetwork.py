@@ -126,6 +126,8 @@ class TwitchNetwork(MMONetwork):
             # del self.cache['channels'][userid]
             self.cache['channels'][userid] = channel
             # print self.cache['channels']
+            print "userid", userid
+            print "channel", channel
             self.setCache("channels")
             logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
             if 'logo' in channel:
