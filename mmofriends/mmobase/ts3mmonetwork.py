@@ -239,13 +239,20 @@ class TS3Network(MMONetwork):
                         self.cache['userWatchdog'][client] = 0
                     if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
                         logger.info("[%s] Spamming user: %s" % (self.handle, self.cache['onlineClients'][client]['client_nickname']))
+                        for group in self.cache['clientDatabase'][client]['groups']:
+                            if int(group['sgid']) == self.config['memberGroupId']:
+                                # self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['defaultGuestGroupId'], client))
+                                self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], client))
+                            # if int(group['sgid']) == self.config['adminGroupId']:
+
                         self.cache['userWatchdog'][client] = time.time()
                         self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])
                         spamedCount += 1
                     else:
-                        logger.debug("Not spaming (timeout): %s" % client)
+                        spamAgainIn = get_short_duration(self.config['userWatchdogSpamTimeout'] - (time.time() - self.cache['userWatchdog'][client]))
+                        logger.debug("[%s] Not spaming (again in %ss): %s (%s)" % (self.handle, spamAgainIn, self.cache['onlineClients'][client]['client_nickname'], client))
                 else:
-                    logger.debug("Not spaming (linked): %s" % client)
+                    logger.debug("[%s] Not spaming (already linked): %s (%s)" % (self.handle, self.cache['onlineClients'][client]['client_nickname'], client))
             self.setCache('userWatchdog')
             return "%s users spamed" % (spamedCount)
         else:
@@ -475,8 +482,11 @@ class TS3Network(MMONetwork):
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
         message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
-        self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
-        return "Please enter the number you recieved via teamspeak"
+        try:
+            self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
+        except EOFError as e:
+            return "An error occured. Please try again. Sorry"
+        return "Please enter the number you recieved via teamspeak chat."
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
@@ -489,7 +499,7 @@ class TS3Network(MMONetwork):
             for group in self.cache['clientDatabase'][cldbid]['groups']:
                 if int(group['sgid']) in self.config['guestGroups']:
                     self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], cldbid))
-                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
+                    # self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], cldbid))
             self.fetchUserDetatilsByCldbid(cldbid, True)
 
             return True
@@ -554,7 +564,7 @@ class TS3Network(MMONetwork):
         return True
 
     def sendCommand(self, command):
-        self.log.debug("Sending command: %s" % command)
+        self.log.debug("[%s] Sending command: %s" % (self.handle, command))
         try:
             return self.server.send_command(command)
         except EOFError as e:
@@ -591,14 +601,14 @@ class TS3Network(MMONetwork):
             self.cache['clientDatabase'][cldbid] = {}
             self.cache['clientDatabase'][cldbid]['cldbid'] = cldbid
 
-            logger.info("[%s] Fetching client db info for cldbid: %s" % (self.handle, cldbid))
+            logger.debug("[%s] Fetching client db info for cldbid: %s" % (self.handle, cldbid))
             response = self.sendCommand('clientdbinfo cldbid=%s' % cldbid)
             if response:
                 self.cache['clientDatabase'][cldbid] = response.data[0]
                 self.cache['clientDatabase'][cldbid]['lastUpdateUserDetails'] = time.time()
 
             self.cache['clientDatabase'][cldbid]['groups'] = {}
-            logger.info("[%s] Fetching user group details for cldbid: %s" % (self.handle, cldbid))
+            logger.debug("[%s] Fetching user group details for cldbid: %s" % (self.handle, cldbid))
             response = self.sendCommand('servergroupsbyclientid cldbid=%s' % cldbid)
             if response:
                 self.cache['clientDatabase'][cldbid]['groups'] = response.data
@@ -608,7 +618,7 @@ class TS3Network(MMONetwork):
                 clid = self.cache['onlineClients'][cldbid]['clid']
                 self.getCache('clientInfoDatabase')
                 self.cache['clientInfoDatabase'][cldbid] = {}
-                logger.info("[%s] Fetching client info for clid: %s" % (self.handle, clid))
+                logger.debug("[%s] Fetching client info for clid: %s" % (self.handle, clid))
                 response = self.sendCommand('clientinfo clid=%s' % clid)
                 if response:
                     self.cache['clientInfoDatabase'][cldbid] = response.data[0]
@@ -628,13 +638,13 @@ class TS3Network(MMONetwork):
         outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', filename)
 
         if os.path.isfile(outputFilePath):
-            self.log.debug("Not fetching %s. Already cached." % (name))
+            self.log.debug("[%s] Not fetching %s. Already cached." % (self.handle, name))
             return False
         else:
-            self.log.debug("File save path: %s" % outputFilePath)
+            self.log.debug("[%s] File save path: %s" % (self.handle, outputFilePath))
 
         if seekpos == 0:
-            self.log.debug("Requesting file name: %s" % name)
+            self.log.debug("[%s] Requesting file name: %s" % (self.handle, name))
             self.clientftfid += 1
 
         if self.connect():
@@ -656,14 +666,14 @@ class TS3Network(MMONetwork):
                 self.log.warning("[%s] Unable to fetch %s (%s | %s)" % (self.handle, name, e, response.data))
                 return False
 
-            self.log.debug("Recieved informations to fetch file %s, Port: %s, Size: %s" % (name, fileinfo['port'], fileinfo['size']))
-            self.log.info("Saving file to static/cache/%s" % filename)
+            self.log.debug("[%s] Recieved informations to fetch file %s, Port: %s, Size: %s" % (self.handle, name, fileinfo['port'], fileinfo['size']))
+            self.log.info("[%s] Saving file to static/cache/%s" % (self.handle, filename))
             read_size = seekpos
             block_size = 4096
             try:
                 output_file = open(outputFilePath,'ab')
             except IOError as e:
-                self.log.warning("Unable to open outputfile %s: %s" % (outputFilePath, e))
+                self.log.warning("[%s] Unable to open outputfile %s: %s" % (self.handle, outputFilePath, e))
                 return False
             try:
                 sock = socket.create_connection((self.config['ip'], fileinfo['port']))
@@ -676,22 +686,22 @@ class TS3Network(MMONetwork):
                         sock.close()
                         break
             except OSError as err:
-                self.log.error("Filetransfer error: %s" % err)
+                self.log.error("[%s] Filetransfer error: %s" % (self.handle, err))
   
             output_file.close()
             sock.close()
 
             if read_size < int(fileinfo['size']):
-                self.log.warning("Filetransfer incomplete (%s/%s bytes) for ftkey: %s" % (read_size, fileinfo['size'], fileinfo['ftkey']))
+                self.log.warning("[%s] Filetransfer incomplete (%s/%s bytes) for ftkey: %s" % (self.handle, read_size, fileinfo['size'], fileinfo['ftkey']))
                 return False
             else:
                 return True
-        self.log.warning("No connection to TS3 Server")
+        self.log.warning("[%s] No connection to TS3 Server" % (self.handle))
         return False
 
     def cacheIcon(self, iconId, cid = 0):
         if int(iconId) == 0:
-            self.log.debug("No icon available because IconID is 0")
+            self.log.debug("[%s] No icon available because IconID is 0" % (self.handle))
             return True
         else:
             return self.cacheFile("/icon_%s" % int(iconId), cid)
