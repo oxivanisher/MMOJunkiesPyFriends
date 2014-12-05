@@ -369,7 +369,7 @@ class MMONetwork(object):
         else:
             logger.setLevel(logging.INFO)
 
-        logger.debug("[%s] Background worker is working" % (self.handle))
+        logger.debug("[%s] Background worker is looping" % (self.handle))
         for (method, timeout, lastCheck) in self.backgroundTasks:
             self.getCache('backgroundTasks')
             if method.func_name not in self.cache['backgroundTasks']:
