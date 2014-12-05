@@ -1,7 +1,6 @@
-<ul>
-<li><a href="{{ url_for('about') }}">&Uuml;ber</a></li>
-<li><a href="{{ url_for('network_link') }}">(Un)link Network</a></li>
-<li><a href="{{ url_for('profile_show') }}">Profil Einstellungen</a></li>
-<li><a href="{{ url_for('partner_show', partnerId=session.userid) }}">Gamer Profil</a></li>
-<li><a href="http://open.soundrop.fm/s/XwG6lvAe96XtrMLG" target="_blank">Radio (Spotify und Deezer)</a></li>
-</ul>
+<br />
+<a href="{{ url_for('about') }}" class="btn btn-sm btn-primary btn-block">About</a></li>
+<a href="{{ url_for('network_link') }}" class="btn btn-sm btn-primary btn-block">Connect Network</a></li>
+<a href="{{ url_for('profile_show') }}" class="btn btn-sm btn-primary btn-block">Your profile settings</a></li>
+<a href="{{ url_for('partner_show', partnerId=session.userid) }}" class="btn btn-sm btn-primary btn-block">Your gamer profile</a></li>
+<a href="http://open.soundrop.fm/s/XwG6lvAe96XtrMLG" target="_blank" class="btn btn-sm btn-primary btn-block">Radio (Spotify and Deezer)</a></li>

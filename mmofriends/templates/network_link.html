@@ -13,49 +13,44 @@
 {% else %}
 	{% if linkNetwork|count %}
 	<h3>Connect Network</h3>
-	<table>
+	<ul>
+
 		{% for net in linkNetwork %}
 			{% if net.linkNetwork %}
-			<tr>
-				<td style="vertical-align: top;">
-					<img src="{{ url_for('get_image', imgType='network', imgId=net.id) }}" class="link_network_list_icon" title="{{ net.description }}" />
-				</td>
-				<td style="vertical-align: top;">
-					<h4>{{ net.name }} {{ net.description }}</h4>
-					{%- if net.linkNetwork.dropdown -%}
-						<table>
-							<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
-								<input type="hidden" name="do" value="link" />
-								<input type="hidden" name="handle" value="{{ net.handle }}" />
-								<tr>
-									<td style="vertical-align: top;">
-										<select class="form-control" name="id">
-										{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
-											<option value="{{ entry.value }}">{{ entry.name }}</option>
-										{%- endfor %}
-										</select>
-									</td>
-									<td style="vertical-align: top;">
-										<button class="btn btn-default" type="submit">submit</button>
-									</td>
-								</tr>
-							</form>
-						</table>
-					{%- elif net.linkNetwork.oid -%}
-						<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
-					{%- elif net.linkNetwork.link -%}
-						<a href="{{ net.linkNetwork.link.url }}">
-						{%- if net.linkNetwork.link.image -%}
-							<img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/>
-						{% endif %} {{ net.linkNetwork.link.comment }}</a>
-					{%- elif net.linkNetwork.text -%}
-						{{ net.linkNetwork.text }}
-	        		{% endif %}
-				</td>
-			</tr>
+				<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+				{{- net.name }} {{ net.description }}<br />
+				{%- if net.linkNetwork.dropdown -%}
+					<table>
+						<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
+							<input type="hidden" name="do" value="link" />
+							<input type="hidden" name="handle" value="{{ net.handle }}" />
+							<tr>
+								<td style="vertical-align: top;">
+									<select class="form-control input-sm" name="id">
+									{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
+										<option value="{{ entry.value }}">{{ entry.name }}</option>
+									{%- endfor %}
+									</select>
+								</td>
+								<td style="vertical-align: top;">
+									<button class="btn btn-sm btn-default" type="submit">submit</button>
+								</td>
+							</tr>
+						</form>
+					</table>
+				{%- elif net.linkNetwork.oid -%}
+					<a href="{{ url_for('oid_login', netHandle=net.handle) }}"><img src="{{ net.linkNetwork.oid.image }}" title="{{ net.linkNetwork.oid.comment }}"/> {{ net.linkNetwork.oid.comment }}</a>
+				{%- elif net.linkNetwork.link -%}
+					<a href="{{ net.linkNetwork.link.url }}">
+					{%- if net.linkNetwork.link.image -%}
+						<img src="{{ net.linkNetwork.link.image }}" title="{{ net.linkNetwork.link.comment }}"/>
+					{% endif %} {{ net.linkNetwork.link.comment }}</a>
+				{%- elif net.linkNetwork.text -%}
+					{{ net.linkNetwork.text }}
+	    		{% endif %}
 			{% endif %}
 		{% endfor %}
-	</table>
+	</ul>
 	{%- endif %}
 {%- endif %}
 {%- if linkedNetworks %}
@@ -63,7 +58,7 @@
 <h3>Connected Networks</h3>
 <ul>
 {% for net in linkedNetworks %}
-<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="" />
+<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
 	{{- net.name }} {{ net.description }}
 	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}"><span class="glyphicon glyphicon-remove"></span></a></li>
 {% endfor %}
