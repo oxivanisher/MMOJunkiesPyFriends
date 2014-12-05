@@ -17,7 +17,7 @@
 
 		{% for net in linkNetwork %}
 			{% if net.linkNetwork %}
-				<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+				<li style="list-style-type: none;"><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
 				{{- net.name }} {{ net.description }}<br />
 				{%- if net.linkNetwork.dropdown -%}
 					<table>
@@ -58,7 +58,7 @@
 <h3>Connected Networks</h3>
 <ul>
 {% for net in linkedNetworks %}
-<li><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+<li style="list-style-type: none;"><img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
 	{{- net.name }} {{ net.description }}
 	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}"><span class="glyphicon glyphicon-remove"></span></a></li>
 {% endfor %}
