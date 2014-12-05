@@ -7,8 +7,8 @@
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
 		<input type="hidden" name="do" value="finalize" />
 		<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
-		<input type="text" name="userKey" />
-		<button class="btn btn-default" type="submit">submit</button>
+		<input type="text" name="userKey"  class="form-control input-sm" />
+		<button class="btn btn-sm btn-default" type="submit">submit</button>
 	</form>
 {% else %}
 	{% if linkNetwork|count %}
