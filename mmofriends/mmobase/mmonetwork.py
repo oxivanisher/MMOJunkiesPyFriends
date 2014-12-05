@@ -72,13 +72,65 @@ class MMONetwork(object):
         self.dashboardBoxes = {}
         self.cache = {}
 
+    # Helpers
+    def getUserById(self, userId):
+        ret = MMOUser.query.filter_by(id=userId).first()
+        if ret:
+            return ret
+        else:
+            return None
+
     def setLogLevel(self, level):
         self.log.info("[%s] Setting loglevel to %s" % (self.handle, level))
         self.log.setLevel(level)
 
+    def getSessionValue(self, name):
+        try:
+            return self.session[self.handle][name]
+        except KeyError:
+            self.session[self.handle] = {}
+            return None
+
+    def setSessionValue(self, name, value):
+        try:
+            self.session[self.handle][name] = value
+        except Exception, e:
+            self.session[self.handle] = {}
+            self.session[self.handle][name] = value
+
+    def loadNetworkToSession(self):
+        if not self.getSessionValue('loaded'):
+            self.log.info("[%s] Loading MMONetwork to session" % (self.handle))
+            self.loadLinks(self.session.get('userid'))
+            self.setSessionValue('loaded', True)
+            return (True, "[%s] loaded to session" % (self.handle))
+        return (True, "[%s] already loaded to session" % (self.handle))
+
+    def cacheFile(self, url):
+        newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
+        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', newUrl)
+        # outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
+
+        if os.path.isfile(outputFilePath):
+            self.log.debug("[%s] Not downloading %s" % (self.handle, url))
+        else:
+            self.log.info("[%s] Downloading %s" % (self.handle, url))
+
+            avatarFile = urllib.URLopener()
+            avatarFile.retrieve(url, outputFilePath)
+        return newUrl
+
+    # Basic class methods
     def refresh(self):
         self.log.debug("[%s] Refresh data from source" % (self.handle))
 
+    def admin(self):
+        self.log.debug("[%s] Loading admin stuff" % (self.handle))
+
+    def prepareForFirstRequest(self):
+        self.log.info("[%s] Running prepareForFirstRequest." % (self.handle))
+
+    # Network linking methods
     def getLinkHtml(self):
         self.log.debug("[%s] Show linkHtml %s" % (self.handle, self.name))
 
@@ -155,6 +207,7 @@ class MMONetwork(object):
             self.log.info("[%s] Unlinking network with userid %s and netLinkId %s failed" % (self.handle, user_id, netLinkId))
             return False
 
+    # Partner methods
     def getPartners(self, **kwargs):
         self.log.debug("[%s] List all partners for given user" % (self.handle))
         return ( False, "Network not yet programmed")
@@ -244,48 +297,6 @@ class MMONetwork(object):
         if avatarName[0] == '/':
             avatarName = avatarName[1:]
         myDict['avatar'] = avatarName
-
-    def admin(self):
-        self.log.debug("[%s] Loading admin stuff" % (self.handle))
-
-    def getSessionValue(self, name):
-        try:
-            return self.session[self.handle][name]
-        except KeyError:
-            self.session[self.handle] = {}
-            return None
-
-    def setSessionValue(self, name, value):
-        try:
-            self.session[self.handle][name] = value
-        except Exception, e:
-            self.session[self.handle] = {}
-            self.session[self.handle][name] = value
-
-    def loadNetworkToSession(self):
-        if not self.getSessionValue('loaded'):
-            self.log.info("[%s] Loading MMONetwork to session" % (self.handle))
-            self.loadLinks(self.session.get('userid'))
-            self.setSessionValue('loaded', True)
-            return (True, "[%s] loaded to session" % (self.handle))
-        return (True, "[%s] already loaded to session" % (self.handle))
-
-    def prepareForFirstRequest(self):
-        self.log.info("[%s] Running prepareForFirstRequest." % (self.handle))
-
-    def cacheFile(self, url):
-        newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
-        outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', newUrl)
-        # outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
-
-        if os.path.isfile(outputFilePath):
-            self.log.debug("[%s] Not downloading %s" % (self.handle, url))
-        else:
-            self.log.info("[%s] Downloading %s" % (self.handle, url))
-
-            avatarFile = urllib.URLopener()
-            avatarFile.retrieve(url, outputFilePath)
-        return newUrl
 
     # MMONetworkCache methods
     def getCache(self, name):
@@ -400,6 +411,7 @@ class MMONetwork(object):
     def registerDashboardBox(self, method, handle, settings = {}):
         self.dashboardBoxes[handle] = createDashboardBox(method, self.handle, handle, settings)
 
+    # Dashboard methods
     def getDashboardBoxes(self):
         self.log.info("[%s] Get dashboard boxes" % self.handle)
         return self.dashboardBoxes.keys()
