@@ -217,7 +217,7 @@ class BlizzNetwork(MMONetwork):
                         for char in self.cache['wowProfiles'][userid]['characters']:
                             self.setPartnerDetail(moreInfo, "WoW", char['name'] + " (" + self.getWowCharDescription(char) + ")")
                         bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], self.getWowRace(bestChar['race']), self.getWowGender(bestChar['gender'])))
+                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], bestChar['race'], bestChar['gender']))
                     except KeyError:
                         pass
         
