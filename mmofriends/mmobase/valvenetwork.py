@@ -237,8 +237,9 @@ class ValveNetwork(MMONetwork):
             else:
                 logger.info("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
                 steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
-                for friend in steamFriends['players']:
-                    self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
+                if 'players' in steamFriends:
+                    for friend in steamFriends['players']:
+                        self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
 
         return "%s user states updated" % count
 
