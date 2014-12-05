@@ -137,7 +137,7 @@ class TwitchNetwork(MMONetwork):
 
         logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
         self.getCache("streams")
-        (ret, stream) = self.queryTwitchApi("/stream", accessToken)
+        (ret, stream) = self.queryTwitchApi("/streams", accessToken)
         if ret and len(stream):
             if 'error' in channel.keys():
                 logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
