@@ -135,16 +135,16 @@ class TwitchNetwork(MMONetwork):
                 if channel['video_banner']:
                     self.cacheFile(channel['video_banner'])
 
-        logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
-        self.getCache("streams")
-        (ret, stream) = self.queryTwitchApi("/streams", accessToken)
-        if ret and len(stream):
-            if 'error' in channel.keys():
-                logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
-                return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
-            self.cache['streams'][userid] = stream
-            self.setCache("streams")
-            logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
+            logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
+            self.getCache("streams")
+            (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
+            if ret and len(stream):
+                if 'error' in channel.keys():
+                    logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
+                    return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
+                self.cache['streams'][userid] = stream
+                self.setCache("streams")
+                logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
 
         return (True, "All resources updated for %s" % userNick)
 
