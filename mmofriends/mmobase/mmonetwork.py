@@ -107,6 +107,8 @@ class MMONetwork(object):
         return (True, "[%s] already loaded to session" % (self.handle))
 
     def cacheFile(self, url):
+        if not url:
+            return url
         newUrl = url.replace('https://', '').replace('http://', '').replace('/', '-')
         outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', newUrl)
         # outputFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/cache', url.split('/')[-1])
