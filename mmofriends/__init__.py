@@ -217,7 +217,11 @@ def background_worker():
                 log.info("[%s] -> Result: %s" % (net, ret))
 
         time.sleep(1)
-background_worker.delay()
+try:
+    background_worker.delay()
+except Exception as e:
+    log.error("[System] Background workers could not be started: %s" % (e))
+    sys.exit(2)
 
 # flask error handlers
 @app.errorhandler(404)
