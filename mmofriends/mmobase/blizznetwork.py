@@ -539,9 +539,13 @@ class BlizzNetwork(MMONetwork):
         for profile in self.cache['wowProfiles'].keys():
             try:
                 for myChar in self.cache['wowProfiles'][profile]['characters']:
+                    if 'logged_in' in self.session:
+                        link = url_for('partner_show', partnerId=profile, netHandle=self.handle)
+                    else:
+                        link = "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name'])
                     chars.append({ 'text': myChar['name'],
                                    'weight': myChar['level'],
-                                   'link': { 'href': "%swow/en/character/%s/%s/" % (self.avatarUrl, myChar['realm'], myChar['name']),
+                                   'link': { 'href': link,
                                              'target': '_blank',
                                              'title': self.getWowCharDescription(myChar) }})
             except KeyError:
