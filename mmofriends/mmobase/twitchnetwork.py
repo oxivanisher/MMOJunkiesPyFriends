@@ -128,6 +128,12 @@ class TwitchNetwork(MMONetwork):
             if 'logo' in channel:
                 if channel['logo']:
                     self.cacheFile(channel['logo'])
+            if 'banner' in channel:
+                if channel['banner']:
+                    self.cacheFile(channel['banner'])
+            if 'video_banner' in channel:
+                if channel['video_banner']:
+                    self.cacheFile(channel['video_banner'])
 
         return (True, "All resources updated for %s" % userNick)
 
