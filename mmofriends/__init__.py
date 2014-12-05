@@ -815,7 +815,7 @@ def partner_show(partnerId, netHandle = None):
     # print "zzzz", networks
     myUser = getUserById(partnerId)
     if not myUser:
-        flash("User not found")
+        flash("User not found", 'error')
         return redirect(url_for('index'))
     
     myUser.load()
