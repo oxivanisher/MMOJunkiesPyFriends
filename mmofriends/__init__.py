@@ -618,8 +618,10 @@ def profile_register():
             newUser.name = request.form['name']
             if request.form['website'].startswith("http"):
                 newUser.website = request.form['website']
-            else:
+            elif len(request.form['website']):
                 newUser.website = "http://" + request.form['website']
+            else:
+                newUser.website = ""
             newUser.setPassword(request.form['password'])
             if request.form['nick'] == app.config['ROOTUSER']:
                 log.info("[System] Registred root user: %s" % request.form['nick'])
