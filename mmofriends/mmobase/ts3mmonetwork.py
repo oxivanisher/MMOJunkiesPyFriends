@@ -40,7 +40,7 @@ class TS3Network(MMONetwork):
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
-        self.registerWorker(self.userWatchdog, 30)
+        self.registerWorker(self.userWatchdog, 120)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):
@@ -228,25 +228,28 @@ class TS3Network(MMONetwork):
             logger = self.log
         links = []
 
-        self.getCache('onlineClients')
-        self.getCache('userWatchdog')
-        for link in self.getNetworkLinks():
-            links.append(link['network_data'])
-        for client in self.cache['onlineClients'].keys():
-            if client not in links:
-                if client not in self.cache['userWatchdog']:
-                    self.cache['userWatchdog'][client] = 0
-                if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
-                    logger.info("Spamming user: %s" % client)
-                    self.cache['userWatchdog'][client] = time.time()
-                    self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])
-                    spamedCount += 1
+        if self.connect():
+            self.getCache('onlineClients')
+            self.getCache('userWatchdog')
+            for link in self.getNetworkLinks():
+                links.append(link['network_data'])
+            for client in self.cache['onlineClients'].keys():
+                if client not in links:
+                    if client not in self.cache['userWatchdog']:
+                        self.cache['userWatchdog'][client] = 0
+                    if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
+                        logger.info("[%s] Spamming user: %s" % (self.handle, self.cache['onlineClients'][client]['client_nickname']))
+                        self.cache['userWatchdog'][client] = time.time()
+                        self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])
+                        spamedCount += 1
+                    else:
+                        logger.debug("Not spaming (timeout): %s" % client)
                 else:
-                    logger.debug("Not spaming (timeout): %s" % client)
-            else:
-                logger.debug("Not spaming (linked): %s" % client)
-        self.setCache('userWatchdog')
-        return "%s users spamed" % (spamedCount)
+                    logger.debug("Not spaming (linked): %s" % client)
+            self.setCache('userWatchdog')
+            return "%s users spamed" % (spamedCount)
+        else:
+            return "Unable to connect to server"
 
     # Class overwrites
     def getPartners(self, **kwargs):
