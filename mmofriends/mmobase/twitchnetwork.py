@@ -103,9 +103,10 @@ class TwitchNetwork(MMONetwork):
         if not userid:
             userid = self.session['userid']
             background = False
-            logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
+            logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, self.getUserById(userid).nick))
         else:
-            logger.info("[%s] Background updating the resources for userid %s" % (self.handle, userid))
+            logger.debug("[%s] Background updating the resources for userid %s" % (self.handle, self.getUserById(userid).nick))
+        userNick = self.getUserById(userid).nick
 
         if not accessToken:
             if userid != self.session['userid']:
@@ -114,17 +115,20 @@ class TwitchNetwork(MMONetwork):
             else:
                 accessToken = self.getSessionValue(self.linkIdName)
 
-        self.log.debug("[%s] Fetching channel for %s" % (self.handle, userid))
+        logger.debug("[%s] Fetching channel for %s" % (self.handle, userNick))
         self.getCache("channels")
         (ret, channel) = self.queryTwitchApi("/channel", accessToken)
         if ret and len(channel):
-            self.cache['channels'][userid] = channel
+            if 'error' in channel.keys():
+                logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
+                return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
+            self.cache['channels'][unicode(userid)] = channel
             self.setCache("channels")
-            self.log.info("[%s] Fetched channel for %s" % (self.handle, userid))
+            logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
             if 'logo' in channel:
                 self.cacheFile(channel['logo'])
 
-        return (True, "All resources updated for %s" % self.cache['channels'][userid]['display_name'])
+        return (True, "All resources updated for %s" % userNick)
 
     # background worker only
     def updateAllUserResources(self, logger = None):
@@ -136,8 +140,11 @@ class TwitchNetwork(MMONetwork):
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
             if link['network_data']:
-                self.updateUserResources(link['user_id'], link['network_data'])
-                okCount += 1
+                (ret, message) = self.updateUserResources(link['user_id'], link['network_data'], logger)
+                if ret:
+                    okCount += 1
+                else:
+                    nokCount += 1
             else:
                 nokCount += 1
         return "%s user resources updated, %s ignored" % (okCount, nokCount)
