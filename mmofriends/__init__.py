@@ -208,6 +208,7 @@ def background_worker():
     log.info("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
     log.info("[System] Background worker starts looping")
+    firstLoop = time.time()
     work = True
     while work:
         for net in MMONetworks.keys():
@@ -216,7 +217,11 @@ def background_worker():
             if ret:
                 log.info("[%s] -> Result: %s" % (net, ret))
 
+        if firstLoop:
+            log.info("[System] First loop took %s seconds" % (time.time() - firstLoop))
+            firstLoop = False
         time.sleep(1)
+
 try:
     background_worker.delay()
 except Exception as e:
