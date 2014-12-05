@@ -39,7 +39,7 @@ class TwitchNetwork(MMONetwork):
         self.registerWorker(self.updateAllUserResources, 60)
 
         # dashboard boxes
-        # self.registerDashboardBox(self.dashboard_liveStreams, 'liveStreams', {'title': 'Currently live','template': 'box_jQCloud.html'})
+        self.registerDashboardBox(self.dashboard_channels, 'channels', {'title': 'Channels'})
 
         # setup twitch service
         self.baseUrl = 'https://api.twitch.tv/kraken'
@@ -161,3 +161,9 @@ class TwitchNetwork(MMONetwork):
         ret.append("netLinks: %s" % self.getSessionValue(self.linkIdName))
         ret.append("updateUserResources: %s" % self.updateUserResources())
         return '\n'.join(ret)
+
+    # Dashbord boxes
+    def dashboard_channels(self, request):
+        self.log.debug("Dashboard channels")
+        self.getCache("channels")
+        return { 'channels': self.cache['channels'] }

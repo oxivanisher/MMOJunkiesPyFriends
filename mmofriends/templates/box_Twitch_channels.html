@@ -1,0 +1,12 @@
+<ul class="twitchChannels"></ul>
+<script type="text/javascript">
+	(function() {
+		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+
+		$.getJSON( dataUrl ).done( function( data ) {
+			for (channel in data) {
+				$('<li />', { html: channel.display_name }).appendTo('ul.twitchChannels');
+			}
+		});
+	})();
+</script>
