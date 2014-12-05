@@ -4,11 +4,14 @@
 {% if doLinkReturn %}
 	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.description }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
-	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off">
-		<input type="hidden" name="do" value="finalize" />
-		<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
-		<input type="text" name="userKey"  class="form-control input-sm" />
-		<button class="btn btn-sm btn-default" type="submit">submit</button>
+	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off" class="form-inline" role="form">
+		<div class="form-group">
+			<input type="hidden" name="do" value="finalize" />
+			<input type="hidden" name="handle" value="{{ doLinkReturn.handle }}" />
+			<div class="input-group-addon">Code</div>
+			<input type="text" name="userKey" class="form-control input-sm" placeholder="Code from teamspeak chat"/>
+			<button class="btn btn-sm btn-default" type="submit">submit</button>
+		</div>
 	</form>
 {% else %}
 	{% if linkNetwork|count %}
