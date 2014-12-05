@@ -621,7 +621,7 @@ def profile_register():
                 else:
                     flash("Error sending the email to you.", 'error')
                 # return redirect(url_for('profile_login'))
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('index'))
 
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
@@ -702,7 +702,7 @@ def profile_verify(userId, verifyKey):
             # db.session.expire(verifyUser)
             flash("Verification ok. Please log in.", 'success')
             # return redirect(url_for('profile_login'))
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('index'))
         else:
             flash("Verification NOT ok. Please try again.", 'error')
     # db.session.expire(verifyUser)
@@ -814,6 +814,10 @@ def partner_show(partnerId, netHandle = None):
 
     # print "zzzz", networks
     myUser = getUserById(partnerId)
+    if not myUser:
+        flash("User not found")
+        return redirect(url_for('index'))
+    
     myUser.load()
 
     size = 120
