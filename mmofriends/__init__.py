@@ -209,8 +209,12 @@ def background_worker():
     MMONetworks = loadNetworks()
     log.warning("[System] Background worker starts looping")
     firstLoop = time.time()
+    loopCount = 0
+    lastNotify = time.time()
+    startupTime = time.time()
     work = True
     while work:
+        loopCount += 1
         for net in MMONetworks.keys():
             ret = None
             ret = MMONetworks[net].background_worker(log)
@@ -220,6 +224,11 @@ def background_worker():
         if firstLoop:
             log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))
             firstLoop = False
+
+        if (time.time() - lastNotify) > 60:
+            lastNotify = time.time()
+            log.warning("[System] Loop number %s, running since %s" % (loopCount, get_short_duration(lastNotify - startupTime)))
+
         time.sleep(1)
 
 try:
