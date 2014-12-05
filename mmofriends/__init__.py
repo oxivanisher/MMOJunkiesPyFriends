@@ -205,9 +205,9 @@ celery = make_celery(app)
 @celery.task()
 def background_worker():
     log.setLevel(logging.INFO)
-    log.info("[System] Background worker is loading the MMONetworks")
+    log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
-    log.info("[System] Background worker starts looping")
+    log.warning("[System] Background worker starts looping")
     firstLoop = time.time()
     work = True
     while work:
@@ -218,7 +218,7 @@ def background_worker():
                 log.info("[%s] -> Result: %s" % (net, ret))
 
         if firstLoop:
-            log.info("[System] First loop took %s seconds" % (time.time() - firstLoop))
+            log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))
             firstLoop = False
         time.sleep(1)
 
