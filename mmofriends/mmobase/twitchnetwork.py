@@ -122,12 +122,7 @@ class TwitchNetwork(MMONetwork):
             if 'error' in channel.keys():
                 logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
                 return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
-            # print self.cache['channels']
-            # del self.cache['channels'][userid]
             self.cache['channels'][userid] = channel
-            # print self.cache['channels']
-            print "userid", userid
-            print "channel", channel
             self.setCache("channels")
             logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
             if 'logo' in channel:
@@ -139,6 +134,17 @@ class TwitchNetwork(MMONetwork):
             if 'video_banner' in channel:
                 if channel['video_banner']:
                     self.cacheFile(channel['video_banner'])
+
+        logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
+        self.getCache("streams")
+        (ret, channel) = self.queryTwitchApi("/channel", accessToken)
+        if ret and len(stream):
+            if 'error' in channel.keys():
+                logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
+                return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
+            self.cache['streams'][userid] = stream
+            self.setCache("streams")
+            logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
 
         return (True, "All resources updated for %s" % userNick)
 
@@ -171,4 +177,5 @@ class TwitchNetwork(MMONetwork):
     def dashboard_channels(self, request):
         self.log.debug("Dashboard channels")
         self.getCache("channels")
-        return { 'channels': self.cache['channels'] }
+        self.getCache("streams")
+        return { 'channels': self.cache['channels'], 'streams': self.cache['streams'] }
