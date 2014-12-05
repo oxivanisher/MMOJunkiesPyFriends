@@ -1,4 +1,4 @@
-<ul class="twitchChannels"></ul>
+<ul class="list-group twitchChannels"></ul>
 <script type="text/javascript">
 	(function() {
 		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
@@ -10,12 +10,12 @@
 				var onlineText = "";
 				// console.log(Object.keys(s.stream.preview))
 				if (s.stream) {
-					onlineText = "<br /><img src='" + s.stream.preview + "' title='" + s.stream.game + "'/>'";
+					onlineText = "<br /><img src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
 				}
 
 				var liText = "<a href='" + c.url + "' target='_blank'>" + c.display_name + onlineText + "</a>";
 
-				$('<li />', { html: liText }).appendTo('ul.twitchChannels');
+				$('<li class="list-group-item" />', { html: liText }).appendTo('ul.twitchChannels');
 			}
 		});
 	})();
