@@ -5,10 +5,10 @@
 
 		$.getJSON( dataUrl ).done( function( data ) {
 			for (c in data.channels) {
-				channel = data.channels[c];
+				stream = data.streams[c];
 				var streamText = "";
-				if (channel.stream) {
-					liText = liText + "<br /><img src='" + channel.stream.preview.medium + "' />'";
+				if (stream.stream) {
+					liText = liText + "<br /><img src='" + stream.stream.preview.medium + "' />'";
 				}
 
 				var liText = "<a href='" + channel.url + "' target='_blank'>" + channel.display_name + streamText + "</a>";
