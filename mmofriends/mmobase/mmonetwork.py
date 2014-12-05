@@ -364,6 +364,9 @@ class MMONetwork(object):
 
     # Background worker methods
     def background_worker(self, logger):
+        if logging.DEBUG == self.log.getEffectiveLevel():
+            logger.setLevel(self.log.getEffectiveLevel())
+
         logger.debug("[%s] Background worker is working" % (self.handle))
         for (method, timeout, lastCheck) in self.backgroundTasks:
             self.getCache('backgroundTasks')
