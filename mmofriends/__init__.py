@@ -601,7 +601,6 @@ def profile_register():
                 flash("Password is too short", 'error')
                 valid = False
 
-
             #and further checks for registration plz
             # - user needs to be uniq!
             # - minimal field length
