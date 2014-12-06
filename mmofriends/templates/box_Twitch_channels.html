@@ -23,7 +23,7 @@
 				// var liText = "<a href='" + c.url + "' target='_blank'>" + content + "</a>";
 				// aria-hidden='true'
 
-				$('<li class="list-group-item" onclick="window.open(\'' + c.url + '\')">' + content + '</li>').appendTo('ul.twitchChannels');
+				$('<li class="list-group-item" onclick="window.open(\'' + c.url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
 			}
 		});
 	})();
