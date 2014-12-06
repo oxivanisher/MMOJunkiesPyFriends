@@ -97,6 +97,7 @@ body { padding-bottom: 22px; }
 .box {
   border: 1px solid black;
   padding: 0;
+  min-width: 400px;
   }
   .box header {
     background: #efefef;
@@ -112,8 +113,8 @@ body { padding-bottom: 22px; }
   .box footer {
     background: #87CE36;
     padding: 5px;
+    vertical-align: bottom;
   }
-
 
   .status { border-bottom: 20px solid transparent; visibility: hidden; }
   .status .box {
