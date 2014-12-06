@@ -8,7 +8,7 @@
 	JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}
 	HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}
 -#}
-<div id="{{ box.netHandle }}-{{ box.handle }}-content" style="width: 342px; height: 300px;"></div>
+<div id="{{ box.netHandle }}-{{ box.handle }}-content" style="width: 342px; height: 312px;"></div>
 <script type="text/javascript">
 	(function() {
 		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
