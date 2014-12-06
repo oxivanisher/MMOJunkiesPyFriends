@@ -7,18 +7,18 @@
 			for (id in data.channels) {
 				s = data.streams[id];
 				c = data.channels[id];
-				var onlineText = "";
+				var image = "";
 				var status = "has-warning";
 				var glyph = "glyphicon-remove"
 				if (s.stream) {
-					onlineText = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
+					image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
 					status = "has-success";
 					glyph = "glyphicon-ok";
 				}
 
 				var icon = "<div><span class='glyphicon " + glyph + "' style='vertical-align:right'></span></div>";
 				var label = "<div><label class='control-label' for='inputSuccess1' style='width: 100%;'>" + c.display_name + "</label></div>";
-				var content = "<div>" + label + icon + "</div>" + onlineText;
+				var content = "<div class='row'>" + label + icon + "</div>" + image;
 				var liText = "<a href='" + c.url + "' target='_blank'>" + content + "</a>";
 				// aria-hidden='true'
 
