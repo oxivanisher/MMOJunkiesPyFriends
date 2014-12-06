@@ -1,27 +1,30 @@
 <ul class="list-group twitchChannels"></ul>
 <script type="text/javascript">
-	(function() {
-		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+	(function () {
+		function loadTwitchChannelData() {
 
-		$.getJSON( dataUrl ).done( function( data ) {
-			for (id in data.channels) {
-				s = data.streams[id];
-				c = data.channels[id];
-				var image = "";
-				var status = "text-warning";
-				var glyph = "glyphicon-remove"
-				if (s.stream) {
-					image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
-					status = "text-success";
-					glyph = "glyphicon-ok";
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+				for (id in data.channels) {
+					s = data.streams[id];
+					c = data.channels[id];
+					var image = "";
+					var status = "text-warning";
+					var glyph = "glyphicon-remove"
+					if (s.stream) {
+						image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
+						status = "text-success";
+						glyph = "glyphicon-ok";
+					}
+
+					var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
+					var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + c.display_name + "</label>";
+					var content = label + icon + image;
+
+					$('<li class="list-group-item" onclick="window.open(\'' + c.url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
 				}
-
-				var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
-				var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + c.display_name + "</label>";
-				var content = label + icon + image;
-
-				$('<li class="list-group-item" onclick="window.open(\'' + c.url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
-			}
-		});
+			});
+		}
+		setInterval(loadTwitchChannelData, 5000 );
 	})();
 </script>
