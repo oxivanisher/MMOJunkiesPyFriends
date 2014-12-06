@@ -8,22 +8,22 @@
 				s = data.streams[id];
 				c = data.channels[id];
 				var image = "";
-				var status = "has-warning";
+				var status = "warning";
 				var glyph = "glyphicon-remove"
 				if (s.stream) {
 					image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
-					status = "has-success";
+					status = "success";
 					glyph = "glyphicon-ok";
 				}
 
-				var icon = "<span class='glyphicon " + glyph + " pull-right' aria-hidden='true'></span>";
+				var icon = "<span class='glyphicon " + glyph + " text-" + status + " pull-right'></span>";
 				var label = "<label class='control-label' for='inputSuccess1'>" + c.display_name + "</label>";
 				var content = label + icon + image;
 				// var content = "<div>" + label + icon + "</div>" + image;
 				var liText = "<a href='" + c.url + "' target='_blank'>" + content + "</a>";
 				// aria-hidden='true'
 
-				$('<li class="list-group-item form-group ' + status + '">' + liText + '</li>').appendTo('ul.twitchChannels');
+				$('<li class="list-group-item form-group has-' + status + '">' + liText + '</li>').appendTo('ul.twitchChannels');
 			}
 		});
 	})();
