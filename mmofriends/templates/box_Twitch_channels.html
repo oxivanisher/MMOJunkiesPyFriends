@@ -4,7 +4,10 @@
 		function loadTwitchChannelData() {
 
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+
 			$.getJSON( dataUrl ).done( function( data ) {
+				$('.twitchChannels').empty();
+
 				for (id in data.channels) {
 					s = data.streams[id];
 					c = data.channels[id];
