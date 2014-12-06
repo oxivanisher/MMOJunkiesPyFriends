@@ -138,11 +138,10 @@ class TwitchNetwork(MMONetwork):
             logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
             self.getCache("streams")
             (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
-            if ret and len(stream):
-                if stream:
-                    if 'stream' in stream:
-                        if 'preview' in stream['stream']:
-                            stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
+            if ret and stream:
+                if 'stream' in stream:
+                    if 'preview' in stream['stream']:
+                        stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
                 if 'error' in channel.keys():
                     logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
