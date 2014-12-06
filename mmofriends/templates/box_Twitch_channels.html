@@ -8,16 +8,16 @@
 				s = data.streams[id];
 				c = data.channels[id];
 				var onlineText = "";
-				var status = "Offline";
+				var status = "has-warning";
 				if (s.stream) {
 					onlineText = "<br /><img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
-					status = "Online";
+					status = "has-success";
 				}
 
 				var label = "<label class='control-label' for='inputSuccess1'>" + c.display_name + "</label>";
 				var liText = "<a href='" + c.url + "' target='_blank'>" + label + onlineText + "</a>";
 
-				$('<li class="list-group-item form-group has-success">' + liText + '</li>').appendTo('ul.twitchChannels');
+				$('<li class="list-group-item form-group ' + status + '>' + liText + '</li>').appendTo('ul.twitchChannels');
 			}
 		});
 	})();
