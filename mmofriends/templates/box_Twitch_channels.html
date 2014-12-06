@@ -14,9 +14,10 @@
 					status = "Online";
 				}
 
-				var liText = "<a href='" + c.url + "' target='_blank'>" + c.display_name + " (" + status + ")" + onlineText + "</a>";
+				var label = "<label class='control-label has-success' for='inputSuccess1'>" + c.display_name + "</label>";
+				var liText = "<a href='" + c.url + "' target='_blank'>" + label + onlineText + "</a>";
 
-				$('<li class="list-group-item">' + liText + '</li>').appendTo('ul.twitchChannels');
+				$('<li class="list-group-item form-group">' + liText + '</li>').appendTo('ul.twitchChannels');
 			}
 		});
 	})();
