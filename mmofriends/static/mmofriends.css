@@ -108,6 +108,7 @@ body { padding-bottom: 22px; }
     background: white;
     padding: 0 10px 10px 10px;
     min-height: 345px;
+    overflow-y: auto;
   }
   
   .box footer {
