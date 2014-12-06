@@ -9,12 +9,14 @@
 				c = data.channels[id];
 				var onlineText = "";
 				var status = "has-warning";
+				var glyph = "glyphicon-remove"
 				if (s.stream) {
-					onlineText = "<br /><img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
+					onlineText = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
 					status = "has-success";
+					glyph = "glyphicon-ok";
 				}
 
-				var icon = "<span class='glyphicon glyphicon-remove' style='vertical-align:right'></span>";
+				var icon = "<span class='glyphicon " + glyph + "' style='vertical-align:right'></span>";
 				var label = "<div><label class='control-label' for='inputSuccess1' style='width: 100%;'>" + c.display_name + icon + "</label></div>";
 				var content = "<div>" + label + "</div>" + onlineText;
 				var liText = "<a href='" + c.url + "' target='_blank'>" + content + "</a>";
