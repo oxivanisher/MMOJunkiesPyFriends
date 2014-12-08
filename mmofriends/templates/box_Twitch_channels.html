@@ -6,16 +6,16 @@
 			for (id in data.streams) {
 				s = data.streams[id];
 				if (s.stream) {
-					onlineStreams.push(id);
+					onlineStreams.push(s);
 				} else {
-					offlineStreams.push(id);
+					offlineStreams.push(s);
 				}
 			}
 			console.log("online: " + onlineStreams);
 			console.log("offline: " + offlineStreams);
 
-			// for (id in onlineStreams.concat(offlineStreams)) {
-			for (id in data.streams) {
+			for (id in onlineStreams.concat(offlineStreams)) {
+			// for (id in data.streams) {
 				s = data.streams[id];
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
