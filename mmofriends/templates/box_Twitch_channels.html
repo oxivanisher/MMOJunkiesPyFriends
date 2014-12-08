@@ -1,25 +1,9 @@
-<ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
+<ul id="twitchChannelsOnline" class="list-group"></ul><ul id="twitchChannelsOffline" class="list-group"></ul><script type="text/javascript">
 	(function () {
-		function drawStreamContent( data ) {
-			// var onlineStreams = [];
-			// var offlineStreams = [];
-			// for (id in data.streams) {
-			// 	if (data.streams[id].stream) {
-			// 		onlineStreams.push({id: id, channel: data.channel[id]});
-			// 	} else {
-			// 		offlineStreams.push({id: id, channel: data.channel[id]});
-			// 	}
-			// }
-			// console.log("online: " + onlineStreams);
-			// console.log("offline: " + offlineStreams);
-			// var streamsNew = onlineStreams.concat(offlineStreams);
-			// for (var id in streamsNew) {
+		function drawStreamContent( data, drawOnline ) {
+			showMe = false
 			for (id in data.streams) {
-				// console.log("id:      " + id.id)
-				// console.log("channel: " + id.channel)
 				s = data.streams[id];
-				// s = streamsNew[id];
-				// console.log("s: " + s)
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
 					url = data.channels[id].url;
@@ -45,23 +29,35 @@
 				var label = '<label class="control-label ' + status + '" for="inputSuccess1" style="cursor: pointer;">' + display_name + '</label>';
 				var content = label + icon + image;
 
-				if (online) {
-					$('#twitchChannels').prepend('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
-				} else {
-					$('#twitchChannels').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				if (drawOnline && online) {
+					showMe = true
+					$('#twitchChannelsOnline').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				} else if (! drawOnline && ! online) {
+					showMe = true
+					$('#twitchChannelsOffline').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
 				}
-				
 			}
+			return showMe
 		}
 		function loadTwitchChannelData() {
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+
 			$.getJSON( dataUrl ).done( function( data ) {
-				$( "#twitchChannels" ).fadeOut( 300, function () {
-					$('#twitchChannels').empty();
-					drawStreamContent( data );
-					$( "#twitchChannels" ).fadeIn( 300 );
+
+				$( "#twitchChannelsOnline" ).fadeOut( 300, function () {
+					$('#twitchChannelsOnline').empty();
+					if (drawStreamContent( data, true )) {
+						$( "#twitchChannelsOnline" ).fadeIn( 300 );
+					}
 				});
-				// console.log("Twitch streams updated");
+
+				$( "#twitchChannelsOffline" ).fadeOut( 300, function () {
+					$('#twitchChannelsOffline').empty();
+					if (drawStreamContent( data, false )) {
+						$( "#twitchChannelsOffline" ).fadeIn( 300 );
+					}
+				});
+
 			});
 		}
 		loadTwitchChannelData();
