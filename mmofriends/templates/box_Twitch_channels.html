@@ -1,7 +1,37 @@
 <ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
-		function compareStreams(a, b) {
+		function compareStreams( a, b ) {
 			true;
+		}
+		function drawStreamContent( data ) {
+			for (id in data.streams) {
+				s = data.streams[id];
+				if (data.channels[id]) {
+					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
+					// display_name = "MMO's " + data.channels[id].display_name;
+					url = data.channels[id].url;
+				} else {
+					display_name = id;
+					url = "http://twitch.tv/" + display_name;
+				}
+				
+				var image = "";
+				var status = "text-warning";
+				var glyph = "glyphicon-remove"
+				if (s.stream) {
+					imgUrl = s.stream.preview + "?" + new Date().getTime();
+					image = "<img class='img-responsive' src='" + imgUrl + "' title='" + s.stream.game + ": " + s.status + "'/>";
+					status = "text-success";
+					glyph = "glyphicon-ok";
+					display_name = display_name + " (" + s.stream.viewers + " viewers)"
+				}
+
+				var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
+				var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + display_name + "</label>";
+				var content = label + icon + image;
+
+				$('#twitchChannels').append('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>');
+			}
 		}
 		function loadTwitchChannelData() {
 
@@ -11,40 +41,15 @@
 				if ($('#twitchChannels').length > 0) {
 					$( "#twitchChannels" ).fadeOut( 1000, function () {
 						$('#twitchChannels').empty();
+						drawStreamContent( data );
+						$( "#twitchChannels" ).fadeIn( 1000 );
 					});
 				}
 
 				// compareStreams
 
-				for (id in data.streams) {
-					s = data.streams[id];
-					if (data.channels[id]) {
-						display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
-						// display_name = "MMO's " + data.channels[id].display_name;
-						url = data.channels[id].url;
-					} else {
-						display_name = id;
-						url = "http://twitch.tv/" + display_name;
-					}
-					
-					var image = "";
-					var status = "text-warning";
-					var glyph = "glyphicon-remove"
-					if (s.stream) {
-						imgUrl = s.stream.preview + "?" + new Date().getTime();
-						image = "<img class='img-responsive' src='" + imgUrl + "' title='" + s.stream.game + ": " + s.status + "'/>";
-						status = "text-success";
-						glyph = "glyphicon-ok";
-						display_name = display_name + " (" + s.stream.viewers + " viewers)"
-					}
 
-					var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
-					var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + display_name + "</label>";
-					var content = label + icon + image;
-
-					$('#twitchChannels').append('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>');
-				}
-				$( "#twitchChannels" ).fadeIn( 1000 );
+				// $( "#twitchChannels" ).fadeIn( 1000 );
 				console.log("Twitch streams updated");
 			});
 		}
