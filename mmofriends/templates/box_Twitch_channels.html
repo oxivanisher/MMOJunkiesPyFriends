@@ -9,7 +9,9 @@
 
 			$.getJSON( dataUrl ).done( function( data ) {
 				if ($('#twitchChannels').length > 0) {
-					$( "#twitchChannels" ).fadeOut( 1000, $('#twitchChannels').empty(); );
+					$( "#twitchChannels" ).fadeOut( 1000, function () {
+						$('#twitchChannels').empty();
+					});
 				}
 
 				// compareStreams
