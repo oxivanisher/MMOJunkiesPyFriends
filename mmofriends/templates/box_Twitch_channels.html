@@ -8,9 +8,9 @@
 			$.getJSON( dataUrl ).done( function( data ) {
 				$('.twitchChannels').empty();
 
-				for (id in data.channels) {
+				for (id in data.streams) {
 					s = data.streams[id];
-					c = data.channels[id];
+					// c = data.channels[id];
 					var image = "";
 					var status = "text-warning";
 					var glyph = "glyphicon-remove"
@@ -21,10 +21,10 @@
 					}
 
 					var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
-					var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + c.display_name + "</label>";
+					var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + s.display_name + "</label>";
 					var content = label + icon + image;
 
-					$('<li class="list-group-item" onclick="window.open(\'' + c.url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
+					$('<li class="list-group-item" onclick="window.open(\'' + s.url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
 				}
 			});
 		}

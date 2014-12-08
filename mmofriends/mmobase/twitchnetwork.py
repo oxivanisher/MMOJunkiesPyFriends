@@ -39,7 +39,7 @@ class TwitchNetwork(MMONetwork):
         self.registerWorker(self.updateAllUserResources, 60)
 
         # dashboard boxes
-        self.registerDashboardBox(self.dashboard_channels, 'channels', {'title': 'Channels'})
+        self.registerDashboardBox(self.dashboard_channels, 'channels', {'title': 'Streams'})
 
         # setup twitch service
         self.baseUrl = 'https://api.twitch.tv/kraken'
@@ -100,10 +100,14 @@ class TwitchNetwork(MMONetwork):
             logger = self.log
 
         background = True
-        if userid == 0:
+
+        if isinstance( userid, int ) == 0:
             userNick = "System"
+            userFetchMode = False
         else:
             userNick = self.getUserById(userid).nick
+            userFetchMode = True
+
         if userid == None:
             userid = self.session['userid']
             background = False
@@ -119,27 +123,31 @@ class TwitchNetwork(MMONetwork):
             else:
                 accessToken = self.getSessionValue(self.linkIdName)
 
-        logger.debug("[%s] Fetching channel for %s" % (self.handle, userNick))
-        self.getCache("channels")
-        (ret, channel) = self.queryTwitchApi("/channel", accessToken)
-        if ret and len(channel):
-            if 'error' in channel.keys():
-                logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
-                return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
-            self.cache['channels'][userid] = channel
-            self.setCache("channels")
-            logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
-            if 'logo' in channel:
-                if channel['logo']:
-                    self.cacheFile(channel['logo'])
-            if 'banner' in channel:
-                if channel['banner']:
-                    self.cacheFile(channel['banner'])
-            if 'video_banner' in channel:
-                if channel['video_banner']:
-                    self.cacheFile(channel['video_banner'])
+        if userFetchMode:
+            logger.debug("[%s] Fetching channel for %s" % (self.handle, userNick))
+            self.getCache("channels")
+            (ret, channel) = self.queryTwitchApi("/channel", accessToken)
+            if ret and len(channel):
+                if 'error' in channel.keys():
+                    logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
+                    return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
+                self.cache['channels'][userid] = channel
+                self.setCache("channels")
+                logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
+                if 'logo' in channel:
+                    if channel['logo']:
+                        self.cacheFile(channel['logo'])
+                if 'banner' in channel:
+                    if channel['banner']:
+                        self.cacheFile(channel['banner'])
+                if 'video_banner' in channel:
+                    if channel['video_banner']:
+                        self.cacheFile(channel['video_banner'])
+        else:
+            channel = { 'name': userid }
 
-            logger.debug("[%s] Fetching stream for %s" % (self.handle, userNick))
+        if len(channel):
+            logger.debug("[%s] Fetching stream for %s (%s)" % (self.handle, userNick, channel['name']))
             self.getCache("streams")
             (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
             if ret and len(stream):
@@ -163,10 +171,13 @@ class TwitchNetwork(MMONetwork):
 
         okCount = 0
         nokCount = 0
+        lastToken = ""
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
             if link['network_data']:
                 (ret, message) = self.updateUserResources(link['user_id'], link['network_data'], logger)
+                #dirty hack!
+                lastToken = link['network_data']
                 if ret:
                     okCount += 1
                 else:
@@ -176,7 +187,7 @@ class TwitchNetwork(MMONetwork):
 
         for sysChan in self.config['siteChannel']:
             logger.debug("[%s] Updating system channel %s" % (self.handle, sysChan))
-            (ret, message) = self.updateUserResources(0, sysChan, logger)
+            (ret, message) = self.updateUserResources(sysChan, lastToken, logger)
             if ret:
                 okCount += 1
             else:
