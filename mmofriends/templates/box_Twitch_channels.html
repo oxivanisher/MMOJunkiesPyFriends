@@ -15,10 +15,11 @@
 			// var streamsNew = onlineStreams.concat(offlineStreams);
 			// for (var id in streamsNew) {
 			for (id in data.streams) {
-				console.log("id:      " + id.id)
-				console.log("channel: " + id.channel)
-				s = streamsNew[id];
-				console.log("s: " + s)
+				// console.log("id:      " + id.id)
+				// console.log("channel: " + id.channel)
+				s = data.streams[id];
+				// s = streamsNew[id];
+				// console.log("s: " + s)
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
 					url = data.channels[id].url;
