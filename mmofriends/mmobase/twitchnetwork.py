@@ -101,7 +101,7 @@ class TwitchNetwork(MMONetwork):
 
         background = True
 
-        if isinstance( userid, int ) == 0:
+        if isinstance( userid, int ):
             userNick = self.getUserById(userid).nick
             userFetchMode = True
         else:
