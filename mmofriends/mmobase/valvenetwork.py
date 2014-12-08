@@ -134,6 +134,8 @@ class ValveNetwork(MMONetwork):
                 if ownedGames:
                     logger.warning("[%s] Owned games: %s" % (self.handle, len(ownedGames['games'])))
                     for game in ownedGames['games']:
+                        if game['appid'] == 330840:
+                            logger.warning("FOUND IT!")
                         # updating games in general
                         self.cache['games'][game['appid']] = {}
                         self.cache['games'][game['appid']]['appid'] = game['appid']
