@@ -13,7 +13,7 @@
 			console.log("online: " + onlineStreams);
 			console.log("offline: " + offlineStreams);
 
-			for (id in onlineStreams.concat(offlineStreams)) {
+			for (var id in onlineStreams.concat(offlineStreams)) {
 			// for (id in data.streams) {
 				console.log("id: " + id)
 				s = data.streams[id];
