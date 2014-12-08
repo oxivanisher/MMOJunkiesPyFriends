@@ -1,8 +1,8 @@
 <ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
 		function drawStreamContent( data ) {
-			var onlineStreams = []
-			var offlineStreams = []
+			var onlineStreams = [];
+			var offlineStreams = [];
 			for (id in data.streams) {
 				s = data.streams[id];
 				if (s.stream) {
@@ -11,6 +11,8 @@
 					offlineStreams.push(id);
 				}
 			}
+			console.log("online: " + onlineStreams);
+			console.log("offline: " + offlineStreams);
 
 			for (id in onlineStreams.concat(offlineStreams)) {
 				s = data.streams[id];
