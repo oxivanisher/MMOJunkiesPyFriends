@@ -8,7 +8,7 @@
 				$('.twitchChannels').empty();
 
 				for (id in data.streams.sort(function(a, b) { 
-					    return a.speed - b.speed;
+					    return a.updated_at - b.updated_at;
 					})) {
 					s = data.streams[id];
 					if (data.channels[id]) {
