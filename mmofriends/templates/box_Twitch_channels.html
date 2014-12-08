@@ -33,6 +33,7 @@
 
 					$('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
 				}
+				console.log("Twitch streams updated");
 			});
 		}
 		loadTwitchChannelData();
