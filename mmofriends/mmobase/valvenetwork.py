@@ -38,7 +38,7 @@ class ValveNetwork(MMONetwork):
         self.onlineStates[6] = "Looking to play"
 
         # background updater methods
-        self.registerWorker(self.updateUsers, 3600)
+        self.registerWorker(self.updateUsers, 10800)
         self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
@@ -132,10 +132,8 @@ class ValveNetwork(MMONetwork):
                                                                                         'include_appinfo': '1' })
                 self.cache['users'][player['steamid']]['ownedGames'] = {}
                 if ownedGames:
-                    logger.warning("[%s] Owned games: %s" % (self.handle, len(ownedGames['games'])))
+                    logger.debug("[%s] Owned games: %s" % (self.handle, len(ownedGames['games'])))
                     for game in ownedGames['games']:
-                        if game['appid'] == 330840:
-                            logger.warning("FOUND IT!")
                         # updating games in general
                         self.cache['games'][game['appid']] = {}
                         self.cache['games'][game['appid']]['appid'] = game['appid']
@@ -173,7 +171,8 @@ class ValveNetwork(MMONetwork):
             # fetch friends and games played for friends
             for player in self.cache['users'].keys():
                 steamId = self.cache['users'][player]['steamid']
-                if 'friends' not in self.cache['users'][steamId]:
+                #if 'friends' not in self.cache['users'][steamId]:
+                if True:
                     logger.info("[%s] Fetching friendslist for %s" % (self.handle, steamId))
                     steamFriends = self.fetchFromSteam('ISteamUser/GetFriendList/v0001', {'steamid': steamId,
                                                                                           'relationship': 'friend'})
@@ -184,7 +183,8 @@ class ValveNetwork(MMONetwork):
                         logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
                     else:
                         logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
-                if 'ownedGames' not in self.cache['users'][steamId]:
+                #if 'ownedGames' not in self.cache['users'][steamId]:
+                if True:
                     logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
                     ownedGames = self.fetchFromSteam('IPlayerService/GetOwnedGames/v0001', {'steamid': steamId,
                                                                                             'include_played_free_games': '1',
