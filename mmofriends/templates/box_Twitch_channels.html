@@ -13,7 +13,7 @@
 					console.log("data.channels: " + data.channels)
 					console.log("id: " + id)
 					if (data.channels[id]) {
-						display_name = data.channels[id].display_name;
+						display_name = "MMO's " + data.channels[id].display_name;
 						url = data.channels[id].url;
 					} else {
 						display_name = id;
@@ -27,6 +27,7 @@
 						image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + "'/>";
 						status = "text-success";
 						glyph = "glyphicon-ok";
+						display_name = display_name + " (" + s.stream.viewers + ")"
 					}
 
 					var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
