@@ -4,7 +4,8 @@
 			var onlineStreams = []
 			var offlineStreams = []
 			for (id in data.streams) {
-				if (data.streams[id].stream) {
+				s = data.streams[id];
+				if (s.stream) {
 					onlineStreams.push(id);
 				} else {
 					offlineStreams.push(id);
