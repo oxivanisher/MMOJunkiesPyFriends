@@ -42,7 +42,7 @@
 					var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + display_name + "</label>";
 					var content = label + icon + image;
 
-					$('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
+					$('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('#twitchChannels');
 				}
 				$( "#twitchChannels" ).fadeIn( 1000 );
 				console.log("Twitch streams updated");
