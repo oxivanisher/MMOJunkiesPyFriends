@@ -169,6 +169,15 @@ class TwitchNetwork(MMONetwork):
                     nokCount += 1
             else:
                 nokCount += 1
+
+        for sysChan in self.config['siteChannel']:
+            logger.debug("[%s] Updating system channel %s" % (self.handle, sysChan))
+            (ret, message) = self.updateUserResources(0, sysChan, logger)
+            if ret:
+                okCount += 1
+            else:
+                nokCount += 1
+
         return "%s user resources updated, %s ignored" % (okCount, nokCount)
 
     def devTest(self):
