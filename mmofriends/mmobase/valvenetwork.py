@@ -241,10 +241,16 @@ class ValveNetwork(MMONetwork):
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
-                        self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
-                        self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
-                        self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
-                        self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
+                        if 'gameextrainfo' in friend:
+                            self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
+                        if 'gameid' in friend:
+                            self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
+                        else:
+                            self.cache['users'][friend['steamid']]['gameid'] = None
+                        if 'lastlogoff' in friend:
+                            self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
+                        if 'profilestate' in friend:
+                            self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
         self.setCache("users")
         return "%s user states updated" % count
 
