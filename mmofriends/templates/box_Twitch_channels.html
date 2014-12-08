@@ -13,8 +13,8 @@
 			console.log("online: " + onlineStreams);
 			console.log("offline: " + offlineStreams);
 			var streamsNew = onlineStreams.concat(offlineStreams);
-			for (var id in streamsNew) {
-			// for (id in data.streams) {
+			// for (var id in streamsNew) {
+			for (id in data.streams) {
 				console.log("id:      " + id.id)
 				console.log("channel: " + id.channel)
 				s = streamsNew[id];
@@ -30,28 +30,35 @@
 				var image = "";
 				var status = "text-warning";
 				var glyph = "glyphicon-remove";
+				var online = false;
 				if (s.stream) {
 					imgUrl = s.stream.preview + "?" + new Date().getTime();
 					image = "<img class='img-responsive' src='" + imgUrl + "' title='" + s.stream.game + ": " + s.status + "'/>";
 					status = "text-success";
 					glyph = "glyphicon-ok";
 					display_name = display_name + " (" + s.stream.viewers + " viewers)";
+					online = true;
 				}
 				var onclick = 'onclick="window.open(\'' + url + '\')"';
 				var icon = '<span class="glyphicon ' + glyph + ' ' + status + ' pull-right" style="cursor: pointer;"></span>';
 				var label = '<label class="control-label ' + status + '" for="inputSuccess1" style="cursor: pointer;">' + display_name + '</label>';
 				var content = label + icon + image;
 
-				$('#twitchChannels').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				if (online) {
+					$('#twitchChannels').prepend('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				} else {
+					$('#twitchChannels').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				}
+				
 			}
 		}
 		function loadTwitchChannelData() {
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 			$.getJSON( dataUrl ).done( function( data ) {
-				$( "#twitchChannels" ).fadeOut( 100, function () {
+				$( "#twitchChannels" ).fadeOut( 300, function () {
 					$('#twitchChannels').empty();
 					drawStreamContent( data );
-					$( "#twitchChannels" ).fadeIn( 100 );
+					$( "#twitchChannels" ).fadeIn( 300 );
 				});
 				// console.log("Twitch streams updated");
 			});
