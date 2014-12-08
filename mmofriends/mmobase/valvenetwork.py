@@ -170,7 +170,9 @@ class ValveNetwork(MMONetwork):
             # fetch friends and games played for friends
             for player in self.cache['users'].keys():
                 steamId = self.cache['users'][player]['steamid']
-                if 'friends' not in self.cache['users'][steamId]:
+                #this could be optimized ... probably ... somehow ...
+                #if 'friends' not in self.cache['users'][steamId]:
+                if True:
                     logger.info("[%s] Fetching friendslist for %s" % (self.handle, steamId))
                     steamFriends = self.fetchFromSteam('ISteamUser/GetFriendList/v0001', {'steamid': steamId,
                                                                                           'relationship': 'friend'})
@@ -181,8 +183,9 @@ class ValveNetwork(MMONetwork):
                         logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
                     else:
                         logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
-
-                if 'ownedGames' not in self.cache['users'][steamId]:
+                #this could be optimized ... probably ... somehow ...
+                #if 'ownedGames' not in self.cache['users'][steamId]:
+                if True:
                     logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
                     ownedGames = self.fetchFromSteam('IPlayerService/GetOwnedGames/v0001', {'steamid': steamId,
                                                                                             'include_played_free_games': '1',
