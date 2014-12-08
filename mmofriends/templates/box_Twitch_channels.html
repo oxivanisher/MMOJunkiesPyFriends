@@ -10,7 +10,7 @@
 
 				for (id in data.streams) {
 					s = data.streams[id];
-					if (data.channels.indexOf(id) > -1) {
+					if ($.inArray(id, data.channels) > -1) {
 						display_name = data.channels[id].display_name;
 						url = data.channels[id].url;
 					} else {
