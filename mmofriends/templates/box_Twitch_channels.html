@@ -35,12 +35,12 @@
 					glyph = "glyphicon-ok";
 					display_name = display_name + " (" + s.stream.viewers + " viewers)";
 				}
-
-				var icon = "<span class='glyphicon " + glyph + " " + status + " pull-right'></span>";
-				var label = "<label class='control-label " + status + "' for='inputSuccess1'>" + display_name + "</label>";
+				var onclick = 'onclick="window.open(\'' + url + '\')"';
+				var icon = '<span class="glyphicon ' + glyph + ' ' + status + ' pull-right" ' + onclick + '></span>';
+				var label = '<label class="control-label ' + status + '" for="inputSuccess1" ' + onclick + ' >' + display_name + '</label>';
 				var content = label + icon + image;
 
-				$('#twitchChannels').append('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>');
+				$('#twitchChannels').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
 			}
 		}
 		function loadTwitchChannelData() {
