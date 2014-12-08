@@ -12,7 +12,7 @@
 					s = data.streams[id];
 					console.log("data.channels: " + data.channels)
 					console.log("id: " + id)
-					if ($.inArray(id, data.channels) > -1) {
+					if (data.channels[id]) {
 						display_name = data.channels[id].display_name;
 						url = data.channels[id].url;
 					} else {
