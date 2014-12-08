@@ -106,7 +106,8 @@ body { padding-bottom: 22px; }
   
   .box section {
     background: white;
-    padding: 10px 10px 10px 10px;
+    /*padding: 10px 10px 10px 10px;*/
+    padding: 5px;
     /*min-height: 345px;*/
     height: 345px;
     overflow-y: auto;
