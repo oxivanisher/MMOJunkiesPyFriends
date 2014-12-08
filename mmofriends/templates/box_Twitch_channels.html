@@ -1,18 +1,18 @@
 <ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
 		function drawStreamContent( data ) {
-			var onlineStreams = [];
-			var offlineStreams = [];
-			for (id in data.streams) {
-				if (data.streams[id].stream) {
-					onlineStreams.push({id: id, channel: data.channel[id]});
-				} else {
-					offlineStreams.push({id: id, channel: data.channel[id]});
-				}
-			}
-			console.log("online: " + onlineStreams);
-			console.log("offline: " + offlineStreams);
-			var streamsNew = onlineStreams.concat(offlineStreams);
+			// var onlineStreams = [];
+			// var offlineStreams = [];
+			// for (id in data.streams) {
+			// 	if (data.streams[id].stream) {
+			// 		onlineStreams.push({id: id, channel: data.channel[id]});
+			// 	} else {
+			// 		offlineStreams.push({id: id, channel: data.channel[id]});
+			// 	}
+			// }
+			// console.log("online: " + onlineStreams);
+			// console.log("offline: " + offlineStreams);
+			// var streamsNew = onlineStreams.concat(offlineStreams);
 			// for (var id in streamsNew) {
 			for (id in data.streams) {
 				console.log("id:      " + id.id)
