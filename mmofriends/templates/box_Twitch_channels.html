@@ -1,10 +1,11 @@
 <ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
 		function compareStreams( a, b ) {
-			true;
+			return 0;
 		}
 		function drawStreamContent( data ) {
-			for (id in data.streams) {
+
+			for (id in data.streams.sort(compareStreams)) {
 				s = data.streams[id];
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
@@ -39,10 +40,10 @@
 
 			$.getJSON( dataUrl ).done( function( data ) {
 				if ($('#twitchChannels').length > 0) {
-					$( "#twitchChannels" ).fadeOut( 1000, function () {
+					$( "#twitchChannels" ).fadeOut( 100, function () {
 						$('#twitchChannels').empty();
 						drawStreamContent( data );
-						$( "#twitchChannels" ).fadeIn( 1000 );
+						$( "#twitchChannels" ).fadeIn( 100 );
 					});
 				}
 
