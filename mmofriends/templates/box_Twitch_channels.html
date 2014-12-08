@@ -1,11 +1,18 @@
-<ul class="list-group twitchChannels"></ul><script type="text/javascript">
+<ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
+		function compareStreams(a, b) {
+			void;
+		}
 		function loadTwitchChannelData() {
 
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 
 			$.getJSON( dataUrl ).done( function( data ) {
-				$('.twitchChannels').empty();
+				if ($('#twitchChannels').length > 0) {
+					$( "#twitchChannels" ).fadeOut( 1000, $('#twitchChannels').empty(); );
+				}
+
+				// compareStreams
 
 				for (id in data.streams) {
 					s = data.streams[id];
@@ -35,6 +42,7 @@
 
 					$('<li class="list-group-item" onclick="window.open(\'' + url + '\')" style="cursor: pointer;">' + content + '</li>').appendTo('ul.twitchChannels');
 				}
+				$( "#twitchChannels" ).fadeIn( 1000 );
 				console.log("Twitch streams updated");
 			});
 		}
