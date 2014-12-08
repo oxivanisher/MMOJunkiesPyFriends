@@ -1,7 +1,17 @@
 <ul id="twitchChannels" class="list-group"></ul><script type="text/javascript">
 	(function () {
 		function drawStreamContent( data ) {
+			var onlineStreams = []
+			var offlineStreams = []
 			for (id in data.streams) {
+				if (data.streams[id].stream) {
+					onlineStreams.append(id)
+				} else {
+					offlineStreams.append(id)
+				}
+			}
+
+			for (id in onlineStreams.concat(offlineStreams)) {
 				s = data.streams[id];
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
