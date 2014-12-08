@@ -100,13 +100,17 @@ class TwitchNetwork(MMONetwork):
             logger = self.log
 
         background = True
+        if userid == 0:
+            userNick = "System"
+        else:
+            userNick = self.getUserById(userid).nick
         if userid == None:
             userid = self.session['userid']
             background = False
-            logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, self.getUserById(userid).nick))
+            logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, userNick))
         else:
-            logger.debug("[%s] Background updating the resources for userid %s" % (self.handle, self.getUserById(userid).nick))
-        userNick = self.getUserById(userid).nick
+            logger.debug("[%s] Background updating the resources for userid %s" % (self.handle, userNick))
+        
 
         if not accessToken:
             if userid != self.session['userid']:

@@ -74,8 +74,6 @@ class MMONetwork(object):
 
     # Helpers
     def getUserById(self, userId):
-        if userId == 0:
-            return "System"
         ret = MMOUser.query.filter_by(id=userId).first()
         if ret:
             return ret
