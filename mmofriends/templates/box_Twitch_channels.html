@@ -7,12 +7,7 @@
 			$.getJSON( dataUrl ).done( function( data ) {
 				$('.twitchChannels').empty();
 
-				for (id in data.streams.sort(function(a, b) { 
-						console.log(a.stream)
-						if (a.stream) {
-							return a.updated_at - b.updated_at;
-						}
-					})) {
+				for (id in data.streams) {
 					s = data.streams[id];
 					if (data.channels[id]) {
 						display_name = "MMO's " + data.channels[id].display_name;
