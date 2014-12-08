@@ -26,7 +26,8 @@
 					var status = "text-warning";
 					var glyph = "glyphicon-remove"
 					if (s.stream) {
-						image = "<img class='img-responsive' src='" + s.stream.preview + "' title='" + s.stream.game + ": " + s.status + "'/>";
+						imgUrl = s.stream.preview + "?" + new Date().getTime();
+						image = "<img class='img-responsive' src='" + imgUrl + "' title='" + s.stream.game + ": " + s.status + "'/>";
 						status = "text-success";
 						glyph = "glyphicon-ok";
 						display_name = display_name + " (" + s.stream.viewers + " viewers)"
