@@ -5,7 +5,6 @@
 				s = data.streams[id];
 				if (data.channels[id]) {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
-					// display_name = "MMO's " + data.channels[id].display_name;
 					url = data.channels[id].url;
 				} else {
 					display_name = id;
@@ -33,13 +32,11 @@
 		function loadTwitchChannelData() {
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 			$.getJSON( dataUrl ).done( function( data ) {
-				if ($('#twitchChannels').length > 0) {
-					$( "#twitchChannels" ).fadeOut( 100, function () {
-						$('#twitchChannels').empty();
-						drawStreamContent( data );
-						$( "#twitchChannels" ).fadeIn( 100 );
-					});
-				}
+				$( "#twitchChannels" ).fadeOut( 100, function () {
+					$('#twitchChannels').empty();
+					drawStreamContent( data );
+					$( "#twitchChannels" ).fadeIn( 100 );
+				});
 				// console.log("Twitch streams updated");
 			});
 		}
