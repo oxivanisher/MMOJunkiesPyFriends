@@ -100,7 +100,7 @@ class TwitchNetwork(MMONetwork):
             logger = self.log
 
         background = True
-        if not userid:
+        if userid == None:
             userid = self.session['userid']
             background = False
             logger.debug("[%s] Foreground updating the resources for userid %s" % (self.handle, self.getUserById(userid).nick))
