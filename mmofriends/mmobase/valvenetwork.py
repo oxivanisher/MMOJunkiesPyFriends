@@ -530,6 +530,7 @@ class ValveNetwork(MMONetwork):
                         nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
                         nowPlayingUser['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
                         nowPlayingUser['img_icon_url'] = self.cache['games'][gameId]['img_icon_url']
+                        nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
 
                         if 'logged_in' in self.session:
                             nowPlayingUser['username'] = self.cache['users'][user]['personaname']
