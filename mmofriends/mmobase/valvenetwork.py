@@ -490,6 +490,9 @@ class ValveNetwork(MMONetwork):
 
         gamesUsers = {}
         returnUsers = []
+
+        gamesNowPlaying = {}
+
         for user in self.cache['users']:
             for game in self.cache['users'][user]['ownedGames']:
                 if game not in games2weeks:
@@ -512,6 +515,17 @@ class ValveNetwork(MMONetwork):
                     gamesUsers[game] += 1
                 except KeyError as e:
                     pass
+
+            try:
+                if 'gameid' in self.cache['users'][user]:
+                    if self.cache['users'][user]['gameid']:
+                        gameId = self.cache['users'][user]['gameid']
+                        gamesNowPlaying[user] = {}
+                        gamesNowPlaying[user]['username'] = self.cache['users'][user]['personaname']
+                        gamesNowPlaying[user]['gamename'] = self.cache['games'][gameId]['name']
+                        gamesNowPlaying[user]['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
+            except KeyError:
+                pass
 
         for game in self.cache['games']:
             try:
@@ -543,7 +557,8 @@ class ValveNetwork(MMONetwork):
 
         return { 'games2weeks': getHighestRated(return2weeks, 'weight'),
                  'gamesForever': getHighestRated(returnForever, 'weight'),
-                 'gamesUsers': getHighestRated(returnUsers, 'weight') }
+                 'gamesUsers': getHighestRated(returnUsers, 'weight'),
+                 'gamesNowPlaying': gamesNowPlaying }
 
     # Dashboard
     def dashboard_online_users(self, request):
@@ -559,5 +574,9 @@ class ValveNetwork(MMONetwork):
         return self.getGameStats()
 
     def dashboard_gamesUsers(self, request):
+        self.log.debug("Dashboard gamesUsers")
+        return self.getGameStats()
+
+    def dashboard_nowBeeingPlayed(self, request):
         self.log.debug("Dashboard gamesUsers")
         return self.getGameStats()
