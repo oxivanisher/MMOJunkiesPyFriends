@@ -44,17 +44,17 @@
 
 			$.getJSON( dataUrl ).done( function( data ) {
 
-				$( "#twitchChannelsOnline" ).fadeOut( 300, function () {
+				$( "#twitchChannelsOnline" ).fadeOut( 200, function () {
 					$('#twitchChannelsOnline').empty();
 					if (drawStreamContent( data, true )) {
-						$( "#twitchChannelsOnline" ).fadeIn( 300 );
+						$( "#twitchChannelsOnline" ).fadeIn( 200 );
 					}
 				});
 
-				$( "#twitchChannelsOffline" ).fadeOut( 300, function () {
+				$( "#twitchChannelsOffline" ).fadeOut( 200, function () {
 					$('#twitchChannelsOffline').empty();
 					if (drawStreamContent( data, false )) {
-						$( "#twitchChannelsOffline" ).fadeIn( 300 );
+						$( "#twitchChannelsOffline" ).fadeIn( 200 );
 					}
 				});
 

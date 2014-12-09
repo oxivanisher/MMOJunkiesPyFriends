@@ -11,7 +11,7 @@ import re
 import time
 import datetime
 
-from flask import current_app
+from flask import current_app, url_for
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
@@ -492,7 +492,7 @@ class ValveNetwork(MMONetwork):
         gamesUsers = {}
         returnUsers = []
 
-        gamesNowPlaying = {}
+        gamesNowPlaying = []
 
         internalUsers = []
         allLinks = self.getNetworkLinks()
@@ -526,22 +526,29 @@ class ValveNetwork(MMONetwork):
                 if 'gameid' in self.cache['users'][user]:
                     if self.cache['users'][user]['gameid']:
                         gameId = self.cache['users'][user]['gameid']
-                        gamesNowPlaying[user] = {}
-                        gamesNowPlaying[user]['username'] = self.cache['users'][user]['personaname']
-                        gamesNowPlaying[user]['gamename'] = self.cache['games'][gameId]['name']
-                        gamesNowPlaying[user]['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
-                        friendOf = []
-                        for friend in self.cache['users'][user]['friends']:
-                            if int(friend['steamid']) in internalUsers:
-                                for link in allLinks:
-                                    if friend['steamid'] == link['network_data']:
-                                        friendOf.append(self.getUserById(link['user_id']).nick)
-                        gamesNowPlaying[user]['friendof'] = ', '.join(friendOf)
+                        nowPlayingUser = {}
+                        nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
+                        nowPlayingUser['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
+
+                        if 'logged_in' in self.session:
+                            nowPlayingUser['username'] = self.cache['users'][user]['personaname']
+                            friendOf = []
+                            for friend in self.cache['users'][user]['friends']:
+                                if int(friend['steamid']) in internalUsers:
+                                    for link in allLinks:
+                                        if friend['steamid'] == link['network_data']:
+                                            friendOf.append(self.getUserById(link['user_id']).nick)
+                            nowPlayingUser['friendof'] = ', '.join(friendOf)
+                        else:
+                            nowPlayingUser['username'] = "Anonymous"
+                            nowPlayingUser['friendof'] = "Login to view"
 
                         if int(user) in internalUsers:
-                            gamesNowPlaying[user]['internal'] = True
+                            nowPlayingUser['internal'] = True
                         else:
-                            gamesNowPlaying[user]['internal'] = False
+                            nowPlayingUser['internal'] = False
+
+                        gamesNowPlaying.append(nowPlayingUser)
             except KeyError:
                 pass
 

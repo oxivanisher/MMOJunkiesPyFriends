@@ -25,10 +25,10 @@
 
 			$.getJSON( dataUrl ).done( function( data ) {
 
-				$( "#steamNowPlaying" ).fadeOut( 300, function () {
+				$( "#steamNowPlaying" ).fadeOut( 200, function () {
 					$( "#steamNowPlaying" ).empty();
 					if (drawNowPlayingContent( data )) {
-						$( "#steamNowPlaying" ).fadeIn( 300 );
+						$( "#steamNowPlaying" ).fadeIn( 200 );
 					}
 				});
 
