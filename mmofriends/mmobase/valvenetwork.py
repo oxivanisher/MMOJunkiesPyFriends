@@ -498,59 +498,60 @@ class ValveNetwork(MMONetwork):
             internalUsers.append(int(link['network_data']))
 
         for user in self.cache['users']:
-            for game in self.cache['users'][user]['ownedGames']:
-                if game not in games2weeks:
-                    games2weeks[game] = 0
+            if 'ownedGames' in self.cache['users'][user]:
+                for game in self.cache['users'][user]['ownedGames']:
+                    if game not in games2weeks:
+                        games2weeks[game] = 0
+                    try:
+                        games2weeks[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_2weeks'])
+                    except KeyError as e:
+                        pass
+    
+                    if game not in gamesForever:
+                        gamesForever[game] = 0
+                    try:
+                        gamesForever[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_forever'])
+                    except KeyError as e:
+                        pass
+    
+                    if game not in gamesUsers:
+                        gamesUsers[game] = 0
+                    try:
+                        gamesUsers[game] += 1
+                    except KeyError as e:
+                        pass
+    
                 try:
-                    games2weeks[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_2weeks'])
-                except KeyError as e:
+                    if 'gameid' in self.cache['users'][user]:
+                        if self.cache['users'][user]['gameid']:
+                            gameId = self.cache['users'][user]['gameid']
+                            nowPlayingUser = {}
+                            nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
+                            nowPlayingUser['link'] = 'https://store.steampowered.com/app/' + gameId + '/'
+                            nowPlayingUser['img_icon_url'] = self.cache['games'][gameId]['img_icon_url']
+                            nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
+    
+                            if 'logged_in' in self.session:
+                                nowPlayingUser['username'] = self.cache['users'][user]['personaname']
+                                friendOf = []
+                                for friend in self.cache['users'][user]['friends']:
+                                    if int(friend['steamid']) in internalUsers:
+                                        for link in allLinks:
+                                            if friend['steamid'] == link['network_data']:
+                                                friendOf.append(self.getUserById(link['user_id']).nick)
+                                nowPlayingUser['friendof'] = ', '.join(friendOf)
+                            else:
+                                nowPlayingUser['username'] = "Anonymous"
+                                nowPlayingUser['friendof'] = "Login to view"
+    
+                            if int(user) in internalUsers:
+                                nowPlayingUser['internal'] = True
+                            else:
+                                nowPlayingUser['internal'] = False
+    
+                            gamesNowPlaying.append(nowPlayingUser)
+                except KeyError:
                     pass
-
-                if game not in gamesForever:
-                    gamesForever[game] = 0
-                try:
-                    gamesForever[game] += int(self.cache['users'][user]['ownedGames'][game]['playtime_forever'])
-                except KeyError as e:
-                    pass
-
-                if game not in gamesUsers:
-                    gamesUsers[game] = 0
-                try:
-                    gamesUsers[game] += 1
-                except KeyError as e:
-                    pass
-
-            try:
-                if 'gameid' in self.cache['users'][user]:
-                    if self.cache['users'][user]['gameid']:
-                        gameId = self.cache['users'][user]['gameid']
-                        nowPlayingUser = {}
-                        nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
-                        nowPlayingUser['link'] = 'https://store.steampowered.com/app/' + gameId + '/'
-                        nowPlayingUser['img_icon_url'] = self.cache['games'][gameId]['img_icon_url']
-                        nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
-
-                        if 'logged_in' in self.session:
-                            nowPlayingUser['username'] = self.cache['users'][user]['personaname']
-                            friendOf = []
-                            for friend in self.cache['users'][user]['friends']:
-                                if int(friend['steamid']) in internalUsers:
-                                    for link in allLinks:
-                                        if friend['steamid'] == link['network_data']:
-                                            friendOf.append(self.getUserById(link['user_id']).nick)
-                            nowPlayingUser['friendof'] = ', '.join(friendOf)
-                        else:
-                            nowPlayingUser['username'] = "Anonymous"
-                            nowPlayingUser['friendof'] = "Login to view"
-
-                        if int(user) in internalUsers:
-                            nowPlayingUser['internal'] = True
-                        else:
-                            nowPlayingUser['internal'] = False
-
-                        gamesNowPlaying.append(nowPlayingUser)
-            except KeyError:
-                pass
 
         for game in self.cache['games']:
             try:
