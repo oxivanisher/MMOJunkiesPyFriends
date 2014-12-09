@@ -10,10 +10,10 @@
 				} else {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
 				}
-				display_name = display_name + user.username + '<br />' + user.gamename
+				display_name = display_name + user.username + ': ' + user.gamename
 
 				var onclick = 'onclick="window.open(\'' + user.link + '\')"';
-				var content = '<label class="control-label" style="cursor: pointer;" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
+				var content = '<label class="control-label" style="cursor: pointer;" title="Friend of: ' + user.friendof + '"" style="text-overflow: ellipsis;">' + display_name + '</label>';
 
 				$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
 				showMe = true;
