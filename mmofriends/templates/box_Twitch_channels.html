@@ -25,16 +25,16 @@
 					online = true;
 				}
 				var onclick = 'onclick="window.open(\'' + url + '\')"';
-				var icon = '<span class="glyphicon ' + glyph + ' ' + status + ' pull-right" style="cursor: pointer;"></span>';
-				var label = '<label class="control-label ' + status + '" for="inputSuccess1" style="cursor: pointer;">' + display_name + '</label>';
+				var icon = '<span class="glyphicon ' + glyph + ' ' + status + ' pull-right clickable"></span>';
+				var label = '<label class="control-label ' + status + ' text-wrap clickable" for="inputSuccess1">' + display_name + '</label>';
 				var content = label + icon + image;
 
 				if (drawOnline && online) {
 					showMe = true
-					$('#twitchChannelsOnline').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+					$('#twitchChannelsOnline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
 				} else if (! drawOnline && ! online) {
 					showMe = true
-					$('#twitchChannelsOffline').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+					$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
 				}
 			}
 			return showMe
