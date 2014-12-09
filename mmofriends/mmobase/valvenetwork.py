@@ -477,7 +477,7 @@ class ValveNetwork(MMONetwork):
         return self.getPartners(unknownOnly=True)
 
     # Helper
-    def getGameStats(self):
+    def getGameStats(self, what):
         self.getCache('users')
         self.getCache('games')
 
@@ -585,19 +585,29 @@ class ValveNetwork(MMONetwork):
                  'gamesUsers': getHighestRated(returnUsers, 'weight'),
                  'gamesNowPlaying': gamesNowPlaying }
 
+        # if what == 'games2weeks':
+        #     return getHighestRated(return2weeks, 'weight')
+        # elif what == 'gamesForever':
+        #     return getHighestRated(returnForever, 'weight')
+        # elif what == 'gamesUsers':
+        #     return getHighestRated(returnUsers, 'weight')
+        # elif what == 'gamesNowPlaying'
+        # else:
+        #     return {}
+
     # Dashboard
     def dashboard_games2weeks(self, request):
         self.log.debug("Dashboard games2weeks")
-        return self.getGameStats()
+        return self.getGameStats('games2weeks')
 
     def dashboard_gamesForever(self, request):
         self.log.debug("Dashboard gamesForever")
-        return self.getGameStats()
+        return self.getGameStats('gamesForever')
 
     def dashboard_gamesUsers(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats()
+        return self.getGameStats('gamesUsers')
 
     def dashboard_nowBeeingPlayed(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats()
+        return self.getGameStats('gamesNowPlaying')
