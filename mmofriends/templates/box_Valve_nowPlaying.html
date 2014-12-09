@@ -1,0 +1,42 @@
+<ul id="steamNowPlaying" class="list-group"></ul><script type="text/javascript">
+	(function () {
+		function drawNowPlayingContent( data ) {
+			showMe = false;
+			for (id in data.gamesNowPlaying) {
+				user = data.gamesNowPlaying[id]
+
+				// fixme, detect if friend or mmo user -> python, js
+				// fixme, anonymize users when not logged in -> python
+				if (user.internal) {
+					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ';
+				} else {
+					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
+				}
+				display_name = display_name + user.username + ' - ' + user.gamename
+
+				var onclick = 'onclick="window.open(\'' + user.link + '\')"';
+				var content = '<label class="control-label text-success" for="inputSuccess1" style="cursor: pointer;">' + display_name + '</label>';
+
+				$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+				showMe = true;
+			}
+			return showMe;
+		}
+		function loadSteamNowPlayingData() {
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+
+			$.getJSON( dataUrl ).done( function( data ) {
+
+				$( "#steamNowPlaying" ).fadeOut( 300, function () {
+					$( "#steamNowPlaying" ).empty();
+					if (drawNowPlayingContent( data )) {
+						$( "#steamNowPlaying" ).fadeIn( 300 );
+					}
+				});
+
+			});
+		}
+		loadSteamNowPlayingData();
+		setInterval(loadSteamNowPlayingData, 20000 );
+	})();
+</script>

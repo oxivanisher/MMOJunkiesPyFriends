@@ -49,6 +49,7 @@ class ValveNetwork(MMONetwork):
         self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Minutes played last two weeks','template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Minutes played forever', 'template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Users own', 'template': 'box_jQCloud.html'})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'nowPlaying', {'title': 'Now playing'})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
@@ -493,6 +494,11 @@ class ValveNetwork(MMONetwork):
 
         gamesNowPlaying = {}
 
+        allLinks = self.getNetworkLinks()
+        internalUsers = []
+        for link in allLinks:
+            internalUsers.append(int(link['network_data']))
+
         for user in self.cache['users']:
             for game in self.cache['users'][user]['ownedGames']:
                 if game not in games2weeks:
@@ -524,6 +530,10 @@ class ValveNetwork(MMONetwork):
                         gamesNowPlaying[user]['username'] = self.cache['users'][user]['personaname']
                         gamesNowPlaying[user]['gamename'] = self.cache['games'][gameId]['name']
                         gamesNowPlaying[user]['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
+                        if int(user) in internalUsers:
+                            gamesNowPlaying[user]['internal'] = True
+                        else:
+                            gamesNowPlaying[user]['internal'] = False
             except KeyError:
                 pass
 
