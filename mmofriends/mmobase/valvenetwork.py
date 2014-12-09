@@ -49,7 +49,7 @@ class ValveNetwork(MMONetwork):
         self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Minutes played last two weeks','template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Minutes played forever', 'template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Users own', 'template': 'box_jQCloud.html'})
-        self.registerDashboardBox(self.dashboard_games2weeks, 'nowPlaying', {'title': 'Now playing'})
+        self.registerDashboardBox(self.dashboard_games2weeks, 'nowPlaying', {'title': 'Currently playing'})
 
     # steam helper
     def fetchFromSteam(self, what, options = {}, logger = None):
