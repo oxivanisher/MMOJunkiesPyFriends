@@ -10,7 +10,7 @@
 -#}
 <div id="{{ box.netHandle }}{{ box.handle }}-content"></div>
 <script type="text/javascript">
-	function drawCloud{{ box.netHandle }}{{ box.handle }}() {
+	function resizeBox{{ box.netHandle }}{{ box.handle }}() {
 		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 
 		$.getJSON( dataUrl ).done( function( data ) {
@@ -29,8 +29,8 @@
 	(function() {
 		// $( "#{{ box.netHandle }}{{ box.handle }}" ).resize(function(){
 		// 	// $(element).empty().jQcloud(words);
-		// 	drawCloud{{ box.netHandle }}{{ box.handle }}();
+		// 	resizeBox{{ box.netHandle }}{{ box.handle }}();
 		// });
-		drawCloud{{ box.netHandle }}{{ box.handle }}();
+		resizeBox{{ box.netHandle }}{{ box.handle }}();
 	})();
 </script>
