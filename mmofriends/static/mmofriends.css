@@ -92,6 +92,15 @@ body { padding-bottom: 22px; }
   border-bottom: 20px solid transparent;
 }
 
+.text-wrap {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.clickable {
+  cursor: pointer;
+}
 
 /* stoef css */
 .box {
