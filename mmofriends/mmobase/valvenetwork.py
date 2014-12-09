@@ -594,16 +594,16 @@ class ValveNetwork(MMONetwork):
 
     def dashboard_games2weeks(self, request):
         self.log.debug("Dashboard games2weeks")
-        return self.getGameStats()
+        return self.getGameStats()['games2weeks']
 
     def dashboard_gamesForever(self, request):
         self.log.debug("Dashboard gamesForever")
-        return self.getGameStats()
+        return self.getGameStats()['gamesForever']
 
     def dashboard_gamesUsers(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats()
+        return self.getGameStats()['gamesUsers']
 
     def dashboard_nowBeeingPlayed(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats()
+        return self.getGameStats()['gamesNowPlaying']
