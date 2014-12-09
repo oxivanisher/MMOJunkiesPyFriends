@@ -946,6 +946,6 @@ def json_partner_details(netHandle, partnerId):
         abort(401)
     return jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
 
-@app.route('/roit.html')
+@app.route('/riot.html')
 def riot_verify():
     return "0b84f6b6-0bac-4a15-a7f5-846dad8e3d16"
