@@ -13,7 +13,7 @@
 				display_name = display_name + user.username + ': ' + user.gamename
 
 				var onclick = 'onclick="window.open(\'' + user.link + '\')"';
-				var content = '<label class="control-label" style="cursor: pointer;" title="Friend of: ' + user.friendof + '"" style="text-overflow: ellipsis; white-space: nowrap;">' + display_name + '</label>';
+				var content = '<label class="control-label" style="cursor: pointer;" title="Friend of: ' + user.friendof + '"" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">' + display_name + '</label>';
 
 				$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
 				showMe = true;
