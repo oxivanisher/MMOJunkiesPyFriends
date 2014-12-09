@@ -24,7 +24,7 @@ class ValveNetwork(MMONetwork):
     def __init__(self, app, session, handle):
         super(ValveNetwork, self).__init__(app, session, handle)
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         self.steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
         self.maxUpdateUsers = 99

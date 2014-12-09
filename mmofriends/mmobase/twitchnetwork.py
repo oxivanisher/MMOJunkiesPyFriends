@@ -30,12 +30,12 @@ class TwitchNetwork(MMONetwork):
     def __init__(self, app, session, handle):
         super(TwitchNetwork, self).__init__(app, session, handle)
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         # admin methods
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
 
-        # background updater methods
+        # background updater methods$
         self.registerWorker(self.updateAllUserResources, 60)
 
         # dashboard boxes
