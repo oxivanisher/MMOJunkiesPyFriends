@@ -2,16 +2,15 @@
 {% block title %}About{% endblock %}
 {% block content -%}
 	<div class="row">
-		{#-
-		<div class="col-md-12 status" style="height: 62px;">
+		<div class="col-md-12 status">
 			<div class="box">
 				<a href"javascript:void(0);" class="undo">Undo last changes.</a>
 			</div>
 		</div>
-		#}
+
 	{% for box in boxes -%}
 		<div class="col-md-4 col">
-			<div class="box" id="{{ box.netHandle }}-{{ box.handle }}">
+			<div class="box" id="{{ box.netHandle }}{{ box.handle }}">
 				<header>
 					<table style="width: 100%;">
 						<tr>
@@ -25,7 +24,7 @@
 						</tr>
 					</table>
 				</header>
-				<section id="{{ box.netHandle }}-{{ box.handle }}-section">
+				<section id="{{ box.netHandle }}{{ box.handle }}-section">
 					{%- include box.settings.template -%}
 				</section>
 				{#
@@ -48,7 +47,7 @@
 	<script>
 		$(function() {
 		{% for box in boxes %}
-			$("#{{ box.netHandle }}-{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+			$("#{{ box.netHandle }}{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
 		{% endfor %}
 		});
 	</script>

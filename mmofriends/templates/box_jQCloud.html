@@ -8,19 +8,29 @@
 	JSON URL: {{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}
 	HTML URL: {{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}
 -#}
-<div id="{{ box.netHandle }}-{{ box.handle }}-content" style="width: 352px; height: 335px;"></div>
+<div id="{{ box.netHandle }}{{ box.handle }}-content"></div>
 <script type="text/javascript">
-	(function() {
+	function drawCloud{{ box.netHandle }}{{ box.handle }}() {
 		var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 
-		var divHeight = $("#{{ box.netHandle }}-{{ box.handle }}-content").height();
-		var divWidth = $("#{{ box.netHandle }}-{{ box.handle }}-content").width();
-
 		$.getJSON( dataUrl ).done( function( data ) {
-			$("#{{ box.netHandle }}-{{ box.handle }}-content").jQCloud( data.{{ box.handle }}, {
+
+			var divHeight = $("#{{ box.netHandle }}{{ box.handle }}-section").height() - 10;
+			var divWidth = $("#{{ box.netHandle }}{{ box.handle }}-section").width() - 10;
+
+			$("#{{ box.netHandle }}{{ box.handle }}-content").width(divWidth).height(divHeight);
+
+			$("#{{ box.netHandle }}{{ box.handle }}-content").empty()
+			$("#{{ box.netHandle }}{{ box.handle }}-content").jQCloud( data.{{ box.handle }}, {
 				shape: 'rectangular'
 			});
 		});
-
+	}
+	(function() {
+		// $( "#{{ box.netHandle }}{{ box.handle }}" ).resize(function(){
+		// 	// $(element).empty().jQcloud(words);
+		// 	drawCloud{{ box.netHandle }}{{ box.handle }}();
+		// });
+		drawCloud{{ box.netHandle }}{{ box.handle }}();
 	})();
 </script>

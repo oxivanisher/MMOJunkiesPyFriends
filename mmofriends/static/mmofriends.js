@@ -76,7 +76,9 @@ $(function() {
 
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
-        $(this).parents('.col').toggleClass('col-md-4 col-md-8', 200);
+        $(this).parents('.col').toggleClass('col-md-4 col-md-8', 200).promise().done(function(){
+            eval("drawCloud" + $(this).find( ".box" ).attr('id'))();
+        });
     });
 
     // close dashboard box
