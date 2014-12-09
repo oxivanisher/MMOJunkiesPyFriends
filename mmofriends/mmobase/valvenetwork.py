@@ -163,7 +163,7 @@ class ValveNetwork(MMONetwork):
                 if len(fetchFriends) == 0:
                     run = False
                 else:
-                    logger.info("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
+                    logger.debug("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
                     steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
                     for friend in steamFriends['players']:
                         if friend['steamid'] not in self.cache['users']:
