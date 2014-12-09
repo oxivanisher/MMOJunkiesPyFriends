@@ -479,7 +479,7 @@ class ValveNetwork(MMONetwork):
         return self.getPartners(unknownOnly=True)
 
     # Helper
-    def getGameStats(self, what):
+    def getGameStats(self):
         self.getCache('users')
         self.getCache('games')
 
@@ -582,25 +582,28 @@ class ValveNetwork(MMONetwork):
             except KeyError as e:
                 pass
 
-        data = { 'games2weeks': getHighestRated(return2weeks, 'weight'),
+        return { 'games2weeks': getHighestRated(return2weeks, 'weight'),
                  'gamesForever': getHighestRated(returnForever, 'weight'),
                  'gamesUsers': getHighestRated(returnUsers, 'weight'),
                  'gamesNowPlaying': gamesNowPlaying }
-        return data[what]
 
     # Dashboard
+    def dashboard_online_users(self, request):
+        self.log.debug("Dashboard online users")
+        return {'message': 'This is a test box'}
+
     def dashboard_games2weeks(self, request):
         self.log.debug("Dashboard games2weeks")
-        return self.getGameStats('games2weeks')
+        return self.getGameStats()
 
     def dashboard_gamesForever(self, request):
         self.log.debug("Dashboard gamesForever")
-        return self.getGameStats('gamesForever')
+        return self.getGameStats()
 
     def dashboard_gamesUsers(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats('gamesUsers')
+        return self.getGameStats()
 
     def dashboard_nowBeeingPlayed(self, request):
         self.log.debug("Dashboard gamesUsers")
-        return self.getGameStats('gamesNowPlaying')
+        return self.getGameStats()
