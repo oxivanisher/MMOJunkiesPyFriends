@@ -495,7 +495,8 @@ class ValveNetwork(MMONetwork):
         gamesNowPlaying = {}
 
         internalUsers = []
-        for link in self.getNetworkLinks():
+        allLinks = self.getNetworkLinks()
+        for link in allLinks:
             internalUsers.append(int(link['network_data']))
 
         for user in self.cache['users']:
@@ -529,6 +530,14 @@ class ValveNetwork(MMONetwork):
                         gamesNowPlaying[user]['username'] = self.cache['users'][user]['personaname']
                         gamesNowPlaying[user]['gamename'] = self.cache['games'][gameId]['name']
                         gamesNowPlaying[user]['link'] = 'http://store.steampowered.com/app/' + gameId + '/'
+                        friendOf = []
+                        for friend in self.cache['users'][user]['friends']:
+                            if int(friend['steamid']) in internalUsers:
+                                for link in allLinks:
+                                    if friend['steamid'] == link['network_data']:
+                                        friendOf.append(self.getUserById(link['user_id']).nick)
+                        gamesNowPlaying[user]['friendof'] = ', '.join(friendOf)
+
                         if int(user) in internalUsers:
                             gamesNowPlaying[user]['internal'] = True
                         else:
