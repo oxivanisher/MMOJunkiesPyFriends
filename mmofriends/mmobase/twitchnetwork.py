@@ -133,7 +133,7 @@ class TwitchNetwork(MMONetwork):
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
                 self.cache['channels'][userid] = channel
                 self.setCache("channels")
-                logger.info("[%s] Fetched channel for %s" % (self.handle, userNick))
+                logger.debug("[%s] Fetched channel for %s" % (self.handle, userNick))
                 if 'logo' in channel:
                     if channel['logo']:
                         self.cacheFile(channel['logo'])
@@ -160,7 +160,7 @@ class TwitchNetwork(MMONetwork):
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
                 self.cache['streams'][unicode(userid)] = stream
                 self.setCache("streams")
-                logger.info("[%s] Fetched stream for %s" % (self.handle, userNick))
+                logger.debug("[%s] Fetched stream for %s" % (self.handle, userNick))
 
         return (True, "All resources updated for %s" % userNick)
 
