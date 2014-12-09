@@ -81,7 +81,7 @@ $(function() {
                 eval("resizeBox" + $(this).find( ".box" ).attr('id'))();
             }
             catch (err) {
-                true;
+                console.log("err: " + err);
             }
         });
     });
