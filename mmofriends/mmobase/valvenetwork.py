@@ -44,8 +44,6 @@ class ValveNetwork(MMONetwork):
         self.registerWorker(self.updateUsersOnlineState, 60)
 
         # dashboard boxes
-        # self.registerDashboardBox(self.dashboard_online_users, 'online1', {'loggedin': True})
-        # self.registerDashboardBox(self.dashboard_online_users, 'online2', {'loggedin': True, 'template': 'box_Valve_online1.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Minutes played last two weeks','template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesForever', {'title': 'Minutes played forever', 'template': 'box_jQCloud.html'})
         self.registerDashboardBox(self.dashboard_games2weeks, 'gamesUsers', {'title': 'Users own', 'template': 'box_jQCloud.html'})
@@ -588,10 +586,6 @@ class ValveNetwork(MMONetwork):
                  'gamesNowPlaying': gamesNowPlaying }
 
     # Dashboard
-    def dashboard_online_users(self, request):
-        self.log.debug("Dashboard online users")
-        return {'message': 'This is a test box'}
-
     def dashboard_games2weeks(self, request):
         self.log.debug("Dashboard games2weeks")
         return self.getGameStats()
