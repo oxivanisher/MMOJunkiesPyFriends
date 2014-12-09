@@ -9,6 +9,7 @@ import urllib2
 import urllib
 import re
 import time
+import datetime
 
 from flask import current_app
 from mmoutils import *
@@ -38,7 +39,7 @@ class ValveNetwork(MMONetwork):
         self.onlineStates[6] = "Looking to play"
 
         # background updater methods
-        self.registerWorker(self.updateUsers, 10800)
+        self.registerWorker(self.updateUsers, 3600)
         self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
@@ -168,49 +169,60 @@ class ValveNetwork(MMONetwork):
                         if friend['steamid'] not in self.cache['users']:
                             self.cache['users'][friend['steamid']] = friend
 
+            # calculate which steamids needs to be updated
+            playerIds = []
+            for playerId in self.cache['users'].keys():
+                playerIds.append(int(playerId))
+            maxSteamId = max(playerIds)
+            minSteamId = min(playerIds)
+            hour = datetime.datetime.now().time().hour
+
             # fetch friends and games played for friends
             for player in self.cache['users'].keys():
                 steamId = self.cache['users'][player]['steamid']
-                #if 'friends' not in self.cache['users'][steamId]:
-                if True:
-                    logger.info("[%s] Fetching friendslist for %s" % (self.handle, steamId))
-                    steamFriends = self.fetchFromSteam('ISteamUser/GetFriendList/v0001', {'steamid': steamId,
-                                                                                          'relationship': 'friend'})
-                    if steamFriends != False:
-                        if 'friends' not in steamFriends:
-                            steamFriends['friends'] = []
-                        self.cache['users'][steamId]['friends'] = steamFriends['friends']
-                        logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
-                    else:
-                        logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
-                #if 'ownedGames' not in self.cache['users'][steamId]:
-                if True:
-                    logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
-                    ownedGames = self.fetchFromSteam('IPlayerService/GetOwnedGames/v0001', {'steamid': steamId,
-                                                                                            'include_played_free_games': '1',
-                                                                                            'include_appinfo': '1' })
-                    self.cache['users'][steamId]['ownedGames'] = {}
-                    if ownedGames:
-                        if 'games' in ownedGames:
-                            for game in ownedGames['games']:
-                                # updating games in general
-                                self.cache['games'][game['appid']] = {}
-                                self.cache['games'][game['appid']]['appid'] = game['appid']
-                                self.cache['games'][game['appid']]['name'] = game['name']
-                                self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                                self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                if ((int(player) - minSteamId) % 24) != hour:
+                    logger.debug("[%s] Not updating due disperse magic %s" % (self.handle, steamId))
+                    continue
+                logger.debug("[%s] Updating %s" % (self.handle, steamId))
+                
+                logger.info("[%s] Fetching friendslist for %s" % (self.handle, steamId))
+                steamFriends = self.fetchFromSteam('ISteamUser/GetFriendList/v0001', {'steamid': steamId,
+                                                                                      'relationship': 'friend'})
+                if steamFriends != False:
+                    if 'friends' not in steamFriends:
+                        steamFriends['friends'] = []
+                    self.cache['users'][steamId]['friends'] = steamFriends['friends']
+                    logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
+                else:
+                    logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
 
-                                # updating games of the user
-                                self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
-                                if 'playtime_2weeks' in game:
-                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = game['playtime_2weeks']
-                                else:
-                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = 0
-                                    
-                                if 'playtime_forever' in game:
-                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = game['playtime_forever']
-                                else:
-                                    self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = 0
+
+                logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
+                ownedGames = self.fetchFromSteam('IPlayerService/GetOwnedGames/v0001', {'steamid': steamId,
+                                                                                        'include_played_free_games': '1',
+                                                                                        'include_appinfo': '1' })
+                self.cache['users'][steamId]['ownedGames'] = {}
+                if ownedGames:
+                    if 'games' in ownedGames:
+                        for game in ownedGames['games']:
+                            # updating games in general
+                            self.cache['games'][game['appid']] = {}
+                            self.cache['games'][game['appid']]['appid'] = game['appid']
+                            self.cache['games'][game['appid']]['name'] = game['name']
+                            self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
+                            self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+
+                            # updating games of the user
+                            self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
+                            if 'playtime_2weeks' in game:
+                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = game['playtime_2weeks']
+                            else:
+                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_2weeks'] = 0
+                                
+                            if 'playtime_forever' in game:
+                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = game['playtime_forever']
+                            else:
+                                self.cache['users'][steamId]['ownedGames'][game['appid']]['playtime_forever'] = 0
 
             self.setCache('users')
             self.setCache('games')
