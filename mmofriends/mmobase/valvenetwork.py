@@ -494,9 +494,8 @@ class ValveNetwork(MMONetwork):
 
         gamesNowPlaying = {}
 
-        allLinks = self.getNetworkLinks()
         internalUsers = []
-        for link in allLinks:
+        for link in self.getNetworkLinks():
             internalUsers.append(int(link['network_data']))
 
         for user in self.cache['users']:
