@@ -303,9 +303,12 @@ class ValveNetwork(MMONetwork):
         playedForever = 0
         playedRecent = 0
         for user in self.cache['users']:
-            for game in self.cache['users'][user]['ownedGames']:
-                playedForever += self.cache['users'][user]['ownedGames'][game]['playtime_forever']
-                playedRecent += self.cache['users'][user]['ownedGames'][game]['playtime_2weeks']
+            try:
+                for game in self.cache['users'][user]['ownedGames']:
+                    playedForever += self.cache['users'][user]['ownedGames'][game]['playtime_forever']
+                    playedRecent += self.cache['users'][user]['ownedGames'][game]['playtime_2weeks']
+            except KeyError:
+                pass
 
         return {
             'Users': len(self.cache['users']),
