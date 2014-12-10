@@ -83,15 +83,24 @@ class BlizzNetwork(MMONetwork):
 
         wowChars = 0
         for char in self.cache['wowProfiles']:
-            wowChars += len(self.cache['wowProfiles'][char]['characters'])
+            try:
+                wowChars += len(self.cache['wowProfiles'][char]['characters'])
+            except KeyError:
+                pass
 
         sc2Chars = 0
         for char in self.cache['sc2Profiles']:
-            sc2Chars += len(self.cache['sc2Profiles'][char]['characters'])
+            try:
+                sc2Chars += len(self.cache['sc2Profiles'][char]['characters'])
+            except KeyError:
+                pass
 
         d3Heroes = 0
         for char in self.cache['d3Profiles']:
-            d3Heroes += len(self.cache['d3Profiles'][char]['heroes'])
+            try:
+                d3Heroes += len(self.cache['d3Profiles'][char]['heroes'])
+            except KeyError:
+                pass
 
         return {
             'WOW Profiles': wowChars,
