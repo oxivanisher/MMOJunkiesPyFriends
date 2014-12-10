@@ -1,0 +1,33 @@
+<ul id="systemStats" class="list-group" style="margin-bottom: 0px;"></ul>
+<script type="text/javascript">
+	(function () {
+		function showSystemStats(){
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+				$('#systemStats').empty();
+				for (net in data) {
+					// console.log("handle: " + data[net].handle);
+					// img = '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="' +  + '" /> ';
+
+					// console.log("net: " + net);
+					// console.log("description: " + data[net].description);
+					var content = ""
+					for (item in data[net].data) {
+						content = content + '<br />' + item + ': ' + data[net].data[item];
+						console.log("item name: " + item);
+						console.log("item data: " + data[net].data[item]);
+					}
+
+					// display_name = user.username + ': ' + user.gamename
+
+					// var content = '<label class="control-label text-wrap" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
+
+					$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + content + '</li>');
+				}
+			});
+		}
+
+		showSystemStats();
+		setInterval(showSystemStats, 10000 );
+	})();
+</script>

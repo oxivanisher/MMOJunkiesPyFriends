@@ -75,6 +75,30 @@ class BlizzNetwork(MMONetwork):
             access_token_url='https://%s.battle.net/oauth/token' % self.config['region'])
 
     # overwritten class methods
+    def getStats(self):
+        self.log.debug("[%s] Requesting stats" % (self.handle))
+        self.getCache('wowProfiles')
+        self.getCache('sc2Profiles')
+        self.getCache('d3Profiles')
+
+        wowChars = 0
+        for char in self.cache['wowProfiles']:
+            wowChars += len(self.cache['wowProfiles'][char]['characters'])
+
+        sc2Chars = 0
+        for char in self.cache['sc2Profiles']:
+            sc2Chars += len(self.cache['sc2Profiles'][char]['characters'])
+
+        d3Heroes = 0
+        for char in self.cache['d3Profiles']:
+            d3Heroes += len(self.cache['d3Profiles'][char]['heroes'])
+
+        return {
+            'WOW Profiles': wowChars,
+            'SC2 Profiles': sc2Chars,
+            'D3 Heores': d3Heroes,
+        }
+
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}

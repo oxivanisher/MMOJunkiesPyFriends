@@ -304,6 +304,10 @@ class MMONetwork(object):
             avatarName = avatarName[1:]
         myDict['avatar'] = avatarName
 
+    def getStats(self):
+        self.log.debug("[%s] Requesting stats" % (self.handle))
+        return { self.handle: {'Loaded': True } }
+
     # MMONetworkCache methods
     def getCache(self, name):
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()

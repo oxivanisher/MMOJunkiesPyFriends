@@ -351,13 +351,14 @@ def admin_system_status():
                             'className': network.__class__.__name__,
                             'description': network.description })
 
-    loadedNets = []
-    for handle in MMONetworks.keys():
-        network = MMONetworks[handle]
-        loadedNets.append({ 'handle': handle,
-                            'name': network.name,
-                            'className': network.__class__.__name__,
-                            'description': network.description })
+    # duplicate! remove plx
+    # loadedNets = []
+    # for handle in MMONetworks.keys():
+    #     network = MMONetworks[handle]
+    #     loadedNets.append({ 'handle': handle,
+    #                         'name': network.name,
+    #                         'className': network.__class__.__name__,
+    #                         'description': network.description })
     registredUsers = []
     with app.test_request_context():
         users = MMOUser.query.all()
@@ -861,6 +862,43 @@ def partner_details(netHandle, partnerId):
 # Dashboard boxes
 def tmpFunc():
     return True
+
+def getSystemStats(request):
+    bgTasks = 0
+    for handle in MMONetworks.keys():
+        network = MMONetworks[handle]
+        network.getCache('backgroundTasks')
+        for task in network.cache['backgroundTasks'].keys():
+            bgTasks += 1
+
+    users = 0
+    for user in MMOUser.query.all():
+        users += 1
+
+    loadedNets = 0
+    for handle in MMONetworks.keys():
+        loadedNets += 1
+
+    stats = { 'System': {
+                'data': {
+                    'Users': users,
+                    'Background Tasks': bgTasks,
+                    'Networks': loadedNets,
+                    'Session Requests': session['requests'],
+                    'Session Login': timestampToString(session['logindate']),
+                    'Application Start': timestampToString(app.config['startupDate']) },
+                'description': "MMOJunkies Friends by Cernunnos",
+              'handle': "system" }}
+              
+    for net in MMONetworks.keys():
+        stats.update({ MMONetworks[net].name: {
+            'description': MMONetworks[net].description,
+            'data': MMONetworks[net].getStats(),
+            'handle': net
+            }})
+    return stats
+
+SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'loggedin': True, 'title': 'Stats'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
 # SystemBoxes["network_link"] = createDashboardBox(tmpFunc, "System", "network_link", {'loggedin': True, 'title': 'Network (Un)link'})
@@ -921,7 +959,10 @@ def dashboard_method_json(netHandle, methodHandle):
     # admin = True
     # if not session.get('admin'):
     #     admin = False
-    box = MMONetworks[netHandle].getDashboardBox(methodHandle)
+    if netHandle == "System":
+        box = SystemBoxes[methodHandle]
+    else:
+        box = MMONetworks[netHandle].getDashboardBox(methodHandle)
 
     # show = False
     # try:

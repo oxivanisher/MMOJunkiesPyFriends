@@ -259,6 +259,16 @@ class TS3Network(MMONetwork):
             return "Unable to connect to server"
 
     # Class overwrites
+    def getStats(self):
+        self.log.debug("[%s] Requesting stats" % (self.handle))
+        self.getCache('onlineClients')
+        self.getCache('clientDatabase')
+
+        return {
+            'Online Clients': len(self.cache['onlineClients']),
+            'Clients in Database': len(self.cache['clientDatabase']),
+        }
+
     def getPartners(self, **kwargs):
         self.getCache('onlineClients')
         allLinks = self.getNetworkLinks()

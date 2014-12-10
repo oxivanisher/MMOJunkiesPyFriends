@@ -295,6 +295,25 @@ class ValveNetwork(MMONetwork):
         return ('You are now connected to steam', oid.get_next_url())
 
     # overwritten class methods
+    def getStats(self):
+        self.log.debug("[%s] Requesting stats" % (self.handle))
+        self.getCache('games')
+        self.getCache('users')
+
+        playedForever = 0
+        playedRecent = 0
+        for user in self.cache['users']:
+            for game in self.cache['users'][user]['ownedGames']:
+                playedForever += self.cache['users'][user]['ownedGames'][game]['playtime_forever']
+                playedRecent += self.cache['users'][user]['ownedGames'][game]['playtime_2weeks']
+
+        return {
+            'Users': len(self.cache['users']),
+            'Games': len(self.cache['games']),
+            'Minutes played forever': playedForever,
+            'Minutes played recent': playedRecent,
+        }
+
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}

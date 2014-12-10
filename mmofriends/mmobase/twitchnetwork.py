@@ -50,6 +50,16 @@ class TwitchNetwork(MMONetwork):
             access_token_url='%s/oauth2/token' % self.baseUrl)
 
     # overwritten class methods
+    def getStats(self):
+        self.log.debug("[%s] Requesting stats" % (self.handle))
+        self.getCache("channels")
+        self.getCache("streams")
+
+        return {
+            'Channels': len(self.cache['channels']),
+            'Streams Total': len(self.cache['streams'])
+        }
+
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
