@@ -77,11 +77,9 @@ $(function() {
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
         $(this).parents('.col').toggleClass('col-md-4 col-md-8', 200).promise().done(function(){
-            try {
-                eval("resizeBox" + $(this).find( ".box" ).attr('id'))();
-            }
-            catch (err) {
-                console.log("err: " + err);
+            var resizeFunction = window["resizeBox" + $(this).find( ".box" ).attr('id')];
+            if (typeof resizeFunction == 'function') {
+                resizeFunction();
             }
         });
     });
