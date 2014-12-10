@@ -119,7 +119,11 @@ class MMONetwork(object):
             self.log.info("[%s] Downloading %s" % (self.handle, url))
 
             avatarFile = urllib.URLopener()
-            avatarFile.retrieve(url, outputFilePath)
+            try:
+                avatarFile.retrieve(url, outputFilePath)
+            except IOError as e:
+                self.log.warning("[%s] Unable to cache file from URL: %s (%s)" % (self.handle, url, e))
+                return ""
         return newUrl
 
     # Basic class methods

@@ -37,6 +37,8 @@ class ValveNetwork(MMONetwork):
         self.onlineStates[4] = "Snooze"
         self.onlineStates[5] = "Looking for trade"
         self.onlineStates[6] = "Looking to play"
+        
+        self.imgIconUrlBase = "http://media.steampowered.com/steamcommunity/public/images/apps"
 
         # background updater methods
         self.registerWorker(self.updateUsers, 3600)
@@ -138,8 +140,8 @@ class ValveNetwork(MMONetwork):
                         self.cache['games'][game['appid']] = {}
                         self.cache['games'][game['appid']]['appid'] = game['appid']
                         self.cache['games'][game['appid']]['name'] = game['name']
-                        self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                        self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                        self.cache['games'][game['appid']]['img_icon_url'] = self.cacheFile(self.getImgUrl(game['appid'], game['img_icon_url']))
+                        self.cache['games'][game['appid']]['img_logo_url'] = self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
 
                         # updating games of the user
                         self.cache['users'][player['steamid']]['ownedGames'][game['appid']] = {}
@@ -208,8 +210,8 @@ class ValveNetwork(MMONetwork):
                             self.cache['games'][game['appid']] = {}
                             self.cache['games'][game['appid']]['appid'] = game['appid']
                             self.cache['games'][game['appid']]['name'] = game['name']
-                            self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                            self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                            self.cache['games'][game['appid']]['img_icon_url'] = self.cacheFile(self.getImgUrl(game['appid'], game['img_icon_url']))
+                            self.cache['games'][game['appid']]['img_logo_url'] = self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
 
                             # updating games of the user
                             self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
@@ -477,6 +479,9 @@ class ValveNetwork(MMONetwork):
         return self.getPartners(unknownOnly=True)
 
     # Helper
+    def getImgUrl(self, appid, imgHash):
+        return "%s/%s/%s.jpg" % (self.imgIconUrlBase, appid, imgHash)
+
     def getGameStats(self, what):
         self.getCache('users')
         self.getCache('games')
@@ -528,7 +533,7 @@ class ValveNetwork(MMONetwork):
                             nowPlayingUser = {}
                             nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
                             nowPlayingUser['link'] = 'https://store.steampowered.com/app/' + gameId + '/'
-                            nowPlayingUser['img_icon_url'] = self.cache['games'][gameId]['img_icon_url']
+                            nowPlayingUser['img_icon_url'] = self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url']))
                             nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
     
                             if 'logged_in' in self.session:

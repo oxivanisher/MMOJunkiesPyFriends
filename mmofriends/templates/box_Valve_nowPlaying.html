@@ -11,7 +11,7 @@
 				} else {
 					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
 				}
-				display_name = display_name + '<img class="partner_list_icon" src="https://media.steampowered.com/steamcommunity/public/images/apps/'+ user.appid + '/' + user.img_icon_url + '.jpg" title="{{ box.netHandle }}" /> ';
+				display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" /> ';
 				display_name = display_name + user.username + ': ' + user.gamename
 
 				var onclick = 'onclick="window.open(\'' + user.link + '\')"';
