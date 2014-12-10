@@ -29,9 +29,10 @@
 
 				$( "#steamNowPlaying" ).fadeOut( 200, function () {
 					$( "#steamNowPlaying" ).empty();
-					if (drawNowPlayingContent( data )) {
-						$( "#steamNowPlaying" ).fadeIn( 200 );
+					if (! drawNowPlayingContent( data )) {
+						$( '#steamNowPlaying' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is playing on steam</label></li>');
 					}
+					$( "#steamNowPlaying" ).fadeIn( 200 );
 				});
 
 			});
