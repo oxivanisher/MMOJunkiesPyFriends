@@ -110,7 +110,7 @@
 
 								<li class="divider"></li>
 
-								<li><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Connect Network</a></li>
+								<!-- <li><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Connect Network</a></li> -->
 								{%- for net in session.networks %}
 									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
 								{%- endfor %}

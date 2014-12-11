@@ -474,49 +474,63 @@ def network_admin_do(networkHandle, index):
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
     if not session.get('logged_in'):
-        abort(401)
+        log.warning("Not logged in")
+        return redirect(url_for('index'))
 
-    if request.method == 'POST':
-        net = MMONetworks[request.form['handle']]
-        if request.form['do'] == 'link':
-            doLinkReturn = MMONetworks[request.form['handle']].doLink(request.form['id'])
-            return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
-                                                                        'handle': net.handle,
-                                                                        'name': net.name,
-                                                                        'description': net.description})
-        elif request.form['do'] == 'finalize':
-            if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
-                flash('Successfully linked to network %s' % net.description, 'success')
-                return redirect(url_for('network_link'))
-            else:
-                flash('Unable to link network %s. Please try again.' % net.description, 'error')
-                return redirect(url_for('network_link'))
-        else:
-            abort(404)
-    else:
-        linkedNetworks = []
-        fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
-        for net in fetchNetworkLinksData:
-            netInfo = MMONetworks[net]
-            for link in fetchNetworkLinksData[net]:
-                linkedNetworks.append({'name': netInfo.name,
-                                       'description': netInfo.description,
-                                       'handle': netInfo.handle,
-                                       'icon': netInfo.icon,
-                                       'network_data': link['network_data'],
-                                       'linkId': link['id'],
-                                       'linked_date': timestampToString(link['linked_date']) })
+    if request:
+        if request.method == 'POST':
+            log.warning("Linking request (post)")
+            net = MMONetworks[request.form['handle']]
+            if request.form['do'] == 'link':
+                log.warning("Form do link")
+                doLinkReturn = MMONetworks[request.form['handle']].doLink(request.form['id'])
+                boxData = {'doLinkReturn': doLinkReturn,
+                           'handle': net.handle,
+                           'name': net.name,
+                           'description': net.description}
+                return render_template('box_System_networkLink.html', box = None, boxData = boxData)
 
-        linkNetwork = []
-        for netKey in MMONetworks.keys():
-            net = MMONetworks[netKey]
-            if net.getLinkHtml():
-                linkNetwork.append({ 'id': netKey,
-                                  'name': net.name,
-                                  'handle': net.handle,
-                                  'description': net.description,
-                                  'linkNetwork': net.getLinkHtml() })
-        return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
+                # return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
+                #                                                             'handle': net.handle,
+                #                                                             'name': net.name,
+                #                                                             'description': net.description})
+            elif request.form['do'] == 'finalize':
+                if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
+                    flash('Successfully linked to network %s' % net.description, 'success')
+                else:
+                    flash('Unable to link network %s. Please try again.' % net.description, 'error')
+
+    return redirect(url_for('index'))
+
+def getNetworksLinkData(request = None):
+    log.warning("Returning linked networks (get)")
+    linkedNetworks = []
+    fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
+    for net in fetchNetworkLinksData:
+        netInfo = MMONetworks[net]
+        for link in fetchNetworkLinksData[net]:
+            linkedNetworks.append({'name': netInfo.name,
+                                   'description': netInfo.description,
+                                   'handle': netInfo.handle,
+                                   'icon': netInfo.icon,
+                                   'network_data': link['network_data'],
+                                   'linkId': link['id'],
+                                   'linked_date': timestampToString(link['linked_date']) })
+
+    linkNetwork = []
+    for netKey in MMONetworks.keys():
+        net = MMONetworks[netKey]
+        if net.getLinkHtml():
+            linkNetwork.append({ 'id': netKey,
+                              'name': net.name,
+                              'handle': net.handle,
+                              'description': net.description,
+                              'linkNetwork': net.getLinkHtml() })
+
+    # return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
+    return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks }
+    # log.warning("No ")
+    # return redirect(url_for('index'))
 
 @app.route('/Network/Unlink/<netHandle>/<netLinkId>', methods=['GET'])
 def network_unlink(netHandle, netLinkId):
@@ -527,7 +541,7 @@ def network_unlink(netHandle, netLinkId):
             flash('Removed link to %s' % MMONetworks[netHandle].name, 'info')
         else:
             flash('Unable to remove link to %s' % MMONetworks[netHandle].name, 'error')
-    return redirect(url_for('network_link'))
+    return redirect(url_for('index'))
 
 # oid methods
 @app.route('/Network/OID/Login/<netHandle>')
@@ -584,7 +598,7 @@ def oauth2_login(netHandle):
         message = "Authentication with %s  NOT successfull" % MMONetworks[netHandle].name
         log.warning("[System] " + message)
         flash(message, 'error')
-    return redirect(url_for('network_link'))
+    return redirect(url_for('index'))
 
 # profile routes
 @app.route('/Profile/Register', methods=['GET', 'POST'])
@@ -865,16 +879,15 @@ def partner_details(netHandle, partnerId):
         abort(401)
     return render_template('partner_details.html', details = MMONetworks[netHandle].getPartnerDetails(partnerId))
 
-# Dashboard boxes
-def tmpFunc():
+# Dashboard methods (general)
+def tmpFunc(nothing = None):
     return True
 
 def getSystemStats(request):
     bgTasks = 0
     for handle in MMONetworks.keys():
-        network = MMONetworks[handle]
-        network.getCache('backgroundTasks')
-        for task in network.cache['backgroundTasks'].keys():
+        MMONetworks[handle].getCache('backgroundTasks')
+        for task in MMONetworks[handle].cache['backgroundTasks'].keys():
             bgTasks += 1
 
     users = 0
@@ -894,7 +907,7 @@ def getSystemStats(request):
                     'Session Login': timestampToString(session['logindate']),
                     'Application Start': timestampToString(app.config['startupDate']) },
                 'description': "MMOJunkies Friends by Cernunnos",
-              'handle': "system" }}
+                'handle': "system" }}
               
     for net in MMONetworks.keys():
         stats.update({ MMONetworks[net].name: {
@@ -904,11 +917,18 @@ def getSystemStats(request):
             }})
     return stats
 
+# Dashboard methods (specific)
+def systemNetworkLinkManager(request):
+    log.warning("Blah called")
+    return "Test ok"
+
+# Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'loggedin': True, 'title': 'Stats'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
-SystemBoxes["networkLink"] = createDashboardBox(tmpFunc, "System", "networkLink", {'loggedin': True, 'title': 'Network Links'})
+SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Links'})
 
+# Dashboard routes
 @app.route('/Dashboard')
 def dashboard():
     boxes = []
@@ -922,7 +942,7 @@ def dashboard():
                 boxes.append(box)
     return render_template('dashboard.html', boxes = boxes)
 
-# HTML API
+# Dashboard HTML API
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
 def dashboard_method_html(netHandle, methodHandle):
     box = getBox(netHandle, methodHandle)
@@ -931,7 +951,7 @@ def dashboard_method_html(netHandle, methodHandle):
     else:
         abort(401)
 
-# JSON API
+# Dashboard JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST', 'GET'])
 def dashboard_method_json(netHandle, methodHandle):
     box = getBox(netHandle, methodHandle)

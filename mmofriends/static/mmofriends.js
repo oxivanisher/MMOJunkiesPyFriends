@@ -120,3 +120,7 @@ $(window).load(function(){
    $('#loadingOverlay').fadeOut();
    $('#loadingOverlay').modal('hide');
 });
+// Some helper functions
+function showWorking(element) {
+    element.html('<button class="btn btn-sm"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Working...</button>');
+}

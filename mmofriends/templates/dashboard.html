@@ -44,10 +44,10 @@
 
 	</div>
 	{#-
-	<script>
+	<script type="text/javascript">
 		$(function() {
 		{% for box in boxes %}
-			$("#{{ box.netHandle }}{{ box.handle }}-content").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+			$("#{{ box.netHandle }}{{ box.handle }}-section").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
 		{% endfor %}
 		});
 	</script>

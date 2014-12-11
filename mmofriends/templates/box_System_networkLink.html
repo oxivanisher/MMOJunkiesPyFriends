@@ -1,0 +1,93 @@
+{%- if not boxData -%}
+	<button class="btn btn-sm"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+	<script type="text/javascript">
+		$(function() {
+			$("#{{ box.netHandle }}{{ box.handle }}-section").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+		});
+	</script>
+{%- else -%}
+	{% if  boxData.doLinkReturn %}
+		<h3>{{ boxData.doLinkReturn.name }}: {{ boxData.doLinkReturn.description }}</h3>
+		<strong>{{ boxData.doLinkReturn.boxData.doLinkReturn }}</strong>
+		<form action="{{ url_for('network_link') }}" method="post" autocomplete="off" class="form-inline" role="form">
+			<input type="hidden" name="do" value="finalize" />
+			<input type="hidden" name="handle" value="{{ boxData.doLinkReturn.handle }}" />
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Code</div>
+					<input type="text" name="userKey" class="form-control" placeholder="from TS3 chat"/>
+				</div>
+			</div>
+			<button class="btn btn-default" type="submit">submit</button>
+		</form>
+	{% else %}
+		<ul id="linkedNetworks" class="list-group" style="margin-bottom: 0px;">
+		{% if boxData.linkNetwork|count %}
+			{% for net in boxData.linkNetwork %}
+				<li class="list-group-item text-warning" title="{{ net.name }}">
+				{% if net.linkNetwork %}
+					<img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+					{{- net.name }} {{ net.description }}
+					{%- if net.linkNetwork.dropdown -%}
+						<table>
+							<form action="{{ url_for('network_link') }}" id="myForm{{ net.handle }}" method="post" autocomplete="off">
+								<input type="hidden" name="do" value="link" />
+								<input type="hidden" name="handle" value="{{ net.handle }}" />
+								<tr>
+									<td style="vertical-align: top;">
+										<select class="form-control input-sm" name="id">
+										{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
+											<option value="{{ entry.value }}">{{ entry.name }}</option>
+										{%- endfor %}
+										</select>
+									</td>
+									<td style="vertical-align: top;">
+										<button class="btn btn-sm btn-default" type="submit" onclick="$('#myForm{{ net.handle }}').submit();">submit</button>
+									</td>
+								</tr>
+							</form>
+							<script type="text/javascript">
+								$("#myForm{{ net.handle }}").submit(function(event) {
+									event.preventDefault();
+									
+									console.log("lala: " + this);
+									var values = $(this).serialize();
+									console.log("lala4: " + values);
+
+									// alert("do" + values[do]);
+
+									// var posting = $.post( $(this).attr( 'action' ), {
+									// 	do: values['do'],
+									// 	id: values['id'],
+									// 	handle: values['handle'] }
+									// );
+									// showWorking($("#{{ box.netHandle }}{{ box.handle }}-section"));
+									// posting.done(function( data ) {
+									// 	console.log("data: " + data);
+								 //    	$("#{{ box.netHandle }}{{ box.handle }}-section").html( data );
+								 //    });
+								});
+							</script>
+						</table>
+					{%- elif net.linkNetwork.oid -%}
+						<br /><a href="{{ url_for('oid_login', netHandle=net.handle) }}" onclick="showWorking($('#{{ box.netHandle }}{{ box.handle }}-section'));">{{ net.linkNetwork.oid.comment }}</a>
+					{%- elif net.linkNetwork.link -%}
+						<br /><a href="{{ net.linkNetwork.link.url }}" onclick="showWorking($('#{{ box.netHandle }}{{ box.handle }}-section'));">{{ net.linkNetwork.link.comment }}</a>
+					{%- elif net.linkNetwork.text -%}
+						<br />{{ net.linkNetwork.text }}
+		    		{%- endif %}
+				{% endif %}
+			{% endfor %}
+		{%- endif %}
+		{%- if boxData.linkedNetworks %}
+			{% for net in boxData.linkedNetworks %}
+				<li class="list-group-item text-success" title="Linked since {{ net.linked_date }}">
+					<img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
+					{{- net.name }} {{ net.description }}
+					<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>
+				</li>
+			{% endfor %}
+		{%- endif %}
+		</ul>
+	{% endif %}
+{%- endif -%}
