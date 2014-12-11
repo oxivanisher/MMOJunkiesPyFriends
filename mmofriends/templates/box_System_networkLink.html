@@ -2,7 +2,23 @@
 	<button class="btn btn-sm"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
 	<script type="text/javascript">
 		$(function() {
-			$("#{{ box.netHandle }}{{ box.handle }}-section").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}' );
+			// $.get('{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}')
+			//  .success(function(data) {
+			//      $('#{{ box.netHandle }}{{ box.handle }}-section').html(data);
+			//  });
+			$("#{{ box.netHandle }}{{ box.handle }}-section").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}', function(event){ 
+								$("#myFormTS3").submit(function(event) {
+									console.log($("#myFormTS3"));
+									event.preventDefault();
+									alert("test ok");
+									console.log(this);
+									console.log($(this));
+									console.log(this.elements.length);
+									var values = $(this).serialize();
+									console.log("lala4: " + values);
+								});
+
+			 } );
 		});
 	</script>
 {%- else -%}
@@ -47,12 +63,14 @@
 								</tr>
 							</form>
 							<script type="text/javascript">
-								$("#myForm{{ net.handle }}").submit(function(event) {
-									event.preventDefault();
-									
-									console.log("lala: " + this);
-									var values = $(this).serialize();
-									console.log("lala4: " + values);
+								// $("#myForm{{ net.handle }}").submit(function(event) {
+								// 	event.preventDefault();
+								// 	alert("test ok");
+								// 	console.log(this);
+								// 	console.log($(this));
+								// 	console.log(this.elements.length);
+								// 	var values = $(this).serialize();
+								// 	console.log("lala4: " + values);
 
 									// alert("do" + values[do]);
 
@@ -66,7 +84,7 @@
 									// 	console.log("data: " + data);
 								 //    	$("#{{ box.netHandle }}{{ box.handle }}-section").html( data );
 								 //    });
-								});
+								// });
 							</script>
 						</table>
 					{%- elif net.linkNetwork.oid -%}

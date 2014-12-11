@@ -357,14 +357,6 @@ def admin_system_status():
                             'className': network.__class__.__name__,
                             'description': network.description })
 
-    # duplicate! remove plx
-    # loadedNets = []
-    # for handle in MMONetworks.keys():
-    #     network = MMONetworks[handle]
-    #     loadedNets.append({ 'handle': handle,
-    #                         'name': network.name,
-    #                         'className': network.__class__.__name__,
-    #                         'description': network.description })
     registredUsers = []
     with app.test_request_context():
         users = MMOUser.query.all()
@@ -527,7 +519,6 @@ def getNetworksLinkData(request = None):
                               'description': net.description,
                               'linkNetwork': net.getLinkHtml() })
 
-    # return render_template('network_link.html', linkNetwork = linkNetwork, linkedNetworks = linkedNetworks)
     return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks }
     # log.warning("No ")
     # return redirect(url_for('index'))
@@ -916,11 +907,6 @@ def getSystemStats(request):
             'handle': net
             }})
     return stats
-
-# Dashboard methods (specific)
-def systemNetworkLinkManager(request):
-    log.warning("Blah called")
-    return "Test ok"
 
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'loggedin': True, 'title': 'Stats'})
