@@ -243,7 +243,7 @@ class TS3Network(MMONetwork):
                             if int(group['sgid']) == self.config['memberGroupId']:
                                 # self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['defaultGuestGroupId'], client))
                                 self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], client))
-                            # if int(group['sgid']) == self.config['adminGroupId']:
+                            # if int(group['sgid']) == self.config['adminGroupIds']:
 
                         self.cache['userWatchdog'][client] = time.time()
                         self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])

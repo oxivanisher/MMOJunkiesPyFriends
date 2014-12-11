@@ -188,6 +188,12 @@ def getAdminMethods():
                      'methods': adminMethods})
     return nets
 
+def getBox(netHandle, methodHandle):
+    if netHandle == "System":
+        return SystemBoxes[methodHandle]
+    else:
+        return MMONetworks[netHandle].getDashboardBox(methodHandle)
+
 # background worker methods (celery)
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
@@ -901,14 +907,10 @@ def getSystemStats(request):
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'loggedin': True, 'title': 'Stats'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
-# SystemBoxes["network_link"] = createDashboardBox(tmpFunc, "System", "network_link", {'loggedin': True, 'title': 'Network (Un)link'})
-#linkNetwork = linkNetwork, linkedNetworks = linkedNetworks
+SystemBoxes["networkLink"] = createDashboardBox(tmpFunc, "System", "networkLink", {'loggedin': True, 'title': 'Network Links'})
 
 @app.route('/Dashboard')
 def dashboard():
-    # if not session.get('logged_in'):
-    #     abort(401)
-
     boxes = []
     for box in SystemBoxes.keys():
         if checkShowBox(session, SystemBoxes[box]):
@@ -918,34 +920,13 @@ def dashboard():
             box = MMONetworks[net].getDashboardBox(boxKey)
             if checkShowBox(session, box):
                 boxes.append(box)
-
     return render_template('dashboard.html', boxes = boxes)
 
 # HTML API
 @app.route('/Dashboard/<netHandle>/<methodHandle>', methods = ['GET', 'POST'])
 def dashboard_method_html(netHandle, methodHandle):
-    loggedIn = True
-    if not session.get('logged_in'):
-        loggedIn = False
-    admin = True
-    if not session.get('admin'):
-        admin = False
-    if netHandle == "System":
-        box = SystemBoxes[methodHandle]
-    else:
-        box = MMONetworks[netHandle].getDashboardBox(methodHandle)
-
-    show = False
-    try:
-        if box['settings']['loggedin'] == loggedIn:
-            show = True
-            if box['settings']['admin'] and not admin:
-                show = False
-    except KeyError as e:
-        log.warning("Unable to load box %s beacuase %s" % (box, e))
-        pass
-
-    if show:
+    box = getBox(netHandle, methodHandle)
+    if checkShowBox(session, box):
         return render_template(box['settings']['template'], box = box, boxData = box['method'](request))
     else:
         abort(401)
@@ -953,28 +934,7 @@ def dashboard_method_html(netHandle, methodHandle):
 # JSON API
 @app.route('/Api/Dashboard/<netHandle>/<methodHandle>', methods = ['POST', 'GET'])
 def dashboard_method_json(netHandle, methodHandle):
-    # loggedIn = True
-    # if not session.get('logged_in'):
-    #     loggedIn = False
-    # admin = True
-    # if not session.get('admin'):
-    #     admin = False
-    if netHandle == "System":
-        box = SystemBoxes[methodHandle]
-    else:
-        box = MMONetworks[netHandle].getDashboardBox(methodHandle)
-
-    # show = False
-    # try:
-
-    #     if box['settings']['loggedin'] == loggedIn:
-    #         show = True
-    #         if box['settings']['admin'] and not admin:
-    #             show = False
-    # except KeyError:
-    #     log.warning("[System] Unable to load box %s beacuase %s" % (box, e))
-    #     pass
-
+    box = getBox(netHandle, methodHandle)
     if checkShowBox(session, box):
         return jsonify(box['method'](request))
     else:
