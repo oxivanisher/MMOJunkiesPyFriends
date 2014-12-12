@@ -504,9 +504,9 @@ def getNetworksLinkData(request = None):
             linkedNetworks.append({'name': netInfo.name,
                                    'description': netInfo.description,
                                    'handle': netInfo.handle,
-                                   'icon': netInfo.icon,
+                                   'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
+                                   'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
                                    'network_data': link['network_data'],
-                                   'linkId': link['id'],
                                    'linked_date': timestampToString(link['linked_date']) })
 
     linkNetwork = []
@@ -514,10 +514,11 @@ def getNetworksLinkData(request = None):
         net = MMONetworks[netKey]
         if net.getLinkHtml():
             linkNetwork.append({ 'id': netKey,
-                              'name': net.name,
-                              'handle': net.handle,
-                              'description': net.description,
-                              'linkNetwork': net.getLinkHtml() })
+                                 'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                 'name': net.name,
+                                 'handle': net.handle,
+                                 'description': net.description,
+                                 'linkData': net.getLinkHtml() })
 
     return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks }
     # log.warning("No ")

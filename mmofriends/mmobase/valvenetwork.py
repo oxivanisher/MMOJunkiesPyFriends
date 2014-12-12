@@ -321,7 +321,9 @@ class ValveNetwork(MMONetwork):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
         if not self.getSessionValue(self.linkIdName):
-            htmlFields['oid'] = {'comment': "Click to login with Steam.", 'image': "//steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_small.png"}
+            htmlFields['link'] = {
+                'comment': "Login with Steam.",
+                'linkUrl': url_for('oid_login', netHandle=self.handle) }
         return htmlFields
 
     def devTest(self):

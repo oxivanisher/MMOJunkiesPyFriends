@@ -64,9 +64,8 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
         if not self.getSessionValue(self.linkIdName):
-            htmlFields['link'] = {'comment': "Click to login with Twitch.tv.",
-                                  'image': "",
-                                  'url': self.requestAuthorizationUrl()}
+            htmlFields['link'] = {'comment': "Login with Twitch.tv.",
+                                  'linkUrl': self.requestAuthorizationUrl()}
         return htmlFields
 
     # Oauth2 helper
@@ -195,13 +194,16 @@ class TwitchNetwork(MMONetwork):
             else:
                 nokCount += 1
 
-        for sysChan in self.config['siteChannel']:
-            logger.debug("[%s] Updating system channel %s" % (self.handle, sysChan))
-            (ret, message) = self.updateUserResources(sysChan, lastToken, logger)
-            if ret:
-                okCount += 1
-            else:
-                nokCount += 1
+        if lastToken:
+            for sysChan in self.config['siteChannel']:
+                logger.debug("[%s] Updating system channel %s" % (self.handle, sysChan))
+                (ret, message) = self.updateUserResources(sysChan, lastToken, logger)
+                if ret:
+                    okCount += 1
+                else:
+                    nokCount += 1
+        else:
+            logger.warning("[%s] Unable to update streams becuase no token was found." % (self.handle))
 
         return "%s user resources updated, %s ignored" % (okCount, nokCount)
 

@@ -1,111 +1,60 @@
-{%- if not boxData -%}
-	<button class="btn btn-sm"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
-	<script type="text/javascript">
-		$(function() {
-			// $.get('{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}')
-			//  .success(function(data) {
-			//      $('#{{ box.netHandle }}{{ box.handle }}-section').html(data);
-			//  });
-			$("#{{ box.netHandle }}{{ box.handle }}-section").load( '{{ url_for('dashboard_method_html', netHandle=box.netHandle, methodHandle=box.handle) }}', function(event){ 
-								$("#myFormTS3").submit(function(event) {
-									console.log($("#myFormTS3"));
-									event.preventDefault();
-									alert("test ok");
-									console.log(this);
-									console.log($(this));
-									console.log(this.elements.length);
-									var values = $(this).serialize();
-									console.log("lala4: " + values);
-								});
+<ul id="networkLinks" class="list-group" style="margin-bottom: 0px;"></ul>
+<script type="text/javascript">
+	(function () {
+		function drawLinkedNetworksContent( data ) {
+			if (data.doLinkReturn) {
+				// draw the other content
+			} else {
+				loader = ' onclick="showWorking($(\'#{{ box.netHandle }}{{ box.handle }}-section\'));"';
+				// networks to link
+				for (id in data.linkNetwork) {
+					net = data.linkNetwork[id];
 
-			 } );
-		});
-	</script>
-{%- else -%}
-	{% if  boxData.doLinkReturn %}
-		<h3>{{ boxData.doLinkReturn.name }}: {{ boxData.doLinkReturn.description }}</h3>
-		<strong>{{ boxData.doLinkReturn.boxData.doLinkReturn }}</strong>
-		<form action="{{ url_for('network_link') }}" method="post" autocomplete="off" class="form-inline" role="form">
-			<input type="hidden" name="do" value="finalize" />
-			<input type="hidden" name="handle" value="{{ boxData.doLinkReturn.handle }}" />
-			<div class="form-group">
-				<div class="input-group">
-					<div class="input-group-addon">Code</div>
-					<input type="text" name="userKey" class="form-control" placeholder="from TS3 chat"/>
-				</div>
-			</div>
-			<button class="btn btn-default" type="submit">submit</button>
-		</form>
-	{% else %}
-		<ul id="linkedNetworks" class="list-group" style="margin-bottom: 0px;">
-		{% if boxData.linkNetwork|count %}
-			{% for net in boxData.linkNetwork %}
-				<li class="list-group-item text-warning" title="{{ net.name }}">
-				{% if net.linkNetwork %}
-					<img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
-					{{- net.name }} {{ net.description }}
-					{%- if net.linkNetwork.dropdown -%}
-						<table>
-							<form action="{{ url_for('network_link') }}" id="myForm{{ net.handle }}" method="post" autocomplete="off">
-								<input type="hidden" name="do" value="link" />
-								<input type="hidden" name="handle" value="{{ net.handle }}" />
-								<tr>
-									<td style="vertical-align: top;">
-										<select class="form-control input-sm" name="id">
-										{%- for entry in net.linkNetwork.dropdown|sort(attribute='name') %}
-											<option value="{{ entry.value }}">{{ entry.name }}</option>
-										{%- endfor %}
-										</select>
-									</td>
-									<td style="vertical-align: top;">
-										<button class="btn btn-sm btn-default" type="submit" onclick="$('#myForm{{ net.handle }}').submit();">submit</button>
-									</td>
-								</tr>
-							</form>
-							<script type="text/javascript">
-								// $("#myForm{{ net.handle }}").submit(function(event) {
-								// 	event.preventDefault();
-								// 	alert("test ok");
-								// 	console.log(this);
-								// 	console.log($(this));
-								// 	console.log(this.elements.length);
-								// 	var values = $(this).serialize();
-								// 	console.log("lala4: " + values);
+					console.log("aa: " + net.linkData.link);
+					if (net.linkData.link) {
+						var link = net.linkData.link
+						var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
+					} else if (net.linkData.dropdown) {
+						var htmlContent = '<input type="hidden" name="do" value="link" />';
+						htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
 
-									// alert("do" + values[do]);
+						htmlContent += '<td><select class="form-control input-sm" name="id">';
+						for (id in net.linkData.dropdown) {
+							var item = net.linkData.dropdown[id];
+							htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
+						}
+						htmlContent += '</select></td>';
+						htmlContent += '<td style="vertical-align: top;"><button class="btn btn-sm btn-default" type="submit">Login</button></td>';
 
-									// var posting = $.post( $(this).attr( 'action' ), {
-									// 	do: values['do'],
-									// 	id: values['id'],
-									// 	handle: values['handle'] }
-									// );
-									// showWorking($("#{{ box.netHandle }}{{ box.handle }}-section"));
-									// posting.done(function( data ) {
-									// 	console.log("data: " + data);
-								 //    	$("#{{ box.netHandle }}{{ box.handle }}-section").html( data );
-								 //    });
-								// });
-							</script>
-						</table>
-					{%- elif net.linkNetwork.oid -%}
-						<br /><a href="{{ url_for('oid_login', netHandle=net.handle) }}" onclick="showWorking($('#{{ box.netHandle }}{{ box.handle }}-section'));">{{ net.linkNetwork.oid.comment }}</a>
-					{%- elif net.linkNetwork.link -%}
-						<br /><a href="{{ net.linkNetwork.link.url }}" onclick="showWorking($('#{{ box.netHandle }}{{ box.handle }}-section'));">{{ net.linkNetwork.link.comment }}</a>
-					{%- elif net.linkNetwork.text -%}
-						<br />{{ net.linkNetwork.text }}
-		    		{%- endif %}
-				{% endif %}
-			{% endfor %}
-		{%- endif %}
-		{%- if boxData.linkedNetworks %}
-			{% for net in boxData.linkedNetworks %}
-				<li class="list-group-item text-success" title="Linked since {{ net.linked_date }}">
-					<img src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" class="partner_list_icon" title="{{ net.name }}" />
-					{{- net.name }} {{ net.description }}
-					<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>
-				</li>
-			{% endfor %}
-		{%- endif %}
-		</ul>
-	{% endif %}
-{%- endif -%}
+						var form = '<form action="' + net.linkData.dropdown.action + '" method="post"><tr>' + htmlContent + '</tr></form>';
+						var content = '<table class="pull-right">' + form + '</table>';
+					} else {
+						continue;
+					}
+
+					var name = net.name + ' ' + net.description;
+					var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
+					var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + content + '</li>';
+					$("#networkLinks").append(li);
+				}
+
+				// linked networks
+				for (id in data.linkedNetworks) {
+					net = data.linkedNetworks[id];
+					var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
+					var name = net.name + ' ' + net.description;
+					var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
+					var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+					$("#networkLinks").append(li);
+				}
+			}
+		}
+		function loadLinkedNetworks() {
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+				drawLinkedNetworksContent( data );
+			});
+		}
+		loadLinkedNetworks();
+	})();
+</script>

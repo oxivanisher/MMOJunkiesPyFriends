@@ -6,6 +6,7 @@ import socket
 import os
 import random
 
+from flask import current_app, url_for
 from mmofriends import db
 from mmonetwork import *
 from mmoutils import *
@@ -99,7 +100,11 @@ class TS3Network(MMONetwork):
             logger.info("[%s] Fetching all clients from server" % (self.handle))
 
             clientNum = 0
-            clientTot = int(self.sendCommand('clientdblist -count').data[0]['count'])
+            serverData = self.sendCommand('clientdblist -count').data[0]
+            if 'count' in serverData:
+                clientTot = int(serverData['count'])
+            else:
+                clientTot = 0
             allClients = []
             while clientNum < clientTot:
                 logger.debug("[%s] Fetching all clients, starting at: %s" % (self.handle, clientNum))
@@ -470,7 +475,8 @@ class TS3Network(MMONetwork):
         
         htmlFields = {}
         if not self.getSessionValue(self.linkIdName):
-            htmlFields['dropdown'] = []
+            htmlFields['action'] = url_for('network_link')
+            htmlFields['dropdown'] = [{ 'name': 'Choose your user', 'value': "" }]
             currentLinks = []
             for link in self.getNetworkLinks():
                 currentLinks.append(link['network_data'])
