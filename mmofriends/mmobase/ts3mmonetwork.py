@@ -258,6 +258,11 @@ class TS3Network(MMONetwork):
                         logger.debug("[%s] Not spaming (again in %ss): %s (%s)" % (self.handle, spamAgainIn, self.cache['onlineClients'][client]['client_nickname'], client))
                 else:
                     logger.debug("[%s] Not spaming (already linked): %s (%s)" % (self.handle, self.cache['onlineClients'][client]['client_nickname'], client))
+                    for group in self.cache['clientDatabase'][client]['groups']:
+                        if int(group['sgid']) == self.config['defaultGuestGroupId']:
+                            logger.warning("[%s] Setting missing member group" % (self.handle))
+                            self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], client))
+
             self.setCache('userWatchdog')
             return "%s users spamed" % (spamedCount)
         else:
