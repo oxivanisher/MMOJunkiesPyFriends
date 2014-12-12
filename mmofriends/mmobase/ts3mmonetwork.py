@@ -494,13 +494,14 @@ class TS3Network(MMONetwork):
     def doLink(self, userId):
         self.getCache('onlineClients')
         self.connect()
-        self.log.debug("Link user %s to network %s" % (userId, self.name))
+        self.log.debug("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
         message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
         try:
-            self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
+            ret = self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
         except EOFError as e:
+            self.log.warning("[%s] Unable to link network because: %s" % (self.handle, e))
             return "An error occured. Please try again. Sorry"
         return "Please enter the number you recieved via teamspeak chat."
 

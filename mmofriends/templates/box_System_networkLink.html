@@ -9,8 +9,6 @@
 				// networks to link
 				for (id in data.linkNetwork) {
 					net = data.linkNetwork[id];
-
-					console.log("aa: " + net.linkData.link);
 					if (net.linkData.link) {
 						var link = net.linkData.link
 						var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
@@ -18,16 +16,16 @@
 						var htmlContent = '<input type="hidden" name="do" value="link" />';
 						htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
 
-						htmlContent += '<td><select class="form-control input-sm" name="id">';
+						htmlContent += '<select class="form-control input-sm" name="id">';
 						for (id in net.linkData.dropdown) {
 							var item = net.linkData.dropdown[id];
 							htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
 						}
-						htmlContent += '</select></td>';
-						htmlContent += '<td style="vertical-align: top;"><button class="btn btn-sm btn-default" type="submit">Login</button></td>';
+						htmlContent += '</select>';
+						htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
 
-						var form = '<form action="' + net.linkData.dropdown.action + '" method="post"><tr>' + htmlContent + '</tr></form>';
-						var content = '<table class="pull-right">' + form + '</table>';
+						var form = '<span class="pull-right">' + htmlContent + '</span>';
+						var content = '<form action="' + net.linkData.action + '" method="post">' + form + '</form>';
 					} else {
 						continue;
 					}
