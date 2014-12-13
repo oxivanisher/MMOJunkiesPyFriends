@@ -1,19 +1,3 @@
-// // Make links klickable in flash messages
-// $('#flashMessages').ready(function(){
-//     // Get each div
-//     $('.flashMessage').each(function(){
-//         // Get the content
-//         var str = $(this).html();
-//         // Set the regex string
-//         var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
-//         // Replace plain text links by hyperlinks
-//         //  target='_blank' to fight link error on battle net
-//         var replaced_text = str.replace(regex, "<a href='$1'>link</a>");
-//         // Echo link
-//         $(this).html(replaced_text);
-//     });
-// });
-
 $(function() {
     // Load flash messages
     $( "#flashDialogSuccess" ).dialog({
@@ -86,52 +70,64 @@ $(function() {
 
     // close dashboard box
     $(".fa-close").click(function(){
-        hiddenBox = $(this).parents('.col');
-        hiddenBox.toggle();
-        // $('.status').css('visibility','visible').delay(10000).fadeTo(function(){
-        //     $('.status').css("visibility", "hidden");
-        //     // hiddenBox.remove();
-        // });
+        // $(this).parents('.col').fadeOut( 200 );
+
+        var boxVisibleStates = JSON.parse($.cookie('boxVisibleStates'));
+        boxVisibleStates[$(this).parents('.box.dboard').attr('id')] = false;
+        $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
         updateBoxesDropdownMenu();
     });
     
     // undo close dashboard box
-    $(".undo").click(function(){
-        hiddenBox.toggle();
-    });
+    // $(".undo").click(function(){
+    //     hiddenBox.toggle();
+    // });
 
-    updateBoxesDropdownMenu( true );
+    updateBoxesDropdownMenu();
 });
 // Update Boxes Dropdown Menu
-function updateBoxesDropdownMenu( first ){
-    if (typeof first === "undefined") {
-        first = false
+function updateBoxesDropdownMenu(){
+    // load settings from cookie to variable
+    var cookieInput =  $.cookie('boxVisibleStates');
+    if (cookieInput == undefined) {
+        var boxVisibleStates = {};
     } else {
-        first = true
-        console.log("loading state from cookie");
-        $(".box.dboard").each(function( index ) {
-            var state =  $.cookie('boxesState' + index);
-            console.log("state: " + state);
-            if (state == "true") {
-                console.log("box " + index + " visible");
-                $(this).css('visibility','visible');
-            } else {
-                console.log("box " + index + " hidden");
-                $(this).css('visibility','hidden');
-            }
-        });
-    }
+        var boxVisibleStates = JSON.parse(cookieInput);
+    } 
+
+    console.log("loading state from cookie");
+    $(".box.dboard").each(function( index ) {
+        var state =  boxVisibleStates[$(this).attr('id')];
+        if (state == undefined) { state = true; }
+        console.log("state: " + state);
+        if (state) {
+            console.log("box " + index + " visible");
+            $(this).css('visibility','visible');
+            // $(this).parents('.col').fadeIn( 200 );
+        } else {
+            console.log("box " + index + " hidden");
+            // $(this).css('visibility','hidden');
+            $(this).parents('.col').fadeOut( 200 );
+        }
+    });
+    // save the values to the cookie
+    $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
 
     hide = true;
     $("#removedBoxesDropdown").empty();
+    console.log(cookieInput);
     $(".box.dboard").each(function( index ) {
-        if ($(this).is(":hidden")) {
+        if (! boxVisibleStates[$(this).attr('id')]) {
             hide = false;
             $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(' + index + ');">' + $(this).find(".dboardtitle").html() + '</a></li>');
         }
-        $.cookie('boxesState' + index, $(this).is(':visible'));
+        // boxVisibleStates[$(this).attr('id')] = $(this).is(':visible');
+        // $.cookie('boxesState' + $(this).attr('id'), $(this).is(':visible'));
         // console.log("box " + index + " state save " + $(this).is(':visible'));
     })
+
+
+    // show or hide the dropdown
     if (hide) {
         $("#removedBoxesDropdownMenu").css("visibility", "hidden");    
     } else {
@@ -143,8 +139,10 @@ function updateBoxesDropdownMenu( first ){
 function showDashboardBox(targetIndex) {
     $(".box.dboard").each(function( index ) {
         if (index == targetIndex) {
-            hiddenBox = $(this).parents('.col');
-            hiddenBox.toggle();
+            var boxVisibleStates = JSON.parse($.cookie('boxVisibleStates'));
+            boxVisibleStates[$(this).attr('id')] = true;
+            $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
+            updateBoxesDropdownMenu();
         }
     });
     updateBoxesDropdownMenu();

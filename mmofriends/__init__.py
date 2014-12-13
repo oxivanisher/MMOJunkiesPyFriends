@@ -320,7 +320,7 @@ def get_image(imgType, imgId):
             fileName = MMOFriends[int(imgId)].avatar
         elif imgType == 'network':
             if imgId == 'System':
-                fileName = 'favicon.ico'
+                fileName = 'logo_trans_dark.png'
                 filePath = os.path.join(app.config['scriptPath'], 'static')
             else:
                 fileName = MMONetworks[imgId].icon
