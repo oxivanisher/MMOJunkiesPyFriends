@@ -913,7 +913,7 @@ def getSystemStats(request):
                     'Session Login': timestampToString(session['logindate']),
                     'Application Start': timestampToString(app.config['startupDate']) },
                 'description': "MMOJunkies Friends by Cernunnos",
-                'handle': "system" }}
+                'handle': "system" }})
     return stats
 
 # Dashboard functions
