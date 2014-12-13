@@ -23,19 +23,20 @@
 			return showMe;
 		}
 		function loadSteamNowPlayingData() {
-			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			if ($( "#steamNowPlaying" ).parents('.col').is(":visible")) {
+				var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+				$.getJSON( dataUrl ).done( function( data ) {
 
-			$.getJSON( dataUrl ).done( function( data ) {
+					$( "#steamNowPlaying" ).fadeOut( 200, function () {
+						$( "#steamNowPlaying" ).empty();
+						if (! drawNowPlayingContent( data )) {
+							$( '#steamNowPlaying' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is playing on steam</label></li>');
+						}
+						$( "#steamNowPlaying" ).fadeIn( 200 );
+					});
 
-				$( "#steamNowPlaying" ).fadeOut( 200, function () {
-					$( "#steamNowPlaying" ).empty();
-					if (! drawNowPlayingContent( data )) {
-						$( '#steamNowPlaying' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is playing on steam</label></li>');
-					}
-					$( "#steamNowPlaying" ).fadeIn( 200 );
 				});
-
-			});
+			}
 		}
 		loadSteamNowPlayingData();
 		setInterval(loadSteamNowPlayingData, 20000 );

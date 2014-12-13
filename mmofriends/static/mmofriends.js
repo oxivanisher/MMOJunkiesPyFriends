@@ -90,7 +90,7 @@ $(function() {
         hiddenBox.toggle();
         $('.status').css('visibility','visible').delay(10000).fadeTo(function(){
             $('.status').css("visibility", "hidden");
-            hiddenBox.remove();
+            // hiddenBox.remove();
         });
     });
     

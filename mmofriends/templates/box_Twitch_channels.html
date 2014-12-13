@@ -42,25 +42,26 @@
 			return showMe
 		}
 		function loadTwitchChannelData() {
-			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			if ($( "#twitchChannelsOnline" ).parents('.col').is(":visible")) {
+				var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+				$.getJSON( dataUrl ).done( function( data ) {
 
-			$.getJSON( dataUrl ).done( function( data ) {
+					$( "#twitchChannelsOnline" ).fadeOut( 200, function () {
+						$('#twitchChannelsOnline').empty();
+						if (drawStreamContent( data, true )) {
+							$( "#twitchChannelsOnline" ).fadeIn( 200 );
+						}
+					});
 
-				$( "#twitchChannelsOnline" ).fadeOut( 200, function () {
-					$('#twitchChannelsOnline').empty();
-					if (drawStreamContent( data, true )) {
-						$( "#twitchChannelsOnline" ).fadeIn( 200 );
-					}
+					$( "#twitchChannelsOffline" ).fadeOut( 200, function () {
+						$('#twitchChannelsOffline').empty();
+						if (drawStreamContent( data, false )) {
+							$( "#twitchChannelsOffline" ).fadeIn( 200 );
+						}
+					});
+
 				});
-
-				$( "#twitchChannelsOffline" ).fadeOut( 200, function () {
-					$('#twitchChannelsOffline').empty();
-					if (drawStreamContent( data, false )) {
-						$( "#twitchChannelsOffline" ).fadeIn( 200 );
-					}
-				});
-
-			});
+			}
 		}
 		loadTwitchChannelData();
 		setInterval(loadTwitchChannelData, 30000 );

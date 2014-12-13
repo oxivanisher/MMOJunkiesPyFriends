@@ -903,6 +903,7 @@ def getSystemStats(request):
                     'Session Requests': session['requests'],
                     'Session Login': timestampToString(session['logindate']),
                     'Application Start': timestampToString(app.config['startupDate']) },
+                'icon': url_for('get_image', imgType='network', imgId='System'),
                 'description': "MMOJunkies Friends by Cernunnos",
                 'handle': "system" }})
     return stats

@@ -2,31 +2,21 @@
 <script type="text/javascript">
 	(function () {
 		function showSystemStats(){
-			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
-			$.getJSON( dataUrl ).done( function( data ) {
-				$('#systemStats').empty();
-				for (net in data) {
-					// console.log("handle: " + data[net].handle);
-					img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
-
-					// console.log("net: " + net);
-					// console.log("description: " + data[net].description);
-					var content = ""
-					for (item in data[net].data) {
-						content = content + '<br /><span>' + item + '</span><span class="pull-right">' + data[net].data[item] + '</span>';
-						// console.log("item name: " + item);
-						// console.log("item data: " + data[net].data[item]);
+			if ($( "#systemStats" ).parents('.col').is(":visible")) {
+				var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+				$.getJSON( dataUrl ).done( function( data ) {
+					$('#systemStats').empty();
+					for (net in data) {
+						img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
+						var content = ""
+						for (item in data[net].data) {
+							content = content + '<br /><span>' + item + '</span><span class="pull-right">' + data[net].data[item] + '</span>';
+						}
+						$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
 					}
-
-					// display_name = user.username + ': ' + user.gamename
-
-					// var content = '<label class="control-label text-wrap" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
-
-					$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
-				}
-			});
+				});
+			}
 		}
-
 		showSystemStats();
 		setInterval(showSystemStats, 60000 );
 	})();
