@@ -98,6 +98,13 @@ class MMONetwork(object):
             self.session[self.handle] = {}
             self.session[self.handle][name] = value
 
+    def delSessionValue(self, name):
+        try:
+            self.session[self.handle][name] = None
+            del self.session[self.handle][name]
+        except Exception:
+            pass
+
     def loadNetworkToSession(self):
         if not self.getSessionValue('loaded'):
             self.log.info("[%s] Loading MMONetwork to session" % (self.handle))
@@ -142,6 +149,9 @@ class MMONetwork(object):
 
     def doLink(self, userId):
         self.log.debug("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
+
+    def clearLinkRequest(self):
+        self.log.debug("[%s] Clearing link requst" % (self.handle))
 
     def finalizeLink(self, userKey):
         self.log.debug("[%s] Finalize user link to network %s" % (self.handle, self.name))
@@ -203,7 +213,7 @@ class MMONetwork(object):
     def unlink(self, user_id, netLinkId):
         try:
             link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
-            self.setSessionValue(self.linkIdName, None)
+            self.delSessionValue(self.linkIdName)
             db.session.delete(link)
             db.session.flush()
             db.session.commit()

@@ -1,56 +1,108 @@
 <ul id="networkLinks" class="list-group" style="margin-bottom: 0px;"></ul>
+<div id="networkLinkInput" title="Authentication">
+  <p>
+     <label id ="networkLinkInputLabel" for="widgetName">Loading...</label>
+     <input type="text" id="userKey" autocomplete="off" />
+  </p>
+</div>
 <script type="text/javascript">
 	(function () {
+		$('#networkLinkInput').dialog({
+		    modal: true,
+		    autoOpen: false,
+		    buttons: {
+		        'Cancel': function() {
+					var resultUrl = "{{ url_for('network_link') }}";
+					$.post(resultUrl, {do: 'cancel', handle: $( "#linkForm [name=handle]" ).val() } )
+						.always( function( data ) {
+			            	$('#networkLinkInput').dialog('close');
+			            	loadLinkedNetworks();
+					} );
+		        },
+		        'Accept': function() {
+					var resultUrl = "{{ url_for('network_link') }}";
+					$.post(resultUrl, {do: 'finalize',
+									   handle: $( "#linkForm [name=handle]" ).val(),
+									   userKey: $( "#userKey" ).val() } )
+						.always( function( data ) {
+			            	$('#networkLinkInput').dialog('close');
+			            	loadLinkedNetworks();
+					} );
+		        }
+		       }
+		});
+
 		function drawLinkedNetworksContent( data ) {
-			if (data.doLinkReturn) {
-				// draw the other content
-			} else {
-				loader = ' onclick="showWorking($(\'#{{ box.netHandle }}{{ box.handle }}-section\'));"';
-				// networks to link
-				for (id in data.linkNetwork) {
-					net = data.linkNetwork[id];
-					if (net.linkData.link) {
-						var link = net.linkData.link
-						var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
-					} else if (net.linkData.dropdown) {
-						var htmlContent = '<input type="hidden" name="do" value="link" />';
-						htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
+			loader = ' onclick="showWorking($(\'#{{ box.netHandle }}{{ box.handle }}-section\'));"';
+			$("#networkLinks").empty();
+			// networks to link
+			for (id in data.linkNetwork) {
+				net = data.linkNetwork[id];
+				if (net.linkData.link) {
+					var link = net.linkData.link
+					var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
+				} else if (net.linkData.dropdown) {
+					var htmlContent = '<input type="hidden" name="do" value="link" />';
+					htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
 
-						htmlContent += '<select class="form-control input-sm" name="id">';
-						for (id in net.linkData.dropdown) {
-							var item = net.linkData.dropdown[id];
-							htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
-						}
-						htmlContent += '</select>';
-						htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
-
-						var form = '<span class="pull-right">' + htmlContent + '</span>';
-						var content = '<form action="' + net.linkData.action + '" method="post">' + form + '</form>';
-					} else {
-						continue;
+					htmlContent += '<select class="form-control input-sm" name="id">';
+					for (id in net.linkData.dropdown) {
+						var item = net.linkData.dropdown[id];
+						htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
 					}
+					htmlContent += '</select>';
+					htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
 
-					var name = net.name + ' ' + net.description;
-					var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-					var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + content + '</li>';
-					$("#networkLinks").append(li);
+					var form = '<span class="pull-right">' + htmlContent + '</span>';
+					var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm">' + form + '</form>';
+				} else {
+					continue;
 				}
 
-				// linked networks
-				for (id in data.linkedNetworks) {
-					net = data.linkedNetworks[id];
-					var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
-					var name = net.name + ' ' + net.description;
-					var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-					var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
-					$("#networkLinks").append(li);
-				}
+				var name = net.name + ' ' + net.description;
+				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
+				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + content + '</li>';
+				$("#networkLinks").append(li);
+			}
+
+			// linked networks
+			for (id in data.linkedNetworks) {
+				net = data.linkedNetworks[id];
+				var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
+				var name = net.name + ' ' + net.description;
+				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
+				var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+				$("#networkLinks").append(li);
 			}
 		}
+
 		function loadLinkedNetworks() {
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 			$.getJSON( dataUrl ).done( function( data ) {
 				drawLinkedNetworksContent( data );
+
+				$( "#linkForm" ).submit(function( event ) {
+					event.preventDefault();
+					var values = $(this).serialize();
+					console.log("lala4: " + values);
+					// var posting = $.post( $(this).attr( 'action' ), {
+					// 	do: values['do'],
+					// 	id: values['id'],
+					// 	handle: values['handle'] }
+					// );
+
+					// work only if a user is choosen
+					if ($(this).find('[name=id]').val()) {
+						// showWorking($(this));
+
+						var resultUrl = "{{ url_for('network_link') }}";
+						$.post(resultUrl, values, function(data2, textStatus) {
+							$("#networkLinkInputLabel").html(data2.message);
+						}, "json");
+
+						$('#networkLinkInput').dialog('open');
+					}
+				});
 			});
 		}
 		loadLinkedNetworks();

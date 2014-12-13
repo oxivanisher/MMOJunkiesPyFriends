@@ -41,7 +41,7 @@ class TS3Network(MMONetwork):
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
-        self.registerWorker(self.userWatchdog, 120)
+        # self.registerWorker(self.userWatchdog, 120)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):
@@ -479,7 +479,7 @@ class TS3Network(MMONetwork):
         self.getCache('onlineClients')
         
         htmlFields = {}
-        if not self.getSessionValue(self.linkIdName):
+        if not self.getSessionValue(self.linkIdName) and not self.getSessionValue('doLinkKey'):
             htmlFields['action'] = url_for('network_link')
             htmlFields['dropdown'] = [{ 'name': 'Choose your user', 'value': "" }]
             currentLinks = []
@@ -497,6 +497,8 @@ class TS3Network(MMONetwork):
         return htmlFields
 
     def doLink(self, userId):
+        if not userId:
+            return "Please choose a user."
         self.getCache('onlineClients')
         self.connect()
         self.log.debug("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
@@ -508,12 +510,19 @@ class TS3Network(MMONetwork):
         except EOFError as e:
             self.log.warning("[%s] Unable to link network because: %s" % (self.handle, e))
             return "An error occured. Please try again. Sorry"
+        self.log.info("[%s] Linking with code: %s" % (self.handle, self.getSessionValue('doLinkKey')))
         return "Please enter the number you recieved via teamspeak chat."
+
+    def clearLinkRequest(self):
+        self.log.debug("[%s] Clearing link requst" % (self.handle))
+        self.delSessionValue('doLinkKey')
+        self.delSessionValue(self.linkIdName)
 
     def finalizeLink(self, userKey):
         self.log.debug("Finalize user link to network %s" % self.name)
         if self.getSessionValue('doLinkKey') == userKey:
             cldbid = self.getSessionValue(self.linkIdName)
+            self.delSessionValue('doLinkKey')
             self.saveLink(cldbid)
             self.connect()
             self.fetchUserDetatilsByCldbid(cldbid, True)

@@ -466,32 +466,38 @@ def network_admin_do(networkHandle, index):
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
     if not session.get('logged_in'):
-        log.warning("Not logged in")
+        log.warning("[System] Not logged in")
         return redirect(url_for('index'))
 
     if request:
         if request.method == 'POST':
-            log.warning("Linking request (post)")
-            net = MMONetworks[request.form['handle']]
-            if request.form['do'] == 'link':
-                log.warning("Form do link")
-                doLinkReturn = MMONetworks[request.form['handle']].doLink(request.form['id'])
-                boxData = {'doLinkReturn': doLinkReturn,
-                           'handle': net.handle,
-                           'name': net.name,
-                           'description': net.description}
-                return render_template('box_System_networkLink.html', box = None, boxData = boxData)
+            if 'handle' in request.form and 'do' in request.form:
+                log.info("[System] Linking request via post (handle: %s, do: %s)" % (request.form['handle'], request.form['do']))
+                net = MMONetworks[request.form['handle']]
+                if request.form['do'] == 'link':
+                    return jsonify({ 'message': MMONetworks[request.form['handle']].doLink(request.form['id']) })
+                     # doLinkReturn 
+                    # boxData = {'doLinkReturn': doLinkReturn,
+                    #            'handle': net.handle,
+                    #            'name': net.name,
+                    #            'description': net.description}
+                    # return render_template('box_System_networkLink.html', box = None, boxData = boxData)
 
-                # return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
-                #                                                             'handle': net.handle,
-                #                                                             'name': net.name,
-                #                                                             'description': net.description})
-            elif request.form['do'] == 'finalize':
-                if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
-                    flash('Successfully linked to network %s' % net.description, 'success')
-                else:
-                    flash('Unable to link network %s. Please try again.' % net.description, 'error')
-
+                    # return render_template('network_link.html', doLinkReturn = {'doLinkReturn': doLinkReturn,
+                    #                                                             'handle': net.handle,
+                    #                                                             'name': net.name,
+                    #                                                             'description': net.description})
+                elif request.form['do'] == 'finalize':
+                    if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
+                        flash('Successfully linked to network %s' % net.description, 'success')
+                    else:
+                        flash('Unable to link network %s. Please try again.' % net.description, 'error')
+                elif request.form['do'] == 'cancel':
+                    MMONetworks[request.form['handle']].clearLinkRequest()
+            else:
+                log.warning("[System] Linking request is missing form fields!")
+        else:
+            log.warning("[System] Linking request is not POST!")
     return redirect(url_for('index'))
 
 def getNetworksLinkData(request = None):
