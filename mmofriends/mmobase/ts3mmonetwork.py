@@ -275,7 +275,7 @@ class TS3Network(MMONetwork):
         self.getCache('clientDatabase')
 
         return {
-            'Online Clients': len(self.cache['onlineClients']),
+            'Clients Online': len(self.cache['onlineClients']),
             'Clients in Database': len(self.cache['clientDatabase']),
         }
 

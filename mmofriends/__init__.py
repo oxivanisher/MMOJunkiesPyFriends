@@ -896,23 +896,24 @@ def getSystemStats(request):
     for handle in MMONetworks.keys():
         loadedNets += 1
 
-    stats = { 'System': {
-                'data': {
-                    'Users': users,
-                    'Background Tasks': bgTasks,
-                    'Networks': loadedNets,
-                    'Session Requests': session['requests'],
-                    'Session Login': timestampToString(session['logindate']),
-                    'Application Start': timestampToString(app.config['startupDate']) },
-                'description': "MMOJunkies Friends by Cernunnos",
-                'handle': "system" }}
-              
+    stats = {}
     for net in MMONetworks.keys():
         stats.update({ MMONetworks[net].name: {
             'description': MMONetworks[net].description,
             'data': MMONetworks[net].getStats(),
             'handle': net
             }})
+    if session.get('admin'):
+        stats.update({ 'System': {
+                'data': {
+                    'Users Registred': users,
+                    'Background Tasks': bgTasks,
+                    'Networks Loaded': loadedNets,
+                    'Session Requests': session['requests'],
+                    'Session Login': timestampToString(session['logindate']),
+                    'Application Start': timestampToString(app.config['startupDate']) },
+                'description': "MMOJunkies Friends by Cernunnos",
+                'handle': "system" }}
     return stats
 
 # Dashboard functions

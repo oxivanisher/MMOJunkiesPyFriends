@@ -103,7 +103,7 @@ class BlizzNetwork(MMONetwork):
                 pass
 
         return {
-            'World of Warcraft characters': wowChars,
+            'World of Warcraft Characters': wowChars,
             'Starcraft 2 Profiles': sc2Chars,
             'Diablo 3 Heores': d3Heroes,
         }

@@ -311,10 +311,10 @@ class ValveNetwork(MMONetwork):
                 pass
 
         return {
-            'Users': len(self.cache['users']),
-            'Games': len(self.cache['games']),
+            'Users in Database': len(self.cache['users']),
+            'Games in Database': len(self.cache['games']),
             'Minutes played forever': playedForever,
-            'Minutes played recent': playedRecent,
+            'Minutes played last 2 weeks': playedRecent,
         }
 
     def getLinkHtml(self):

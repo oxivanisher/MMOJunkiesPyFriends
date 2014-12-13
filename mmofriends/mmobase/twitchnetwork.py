@@ -56,7 +56,7 @@ class TwitchNetwork(MMONetwork):
         self.getCache("streams")
 
         return {
-            'Channels': len(self.cache['channels']),
+            'User Channels': len(self.cache['channels']),
             'Streams Total': len(self.cache['streams'])
         }
 
