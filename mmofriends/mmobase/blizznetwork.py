@@ -103,9 +103,9 @@ class BlizzNetwork(MMONetwork):
                 pass
 
         return {
-            'WOW Chars': wowChars,
-            'SC2 Profiles': sc2Chars,
-            'D3 Heores': d3Heroes,
+            'World of Warcraft characters': wowChars,
+            'Starcraft 2 Profiles': sc2Chars,
+            'Diablo 3 Heores': d3Heroes,
         }
 
     def getLinkHtml(self):
