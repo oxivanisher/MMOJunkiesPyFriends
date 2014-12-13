@@ -8,4 +8,4 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # echo $(printf -- '! -iname "%s" ' "${ignore[@]:1}")
 
 # removing old files
-find ${DIR}/mmofriends/static/cache -ctime +1 -type f ! -iname ".keep" ! -iname "icon_0" ! -iname "icon_100" ! -iname "icon_200" ! -iname "icon_300" ! -iname "icon_500" ! -iname "icon_600" -exec rm {} \;
+find ${DIR}/mmofriends/static/cache -ctime +3 -type f ! -iname ".keep" ! -iname "icon_0" ! -iname "icon_100" ! -iname "icon_200" ! -iname "icon_300" ! -iname "icon_500" ! -iname "icon_600" -exec rm {} \;
