@@ -41,7 +41,7 @@ class TS3Network(MMONetwork):
         self.registerWorker(self.refreshOnlineClients, 10)
         self.registerWorker(self.updateOnlineClientInfos, 60)
         self.registerWorker(self.cacheFiles, 900)
-        # self.registerWorker(self.userWatchdog, 120)
+        self.registerWorker(self.userWatchdog, 120)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):
