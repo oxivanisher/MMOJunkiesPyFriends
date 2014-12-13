@@ -901,7 +901,8 @@ def getSystemStats(request):
         stats.update({ MMONetworks[net].name: {
             'description': MMONetworks[net].description,
             'data': MMONetworks[net].getStats(),
-            'handle': net
+            'handle': net,
+            'icon': url_for('get_image', imgType='network', imgId=net)
             }})
     if session.get('admin'):
         stats.update({ 'System': {
