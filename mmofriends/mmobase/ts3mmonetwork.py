@@ -519,7 +519,7 @@ class TS3Network(MMONetwork):
         self.delSessionValue(self.linkIdName)
 
     def finalizeLink(self, userKey):
-        self.log.debug("Finalize user link to network %s" % self.name)
+        self.log.info("[%s] Finalize user link to network %s" % (self.handle, self.name))
         if self.getSessionValue('doLinkKey') == userKey:
             cldbid = self.getSessionValue(self.linkIdName)
             self.delSessionValue('doLinkKey')
@@ -535,6 +535,7 @@ class TS3Network(MMONetwork):
 
             return True
         else:
+            self.log.warning("[%s] Unable to finalize user link to network %s because no userKey is submitted." % (self.handle, self.name))
             return False
 
     def admin(self):

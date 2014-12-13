@@ -7,7 +7,7 @@
 				$('#systemStats').empty();
 				for (net in data) {
 					// console.log("handle: " + data[net].handle);
-					// img = '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="' +  + '" /> ';
+					img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
 
 					// console.log("net: " + net);
 					// console.log("description: " + data[net].description);
@@ -22,7 +22,7 @@
 
 					// var content = '<label class="control-label text-wrap" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
 
-					$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + content + '</li>');
+					$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
 				}
 			});
 		}

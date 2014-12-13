@@ -7,6 +7,22 @@
 </div>
 <script type="text/javascript">
 	(function () {
+		function submitUserKey() {
+			if ($( "#userKey" ).val()) {
+				console.log("sending: " + $( "#userKey" ).val());
+				var resultUrl = "{{ url_for('network_link') }}";
+				$.post(resultUrl, {do: 'finalize',
+								   handle: $( "#linkForm [name=handle]" ).val(),
+								   userKey: $( "#userKey" ).val() } )
+					.always( function( data ) {
+		            	$('#networkLinkInput').dialog('close');
+		            	loadLinkedNetworks();
+		            	// window.location.href = data.redirect;
+		            	// location.reload();
+				} );
+			}
+		}
+
 		$('#networkLinkInput').dialog({
 		    modal: true,
 		    autoOpen: false,
@@ -20,16 +36,15 @@
 					} );
 		        },
 		        'Accept': function() {
-					var resultUrl = "{{ url_for('network_link') }}";
-					$.post(resultUrl, {do: 'finalize',
-									   handle: $( "#linkForm [name=handle]" ).val(),
-									   userKey: $( "#userKey" ).val() } )
-						.always( function( data ) {
-			            	$('#networkLinkInput').dialog('close');
-			            	loadLinkedNetworks();
-					} );
+		        	submitUserKey();
 		        }
 		       }
+		});
+
+		$("#userKey").keypress(function(event) {
+			if (event.which == 13) {
+				submitUserKey();
+		    }
 		});
 
 		function drawLinkedNetworksContent( data ) {
@@ -43,8 +58,7 @@
 				} else if (net.linkData.dropdown) {
 					var htmlContent = '<input type="hidden" name="do" value="link" />';
 					htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
-
-					htmlContent += '<select class="form-control input-sm" style="width: auto;" name="id">';
+					htmlContent += '<select class="form-control input-sm" name="id">';
 					for (id in net.linkData.dropdown) {
 						var item = net.linkData.dropdown[id];
 						htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
@@ -52,8 +66,8 @@
 					htmlContent += '</select>';
 					htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
 
-					var form = '<div class="pull-right">' + htmlContent + '</div>';
-					var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm">' + form + '</form>';
+					var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
+					var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
 				} else {
 					continue;
 				}
@@ -83,23 +97,16 @@
 				$( "#linkForm" ).submit(function( event ) {
 					event.preventDefault();
 					var values = $(this).serialize();
-					console.log("lala4: " + values);
-					// var posting = $.post( $(this).attr( 'action' ), {
-					// 	do: values['do'],
-					// 	id: values['id'],
-					// 	handle: values['handle'] }
-					// );
 
 					// work only if a user is choosen
 					if ($(this).find('[name=id]').val()) {
-						// showWorking($(this));
-
 						var resultUrl = "{{ url_for('network_link') }}";
 						$.post(resultUrl, values, function(data2, textStatus) {
 							$("#networkLinkInputLabel").html(data2.message);
 						}, "json");
 
 						$('#networkLinkInput').dialog('open');
+						$("#userKey").focus();
 					}
 				});
 			});
