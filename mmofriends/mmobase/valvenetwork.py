@@ -142,8 +142,8 @@ class ValveNetwork(MMONetwork):
                         self.cache['games'][game['appid']]['name'] = game['name']
                         self.cacheFile(self.getImgUrl(game['appid'], game['img_icon_url']))
                         self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                        self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
-                        self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                        # self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
+                        # self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
 
                         # updating games of the user
                         self.cache['users'][player['steamid']]['ownedGames'][game['appid']] = {}
@@ -214,8 +214,8 @@ class ValveNetwork(MMONetwork):
                             self.cache['games'][game['appid']]['name'] = game['name']
                             self.cacheFile(self.getImgUrl(game['appid'], game['img_icon_url']))
                             self.cache['games'][game['appid']]['img_icon_url'] = game['img_icon_url']
-                            self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
-                            self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
+                            # self.cacheFile(self.getImgUrl(game['appid'], game['img_logo_url']))
+                            # self.cache['games'][game['appid']]['img_logo_url'] = game['img_logo_url']
 
                             # updating games of the user
                             self.cache['users'][steamId]['ownedGames'][game['appid']] = {}
