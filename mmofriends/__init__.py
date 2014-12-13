@@ -917,10 +917,10 @@ def getSystemStats(request):
     return stats
 
 # Dashboard functions
-SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'loggedin': True, 'title': 'Stats'})
+SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
-SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Links'})
+SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 
 # Dashboard routes
 @app.route('/Dashboard')
