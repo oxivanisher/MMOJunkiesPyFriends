@@ -100,10 +100,28 @@ $(function() {
         hiddenBox.toggle();
     });
 
-    updateBoxesDropdownMenu();
+    updateBoxesDropdownMenu( true );
 });
 // Update Boxes Dropdown Menu
-function updateBoxesDropdownMenu(){
+function updateBoxesDropdownMenu( first ){
+    if (typeof first === "undefined") {
+        first = false
+    } else {
+        first = true
+        console.log("loading state from cookie");
+        $(".box.dboard").each(function( index ) {
+            var state =  $.cookie('boxesState' + index);
+            console.log("state: " + state);
+            if (state == "true") {
+                console.log("box " + index + " visible");
+                $(this).css('visibility','visible');
+            } else {
+                console.log("box " + index + " hidden");
+                $(this).css('visibility','hidden');
+            }
+        });
+    }
+
     hide = true;
     $("#removedBoxesDropdown").empty();
     $(".box.dboard").each(function( index ) {
@@ -111,6 +129,8 @@ function updateBoxesDropdownMenu(){
             hide = false;
             $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(' + index + ');">' + $(this).find(".dboardtitle").html() + '</a></li>');
         }
+        $.cookie('boxesState' + index, $(this).is(':visible'));
+        // console.log("box " + index + " state save " + $(this).is(':visible'));
     })
     if (hide) {
         $("#removedBoxesDropdownMenu").css("visibility", "hidden");    
