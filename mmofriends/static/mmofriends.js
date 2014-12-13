@@ -88,10 +88,11 @@ $(function() {
     $(".fa-close").click(function(){
         hiddenBox = $(this).parents('.col');
         hiddenBox.toggle();
-        $('.status').css('visibility','visible').delay(10000).fadeTo(function(){
-            $('.status').css("visibility", "hidden");
-            // hiddenBox.remove();
-        });
+        // $('.status').css('visibility','visible').delay(10000).fadeTo(function(){
+        //     $('.status').css("visibility", "hidden");
+        //     // hiddenBox.remove();
+        // });
+        updateBoxesDropdownMenu();
     });
     
     // undo close dashboard box
@@ -99,7 +100,36 @@ $(function() {
         hiddenBox.toggle();
     });
 
+    updateBoxesDropdownMenu();
 });
+// Update Boxes Dropdown Menu
+function updateBoxesDropdownMenu(){
+    hide = true;
+    $("#removedBoxesDropdown").empty();
+    $(".box.dboard").each(function( index ) {
+        if ($(this).is(":hidden")) {
+            hide = false;
+            $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(' + index + ');">' + $(this).find(".dboardtitle").html() + '</a></li>');
+        }
+    })
+    if (hide) {
+        $("#removedBoxesDropdownMenu").css("visibility", "hidden");    
+    } else {
+        $("#removedBoxesDropdownMenu").css('visibility','visible');
+    }
+    // http://stackoverflow.com/questions/18238890/save-div-toggle-state-with-jquery-cookie
+    // $.cookie('boxesState', 'value');
+}
+function showDashboardBox(targetIndex) {
+    $(".box.dboard").each(function( index ) {
+        if (index == targetIndex) {
+            hiddenBox = $(this).parents('.col');
+            hiddenBox.toggle();
+        }
+    });
+    updateBoxesDropdownMenu();
+}
+
 // Popup Images and text (will be replaced with a vcard)
 function showImgPopup(imgSrc) {
     $('img#popupimg').attr( "src", imgSrc );

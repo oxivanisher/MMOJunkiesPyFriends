@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content -%}
-
+	{#-
 	<div class="row">
 		<div class="col-md-12 status">
 			<div class="box">
 				<a href"javascript:void(0);" class="undo">Undo last changes.</a>
 			</div>
 		</div>
-
+	-#}
 	{% for box in boxes -%}
 		<div class="col-md-4 col">
-			<div class="box" id="{{ box.netHandle }}{{ box.handle }}">
+			<div class="box dboard" id="{{ box.netHandle }}{{ box.handle }}">
 				<header>
 					<table style="width: 100%;">
 						<tr>
-							<td style="text-align: left; vertical-align: baseline; font-size: 18px; margin: 5px;">
+							<td style="text-align: left; vertical-align: baseline; font-size: 18px; margin: 5px;" class="dboardtitle">
 							<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" />{{ box.settings.title }}</td>
 							<td style="text-align: right; vertical-align: baseline;">
 								{# <a href="javascript:void(0);" class="fa fa-edit"></a> -#}

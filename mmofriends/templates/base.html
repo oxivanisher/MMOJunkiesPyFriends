@@ -11,6 +11,7 @@
 		{# jQuery and jQueryUI -#}
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+		<script src="{{ url_for('static', filename='jquery.cookie.js') }}"></script>
 		{# <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" /> -#}
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.structure.min.css') }}" rel="stylesheet" />
@@ -86,9 +87,17 @@
 						<li class="dropdown"></li> -#}
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
+						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+
+						{# undo box remove -#}
+						<li class="dropdown" id="removedBoxesDropdownMenu" style="visibility: hidden; visible: hidden;">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span> Hidden Boxes <span class="caret"></span></a>
+	         				<ul class="dropdown-menu" role="menu" id="removedBoxesDropdown">
+							</ul>
+						</li>
+
 					{% if session.logged_in -%}
 						{% if session.admin  -%}
 							<li class="dropdown">
