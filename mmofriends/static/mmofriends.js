@@ -99,14 +99,11 @@ function updateBoxesDropdownMenu(){
     $(".box.dboard").each(function( index ) {
         var state =  boxVisibleStates[$(this).attr('id')];
         if (state == undefined) { state = true; }
-        console.log("state: " + state);
         if (state) {
-            console.log("box " + index + " visible");
-            $(this).css('visibility','visible');
-            // $(this).parents('.col').fadeIn( 200 );
+            console.log("box " + $(this).attr('id') + " visible");
+            $(this).parents('.col').fadeIn( 200 );
         } else {
-            console.log("box " + index + " hidden");
-            // $(this).css('visibility','hidden');
+            console.log("box " + $(this).attr('id') + " hidden");
             $(this).parents('.col').fadeOut( 200 );
         }
     });
@@ -142,7 +139,6 @@ function showDashboardBox(targetIndex) {
             var boxVisibleStates = JSON.parse($.cookie('boxVisibleStates'));
             boxVisibleStates[$(this).attr('id')] = true;
             $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
-            updateBoxesDropdownMenu();
         }
     });
     updateBoxesDropdownMenu();
