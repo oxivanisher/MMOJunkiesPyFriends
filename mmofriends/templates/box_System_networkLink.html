@@ -35,7 +35,6 @@
 		function drawLinkedNetworksContent( data ) {
 			loader = ' onclick="showWorking($(\'#{{ box.netHandle }}{{ box.handle }}-section\'));"';
 			$("#networkLinks").empty();
-			// networks to link
 			for (id in data.linkNetwork) {
 				net = data.linkNetwork[id];
 				if (net.linkData.link) {
@@ -45,7 +44,7 @@
 					var htmlContent = '<input type="hidden" name="do" value="link" />';
 					htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
 
-					htmlContent += '<select class="form-control input-sm" name="id">';
+					htmlContent += '<select class="form-control input-sm" style="width: auto;" name="id">';
 					for (id in net.linkData.dropdown) {
 						var item = net.linkData.dropdown[id];
 						htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
@@ -53,7 +52,7 @@
 					htmlContent += '</select>';
 					htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
 
-					var form = '<span class="pull-right">' + htmlContent + '</span>';
+					var form = '<div class="pull-right">' + htmlContent + '</div>';
 					var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm">' + form + '</form>';
 				} else {
 					continue;
