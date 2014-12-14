@@ -236,6 +236,7 @@ class TS3Network(MMONetwork):
         if self.connect():
             self.getCache('onlineClients')
             self.getCache('userWatchdog')
+            self.getCache('clientDatabase')
             for link in self.getNetworkLinks():
                 links.append(link['network_data'])
             for client in self.cache['onlineClients'].keys():
