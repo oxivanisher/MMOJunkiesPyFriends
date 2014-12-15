@@ -917,8 +917,6 @@ def users(request):
             (res, findList) = MMONetworks[handle].getPartners()
             if res:
                 friendNets[handle] = findList
-            else:
-                flash(findList, 'error')
 
         users = MMOUser.query.all()
         for user in users:
@@ -929,9 +927,6 @@ def users(request):
                 userNicks = []
                 for net in friendNets:
                     for friend in friendNets[net]:
-                        print "friend", friend
-                        print "mmoid", friend['mmoid']
-                        print "user.id", user.id
                         if friend['mmoid'] == user.id:
                             userNets.append(friend)
 
