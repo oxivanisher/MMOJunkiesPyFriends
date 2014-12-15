@@ -95,7 +95,10 @@ function updateBoxesDropdownMenu(){
 
     $(".box.dboard").each(function( index ) {
         var state =  boxVisibleStates[$(this).attr('id')];
-        if (state == undefined) { state = true; }
+        if (state == undefined) {
+            state = true;
+            boxVisibleStates[$(this).attr('id')] = state;
+        }
         if (state) {
             if ($(this).parents('.col').is(":hidden")) {
                 $(this).parents('.col').fadeIn( 300 );
