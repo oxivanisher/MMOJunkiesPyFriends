@@ -918,6 +918,14 @@ def users(request):
             if res:
                 friendNets[handle] = findList
 
+        netsReturn = {}
+        for net in MMONetworks.keys():
+            netsReturn[net] = {}
+            netsReturn[net]['iconUrl'] = url_for('get_image', imgType='network', imgId=net)
+            netsReturn[net]['name'] = MMONetworks[net].name
+            netsReturn[net]['description'] = MMONetworks[net].description
+            netsReturn[net]['usersConnected'] = 0
+
         users = MMOUser.query.all()
         for user in users:
             if user.id == session['userid']:
@@ -928,19 +936,21 @@ def users(request):
                 for net in friendNets:
                     for friend in friendNets[net]:
                         if friend['mmoid'] == user.id:
-                            userNets.append(friend)
+                            netsReturn[net]['usersConnected'] += 1
+                            userNets.append(net)
 
                 for nick in user.nicks.all():
                     userNicks.append(nick.nick)
 
                 usersReturn[user.id] = { 'nick': user.nick,
+                                         'url': url_for('partner_show', partnerId = user.id),
                                          'aliases': userNicks,
                                          'name': user.name,
                                          'website': user.website,
                                          'admin': user.admin,
                                          'nets': userNets }
 
-        return usersReturn
+        return { 'users': usersReturn, 'nets': netsReturn }
     else:
         abort(401)
 
