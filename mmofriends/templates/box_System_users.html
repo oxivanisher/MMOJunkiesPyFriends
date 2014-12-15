@@ -29,8 +29,9 @@
 
 						console.log(user.nets);
 						var nets = '';
-						for (netId in user.nets) {
+						for (netId in data.nets) {
 							net = user.nets[netId];
+							consle.log(net);
 							// user.nets[net][networkImgs]
 							nets += '<img src="' + net[iconUrl] + '" class="partner_list_icon" title="' + net[name] + ' ' + net[description] + '(' + net[usersConnected] + ')' + '">';
 						}
