@@ -922,6 +922,8 @@ def users(request):
 
         users = MMOUser.query.all()
         for user in users:
+            if user.id == session['userid']:
+                continue
             if user.veryfied and not user.locked:
                 userNets = []
                 userNicks = []
