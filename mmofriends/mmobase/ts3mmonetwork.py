@@ -296,10 +296,14 @@ class TS3Network(MMONetwork):
 
         for cldbid in clientList:
             myself = False
+            MMOUser = False
             for link in allLinks:
+                MMOUser = True
                 if link['network_data'] == cldbid and link['user_id'] == self.session['userid']:
                     myself = True
             if myself:
+                continue
+            if not MMOUser:
                 continue
 
             # player state

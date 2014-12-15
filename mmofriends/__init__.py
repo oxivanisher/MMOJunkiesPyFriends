@@ -491,7 +491,7 @@ def network_link():
     return redirect(url_for('index'))
 
 def getNetworksLinkData(request = None):
-    log.warning("Returning linked networks (get)")
+    log.debug("[System] Returning linked networks (get)")
     linkedNetworks = []
     fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
     for net in fetchNetworkLinksData:
@@ -908,11 +908,51 @@ def getSystemStats(request):
                 'handle': "system" }})
     return stats
 
+def users(request):
+    if session.get('logged_in'):
+        usersReturn = {}
+
+        friendNets = {}
+        for handle in MMONetworks.keys():
+            (res, findList) = MMONetworks[handle].getPartners()
+            if res:
+                friendNets[handle] = findList
+            else:
+                flash(findList, 'error')
+
+        users = MMOUser.query.all()
+        for user in users:
+            if user.veryfied and not user.locked:
+                userNets = []
+                userNicks = []
+                for net in friendNets:
+                    for friend in friendNets[net]:
+                        print "friend", friend
+                        print "mmoid", friend['mmoid']
+                        print "user.id", user.id
+                        if friend['mmoid'] == user.id:
+                            userNets.append(friend)
+
+                for nick in user.nicks.all():
+                    userNicks.append(nick.nick)
+
+                usersReturn[user.id] = { 'nick': user.nick,
+                                         'aliases': userNicks,
+                                         'name': user.name,
+                                         'website': user.website,
+                                         'admin': user.admin,
+                                         'nets': userNets }
+
+        return usersReturn
+    else:
+        abort(401)
+
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
+SystemBoxes["users"] = createDashboardBox(users, "System", "users", {'loggedin': True, 'admin': True, 'title': 'Users'})
 
 # Dashboard routes
 @app.route('/Dashboard')
