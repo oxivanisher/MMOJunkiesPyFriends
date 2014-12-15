@@ -33,11 +33,9 @@
 							nicks = ' aka ' + nicks;
 						}
 
-						console.log(user.nets);
 						var nets = '';
 						for (netId in user.nets) {
 							net = data.nets[netId];
-							consle.log(net);
 							// user.nets[net][networkImgs]
 							nets += '<img src="' + net[iconUrl] + '" class="partner_list_icon" title="' + net[name] + ' ' + net[description] + '(' + net[usersConnected] + ')' + '">';
 						}
