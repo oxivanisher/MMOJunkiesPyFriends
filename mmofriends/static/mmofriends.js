@@ -125,7 +125,7 @@ function updateBoxesDropdownMenu(){
     $(".box.dboard").each(function( index ) {
         if (! boxVisibleStates[$(this).attr('id')]) {
             hide = false;
-            $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(' + index + ');">' + $(this).find(".dboardtitle").html() + '</a></li>');
+            $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(\'' + $(this).attr('id') + '\');">' + $(this).find(".dboardtitle").html() + '</a></li>');
         }
     })
 
@@ -136,9 +136,9 @@ function updateBoxesDropdownMenu(){
         $("#removedBoxesDropdownMenu").css('visibility','visible');
     }
 }
-function showDashboardBox(targetIndex) {
+function showDashboardBox(targetId) {
     $(".box.dboard").each(function( index ) {
-        if (index == targetIndex) {
+        if ($(this).attr('id') == targetId) {
             var boxVisibleStates = JSON.parse($.cookie('boxVisibleStates'));
             boxVisibleStates[$(this).attr('id')] = true;
             $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
