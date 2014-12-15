@@ -97,6 +97,7 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("[%s] List all partners for given user" % (self.handle))
 
         self.getCache('channels')
+        result = []
         try:
             allLinks = self.getNetworkLinks()
             for userid in self.cache['channels'].keys():
