@@ -35,7 +35,7 @@
 
 						var nets = '';
 						for (netId in user.nets) {
-							console.log(data.nets[netId]);
+							console.log(data.nets);
 							net = data.nets[netId];
 							// user.nets[net][networkImgs]
 							nets += '<img src="' + net[iconUrl] + '" class="partner_list_icon" title="' + net[name] + ' ' + net[description] + '(' + net[usersConnected] + ')' + '">';
