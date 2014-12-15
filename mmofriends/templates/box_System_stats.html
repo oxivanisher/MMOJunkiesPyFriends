@@ -1,11 +1,20 @@
 <ul id="systemStats" class="list-group" style="margin-bottom: 0px;"></ul>
 <script type="text/javascript">
-	(function () {
-		function showSystemStats(){
-			if ($( "#systemStats" ).parents('.col').is(":visible")) {
-				var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
-				$.getJSON( dataUrl ).done( function( data ) {
-					$('#systemStats').empty();
+	var timeout{{ box.netHandle }}{{ box.handle }};
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ){
+		var run = true;
+		if (force == undefined) {
+			if ($( "#systemStats" ).parents('.col').is(":hidden")){
+				run = false;
+			}
+		}
+		if (run) {
+			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+
+				$( "#systemStats" ).fadeOut( 100, function () {
+					$( "#systemStats" ).empty();
 					for (net in data) {
 						img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
 						var content = ""
@@ -14,10 +23,10 @@
 						}
 						$('#systemStats').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
 					}
+					$( "#systemStats" ).fadeIn( 100 );
 				});
-			}
+			});
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 6000);
 		}
-		showSystemStats();
-		setInterval(showSystemStats, 60000 );
-	})();
+	}
 </script>

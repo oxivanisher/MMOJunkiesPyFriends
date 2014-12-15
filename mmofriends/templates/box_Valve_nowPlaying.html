@@ -1,44 +1,49 @@
 <ul id="steamNowPlaying" class="list-group" style="margin-bottom: 0px;"></ul>
 <script type="text/javascript">
-	(function () {
-		function drawNowPlayingContent( data ) {
-			showMe = false;
-			for (id in data.gamesNowPlaying) {
-				user = data.gamesNowPlaying[id]
+	var timeout{{ box.netHandle }}{{ box.handle }};
+	function drawNowPlayingContent{{ box.netHandle }}{{ box.handle }}( data ) {
+		showMe = false;
+		for (id in data.gamesNowPlaying) {
+			user = data.gamesNowPlaying[id]
 
-				if (user.internal) {
-					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ';
-				} else {
-					display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
-				}
-				display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" /> ';
-				display_name = display_name + user.username + ': ' + user.gamename
-
-				var onclick = 'onclick="window.open(\'' + user.link + '\')"';
-				var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
-
-				$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
-				showMe = true;
+			if (user.internal) {
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ';
+			} else {
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
 			}
-			return showMe;
+			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" /> ';
+			display_name = display_name + user.username + ': ' + user.gamename
+
+			var onclick = 'onclick="window.open(\'' + user.link + '\')"';
+			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
+
+			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+			showMe = true;
 		}
-		function loadSteamNowPlayingData() {
-			if ($( "#steamNowPlaying" ).parents('.col').is(":visible")) {
-				var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
-				$.getJSON( dataUrl ).done( function( data ) {
+		return showMe;
+	}
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
+		var run = true;
+		if (force == undefined) {
+			if ($( "#steamNowPlaying" ).parents('.col').is(":hidden")){
+				run = false;
+			}
+		}
+		if (run) {
+			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
 
-					$( "#steamNowPlaying" ).fadeOut( 200, function () {
-						$( "#steamNowPlaying" ).empty();
-						if (! drawNowPlayingContent( data )) {
-							$( '#steamNowPlaying' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is playing on steam</label></li>');
-						}
-						$( "#steamNowPlaying" ).fadeIn( 200 );
-					});
-
+				$( "#steamNowPlaying" ).fadeOut( 100, function () {
+					$( "#steamNowPlaying" ).empty();
+					if (! drawNowPlayingContent{{ box.netHandle }}{{ box.handle }}( data )) {
+						$( '#steamNowPlaying' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is playing on steam</label></li>');
+					}
+					$( "#steamNowPlaying" ).fadeIn( 100 );
 				});
-			}
+
+			});
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 6000);
 		}
-		loadSteamNowPlayingData();
-		setInterval(loadSteamNowPlayingData, 20000 );
-	})();
+	}
 </script>

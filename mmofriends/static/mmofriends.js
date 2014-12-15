@@ -61,17 +61,15 @@ $(function() {
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
         $(this).parents('.col').toggleClass('col-md-4 col-md-8', 200).promise().done(function(){
-            var resizeFunction = window["resizeBox" + $(this).find( ".box" ).attr('id')];
-            if (typeof resizeFunction == 'function') {
-                resizeFunction();
+            var redrawFunction = window["redrawBox" + $(this).find( ".box" ).attr('id')];
+            if (typeof redrawFunction == 'function') {
+                redrawFunction( true );
             }
         });
     });
 
     // close dashboard box
     $(".fa-close").click(function(){
-        // $(this).parents('.col').fadeOut( 200 );
-
         var boxVisibleStates = JSON.parse($.cookie('boxVisibleStates'));
         boxVisibleStates[$(this).parents('.box.dboard').attr('id')] = false;
         $.cookie('boxVisibleStates', JSON.stringify(boxVisibleStates));
@@ -95,16 +93,25 @@ function updateBoxesDropdownMenu(){
         var boxVisibleStates = JSON.parse(cookieInput);
     } 
 
-    console.log("loading state from cookie");
     $(".box.dboard").each(function( index ) {
         var state =  boxVisibleStates[$(this).attr('id')];
         if (state == undefined) { state = true; }
         if (state) {
-            console.log("box " + $(this).attr('id') + " visible");
-            $(this).parents('.col').fadeIn( 200 );
+            if ($(this).parents('.col').is(":hidden")) {
+                $(this).parents('.col').fadeIn( 300 );
+                var redrawFunction = window["redrawBox" + $(this).attr('id')];
+                if (typeof redrawFunction == 'function') {
+                    redrawFunction( true );
+                }
+            }
         } else {
-            console.log("box " + $(this).attr('id') + " hidden");
-            $(this).parents('.col').fadeOut( 200 );
+            if ($(this).parents('.col').is(":visible")) {
+                var redrawFunction = window["redrawBox" + $(this).attr('id')];
+                if (typeof redrawFunction == 'function') {
+                    clearInterval(redrawFunction());
+                }
+                $(this).parents('.col').fadeOut( 300 );
+            }
         }
     });
     // save the values to the cookie
@@ -112,17 +119,12 @@ function updateBoxesDropdownMenu(){
 
     hide = true;
     $("#removedBoxesDropdown").empty();
-    console.log(cookieInput);
     $(".box.dboard").each(function( index ) {
         if (! boxVisibleStates[$(this).attr('id')]) {
             hide = false;
             $("#removedBoxesDropdown").append('<li><a href="javascript:showDashboardBox(' + index + ');">' + $(this).find(".dboardtitle").html() + '</a></li>');
         }
-        // boxVisibleStates[$(this).attr('id')] = $(this).is(':visible');
-        // $.cookie('boxesState' + $(this).attr('id'), $(this).is(':visible'));
-        // console.log("box " + index + " state save " + $(this).is(':visible'));
     })
-
 
     // show or hide the dropdown
     if (hide) {
@@ -130,8 +132,6 @@ function updateBoxesDropdownMenu(){
     } else {
         $("#removedBoxesDropdownMenu").css('visibility','visible');
     }
-    // http://stackoverflow.com/questions/18238890/save-div-toggle-state-with-jquery-cookie
-    // $.cookie('boxesState', 'value');
 }
 function showDashboardBox(targetIndex) {
     $(".box.dboard").each(function( index ) {
