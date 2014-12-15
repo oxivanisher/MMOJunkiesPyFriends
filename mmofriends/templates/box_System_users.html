@@ -1,4 +1,4 @@
-<table id="systemUsers" class="list-group" style="width: 100%;" class="striped"></table>
+<table id="systemUsers" class="list-group" style="width: 100%; margin-bottom: 0px;" class="striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ){
@@ -21,7 +21,7 @@
 
 						var nicks = '';
 						for (nick in user.aliases) {
-							nicks += ', ' + nick;
+							nicks += ', ' + user.aliases[nick];
 						}
 						if (nicks.length) {
 							nicks = ' aka ' + nicks;
