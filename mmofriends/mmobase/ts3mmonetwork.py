@@ -97,7 +97,7 @@ class TS3Network(MMONetwork):
             if not logger:
                 logger = self.log
             self.getCache('clientDatabase')
-            logger.info("[%s] Fetching all clients from server" % (self.handle))
+            logger.debug("[%s] Fetching all clients from server" % (self.handle))
 
             clientNum = 0
             serverData = self.sendCommand('clientdblist -count').data[0]
@@ -120,7 +120,7 @@ class TS3Network(MMONetwork):
                     pass
             self.setCache('clientDatabase')
 
-            logger.info("[%s] Fetched %s clients" % (self.handle, clientNum))
+            logger.debug("[%s] Fetched %s clients" % (self.handle, clientNum))
             return "%s client(s) updated" % len(allClients)
         else:
             return "Not connected to TS3 Server"
