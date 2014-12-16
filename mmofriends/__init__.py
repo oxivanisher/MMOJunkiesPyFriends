@@ -823,9 +823,7 @@ def partner_show(partnerId, netHandle = None):
     if not session.get('logged_in'):
         abort(401)
 
-    active = 0
-    count = 0
-    networks = []
+    active, count, networks = 0, 0, []
     for net in MMONetworks.keys():
         linkInfo = MMONetworks[net].getNetworkLinks(partnerId)
         if linkInfo:
@@ -910,9 +908,7 @@ def getSystemStats(request):
 
 def getSystemUsers(request):
     if session.get('logged_in'):
-        usersReturn = {}
-        friendNets = {}
-        netsReturn = {}
+        usersReturn, friendNets,  netsReturn = {}, {}, {}
         for net in MMONetworks.keys():
             (res, findList) = MMONetworks[net].getPartners()
             if res:
@@ -930,8 +926,7 @@ def getSystemUsers(request):
             if user.id == session['userid']:
                 continue
             if user.veryfied and not user.locked:
-                userNets = []
-                userNicks = []
+                userNets, userNicks = [], []
                 for net in friendNets:
                     for friend in friendNets[net]:
                         if friend['mmoid'] == user.id:
