@@ -917,6 +917,8 @@ def getSystemUsers(request):
             (res, findList) = MMONetworks[net].getPartners()
             if res:
                 friendNets[net] = findList
+            else:
+                log.warning("[System] Unable to fetch network users from %s" % findList)
             netsReturn[net] = {}
             netsReturn[net]['iconUrl'] = url_for('get_image', imgType='network', imgId=net)
             netsReturn[net]['name'] = MMONetworks[net].name
