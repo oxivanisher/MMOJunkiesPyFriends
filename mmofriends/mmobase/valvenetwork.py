@@ -255,7 +255,7 @@ class ValveNetwork(MMONetwork):
         steamIds = list(set(steamIds))
         for steamid in steamIds:
             self.cache['users'][steamId]
-            self.cacheFile(self.cache['users'][friend]['avatarfull']))
+            self.cacheFile(self.cache['users'][friend]['avatarfull'])
 
         logger.info("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(steamIds)))
         return "%s user avatars checked of %s entries" % (len(steamIds), count)
