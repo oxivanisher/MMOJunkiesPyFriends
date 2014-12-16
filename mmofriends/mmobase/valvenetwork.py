@@ -379,7 +379,7 @@ class ValveNetwork(MMONetwork):
             for friend in friendsList:
                 onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
 
-            log.warning("b4 loop start: %s" % ((time.time() - timer)))
+            self.log.warning("b4 loop start: %s" % ((time.time() - timer)))
             timer = time.time()
 
             for friend in friendsList:
