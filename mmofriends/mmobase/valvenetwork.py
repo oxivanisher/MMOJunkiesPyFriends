@@ -534,7 +534,7 @@ class ValveNetwork(MMONetwork):
     def getImgUrl(self, appid, imgHash):
         if imgHash:
             return "%s/%s/%s.jpg" % (self.imgIconUrlBase, appid, imgHash)
-        else
+        else:
             return None
 
     def getGameStats(self, what):
