@@ -929,8 +929,9 @@ def getSystemUsers(request):
                 userNets, userNicks = [], []
                 for net in friendNets:
                     for friend in friendNets[net]:
-                        log.info("[Testing] %s == %s" % (friend['mmoid'], user.id))
+                        log.warning("[Testing] %s == %s" % (friend['mmoid'], user.id))
                         if friend['mmoid'] == user.id:
+
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
 
