@@ -532,7 +532,10 @@ class ValveNetwork(MMONetwork):
 
     # Helper
     def getImgUrl(self, appid, imgHash):
-        return "%s/%s/%s.jpg" % (self.imgIconUrlBase, appid, imgHash)
+        if imgHash:
+            return "%s/%s/%s.jpg" % (self.imgIconUrlBase, appid, imgHash)
+        else
+            return None
 
     def getGameStats(self, what):
         self.getCache('users')
