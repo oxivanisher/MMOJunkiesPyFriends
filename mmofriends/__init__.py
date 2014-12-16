@@ -913,6 +913,7 @@ def getSystemUsers(request):
             (res, findList) = MMONetworks[net].getPartners()
             if res:
                 friendNets[net] = findList
+                log.warning("[Testing] list: %s" % (friendNets[net]))
             else:
                 log.warning("[System] Unable to fetch network users from %s" % findList)
             netsReturn[net] = {}
@@ -929,9 +930,9 @@ def getSystemUsers(request):
                 userNets, userNicks = [], []
                 for net in friendNets:
                     for friend in friendNets[net]:
-                        log.warning("[Testing] %s == %s" % (friend['mmoid'], user.id))
+                        # log.warning("[Testing] %s == %s" % (friend['mmoid'], user.id))
                         if friend['mmoid'] == user.id:
-
+                            log.warning("[Testing] linked %s to %s" % (friend['mmoid'], user.id))
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
 
