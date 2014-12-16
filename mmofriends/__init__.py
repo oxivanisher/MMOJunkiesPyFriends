@@ -910,6 +910,7 @@ def getSystemStats(request):
 
 def users(request):
     if session.get('logged_in'):
+        log.warning("startup")
         timer = time.time()
         usersReturn = {}
         friendNets = {}
