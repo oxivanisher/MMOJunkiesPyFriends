@@ -248,10 +248,6 @@ class ValveNetwork(MMONetwork):
             count += 1
             avatarUrls.append(self.cache['users'][user]['avatarfull'])
 
-            for friend in self.cache['users'][user]['friends']:
-                count += 1
-                avatarUrls.append(self.cache['users'][friend]['avatarfull'])
-
         avatarUrls = list(set(avatarUrls))
         for avatarUrl in avatarUrls:
             self.cacheFile(avatarUrl)
