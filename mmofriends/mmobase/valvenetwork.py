@@ -382,6 +382,7 @@ class ValveNetwork(MMONetwork):
             self.log.info("b4 loop start: %s" % ((time.time() - timer)))
             timer = time.time()
 
+            self.getCache('users')
             for friend in friendsList:
                 friendSteamId = friend['steamid']
                 if onlineOnly:
@@ -396,9 +397,6 @@ class ValveNetwork(MMONetwork):
                 if ((time.time() - timer) > 0.1):
                     self.log.info("after start: %s" % ((time.time() - timer)))
                 timer = time.time()
-
-                self.getPartnerDetails(friendSteamId)
-                self.getCache('users')
 
                 if ((time.time() - timer) > 0.1):
                     self.log.info("after getPartnerDetails: %s" % ((time.time() - timer)))
