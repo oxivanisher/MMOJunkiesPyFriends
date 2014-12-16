@@ -394,14 +394,14 @@ class ValveNetwork(MMONetwork):
                         linkId = link['user_id']
 
                 if ((time.time() - timer) > 0.2):
-                    log.warning("after start: %s" % ((time.time() - timer)))
+                    self.log.warning("after start: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 self.getPartnerDetails(friendSteamId)
                 self.getCache('users')
 
                 if ((time.time() - timer) > 0.2):
-                    log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                    self.log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 if friendSteamId not in self.cache['users'].keys():
@@ -412,7 +412,7 @@ class ValveNetwork(MMONetwork):
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatarfull']))
 
                 if ((time.time() - timer) > 0.2):
-                    log.warning("after cache avatars: %s" % ((time.time() - timer)))
+                    self.log.warning("after cache avatars: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 friendImgs = []
@@ -452,11 +452,11 @@ class ValveNetwork(MMONetwork):
                             })
 
                 if ((time.time() - timer) > 0.2):
-                    log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                    self.log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
                 timer = time.time()
 
 
-            log.warning("finished: %s" % ((time.time() - timer)))
+            self.log.warning("finished: %s" % ((time.time() - timer)))
             timer = time.time()
 
             return (True, result)
