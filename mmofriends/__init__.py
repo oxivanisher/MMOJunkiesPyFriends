@@ -932,7 +932,7 @@ def getSystemUsers(request):
                 for net in friendNets:
                     for friend in friendNets[net]:
                         # log.warning("[Testing] %s == %s" % (friend['mmoid'], user.id))
-                        if friend['mmoid'] == user.id:
+                        if str(friend['mmoid']) == str(user.id):
                             # log.warning("[Testing] linked %s to %s" % (friend['mmoid'], user.id))
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
