@@ -379,7 +379,7 @@ class ValveNetwork(MMONetwork):
             for friend in friendsList:
                 onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
 
-            self.log.warning("b4 loop start: %s" % ((time.time() - timer)))
+            self.log.info("b4 loop start: %s" % ((time.time() - timer)))
             timer = time.time()
 
             for friend in friendsList:
@@ -394,14 +394,14 @@ class ValveNetwork(MMONetwork):
                         linkId = link['user_id']
 
                 if ((time.time() - timer) > 0.2):
-                    self.log.warning("after start: %s" % ((time.time() - timer)))
+                    self.log.info("after start: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 self.getPartnerDetails(friendSteamId)
                 self.getCache('users')
 
                 if ((time.time() - timer) > 0.2):
-                    self.log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                    self.log.info("after getPartnerDetails: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 if friendSteamId not in self.cache['users'].keys():
@@ -412,7 +412,7 @@ class ValveNetwork(MMONetwork):
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatarfull']))
 
                 if ((time.time() - timer) > 0.2):
-                    self.log.warning("after cache avatars: %s" % ((time.time() - timer)))
+                    self.log.info("after cache avatars: %s" % ((time.time() - timer)))
                 timer = time.time()
 
                 friendImgs = []
@@ -452,11 +452,11 @@ class ValveNetwork(MMONetwork):
                             })
 
                 if ((time.time() - timer) > 0.2):
-                    self.log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                    self.log.info("after getPartnerDetails: %s" % ((time.time() - timer)))
                 timer = time.time()
 
 
-            self.log.warning("finished: %s" % ((time.time() - timer)))
+            self.log.info("finished: %s" % ((time.time() - timer)))
             timer = time.time()
 
             return (True, result)
