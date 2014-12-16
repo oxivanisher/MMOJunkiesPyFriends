@@ -37,10 +37,10 @@
 						for (netId in user.nets) {
 							netStr = user.nets[netId];
 							net = data.nets[netStr];
-							nets += '<img src="' + net.iconUrl + '" class="partner_list_icon" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
+							nets += '<img src="' + net.iconUrl + '" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
 						}
 
-						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + '</td><td class="pull-right">' + nets + '</td></tr>');
+						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + nets + '</td></tr>');
 					}
 					$( "#systemUsers" ).fadeIn( 100 );
 				});
