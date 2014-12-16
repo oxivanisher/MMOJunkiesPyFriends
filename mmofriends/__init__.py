@@ -131,7 +131,7 @@ def fetchFriendsList(netHandle = None):
 def loadNetworks():
     for handle in app.config['networkConfig'].keys():
         network = app.config['networkConfig'][handle]
-        log.info("[System] Trying to initialize MMONetwork %s (%s)" % (network['name'], handle))
+        log.info("[System] Initializing MMONetwork %s (%s)" % (network['name'], handle))
         if network['active']:
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
