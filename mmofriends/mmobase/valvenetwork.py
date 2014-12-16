@@ -111,7 +111,7 @@ class ValveNetwork(MMONetwork):
         for link in allLinks:
             steamIds.append(link['network_data'])
 
-        logger.info("[%s] Will fetch %s users" % (self.handle, len(steamIds)))
+        logger.debug("[%s] Will fetch %s users" % (self.handle, len(steamIds)))
         steamData = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(steamIds)})
         friendIds = []
         if steamData:
@@ -196,9 +196,9 @@ class ValveNetwork(MMONetwork):
                     if 'friends' not in steamFriends:
                         steamFriends['friends'] = []
                     self.cache['users'][steamId]['friends'] = steamFriends['friends']
-                    logger.info("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
+                    logger.debug("[%s] %s friends found for: %s" % (self.handle, len(steamFriends['friends']), steamId))
                 else:
-                    logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
+                    logger.debug("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
 
 
                 logger.debug("[%s] Fetching games for %s" % (self.handle, steamId))
@@ -232,7 +232,7 @@ class ValveNetwork(MMONetwork):
 
             self.setCache('users')
             self.setCache('games')
-            logger.info("[%s] Updated %s users" % (self.handle, len(steamData['players'])))
+            logger.debug("[%s] Updated %s users" % (self.handle, len(steamData['players'])))
             return "%s users updated" % len(steamData['players'])
         else:
             return "Unable to recieve data from Steam"
