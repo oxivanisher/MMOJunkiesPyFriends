@@ -910,21 +910,22 @@ def getSystemStats(request):
 
 def users(request):
     if session.get('logged_in'):
+        timer = time.time()
         usersReturn = {}
-
         friendNets = {}
-        for handle in MMONetworks.keys():
-            (res, findList) = MMONetworks[handle].getPartners()
-            if res:
-                friendNets[handle] = findList
-
         netsReturn = {}
         for net in MMONetworks.keys():
+            (res, findList) = MMONetworks[net].getPartners()
+            if res:
+                friendNets[net] = findList
             netsReturn[net] = {}
             netsReturn[net]['iconUrl'] = url_for('get_image', imgType='network', imgId=net)
             netsReturn[net]['name'] = MMONetworks[net].name
             netsReturn[net]['description'] = MMONetworks[net].description
             netsReturn[net]['usersConnected'] = 0
+
+        log.warning("for nets: " % (time.time() - timer))
+        timer = time.time()
 
         users = MMOUser.query.all()
         for user in users:
@@ -949,6 +950,9 @@ def users(request):
                                          'website': user.website,
                                          'admin': user.admin,
                                          'nets': userNets }
+
+        log.warning("finished: " % (time.time() - timer))
+        timer = time.time()
 
         return { 'users': usersReturn, 'nets': netsReturn }
     else:
