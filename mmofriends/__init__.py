@@ -913,7 +913,8 @@ def getSystemUsers(request):
             (res, findList) = MMONetworks[net].getPartners()
             if res:
                 friendNets[net] = findList
-                log.warning("[Testing] list: %s" % (friendNets[net]))
+                if net == "Twitch":
+                    log.warning("[Testing] list: %s" % (friendNets[net]))
             else:
                 log.warning("[System] Unable to fetch network users from %s" % findList)
             netsReturn[net] = {}
