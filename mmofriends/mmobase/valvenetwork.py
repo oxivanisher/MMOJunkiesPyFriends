@@ -189,7 +189,7 @@ class ValveNetwork(MMONetwork):
                     continue
                 logger.debug("[%s] Updating %s" % (self.handle, steamId))
                 
-                logger.info("[%s] Fetching friendslist for %s" % (self.handle, steamId))
+                logger.debug("[%s] Fetching friendslist for %s" % (self.handle, steamId))
                 steamFriends = self.fetchFromSteam('ISteamUser/GetFriendList/v0001', {'steamid': steamId,
                                                                                       'relationship': 'friend'})
                 if steamFriends != False:
@@ -201,7 +201,7 @@ class ValveNetwork(MMONetwork):
                     logger.info("[%s] No friendslist revieved for: %s" % (self.handle, steamId))
 
 
-                logger.info("[%s] Fetching games for %s" % (self.handle, steamId))
+                logger.debug("[%s] Fetching games for %s" % (self.handle, steamId))
                 ownedGames = self.fetchFromSteam('IPlayerService/GetOwnedGames/v0001', {'steamid': steamId,
                                                                                         'include_played_free_games': '1',
                                                                                         'include_appinfo': '1' })
@@ -252,7 +252,7 @@ class ValveNetwork(MMONetwork):
         for avatarUrl in avatarUrls:
             self.cacheFile(avatarUrl)
 
-        logger.info("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(avatarUrl)))
+        logger.debug("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(avatarUrl)))
         return "%s user avatars checked of %s entries" % (len(avatarUrl), count)
 
     def updateUsersOnlineState(self, logger = None):
@@ -274,7 +274,7 @@ class ValveNetwork(MMONetwork):
             if len(fetchFriends) == 0:
                 run = False
             else:
-                logger.info("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
+                logger.debug("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
                 steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
