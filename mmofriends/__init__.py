@@ -924,7 +924,7 @@ def users(request):
             netsReturn[net]['description'] = MMONetworks[net].description
             netsReturn[net]['usersConnected'] = 0
 
-        log.warning("for nets: " % (time.time() - timer))
+        log.warning("for nets: %s" % (time.time() - timer))
         timer = time.time()
 
         users = MMOUser.query.all()
@@ -951,7 +951,7 @@ def users(request):
                                          'admin': user.admin,
                                          'nets': userNets }
 
-        log.warning("finished: " % (time.time() - timer))
+        log.warning("finished: %s" % (time.time() - timer))
         timer = time.time()
 
         return { 'users': usersReturn, 'nets': netsReturn }
