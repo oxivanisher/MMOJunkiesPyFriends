@@ -452,7 +452,7 @@ class ValveNetwork(MMONetwork):
                             })
 
                 if ((time.time() - timer) > 0.2):
-                    self.log.info("after getPartnerDetails: %s" % ((time.time() - timer)))
+                    self.log.info("after user run finished: %s" % ((time.time() - timer)))
                 timer = time.time()
 
 
@@ -475,7 +475,10 @@ class ValveNetwork(MMONetwork):
         except KeyError:
             #Probably empty database!
             return moreInfo
+        timer = time.time()
         self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['users'][partnerId]['avatarfull']))
+        if ((time.time() - timer) > 0.1):
+            self.log.info("after avatar caching! %s" % (time.time() - timer))
 
 
         if self.session.get('admin'):
