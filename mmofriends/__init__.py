@@ -924,6 +924,9 @@ def users(request):
             netsReturn[net]['description'] = MMONetworks[net].description
             netsReturn[net]['usersConnected'] = 0
 
+            log.warning("for net %s: %s" % (net, (time.time() - timer)))
+            timer = time.time()
+
         log.warning("for nets: %s" % (time.time() - timer))
         timer = time.time()
 
@@ -950,9 +953,6 @@ def users(request):
                                          'website': user.website,
                                          'admin': user.admin,
                                          'nets': userNets }
-
-        log.warning("finished: %s" % (time.time() - timer))
-        timer = time.time()
 
         return { 'users': usersReturn, 'nets': netsReturn }
     else:
