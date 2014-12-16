@@ -125,7 +125,6 @@ class TS3Network(MMONetwork):
                     # logger.warning("cacheAvailableClients: Removing client from db which is mission in ts3 (probably cleaned): %s" % client)
                     # self.cache['clientDatabase'].pop(client['cldbid'], None)
                     # self.cache['clientDatabase'].pop(client, None)
-                    pass
 
             self.setCache('clientDatabase')
 
