@@ -117,7 +117,8 @@ class TS3Network(MMONetwork):
                 except KeyError:
                     logger.warning("cacheAvailableClients: Removing missing client %s" % client)
 
-            allNewClients = self.cache['clientDatabase'].keys()
+            print "db", self.cache['clientDatabase'].keys()
+            # allNewClients = [d['value'] for d in l self.cache['clientDatabase'].keys()
             allOldClients = allClients.keys()
             for client in [x for x in allOldClients if x not in allNewClients]:
                     logger.warning("cacheAvailableClients: Removing client from db which is mission in ts3 (probably cleaned): %s" % client)
