@@ -953,7 +953,7 @@ SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'t
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
-SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'admin': True, 'title': 'Users'})
+SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users'})
 
 # Dashboard routes
 @app.route('/Dashboard')
