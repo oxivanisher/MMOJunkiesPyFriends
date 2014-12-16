@@ -331,7 +331,6 @@ class ValveNetwork(MMONetwork):
         return "steamId: %s" % self.getSessionValue(self.linkIdName)
 
     def getPartners(self, **kwargs):
-        timer = time.time()
         self.getCache('users')
 
         self.log.debug("List all partners for given user")
@@ -373,16 +372,12 @@ class ValveNetwork(MMONetwork):
                 friendsList = self.cache['users'][steamId]['friends']
 
             if steamId not in self.cache['users']:
-                self.log.info("User probably not yet cached")
+                self.log.debug("User probably not yet cached")
                 return (False, False)
 
             for friend in friendsList:
                 onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
 
-            self.log.info("b4 loop start: %s" % ((time.time() - timer)))
-            timer = time.time()
-
-            self.getCache('users')
             for friend in friendsList:
                 friendSteamId = friend['steamid']
                 if onlineOnly:
@@ -394,24 +389,12 @@ class ValveNetwork(MMONetwork):
                     if friendSteamId == link['network_data']:
                         linkId = link['user_id']
 
-                if ((time.time() - timer) > 0.1):
-                    self.log.info("after start: %s" % ((time.time() - timer)))
-                timer = time.time()
-
-                if ((time.time() - timer) > 0.1):
-                    self.log.info("after getPartnerDetails: %s" % ((time.time() - timer)))
-                timer = time.time()
-
                 if friendSteamId not in self.cache['users'].keys():
                     self.log.error("Unable to find or load user %s" % friendSteamId)
                     continue
                 friend = str(friend)
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatar']))
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatarfull']))
-
-                if ((time.time() - timer) > 0.1):
-                    self.log.info("after cache avatars: %s" % ((time.time() - timer)))
-                timer = time.time()
 
                 friendImgs = []
                 try:
@@ -448,14 +431,6 @@ class ValveNetwork(MMONetwork):
                                 }],
                                 'friendImgs': friendImgs
                             })
-
-                if ((time.time() - timer) > 0.1):
-                    self.log.info("after user run finished: %s" % ((time.time() - timer)))
-                timer = time.time()
-
-
-            self.log.info("finished: %s" % ((time.time() - timer)))
-            timer = time.time()
 
             return (True, result)
         else:

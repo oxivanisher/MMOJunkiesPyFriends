@@ -910,8 +910,6 @@ def getSystemStats(request):
 
 def users(request):
     if session.get('logged_in'):
-        log.warning("startup")
-        timer = time.time()
         usersReturn = {}
         friendNets = {}
         netsReturn = {}
@@ -924,12 +922,6 @@ def users(request):
             netsReturn[net]['name'] = MMONetworks[net].name
             netsReturn[net]['description'] = MMONetworks[net].description
             netsReturn[net]['usersConnected'] = 0
-
-            log.warning("for net %s: %s" % (net, (time.time() - timer)))
-            timer = time.time()
-
-        log.warning("for nets: %s" % (time.time() - timer))
-        timer = time.time()
 
         users = MMOUser.query.all()
         for user in users:
