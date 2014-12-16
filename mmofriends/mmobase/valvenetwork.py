@@ -252,13 +252,12 @@ class ValveNetwork(MMONetwork):
                 count += 1
                 avatarUrls.append(self.cache['users'][friend]['avatarfull'])
 
-        steamIds = list(set(steamIds))
-        for steamid in steamIds:
-            self.cache['users'][steamId]
-            self.cacheFile(self.cache['users'][friend]['avatarfull'])
+        avatarUrls = list(set(avatarUrls))
+        for avatarUrl in avatarUrls:
+            self.cacheFile(avatarUrl)
 
-        logger.info("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(steamIds)))
-        return "%s user avatars checked of %s entries" % (len(steamIds), count)
+        logger.info("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(avatarUrl)))
+        return "%s user avatars checked of %s entries" % (len(avatarUrl), count)
 
     def updateUsersOnlineState(self, logger = None):
         count = 0
