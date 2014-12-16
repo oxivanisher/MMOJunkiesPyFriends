@@ -34,10 +34,17 @@
 						}
 
 						var nets = '';
-						for (netId in user.nets) {
-							netStr = user.nets[netId];
-							net = data.nets[netStr];
-							nets += '<img src="' + net.iconUrl + '" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
+						for (netId in data.nets) {
+							net = data.nets[netId];
+							console.log(user.nets);
+
+							if (user.nets.indexOf(netId) > -1) {
+								imgSrc = net.iconUrl;
+							} else {
+								imgSrc = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D";
+							}
+							
+							nets += '<img src="' + imgSrc + '" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
 						}
 
 						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + nets + '</td></tr>');
