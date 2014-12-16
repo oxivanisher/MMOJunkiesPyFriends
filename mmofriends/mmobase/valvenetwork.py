@@ -42,6 +42,7 @@ class ValveNetwork(MMONetwork):
 
         # background updater methods
         self.registerWorker(self.updateUsers, 3600)
+        self.registerWorker(self.updateUserAvatars, 3600)
         self.registerWorker(self.checkForNewUsers, 10)
         self.registerWorker(self.updateUsersOnlineState, 60)
 
@@ -235,6 +236,29 @@ class ValveNetwork(MMONetwork):
             return "%s users updated" % len(steamData['players'])
         else:
             return "Unable to recieve data from Steam"
+
+    def updateUserAvatars(self, logger = None):
+        count = 0
+        if not logger:
+            logger = self.log
+
+        avatarUrls = []
+        self.getCache('users')
+        for user in self.cache['users']:
+            count += 1
+            avatarUrls.append(self.cache['users'][user]['avatarfull'])
+
+            for friend in self.cache['users'][user]['friends']:
+                count += 1
+                avatarUrls.append(self.cache['users'][friend]['avatarfull'])
+
+        steamIds = list(set(steamIds))
+        for steamid in steamIds:
+            self.cache['users'][steamId]
+            self.cacheFile(self.cache['users'][friend]['avatarfull']))
+
+        logger.info("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(steamIds)))
+        return "%s user avatars checked of %s entries" % (len(steamIds), count)
 
     def updateUsersOnlineState(self, logger = None):
         count = 0
