@@ -135,7 +135,7 @@ def loadNetworks():
         if network['active']:
             try:
                 MMONetworks[handle] = eval(network['class'])(app, session, handle)
-                log.info("[System] Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
+                log.info("[System] -> Initialization of MMONetwork %s (%s) completed" % (network['name'], handle))
                 # MMONetworks[handle].setLogLevel(logging.INFO)
                 # log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
