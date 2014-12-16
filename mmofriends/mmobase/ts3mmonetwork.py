@@ -121,12 +121,14 @@ class TS3Network(MMONetwork):
             # print "db", self.cache['clientDatabase'].keys() #[d['value'] for d in l]
             allNewClients = [d['cldbid'] for d in allClients]
             # logger.warning("removing (%s, %s) %s clients" % (len(allNewClients), len(allOldClients), len([x for x in allOldClients if x not in allNewClients])))
+            logger.warning("removing %s/%s clients" % (len([x for x in self.cache['clientInfoDatabase'].keys() if x not in allNewClients]), len(self.cache['clientInfoDatabase'])))
+
             for client in [x for x in self.cache['clientDatabase'].keys() if x not in allNewClients]:
                     logger.debug("cacheAvailableClients: Removing client from clientDatabase which is mission in ts3 (probably cleaned): %s" % client)
                     # self.cache['clientDatabase'].pop(client, None)
 
             for client in [x for x in self.cache['clientInfoDatabase'].keys() if x not in allNewClients]:
-                    logger.warning("cacheAvailableClients: Removing client from clientInfoDatabase which is mission in ts3 (probably cleaned): %s" % client)
+                    logger.debug("cacheAvailableClients: Removing client from clientInfoDatabase which is mission in ts3 (probably cleaned): %s" % client)
                         # self.cache['clientInfoDatabase'].pop(client, None)
 
             self.setCache('clientDatabase')
