@@ -692,7 +692,7 @@ class TS3Network(MMONetwork):
             fileinfo = response.data[0]
 
             try:
-                self.log.warning("[%s] File request error: %s" % (self.handle, fileinfo['msg']))
+                self.log.warning("[%s] File request error: %s (%s)" % (self.handle, fileinfo['msg'], name))
                 return False
             except KeyError:
                 pass
