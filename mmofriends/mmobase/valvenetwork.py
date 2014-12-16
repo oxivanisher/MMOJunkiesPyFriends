@@ -331,6 +331,7 @@ class ValveNetwork(MMONetwork):
         return "steamId: %s" % self.getSessionValue(self.linkIdName)
 
     def getPartners(self, **kwargs):
+        timer = time.time()
         self.getCache('users')
 
         self.log.debug("List all partners for given user")
@@ -378,6 +379,9 @@ class ValveNetwork(MMONetwork):
             for friend in friendsList:
                 onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
 
+            log.warning("b4 loop start: %s" % ((time.time() - timer)))
+            timer = time.time()
+
             for friend in friendsList:
                 friendSteamId = friend['steamid']
                 if onlineOnly:
@@ -389,8 +393,16 @@ class ValveNetwork(MMONetwork):
                     if friendSteamId == link['network_data']:
                         linkId = link['user_id']
 
+                if ((time.time() - timer) > 0.2):
+                    log.warning("after start: %s" % ((time.time() - timer)))
+                timer = time.time()
+
                 self.getPartnerDetails(friendSteamId)
                 self.getCache('users')
+
+                if ((time.time() - timer) > 0.2):
+                    log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                timer = time.time()
 
                 if friendSteamId not in self.cache['users'].keys():
                     self.log.error("Unable to find or load user %s" % friendSteamId)
@@ -398,6 +410,10 @@ class ValveNetwork(MMONetwork):
                 friend = str(friend)
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatar']))
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatarfull']))
+
+                if ((time.time() - timer) > 0.2):
+                    log.warning("after cache avatars: %s" % ((time.time() - timer)))
+                timer = time.time()
 
                 friendImgs = []
                 try:
@@ -434,6 +450,15 @@ class ValveNetwork(MMONetwork):
                                 }],
                                 'friendImgs': friendImgs
                             })
+
+                if ((time.time() - timer) > 0.2):
+                    log.warning("after getPartnerDetails: %s" % ((time.time() - timer)))
+                timer = time.time()
+
+
+            log.warning("finished: %s" % ((time.time() - timer)))
+            timer = time.time()
+
             return (True, result)
         else:
             return (True, {})
