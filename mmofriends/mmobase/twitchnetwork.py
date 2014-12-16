@@ -103,7 +103,11 @@ class TwitchNetwork(MMONetwork):
             for userid in self.cache['channels'].keys():
                 if str(userid) == str(self.session['userid']):
                     continue
-                linkId = self.cache['channels'][userid]
+
+                linkId = None
+                for link in allLinks:
+                    if cldbid == link['network_data']:
+                        linkId = link['user_id']
 
                 myProducts = [{ 'type': 'network',
                                 'name': self.handle,
