@@ -56,12 +56,10 @@ app.config['startupDate'] = time.time()
 
 try:
     sys.path.append(os.path.join(app.config['scriptPath'], '../libs/sep'))
-    print os.path.realpath(os.path.join(app.config['scriptPath'], '../libs/sep'))
     import process
     from urlparse import urlsplit, urlunsplit, parse_qs
 except ImportError:
     log.warning("[System] Unable to import the google crawler stuff")
-
 
 try:
     os.environ['MMOFRIENDS_CFG']
@@ -296,12 +294,13 @@ def before_request():
 @app.route('/')
 def index():
     # https://github.com/zx2c4/server-execute-phantom/blob/master/__init__.py
-    if '_escaped_fragment_' in request.args:
+    if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
+        # print "args", request.headers
         # print request.url
         # url = request.url
         # url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
         # print [ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ]
-        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ])
+        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
 
     return redirect(url_for('dashboard'))
 
