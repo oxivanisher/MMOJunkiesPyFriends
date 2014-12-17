@@ -936,7 +936,11 @@ def getSystemUsers(request):
                 for nick in user.nicks.all():
                     userNicks.append(nick.nick)
 
+                gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
+                gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(16)})
+
                 usersReturn[user.id] = { 'nick': user.nick,
+                                         'avatar': gravatar_url,
                                          'url': url_for('partner_show', partnerId = user.id),
                                          'aliases': userNicks,
                                          'name': user.name,
