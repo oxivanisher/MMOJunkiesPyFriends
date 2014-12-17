@@ -17,12 +17,6 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 log = getLogger(level=logging.INFO)
 
-try:
-    import libs.sep.process
-    from urlparse import urlsplit, urlunsplit, parse_qs
-except ImportError:
-    log.warning("[System] Unable to import the google crawler stuff")
-
 # flask imports
 try:
     from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
@@ -59,6 +53,15 @@ except ImportError:
 app = Flask(__name__)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 app.config['startupDate'] = time.time()
+
+try:
+    sys.path.append(os.path.join(app.config['scriptPath'], '../libs/sep'))
+    print os.path.realpath(os.path.join(app.config['scriptPath'], '../libs/sep'))
+    import process
+    from urlparse import urlsplit, urlunsplit, parse_qs
+except ImportError:
+    log.warning("[System] Unable to import the google crawler stuff")
+
 
 try:
     os.environ['MMOFRIENDS_CFG']
@@ -298,7 +301,7 @@ def index():
         # url = request.url
         # url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
         # print [ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ]
-        return libs.sep.process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ])
+        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ])
 
     return redirect(url_for('dashboard'))
 
