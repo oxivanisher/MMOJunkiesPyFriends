@@ -17,8 +17,11 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 log = getLogger(level=logging.INFO)
 
-import libs.sep.process
-from urlparse import urlsplit, urlunsplit, parse_qs
+try:
+    import libs.sep.process
+    from urlparse import urlsplit, urlunsplit, parse_qs
+except ImportError:
+    log.warning("[System] Unable to import the google crawler stuff")
 
 # flask imports
 try:
