@@ -3,7 +3,7 @@
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
-		showMe = false
+		showMe = false;
 		for (id in data.streams) {
 			s = data.streams[id];
 			if (data.channels[id]) {
