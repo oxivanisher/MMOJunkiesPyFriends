@@ -356,7 +356,7 @@ def get_robots_txt():
     ret = []
     ret.append('User-agent: *')
     ret.append('Allow: /')
-    ret.append('Sitemap: /sitemap.xml')
+    ret.append('Sitemap: %s/sitemap.xml' % app.config['WEBURL'])
     return '\n'.join(ret)
 
 @app.route('/sitemap.xml')
