@@ -1,9 +1,9 @@
 [submodule "libs/python-ts3"]
 	path = libs/python-ts3
 	url = git@github.com:nikdoof/python-ts3.git
-[submodule "libs/steamapi"]
-	path = libs/steamapi
-	url = git@github.com:smiley/steamapi.git
 [submodule "libs/rauth"]
 	path = libs/rauth
 	url = git@github.com:litl/rauth.git
+[submodule "libs/sep"]
+	path = libs/sep
+	url = https://github.com/zx2c4/server-execute-phantom.git
