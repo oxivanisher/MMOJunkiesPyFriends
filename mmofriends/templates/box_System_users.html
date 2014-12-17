@@ -1,4 +1,4 @@
-<table id="systemUsers" style="width: 100%; margin-bottom: 0px;" class="table-striped"></table>
+<table id="systemUsers" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ){
@@ -54,7 +54,7 @@
 							nets += netIcon;
 						}
 
-						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + '</td><td style="white-space: nowrap;">' + nets + '</td></tr>');
+						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + '</td><td style="width:' + (Object.keys(data.nets).length * 18) + 'px;">' + nets + '</td></tr>');
 					}
 					$( "#systemUsers" ).fadeIn( 100 );
 				});
