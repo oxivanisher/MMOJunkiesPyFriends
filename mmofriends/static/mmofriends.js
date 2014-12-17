@@ -82,7 +82,30 @@ $(function() {
     // });
 
     updateBoxesDropdownMenu();
+
+    //Increment the idle time counter every minute.
+    var windowIdleInterval = setInterval(windowBlurTimerIncrement, 60000); // 1 minute
 });
+// Reload box content on long window focus loss
+var windowIsBlurred = false;
+var windowIdleTime = 0;
+window.onblur = function() { windowIsBlurred = true; };
+window.onfocus = function() {
+    windowIsBlurred = false;
+    if (windowIdleTime > 4) {
+        $(".box.dboard").each(function( index ) {
+            var redrawFunction = window["redrawBox" + $(this).attr('id')];
+            if (typeof redrawFunction == 'function') {
+                redrawFunction( true );
+            }
+        });
+    }
+    windowIdleTime = 0;
+};
+function windowBlurTimerIncrement() {
+    if (windowIsBlurred) { windowIdleTime += 1; }
+}
+
 // Update Boxes Dropdown Menu
 function updateBoxesDropdownMenu(){
     // load settings from cookie to variable
