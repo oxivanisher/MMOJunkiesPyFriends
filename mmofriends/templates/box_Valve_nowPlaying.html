@@ -27,6 +27,8 @@
 		if (force == undefined) {
 			if ($( "#steamNowPlaying" ).parents('.col').is(":hidden")){
 				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
 			}
 		}
 		if (run) {

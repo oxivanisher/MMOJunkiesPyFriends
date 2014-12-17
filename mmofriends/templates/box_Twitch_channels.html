@@ -46,6 +46,8 @@
 		if (force == undefined) {
 			if ($( "#twitchChannelsOnline" ).parents('.col').is(":hidden")){
 				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
 			}
 		}
 		if (run) {

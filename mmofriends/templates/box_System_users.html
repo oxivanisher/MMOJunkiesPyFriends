@@ -6,6 +6,8 @@
 		if (force == undefined) {
 			if ($( "#systemUsers" ).parents('.col').is(":hidden")){
 				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
 			}
 		}
 		if (run) {
