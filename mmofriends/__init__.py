@@ -295,11 +295,6 @@ def before_request():
 def index():
     # https://github.com/zx2c4/server-execute-phantom/blob/master/__init__.py
     if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
-        # print "args", request.headers
-        # print request.url
-        # url = request.url
-        # url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
-        # print [ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ]
         return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
 
     return redirect(url_for('dashboard'))
@@ -355,6 +350,31 @@ def get_image(imgType, imgId):
     except IndexError:
         log.warning("[System] Unknown ID for img type %s: %s" % (imgType, imgId))
     abort(404)
+
+@app.route('/robots.txt')
+def get_robots_txt():
+    ret = []
+    ret.append('User-agent: *')
+    ret.append('Allow: /')
+    ret.append('Sitemap: /sitemap.xml')
+    return '\n'.join(ret)
+
+@app.route('/sitemap.xml')
+def get_sitemap_xml():
+    ret = []
+    ret.append('<?xml version="1.0" encoding="UTF-8"?>')
+    ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    ret.append('    <url>')
+    ret.append('      <loc>%s/Dashboard</loc>' % app.config['WEBURL'])
+    ret.append('    </url>')
+    ret.append('    <url>')
+    ret.append('      <loc>%s/About</loc>' % app.config['WEBURL'])
+    ret.append('    </url>')
+    ret.append('    <url>')
+    ret.append('      <loc>%s/Profile/Register</loc>' % app.config['WEBURL'])
+    ret.append('    </url>')
+    ret.append('</urlset>')
+    return '\n'.join(ret)
 
 # admin routes
 @app.route('/Administration/System_Status')
