@@ -17,6 +17,8 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 log = getLogger(level=logging.INFO)
 
+import libs.sep.process
+
 # flask imports
 try:
     from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
@@ -286,6 +288,10 @@ def before_request():
 # main routes
 @app.route('/')
 def index():
+    if '_escaped_fragment_' in request.args:
+        url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
+        return send_process([ "phantomjs", "--load-images=false", os.path.join(os.path.dirname(os.path.abspath(__file__)), "driver.js"), url ])
+
     return redirect(url_for('dashboard'))
 
 @app.route('/About')
