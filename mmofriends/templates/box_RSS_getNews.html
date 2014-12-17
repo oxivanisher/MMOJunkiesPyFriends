@@ -1,0 +1,38 @@
+<ul id="rssNewsFeed" class="list-group" style="margin-bottom: 0px;"></ul>
+<script type="text/javascript">
+	var timeout{{ box.netHandle }}{{ box.handle }};
+	function drawNewsContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
+		showMe = false;
+		console.log(data);
+		for (id in data) {
+			console.log(id);
+		}
+		showMe = true;
+		return showMe
+	}
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
+		var run = true;
+		if (force == undefined) {
+			if ($( "#rssNewsFeed" ).parents('.col').is(":hidden")){
+				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
+			}
+		}
+		if (run) {
+			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+
+				$( "#rssNewsFeed" ).fadeOut( 100, function () {
+					$('#rssNewsFeed').empty();
+					if (drawNewsContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
+						$( "#rssNewsFeed" ).fadeIn( 100 );
+					}
+				});
+
+			});
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 31000);
+		}
+	}
+</script>

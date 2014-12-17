@@ -316,7 +316,7 @@ class MMONetwork(object):
 
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
-        return { self.handle: {'Loaded': True } }
+        return { 'Loaded': True }
 
     # MMONetworkCache methods
     def getCache(self, name):
