@@ -291,13 +291,13 @@ def before_request():
                 flash(Markup(message), 'error')
 
 # main routes
-@app.route('/')
-def index():
-    # https://github.com/zx2c4/server-execute-phantom/blob/master/__init__.py
-    if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
-        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
+# @app.route('/')
+# def index():
+#     # https://github.com/zx2c4/server-execute-phantom/blob/master/__init__.py
+#     if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
+#         return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
 
-    return redirect(url_for('dashboard'))
+#     return redirect(url_for('dashboard'))
 
 @app.route('/About')
 def about():
@@ -364,6 +364,9 @@ def get_sitemap_xml():
     ret = []
     ret.append('<?xml version="1.0" encoding="UTF-8"?>')
     ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    ret.append('    <url>')
+    ret.append('      <loc>%s/</loc>' % app.config['WEBURL'])
+    ret.append('    </url>')
     ret.append('    <url>')
     ret.append('      <loc>%s/Dashboard</loc>' % app.config['WEBURL'])
     ret.append('    </url>')
@@ -996,8 +999,12 @@ SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users'})
 
 # Dashboard routes
+@app.route('/')
 @app.route('/Dashboard')
 def dashboard():
+    if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
+        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
+
     boxes = []
     for box in SystemBoxes.keys():
         if checkShowBox(session, SystemBoxes[box]):
