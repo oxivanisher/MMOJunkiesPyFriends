@@ -84,15 +84,23 @@ $(function() {
     updateBoxesDropdownMenu();
 
     //Increment the idle time counter every minute.
-    var windowIdleInterval = setInterval(windowBlurTimerIncrement, 60000); // 1 minute
+    var windowIdleInterval = setInterval(windowBlurTimerIncrement, 30000); // 1 minute
 });
 // Reload box content on long window focus loss
+var windowIdleTime = 29; // set the timeout...
 var windowIsBlurred = false;
-var windowIdleTime = 0;
+var windowIdleTimeout = 0;
+function windowIdleCheck() {
+    if (windowIdleTimeout > windowIdleTime) {
+        return true;
+    } else {
+        return false;
+    }
+}
 window.onblur = function() { windowIsBlurred = true; };
 window.onfocus = function() {
     windowIsBlurred = false;
-    if (windowIdleTime > 29) {
+    if (windowIdleCheck()) {
         $(".box.dboard").each(function( index ) {
             var redrawFunction = window["redrawBox" + $(this).attr('id')];
             if (typeof redrawFunction == 'function') {
@@ -100,10 +108,10 @@ window.onfocus = function() {
             }
         });
     }
-    windowIdleTime = 0;
+    windowIdleTimeout = 0;
 };
 function windowBlurTimerIncrement() {
-    if (windowIsBlurred) { windowIdleTime += 1; }
+    if (windowIsBlurred) { windowIdleTimeout += 1; }
 }
 
 // Update Boxes Dropdown Menu
