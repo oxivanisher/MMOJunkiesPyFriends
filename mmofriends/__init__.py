@@ -1001,7 +1001,7 @@ SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'l
 # Dashboard routes
 @app.route('/')
 @app.route('/Dashboard')
-def dashboard():
+def index():
     if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
         return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
 
