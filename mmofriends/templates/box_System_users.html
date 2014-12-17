@@ -36,17 +36,23 @@
 						var nets = '';
 						for (netId in data.nets) {
 							net = data.nets[netId];
-							console.log(user.nets);
+							// console.log(user.nets);
 
 							if (user.nets.indexOf(netId) > -1) {
 								opac = 1;
+								linkUrl = user.url + "/" + netId;
 								// imgSrc = net.iconUrl;
 							} else {
 								opac = 0.1;
+								linkUrl = false;
 								// imgSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 							}
 							
-							nets += '<img src="' + net.iconUrl + '" style="opacity: ' + opac + ';" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
+							netIcon = '<img src="' + net.iconUrl + '" style="opacity: ' + opac + ';" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ')' + '">';
+							if (linkUrl) {
+								netIcon = '<a href="' + linkUrl + '" title="' + net.name + ' ' + net.description + '">' + netIcon + '</a>';
+							}
+							nets += netIcon;
 						}
 
 						$('#systemUsers').append('<tr><td class="text-wrap">'+ name + nicks + nets + '</td></tr>');

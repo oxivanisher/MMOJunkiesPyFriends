@@ -92,7 +92,7 @@ var windowIdleTime = 0;
 window.onblur = function() { windowIsBlurred = true; };
 window.onfocus = function() {
     windowIsBlurred = false;
-    if (windowIdleTime > 4) {
+    if (windowIdleTime > 29) {
         $(".box.dboard").each(function( index ) {
             var redrawFunction = window["redrawBox" + $(this).attr('id')];
             if (typeof redrawFunction == 'function') {
