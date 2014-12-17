@@ -18,6 +18,7 @@ from mmobase.twitchnetwork import *
 log = getLogger(level=logging.INFO)
 
 import libs.sep.process
+from urlparse import urlsplit, urlunsplit, parse_qs
 
 # flask imports
 try:
@@ -288,9 +289,13 @@ def before_request():
 # main routes
 @app.route('/')
 def index():
+    # https://github.com/zx2c4/server-execute-phantom/blob/master/__init__.py
     if '_escaped_fragment_' in request.args:
-        url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
-        return send_process([ "phantomjs", "--load-images=false", os.path.join(os.path.dirname(os.path.abspath(__file__)), "driver.js"), url ])
+        # print request.url
+        # url = request.url
+        # url = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), fragment))
+        # print [ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ]
+        return libs.sep.process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url ])
 
     return redirect(url_for('dashboard'))
 
