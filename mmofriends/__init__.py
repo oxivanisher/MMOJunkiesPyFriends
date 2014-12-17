@@ -15,6 +15,7 @@ from mmobase.ts3mmonetwork import *
 from mmobase.valvenetwork import *
 from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
+from mmobase.rssnews import *
 log = getLogger(level=logging.INFO)
 
 # flask imports
@@ -941,13 +942,13 @@ def getSystemUsers(request):
             (res, findList) = MMONetworks[net].getPartners()
             if res:
                 friendNets[net] = findList
+                netsReturn[net] = {}
+                netsReturn[net]['iconUrl'] = url_for('get_image', imgType='network', imgId=net)
+                netsReturn[net]['name'] = MMONetworks[net].name
+                netsReturn[net]['description'] = MMONetworks[net].description
+                netsReturn[net]['usersConnected'] = 0
             else:
                 log.warning("[System] Unable to fetch network users from %s" % findList)
-            netsReturn[net] = {}
-            netsReturn[net]['iconUrl'] = url_for('get_image', imgType='network', imgId=net)
-            netsReturn[net]['name'] = MMONetworks[net].name
-            netsReturn[net]['description'] = MMONetworks[net].description
-            netsReturn[net]['usersConnected'] = 0
 
         users = MMOUser.query.all()
         for user in users:
@@ -980,12 +981,24 @@ def getSystemUsers(request):
     else:
         abort(401)
 
+def getRssNews(request):
+    rssSources = []
+
+
+    feedRet = []
+    for feed in rssSources:
+        feedRet.append(feedparser.parse('http://feedparser.org/docs/examples/atom10.xml'))
+
+    return { 'feeds': feedRet }
+
+
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users'})
+SystemBoxes["rssNews"] = createDashboardBox(getRssNews, "System", "rssNews", {'loggedin': False, 'title': 'News'})
 
 # Dashboard routes
 @app.route('/')
