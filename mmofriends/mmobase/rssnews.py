@@ -32,29 +32,94 @@ class RSSNews(MMONetwork):
         self.registerWorker(self.updateNews, 600)
 
         # dashboard boxes
-        self.registerDashboardBox(self.dashboard_getNews, 'getNews', {'title': 'News feeds', 'admin': True })
+        self.registerDashboardBox(self.dashboard_getNews, 'getNews', {'title': 'News feeds' })
 
+    # overwritten class methods
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
-        return { 'News feeds': len(self.config['rssSources']) }
+        self.getCache('feeds')
 
+        entries = 0
+        for feed in self.cache['feeds']:
+            entries += len(self.cache['feeds'][feed]['entries'])
+        return { 'News feeds': len(self.config['rssSources']),
+                 'News entries': entries }
+
+    def getPartners(self, **kwargs):
+        self.log.debug("[%s] List all partners for given user" % (self.handle))
+        return ( False, None )
+
+    # background worker
     def updateNews(self, logger = None):
         if not logger:
             logger = self.log
-        self.getCache('news')
+        logger.debug("[%s] Updating feeds" % (self.handle))
+        self.getCache('feeds')
+
+        def fixDate(fixDict):
+            itemList = ['updated_parsed', 'published_parsed', 'created_parsed', 'expired_parsed']
+            for fixMe in itemList:
+                if fixMe in fixDict:
+                    fixDict[fixMe] = int(time.mktime(fixDict[fixMe]))
 
         feedRet = []
         for feed in self.config['rssSources']:
             logger.debug("[%s] Fetching feed from %s" % (self.handle, feed))
-            # self.cache['news'][feed] = feedparser.parse(feed)
-            # convert times to json compatible data
-            # TypeError: time.struct_time(tm_year=2014, tm_mon=12, tm_mday=10, tm_hour=17, tm_min=2, tm_sec=6, tm_wday=2, tm_yday=344, tm_isdst=0) is not JSON serializable
-        self.setCache('news')
+            feedData = feedparser.parse(feed)
+            if 'feed' in feedData:
+                fixDate(feedData['feed'])
 
-        return "Updated %s feeds" % len(self.cache['news'])
+            newEntries = []
+            if 'entries' in feedData:
+                for entry in feedData['entries']:
+                    newEntry = entry
+                    fixDate(newEntry)
+                    newEntries.append(newEntry)
+
+            feedData['entries'] = newEntries
+            self.cache['feeds'][feed] = feedData
+            self.setCache('feeds')
+
+        return "Updated %s feeds" % len(self.cache['feeds'])
 
     # Dashboard
     def dashboard_getNews(self, request):
         self.log.debug("Dashboard getNews")
-        self.getCache('news')
-        return self.cache['news']
+        self.getCache('feeds')
+
+        feedRet = []
+        for feed in self.cache['feeds']:
+            count = 0
+            if self.cache['feeds'][feed]['status'] == 200:
+                feedData = {}
+                feedData['title'] = self.cache['feeds'][feed]['feed']['title']
+                if 'author' in self.cache['feeds'][feed]['feed']:
+                    feedData['author'] = self.cache['feeds'][feed]['feed']['author']
+                else:
+                    feedData['author'] = "Unknown"
+                feedData['entries'] = []
+                for entry in self.cache['feeds'][feed]['entries']:
+                    count += 1
+                    if count > self.config['numOfNews']:
+                        break
+                    feedEntry = {}
+                    feedEntry['title'] = entry['title']
+                    # feedEntry['summary'] = entry['summary']
+                    feedEntry['link'] = entry['link']
+                    if 'updated_parsed' in entry:
+                        feedEntry['date'] = timestampToString(entry['updated_parsed'])
+                    elif 'published_parsed' in entry:
+                        feedEntry['date'] = timestampToString(entry['published_parsed'])
+                    elif 'created_parsed' in entry:
+                        feedEntry['date'] = timestampToString(entry['created_parsed'])
+                    else:
+                        feedEntry['date'] = "Unknown"
+                    feedEntry['summary'] = "None"
+                    if 'summary_detail' in entry:
+                        if 'value' in entry['summary_detail']:
+                            feedEntry['summary'] = entry['summary_detail']['value']
+
+                    feedData['entries'].append(feedEntry)
+                feedRet.append(feedData)
+
+        return { 'feeds': feedRet }
