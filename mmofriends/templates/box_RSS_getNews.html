@@ -1,13 +1,24 @@
-<ul id="rssNewsFeed" class="list-group" style="margin-bottom: 0px;"></ul>
+<table id="rssNewsFeed" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function drawNewsContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
 		showMe = false;
-		console.log(data);
-		for (id in data) {
-			console.log(id);
+		for (id in data.feeds) {
+			var feed = data.feeds[id];
+			console.log(feed);
+
+			$('#rssNewsFeed').append('<tr><th class="text-wrap">' + feed.title + '</th></tr>');
+
+			for (eId in feed.entries) {
+				var entry = feed.entries[eId];
+				showMe = true;
+
+				$('#rssNewsFeed').append('<tr><td class="text-wrap"><a href="' + entry.link + '" title="' + entry.date + ': ' + entry.summary + '" target="_blank">' + entry.title + '</a></td></tr>');
+
+				console.log(entry);
+			}
 		}
-		showMe = true;
+
 		return showMe
 	}
 	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
