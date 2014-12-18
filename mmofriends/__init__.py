@@ -134,6 +134,11 @@ def fetchFriendsList(netHandle = None):
             if friendsList:
                 # yes, we are getting a error message
                 flash(("%s: " % MMONetworks[handle].name) + friendsList, 'error')
+
+        if not len(retFriendsList):
+            flash("Nothing to show here, sorry.", 'info')
+            return False
+            
     return retFriendsList
 
 def loadNetworks():
@@ -470,7 +475,11 @@ def admin_bgjob_status():
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
 def network_show(netHandle):
     if session.get('logged_in'):
-        return render_template('partner_list.html', friends = fetchFriendsList(netHandle))
+        ret = fetchFriendsList(netHandle)
+        if ret:
+            return render_template('partner_list.html', friends = ret)
+        else:
+            return redirect(url_for('index'))
     else:
         abort(401)
 
@@ -602,7 +611,7 @@ def oauth2_login(netHandle):
         return redirect(url_for('index'))
     except Exception as e:
         log.error("[System] OpenID2 login for user %s and MMONetwork %s failed because: %s (%s)\n%s\n%s" % (session['nick'], netHandle, request.args.get("error_description"), request.args.get("error"), request.args, e))
-        flash("Unable to link network %s. The administrator was informed of this bug." % netHandle, 'error')
+        flash("Unable to link network %s. The administrator was informed of this bug. Please try again." % netHandle, 'error')
         return redirect(url_for('index'))
     # for arg in request.args:
     #     print arg, request.args[arg]
@@ -828,7 +837,11 @@ def profile_logout():
 @app.route('/Partner/List')
 def partner_list():
     if session.get('logged_in'):
-        return render_template('partner_list.html', friends = fetchFriendsList())
+        ret = fetchFriendsList()
+        if ret:
+            return render_template('partner_list.html', friends = ret)
+        else:
+            return redirect(url_for('index'))
     else:
         abort(401)
 
@@ -984,7 +997,7 @@ def getSystemUsers(request):
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
-SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation'})
+SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation', 'sticky': True})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users'})
 
