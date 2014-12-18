@@ -79,7 +79,7 @@ class RSSNews(MMONetwork):
             feedData['entries'] = newEntries
             self.cache['feeds'][feed] = feedData
 
-        for feed in [x for x in self.cache['feeds'].keys() if x not in self.config['rssSources']]
+        for feed in [x for x in self.cache['feeds'].keys() if x not in self.config['rssSources']]:
             logger.debug("[%s] Removing old feed: %s" % (self.handle, feed))
             self.cache['feeds'].pop(feed, None)
         self.setCache('feeds')
