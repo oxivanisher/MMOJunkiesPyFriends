@@ -220,28 +220,25 @@ def send_email(app, msgto, msgsubject, msgtext, image):
 # Dashboard methods
 def createDashboardBox(method, netHandle, handle, settings = {}, data = {}):
     logging.info("[%s] Registered dashboard box %s (%s)" % (netHandle, handle, method.func_name))
+
+    options = []
+    options.append(('admin', False))
+    options.append(('loggedin', None))
+    options.append(('development', False))
+    options.append(('sticky', False))
+    options.append(('title', "Title %s" % handle))
+    options.append(('template', "box_%s_%s.html" % (netHandle, handle)))
+
+    newSettings = {}
+    for (option, defaultValue) in options:
+        if option in settings:
+            newSettings[option] = settings[option]
+        else:
+            newSettings[option] = defaultValue
+
     box = {}
     box['method'] = method
     box['handle'] = handle
-
-    newSettings = {}
-    newSettings['admin'] = False
-    newSettings['loggedin'] = None
-    newSettings['development'] = False
-    newSettings['title'] = "Title %s" % handle
-    newSettings['template'] = "box_%s_%s.html" % (netHandle, handle)
-
-    if 'template' in settings:
-        newSettings['template'] = settings['template']
-    if 'admin' in settings:
-        newSettings['admin'] = settings['admin']
-    if 'loggedin' in settings:
-        newSettings['loggedin'] = settings['loggedin']
-    if 'development' in settings:
-        newSettings['development'] = settings['development']
-    if 'title' in settings:
-        newSettings['title'] = settings['title']
-
     box['settings'] = newSettings
     box['netHandle'] = netHandle
 
