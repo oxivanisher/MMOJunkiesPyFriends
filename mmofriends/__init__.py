@@ -39,6 +39,11 @@ except ImportError:
     sys.exit(2)
 
 try:
+    from flask.ext.compress import Compress
+except ImportError:
+    log.error("[System] Please install the compress extension for flask")
+
+try:
     from celery import Celery
 except ImportError:
     log.error("[System] Please install Celery")
@@ -52,6 +57,7 @@ except ImportError:
 
 # setup flask app
 app = Flask(__name__)
+Compress(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 app.config['startupDate'] = time.time()
 
@@ -153,13 +159,13 @@ def loadNetworks():
                 # log.info("Preparing MMONetwork %s (%s) for first request." % (network['name'], handle))
                 MMONetworks[handle].prepareForFirstRequest()
             except Exception as e:
-                message = "[System] Unable to initialize MMONetwork %s (%s) because: %s" % (network['name'], handle, e)
+                message = "[System] -> Unable to initialize MMONetwork %s (%s) because: %s" % (network['name'], handle, e)
                 with app.test_request_context():
                     if session.get('admin'):
                         flash(message, 'error')
                 log.error(message)
         else:
-            log.info("[System] MMONetwork %s (%s) is deactivated" % (network['name'], handle))
+            log.info("[System] -> MMONetwork %s (%s) is deactivated" % (network['name'], handle))
     return MMONetworks
 
 def getUserByNick(nick = None):
