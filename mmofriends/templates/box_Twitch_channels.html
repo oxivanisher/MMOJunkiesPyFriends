@@ -58,7 +58,7 @@
 				$( "#twitchChannelsOnline" ).fadeOut( 100, function () {
 					$('#twitchChannelsOnline').empty();
 					if (! drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
-						$( '#twitchChannelsOnline' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is currently streaming</label></li>');
+						$( '#twitchChannelsOnline' ).append('<li class="list-group-item"><label class="control-label text-wrap">No streams available</label></li>');
 					}
 					$( "#twitchChannelsOnline" ).fadeIn( 100 );
 				});
