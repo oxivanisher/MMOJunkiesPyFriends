@@ -290,6 +290,9 @@ def before_first_request():
 
 @app.before_request
 def before_request():
+    if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
+        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
+
     db.session.remove()
     try:
         session['requests'] += 1
@@ -1010,9 +1013,6 @@ SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'l
 # Dashboard routes
 @app.route('/')
 def index():
-    if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
-        return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
-
     boxes = []
     for box in SystemBoxes.keys():
         if checkShowBox(session, SystemBoxes[box]):
