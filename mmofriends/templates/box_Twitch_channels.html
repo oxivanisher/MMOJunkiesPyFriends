@@ -57,18 +57,11 @@
 
 				$( "#twitchChannelsOnline" ).fadeOut( 100, function () {
 					$('#twitchChannelsOnline').empty();
-					if (drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
-						$( "#twitchChannelsOnline" ).fadeIn( 100 );
+					if (! drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
+						$( '#twitchChannelsOnline' ).append('<li class="list-group-item"><label class="control-label text-wrap">Nobody is currently streaming</label></li>');
 					}
+					$( "#twitchChannelsOnline" ).fadeIn( 100 );
 				});
-
-				// $( "#twitchChannelsOffline" ).fadeOut( 100, function () {
-				// 	$('#twitchChannelsOffline').empty();
-				// 	if (drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, false )) {
-				// 		$( "#twitchChannelsOffline" ).fadeIn( 100 );
-				// 	}
-				// });
-
 			});
 			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 31000);
 		}
