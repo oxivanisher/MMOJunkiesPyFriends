@@ -62,6 +62,13 @@
 					}
 					$( "#twitchChannelsOnline" ).fadeIn( 100 );
 				});
+
+				$( "#twitchChannelsOffline" ).fadeOut( 100, function () {
+					$('#twitchChannelsOffline').empty();
+					if (drawStreamContent{{ box.netHandle }}{{ box.handle }}( data, false )) {
+						$( "#twitchChannelsOffline" ).fadeIn( 100 );
+					}
+				});
 			});
 			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 31000);
 		}
