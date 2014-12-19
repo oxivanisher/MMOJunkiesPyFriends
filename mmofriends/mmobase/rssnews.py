@@ -103,7 +103,7 @@ class RSSNews(MMONetwork):
                 feedData['entries'] = []
                 for entry in self.cache['feeds'][feed]['entries']:
                     count += 1
-                    if count > self.config['numOfNews']:
+                    if count > self.config['numOfNews'] and not session['crawlerRun']:
                         break
                     feedEntry = {}
                     feedEntry['title'] = entry['title']
