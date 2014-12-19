@@ -3,20 +3,12 @@
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function drawNewsContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
 		showMe = false;
-		for (id in data.feeds) {
-			var feed = data.feeds[id];
-			console.log(feed);
+		for (id in data.news) {
+			var entry = data.news[id];
+			showMe = true;
 
-			$('#rssNewsFeed').append('<tr><th class="text-wrap">' + feed.title + '</th></tr>');
+			$('#rssNewsFeed').append('<tr><td class="text-wrap"><span class="glyphicon glyphicon-info-sign" title="' + entry.feedTitle + '"></span> ' + entry.age + ' <a href="' + entry.link + '" title="' + entry.date + ': ' + entry.summary + ' by ' + entry.author + '" target="_blank">' + entry.title + '</a></td></tr>');
 
-			for (eId in feed.entries) {
-				var entry = feed.entries[eId];
-				showMe = true;
-
-				$('#rssNewsFeed').append('<tr><td class="text-wrap"><a href="' + entry.link + '" title="' + entry.date + ': ' + entry.summary + '" target="_blank">' + entry.title + '</a></td></tr>');
-
-				console.log(entry);
-			}
 		}
 
 		return showMe

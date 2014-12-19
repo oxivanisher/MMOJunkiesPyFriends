@@ -3,11 +3,12 @@
 
 import logging
 import time
-import os
-import random
-import json
-import requests
-import urllib
+# import os
+# import random
+# import json
+# import requests
+# import urllib
+import re
 
 from flask import current_app
 from mmoutils import *
@@ -33,6 +34,12 @@ class RSSNews(MMONetwork):
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_getNews, 'getNews', {'title': 'News feeds' })
+
+        self.TAG_RE = re.compile(r'<[^>]+>')
+
+    # helper
+    def remove_tags(self, text):
+        return self.TAG_RE.sub('', text)
 
     # overwritten class methods
     def getStats(self):
@@ -92,37 +99,48 @@ class RSSNews(MMONetwork):
 
         feedRet = []
         for feed in self.cache['feeds']:
-            count = 0
             if self.cache['feeds'][feed]['status'] == 200:
-                feedData = {}
-                feedData['title'] = self.cache['feeds'][feed]['feed']['title']
+                feedTitle = self.cache['feeds'][feed]['feed']['title']
                 if 'author' in self.cache['feeds'][feed]['feed']:
-                    feedData['author'] = self.cache['feeds'][feed]['feed']['author']
+                    feedAuthor = self.cache['feeds'][feed]['feed']['author']
                 else:
-                    feedData['author'] = "Unknown"
-                feedData['entries'] = []
+                    feedAuthor = "Unknown"
                 for entry in self.cache['feeds'][feed]['entries']:
-                    count += 1
-                    if count > self.config['numOfNews'] and not self.session['crawlerRun']:
-                        break
                     feedEntry = {}
+                    feedEntry['feedTitle'] = feedTitle
+                    feedEntry['author'] = feedAuthor
                     feedEntry['title'] = entry['title']
-                    # feedEntry['summary'] = entry['summary']
                     feedEntry['link'] = entry['link']
                     if 'updated_parsed' in entry:
-                        feedEntry['date'] = timestampToString(entry['updated_parsed'])
+                        feedEntry['date'] = entry['updated_parsed']
                     elif 'published_parsed' in entry:
-                        feedEntry['date'] = timestampToString(entry['published_parsed'])
+                        feedEntry['date'] = entry['published_parsed']
                     elif 'created_parsed' in entry:
-                        feedEntry['date'] = timestampToString(entry['created_parsed'])
+                        feedEntry['date'] = entry['created_parsed']
                     else:
-                        feedEntry['date'] = "Unknown"
+                        # ignore entries without a date
+                        continue
                     feedEntry['summary'] = "None"
                     if 'summary_detail' in entry:
                         if 'value' in entry['summary_detail']:
-                            feedEntry['summary'] = entry['summary_detail']['value']
+                            feedEntry['summary'] = self.remove_tags(entry['summary_detail']['value'])
 
-                    feedData['entries'].append(feedEntry)
-                feedRet.append(feedData)
+                    feedRet.append(feedEntry)
 
-        return { 'feeds': feedRet }
+        # shorten to needed list
+        if self.session['crawlerRun']:
+            feedRet = feedRet
+        else:
+            feedRet = feedRet[:self.config['numOfNews']]
+
+        # sort by date
+        feedRet = sorted(feedRet, key=lambda k: k['date'], reverse=True) 
+
+        # create short date version
+        ret = []
+        for entry in feedRet:
+            entry['age'] = get_short_age(entry['date'])
+            entry['date'] = timestampToString(entry['date'])
+            ret.append(entry)
+
+        return { 'news': ret }
