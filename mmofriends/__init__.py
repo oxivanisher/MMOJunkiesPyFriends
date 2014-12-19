@@ -292,6 +292,10 @@ def before_first_request():
 def before_request():
     if '_escaped_fragment_' in request.args and '_escaped_fragment_once_' not in request.args:
         return process.send_process([ "/opt/phantomjs/bin/phantomjs", "--load-images=false", os.path.join(app.config['scriptPath'], "../libs/sep/driver.js"), request.url + "&_escaped_fragment_once_=true" ])
+    elif '_escaped_fragment_once_' in request.args:
+        session['crawlerRun'] = True
+    else:
+        session['crawlerRun'] = False
 
     db.session.remove()
     try:
