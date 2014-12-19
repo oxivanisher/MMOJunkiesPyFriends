@@ -127,14 +127,14 @@ class RSSNews(MMONetwork):
 
                     feedRet.append(feedEntry)
 
+        # sort by date
+        feedRet = sorted(feedRet, key=lambda k: k['date'], reverse=True) 
+
         # shorten to needed list
         if self.session['crawlerRun']:
             feedRet = feedRet
         else:
             feedRet = feedRet[:self.config['numOfNews']]
-
-        # sort by date
-        feedRet = sorted(feedRet, key=lambda k: k['date'], reverse=True) 
 
         # create short date version
         ret = []
