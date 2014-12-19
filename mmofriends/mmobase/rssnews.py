@@ -57,23 +57,23 @@ class RSSNews(MMONetwork):
         self.getCache('feeds')
 
         def fixDate(fixDict):
-            for fixMe in fixDict.keys():
-                if isinstance(fixDict[fixMe], time.struct_time):
+            itemList = ['updated_parsed', 'published_parsed', 'created_parsed', 'expired_parsed']
+            for fixMe in itemList:
+                if fixMe in fixDict.keys():
                     fixDict[fixMe] = int(time.mktime(fixDict[fixMe]))
+            return fixDict
 
         feedRet = []
         for feed in self.config['rssSources']:
             logger.debug("[%s] Fetching feed from %s" % (self.handle, feed))
-            feedData = feedparser.parse(feed)
+            feedData = fixDate(feedparser.parse(feed))
             if 'feed' in feedData:
-                fixDate(feedData['feed'])
+                feedData['feed'] = fixDate(feedData['feed'])
 
             newEntries = []
             if 'entries' in feedData:
                 for entry in feedData['entries']:
-                    newEntry = entry
-                    fixDate(newEntry)
-                    newEntries.append(newEntry)
+                    newEntries.append(fixDate(entry))
 
             feedData['entries'] = newEntries
             self.cache['feeds'][feed] = feedData
