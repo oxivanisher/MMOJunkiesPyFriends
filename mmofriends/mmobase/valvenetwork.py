@@ -388,7 +388,10 @@ class ValveNetwork(MMONetwork):
                     if friend not in myFriends:
                         friendsList.append({ 'steamid': friend })
             else:
-                friendsList = self.cache['users'][steamId]['friends']
+                try:
+                    friendsList = self.cache['users'][steamId]['friends']
+                except KeyError:
+                    continue
 
             if steamId not in self.cache['users']:
                 self.log.debug("User probably not yet cached")
