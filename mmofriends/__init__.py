@@ -1017,6 +1017,14 @@ SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'l
 # Dashboard routes
 @app.route('/')
 def index():
+    if session.get('logged_in'):
+        linked = False
+        links = fetchNetworkLinks(session['userid'])
+        for link in links:
+            if links[link]:
+                linked = True
+        if not linked:
+            flash("You have no network connected. Please do so in the 'Network Connections' box.", 'info')
     boxes = []
     for box in SystemBoxes.keys():
         if checkShowBox(session, SystemBoxes[box]):
