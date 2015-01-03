@@ -4,7 +4,7 @@ __pycache__/
 dist/*.cfg
 config/*.yml
 config/*.db
-log/*.log
+log/*.log*
 mmofriends/static/cache/*
 .DS_Store
 
