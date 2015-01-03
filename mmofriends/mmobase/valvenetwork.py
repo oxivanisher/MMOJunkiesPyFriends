@@ -391,7 +391,7 @@ class ValveNetwork(MMONetwork):
                 try:
                     friendsList = self.cache['users'][steamId]['friends']
                 except KeyError:
-                    continue
+                    pass
 
             if steamId not in self.cache['users']:
                 self.log.debug("User probably not yet cached")
