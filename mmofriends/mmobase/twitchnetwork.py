@@ -134,7 +134,10 @@ class TwitchNetwork(MMONetwork):
 
         headers = {'Accept': 'application/vnd.twitchtv.v2+json',
                    'Authorization': 'OAuth %s' % accessToken}
-        r = requests.get(self.baseUrl + what, headers=headers).json()
+        try:
+            r = requests.get(self.baseUrl + what, headers=headers).json()
+        except ValueError as e:
+            return (False, 'Unable to fetch data from Twitch: %s' % e)
         return (True, r)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
