@@ -526,6 +526,9 @@ class TS3Network(MMONetwork):
         except EOFError as e:
             self.log.warning("[%s] Unable to link network because: %s" % (self.handle, e))
             return "An error occured. Please try again. Sorry"
+        except KeyError as e:
+            self.log.warning("[%s] Unable to link network because onlineclient was not found: %s" % (self.handle, e))
+            return "Client not found. Please try again. Sorry"
         self.log.info("[%s] Linking with code: %s" % (self.handle, self.getSessionValue('doLinkKey')))
         return "Please enter the number you recieved via teamspeak chat."
 
