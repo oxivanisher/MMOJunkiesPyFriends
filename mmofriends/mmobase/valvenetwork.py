@@ -541,6 +541,10 @@ class ValveNetwork(MMONetwork):
         self.getCache('users')
         self.getCache('games')
 
+        storeLinkBase = 'https://store.steampowered.com/app/'
+        watchLinkBase = 'http://steamcommunity.com/broadcast/watch/'
+        userLinkBase = 'http://steamcommunity.com/profiles/'
+
         games2weeks = {}
         return2weeks = []
 
@@ -587,9 +591,13 @@ class ValveNetwork(MMONetwork):
                             gameId = self.cache['users'][user]['gameid']
                             nowPlayingUser = {}
                             nowPlayingUser['gamename'] = self.cache['games'][gameId]['name']
-                            nowPlayingUser['link'] = 'https://store.steampowered.com/app/' + gameId + '/'
+                            nowPlayingUser['gameUrl'] = storeLinkBase + gameId + '/'
+                            nowPlayingUser['userUrl'] = userLinkBase + user
+                            nowPlayingUser['watchUrl'] = "#"
                             nowPlayingUser['img_icon_url'] = url_for('get_image', imgType='cache', imgId=self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url'])))
                             nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
+                            nowPlayingUser['username'] = "Anonymous"
+                            nowPlayingUser['friendof'] = "Login to view"
     
                             if 'logged_in' in self.session:
                                 nowPlayingUser['username'] = self.cache['users'][user]['personaname']
@@ -600,9 +608,7 @@ class ValveNetwork(MMONetwork):
                                             if friend['steamid'] == link['network_data']:
                                                 friendOf.append(self.getUserById(link['user_id']).nick)
                                 nowPlayingUser['friendof'] = ', '.join(friendOf)
-                            else:
-                                nowPlayingUser['username'] = "Anonymous"
-                                nowPlayingUser['friendof'] = "Login to view"
+                                nowPlayingUser['watchUrl'] = watchLinkBase + user
     
                             if int(user) in internalUsers:
                                 nowPlayingUser['internal'] = True
@@ -618,7 +624,7 @@ class ValveNetwork(MMONetwork):
                 if games2weeks[game] > 0:
                     return2weeks.append({ 'text': self.cache['games'][game]['name'],
                                           'weight': games2weeks[game],
-                                          'link': { 'href': 'https://store.steampowered.com/app/' + game + '/',
+                                          'link': { 'href': storeLinkBase + game + '/',
                                                     'target': '_blank'}})
             except KeyError as e:
                 pass
@@ -627,7 +633,7 @@ class ValveNetwork(MMONetwork):
                 if gamesForever[game] > 0:
                     returnForever.append({ 'text': self.cache['games'][game]['name'],
                                            'weight': gamesForever[game],
-                                           'link': { 'href': 'https://store.steampowered.com/app/' + game + '/',
+                                           'link': { 'href': storeLinkBase + game + '/',
                                                      'target': '_blank'}})
             except KeyError as e:
                 pass
@@ -636,7 +642,7 @@ class ValveNetwork(MMONetwork):
                 if gamesUsers[game] > 0:
                     returnUsers.append({ 'text': self.cache['games'][game]['name'],
                                          'weight': gamesUsers[game],
-                                         'link': { 'href': 'https://store.steampowered.com/app/' + game + '/',
+                                         'link': { 'href': storeLinkBase + game + '/',
                                                    'target': '_blank'}})
             except KeyError as e:
                 pass
