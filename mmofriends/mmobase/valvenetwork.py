@@ -399,7 +399,10 @@ class ValveNetwork(MMONetwork):
                 return (False, False)
 
             for friend in friendsList:
-                onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
+                try:
+                    onlineFriends[friend['steamid']] = self.cache['users'][friend['steamid']]['personastate']
+                except KeyError:
+                    pass
 
             for friend in friendsList:
                 friendSteamId = friend['steamid']
