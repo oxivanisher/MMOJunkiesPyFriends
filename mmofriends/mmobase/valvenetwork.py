@@ -416,7 +416,7 @@ class ValveNetwork(MMONetwork):
                         linkId = link['user_id']
 
                 if friendSteamId not in self.cache['users'].keys():
-                    self.log.error("Unable to find or load user %s" % friendSteamId)
+                    self.log.info("Unable to find or load user %s" % friendSteamId)
                     continue
                 friend = str(friend)
                 self.cacheFile(self.cacheFile(self.cache['users'][friendSteamId]['avatar']))
