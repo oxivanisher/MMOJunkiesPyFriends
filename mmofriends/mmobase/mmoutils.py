@@ -115,7 +115,7 @@ def get_short_duration(age):
 def get_long_age(timestamp):
     return get_long_duration(time.time() - int(timestamp))
 
-def get_long_duration(age, granularity=2):
+def get_long_duration(age, granularity=0):
     intervals = (
         ('y', 220752000),  # 60 * 60 * 24 * 7 * 365
         ('w', 604800),  # 60 * 60 * 24 * 7
