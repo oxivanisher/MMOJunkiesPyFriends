@@ -115,7 +115,7 @@ def get_short_duration(age):
 def get_long_age(timestamp):
     return get_long_duration(time.time() - int(timestamp))
 
-def get_long_duration(age, granularity=1):
+def get_long_duration(age):
     intervals = (
         ('y', 220752000),  # 60 * 60 * 24 * 7 * 365
         ('w', 604800),  # 60 * 60 * 24 * 7
@@ -131,10 +131,8 @@ def get_long_duration(age, granularity=1):
         value = age // count
         if value:
             age -= value * count
-            if value == 1:
-                name = name.rstrip('s')
-            result.append("{}{}".format(value, name))
-    return ' '.join(result[:granularity])
+            result.append("%s%s" % (value, name))
+    return ' '.join(result)
 
 def convertToInt(s):
     try:
