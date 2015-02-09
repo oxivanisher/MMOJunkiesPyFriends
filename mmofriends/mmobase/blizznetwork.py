@@ -398,12 +398,13 @@ class BlizzNetwork(MMONetwork):
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
 
         # fetching d3 profile
-        (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][unicode(userid)].replace('#', '-'), accessToken)
-        if retValue != False:
-            self.getCache('d3Profiles')
-            self.cache['d3Profiles'][unicode(userid)] = retMessage
-            self.setCache('d3Profiles')
-            logger.info("[%s] Updated D3 Profile" % (self.handle))
+        if userid:
+            (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][unicode(userid)].replace('#', '-'), accessToken)
+            if retValue != False:
+                self.getCache('d3Profiles')
+                self.cache['d3Profiles'][unicode(userid)] = retMessage
+                self.setCache('d3Profiles')
+                logger.info("[%s] Updated D3 Profile" % (self.handle))
 
         # fetching sc2
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
