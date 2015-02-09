@@ -131,7 +131,7 @@ def get_long_duration(age):
         value = age // count
         if value:
             age -= value * count
-            result.append("%s%s" % (value, name))
+            result.append("%s%s" % (int(value), name))
     return ' '.join(result)
 
 def convertToInt(s):
