@@ -128,9 +128,9 @@ def get_long_duration(age, granularity=2):
     result = []
 
     for name, count in intervals:
-        value = seconds // count
+        value = age // count
         if value:
-            seconds -= value * count
+            age -= value * count
             if value == 1:
                 name = name.rstrip('s')
             result.append("{}{}".format(value, name))
