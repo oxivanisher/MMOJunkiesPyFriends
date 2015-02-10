@@ -275,7 +275,11 @@ class ValveNetwork(MMONetwork):
                 run = False
             else:
                 logger.debug("[%s] Fetching %s friends info" % (self.handle, len(fetchFriends)))
-                steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
+                try:
+                    steamFriends = self.fetchFromSteam('ISteamUser/GetPlayerSummaries/v0002', {'steamids': ','.join(fetchFriends)})
+                except Exception as e:
+                    logger.error("[%s] fetchFromSteam failed: %s" % (self.handle, e))
+                    run = False
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
