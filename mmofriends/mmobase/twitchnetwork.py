@@ -194,7 +194,7 @@ class TwitchNetwork(MMONetwork):
         else:
             channel = { 'name': userid }
 
-        if len(channel):
+        if len(channel['name']):
             logger.debug("[%s] Fetching stream for %s (%s)" % (self.handle, userNick, channel['name']))
             self.getCache("streams")
             (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
