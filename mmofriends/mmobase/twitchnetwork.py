@@ -176,6 +176,9 @@ class TwitchNetwork(MMONetwork):
                 if 'error' in channel.keys():
                     logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
+                else if not 'name' in channel.keys()
+                    logger.warning("[%s] Unable to fetch channel for %s: %s" % (self.handle, userNick, channel))
+                    return (False, "Unable to update resources for %s: %s" % (self.handle, userNick, channel))
                 self.cache['channels'][userid] = channel
                 self.setCache("channels")
                 logger.debug("[%s] Fetched channel for %s" % (self.handle, userNick))
