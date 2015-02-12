@@ -174,7 +174,7 @@ class TwitchNetwork(MMONetwork):
             (ret, channel) = self.queryTwitchApi("/channel", accessToken)
             if ret and len(channel):
                 if 'error' in channel.keys():
-                    logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message'])
+                    logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
                 elif 'name' not in channel.keys():
                     logger.warning("[%s] Unable to fetch channel for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
