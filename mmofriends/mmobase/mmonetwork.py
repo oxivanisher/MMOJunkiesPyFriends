@@ -416,7 +416,11 @@ class MMONetwork(object):
 
                 ret = None
                 logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
-                ret = method(logger)
+                try:
+                    ret = method(logger)
+                except Exception as e:
+                    logger.error("[%s] Exception %s" % (self.handle, e))
+                    ret = False
                 if ret:
                     logger.info("[%s] -> %s" % (self.handle, ret))
 
