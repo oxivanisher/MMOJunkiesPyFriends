@@ -76,7 +76,8 @@ class RSSNews(MMONetwork):
             try:
                 feedData = fixDate(feedparser.parse(feed))
             except Exception as e:
-                logger.error("[%s] Error %s with feedparser for feed: %s" % (self.handle, e, feed))
+                logger.warning("[%s] Error %s with feedparser for feed: %s" % (self.handle, e, feed))
+                continue
             if 'feed' in feedData:
                 feedData['feed'] = fixDate(feedData['feed'])
 
