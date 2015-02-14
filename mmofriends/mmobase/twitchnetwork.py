@@ -70,23 +70,23 @@ class TwitchNetwork(MMONetwork):
 
     # Oauth2 helper
     def requestAuthorizationUrl(self):
-        self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
+        self.log.debug("[%s] %s is requesting the Authorization URL (Step 1/3)" % (self.handle, self.session['nick']))
         params = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
                   'scope': 'user_read channel_read',
                   'response_type': 'code'}
-        self.log.debug("Generating Authorization Url")
+        self.log.debug("[%s] Generating Authorization Url" % (self.handle))
         return self.twitchApi.get_authorize_url(**params)
 
     def requestAccessToken(self, code):
-        self.log.debug("recieved code: %s" % code)
-        self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
+        self.log.debug("[%s] Recieved code: %s" % (self.handle, code))
+        self.log.debug("[%s] %s is requesting a Access Token (Step 2/3)" % (self.handle, self.session['nick']))
 
         data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
                 'grant_type': 'authorization_code',
                 'code': code}
 
         access_token = self.twitchApi.get_access_token(decoder = json.loads, data=data)
-        self.log.debug("Oauth2 Login successful, recieved new access_token (Step 3/3)")
+        self.log.debug("[%s] Oauth2 Login successful, recieved new access_token (Step 3/3)" % (self.handle))
         self.saveLink(access_token)
         self.setSessionValue(self.linkIdName, access_token)
         self.updateUserResources()
