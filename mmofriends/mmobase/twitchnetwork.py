@@ -226,7 +226,7 @@ class TwitchNetwork(MMONetwork):
         lastToken = ""
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
-            if link['network_data'] and int(link['user_id']:
+            if link['network_data'] and int(link['user_id']):
                 (ret, message) = self.updateUserResources(int(link['user_id']), link['network_data'], logger)
                 #dirty hack!
                 lastToken = link['network_data']
