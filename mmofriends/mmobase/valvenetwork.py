@@ -287,8 +287,9 @@ class ValveNetwork(MMONetwork):
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
                         mmoUser = False
-                        if friend['steamid'] in mmoNetLinks['network_data']:
-                            mmoUser = True
+                        for link in mmoNetLinks:
+                            if friend['steamid'] in link['network_data']:
+                                mmoUser = True
 
                         if mmoUser:
                             if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
