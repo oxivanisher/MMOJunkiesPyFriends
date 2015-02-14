@@ -1011,7 +1011,7 @@ def getLastly(request):
     lastlyReturn = []
     for net in MMONetworks.keys():
         ret = MMONetworks[net].getLastly()
-        if len(ret):
+        if ret:
             lastlyReturn += ret
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:50] }
 
