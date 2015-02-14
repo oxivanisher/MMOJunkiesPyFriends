@@ -260,7 +260,9 @@ class ValveNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
+        self.getCache("lastly")
         self.getCache('users')
+        self.getCache('game')
         allUsers = []
         for user in self.cache['users'].keys():
             allUsers.append(user)
@@ -282,18 +284,30 @@ class ValveNetwork(MMONetwork):
                     run = False
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
+
+                        if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
+                            self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[friend['personastate']])
+
+                        #self.onlineStates
+                        self.cache['lastly']
+
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
                         if 'gameextrainfo' in friend:
                             self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
                         if 'gameid' in friend:
+                            if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
+                                self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
                             self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
                         else:
+                            if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
+                                self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
                             self.cache['users'][friend['steamid']]['gameid'] = None
                         if 'lastlogoff' in friend:
                             self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
                         if 'profilestate' in friend:
                             self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
         self.setCache("users")
+        self.setCache("lastly")
         return "%s user states updated" % count
 
     # oid methods
