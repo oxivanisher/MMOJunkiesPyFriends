@@ -272,7 +272,7 @@ class TS3Network(MMONetwork):
                     if 'groups' in self.cache['clientDatabase'][client]:
                         for group in self.cache['clientDatabase'][client]['groups']:
                             if int(group['sgid']) in self.config['guestGroups']:
-                                logger.warning("[%s] Setting missing member group" % (self.handle))
+                                logger.warning("[%s] Setting missing member group of %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                                 self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], client))
 
             self.setCache('userWatchdog')
