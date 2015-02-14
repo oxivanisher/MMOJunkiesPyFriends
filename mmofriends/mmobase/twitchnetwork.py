@@ -180,7 +180,7 @@ class TwitchNetwork(MMONetwork):
                     logger.warning("[%s] Unable to fetch channel for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
                     return (False, "Unable to update resources for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
 
-                # latelyCheck
+                # lastlyCheck
                 lastOnline = False
                 if userid in self.cache['channels'].keys():
                     if 'stream' in self.cache['channels'][userid].keys():
@@ -193,12 +193,12 @@ class TwitchNetwork(MMONetwork):
                     nowOnline = True
 
                 if nowOnline != lastOnline:
-                    self.getCache("lately")
+                    self.getCache("lastly")
                     if nowOnline:
-                        self.cache["lately"][time.time()] = '%s started streaming.' % (userNick)
+                        self.cache["lastly"][time.time()] = '%s started streaming.' % (userNick)
                     else:
-                        self.cache["lately"][time.time()] = '%s started streaming.' % (userNick)
-                    self.setCache("lately")
+                        self.cache["lastly"][time.time()] = '%s started streaming.' % (userNick)
+                    self.setCache("lastly")
 
                 self.setCache("channels")
                 logger.debug("[%s] Fetched channel for %s" % (self.handle, userNick))
@@ -237,9 +237,6 @@ class TwitchNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
-        # self.lastLatelyCheck
-        # newLatelyCheck = []
-
         okCount = 0
         nokCount = 0
         lastToken = ""
@@ -251,7 +248,7 @@ class TwitchNetwork(MMONetwork):
                 lastToken = link['network_data']
                 if ret:
                     okCount += 1
-                    # newLatelyCheck.append(message)
+                    # newlastlyCheck.append(message)
                 else:
                     nokCount += 1
             else:
@@ -275,10 +272,6 @@ class TwitchNetwork(MMONetwork):
         ret.append("netLinks: %s" % self.getSessionValue(self.linkIdName))
         ret.append("updateUserResources: %s" % self.updateUserResources())
         return '\n'.join(ret)
-
-    def getLastly(self):
-        self.getCache("lastly")
-        pass
 
     # Dashbord boxes
     def dashboard_channels(self, request):
