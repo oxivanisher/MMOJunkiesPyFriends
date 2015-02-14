@@ -274,6 +274,8 @@ class TS3Network(MMONetwork):
                             if int(group['sgid']) in self.config['guestGroups']:
                                 logger.warning("[%s] Setting missing member group of %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                                 self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], client))
+                                for gid in self.config['guestGroups']:
+                                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (gid, client))
 
             self.setCache('userWatchdog')
             return "%s users spamed" % (spamedCount)
