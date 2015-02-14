@@ -253,7 +253,7 @@ def background_worker():
 
         if (time.time() - lastNotify) > 60:
             lastNotify = time.time()
-            log.warning("[System] Background worker status: Loop no.: %s; Uptime: %s" % (loopCount, get_short_duration(lastNotify - startupTime)))
+            log.warning("[System] Background worker status: Loop no.: %s; Uptime: %s" % (loopCount, get_long_duration(lastNotify - startupTime)))
 
         time.sleep(1)
 

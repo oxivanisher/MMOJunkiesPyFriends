@@ -112,6 +112,28 @@ def get_short_duration(age):
     else:
         return '%sy' % (int(age / 31449600))
 
+def get_long_age(timestamp):
+    return get_long_duration(time.time() - int(timestamp))
+
+def get_long_duration(age):
+    intervals = (
+        ('y', 220752000),  # 60 * 60 * 24 * 7 * 365
+        ('w', 604800),  # 60 * 60 * 24 * 7
+        ('d', 86400),    # 60 * 60 * 24
+        ('h', 3600),    # 60 * 60
+        ('m', 60),
+        ('s', 1),
+        )
+
+    result = []
+
+    for name, count in intervals:
+        value = age // count
+        if value:
+            age -= value * count
+            result.append("%s%s" % (int(value), name))
+    return ' '.join(result)
+
 def convertToInt(s):
     try:
         return int(s)

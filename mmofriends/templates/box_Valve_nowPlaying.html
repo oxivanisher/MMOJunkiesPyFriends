@@ -6,18 +6,21 @@
 		for (id in data.gamesNowPlaying) {
 			user = data.gamesNowPlaying[id]
 
+			var onclickGame = 'onclick="window.open(\'' + user.gameUrl + '\')"';
+			var onclickUser = 'onclick="window.open(\'' + user.userUrl + '\')"';
+			var onclickWatch = 'onclick="window.open(\'' + user.watchUrl + '\')"';
+
 			if (user.internal) {
-				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ';
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" ' + onclickUser + ' /> ';
 			} else {
-				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ';
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" ' + onclickUser + ' /> ';
 			}
-			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" /> ';
+			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" ' + onclickGame + ' /> ';
 			display_name = display_name + user.username + ': ' + user.gamename
 
-			var onclick = 'onclick="window.open(\'' + user.link + '\')"';
 			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
 
-			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclick + ' style="cursor: pointer;">' + content + '</li>');
+			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;">' + content + '</li>');
 			showMe = true;
 		}
 		return showMe;

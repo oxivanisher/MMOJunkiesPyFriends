@@ -73,7 +73,11 @@ class RSSNews(MMONetwork):
         feedRet = []
         for feed in self.config['rssSources']:
             logger.debug("[%s] Fetching feed from %s" % (self.handle, feed))
-            feedData = fixDate(feedparser.parse(feed))
+            try:
+                feedData = fixDate(feedparser.parse(feed))
+            except Exception as e:
+                logger.warning("[%s] Error %s with feedparser for feed: %s" % (self.handle, e, feed))
+                continue
             if 'feed' in feedData:
                 feedData['feed'] = fixDate(feedData['feed'])
 
