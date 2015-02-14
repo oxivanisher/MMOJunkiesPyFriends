@@ -1012,7 +1012,9 @@ def getLastly(request):
     for net in MMONetworks.keys():
         ret = MMONetworks[net].getLastly()
         if ret:
-            lastlyReturn += ret
+            for date in ret.keys():
+                lastlyReturn.append({'date': date, 'text': ret[date], 'net': net})
+
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:50] }
 
 # Dashboard functions
