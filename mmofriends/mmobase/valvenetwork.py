@@ -267,6 +267,8 @@ class ValveNetwork(MMONetwork):
         for user in self.cache['users'].keys():
             allUsers.append(user)
 
+        mmoNetLinks = self.getNetworkLinks()
+
         run = True
         logger.debug("All friends: %s" % len(allUsers))
         while run:
@@ -284,20 +286,26 @@ class ValveNetwork(MMONetwork):
                     run = False
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
+                        mmoUser = False
+                        if friend['steamid'] in mmoNetLinks['network_data']:
+                            mmoUser = True
 
-                        if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
-                            self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[friend['personastate']])
+                        if mmoUser:
+                            if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
+                                self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[friend['personastate']])
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
                         if 'gameextrainfo' in friend:
                             self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
                         if 'gameid' in friend:
-                            if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
-                                self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
+                            if mmoUser:
+                                if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
+                                    self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
                             self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
                         else:
-                            if 'gameid' in self.cache['users'][friend['steamid']].keys():
-                                if self.cache['users'][friend['steamid']]['gameid']:
-                                    self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
+                            if mmoUser:
+                                if 'gameid' in self.cache['users'][friend['steamid']].keys():
+                                    if self.cache['users'][friend['steamid']]['gameid']:
+                                        self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
                             self.cache['users'][friend['steamid']]['gameid'] = None
                         if 'lastlogoff' in friend:
                             self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
