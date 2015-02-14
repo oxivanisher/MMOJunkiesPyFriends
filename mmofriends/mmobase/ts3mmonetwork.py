@@ -523,7 +523,7 @@ class TS3Network(MMONetwork):
         self.setSessionValue(self.linkIdName, userId)
         message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
         count = 0
-        while true:
+        while True:
             try:
                 count += 1
                 ret = self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
