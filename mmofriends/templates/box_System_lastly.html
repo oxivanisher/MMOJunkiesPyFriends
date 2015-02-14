@@ -1,7 +1,19 @@
-<ul id="systemLastly" class="list-group" style="margin-bottom: 0px;"></ul>
+<table id="systemLastly" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
-	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ){
+	function drawLastlyContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
+		showMe = false;
+		for (id in data.lastly) {
+			var entry = data.lastly[id];
+			showMe = true;
+
+			$('#systemLastly').append('<tr><td class="text-wrap"><img class="partner_list_icon" src="{{ url_for(\'get_image\', imgType=\'network\', imgId=\'' + entry.net + '\') }}" />  ' + entry.age + ' ' + entry.text + '</td></tr>');
+
+		}
+
+		return showMe
+	}
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
 		var run = true;
 		if (force == undefined) {
 			if ($( "#systemLastly" ).parents('.col').is(":hidden")){
@@ -16,19 +28,14 @@
 			$.getJSON( dataUrl ).done( function( data ) {
 
 				$( "#systemLastly" ).fadeOut( 100, function () {
-					$( "#systemLastly" ).empty();
-					for (net in data) {
-						img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
-						var content = ""
-						for (item in data[net].data) {
-							content = content + '<br /><span>' + item + '</span><span class="pull-right">' + data[net].data[item] + '</span>';
-						}
-						$('#systemLastly').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
+					$('#systemLastly').empty();
+					if (drawLastlyContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
+						$( "#systemLastly" ).fadeIn( 100 );
 					}
-					$( "#systemLastly" ).fadeIn( 100 );
 				});
+
 			});
-			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 20000);
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 30000);
 		}
 	}
 </script>
