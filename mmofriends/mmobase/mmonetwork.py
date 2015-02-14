@@ -146,7 +146,8 @@ class MMONetwork(object):
 
     def getLastly(self):
         self.log.info("[%s] Running getLastly." % (self.handle))
-        return self.getCache("lastly")
+        self.getCache("lastly")
+        return self.cache["lastly"]
 
     # Network linking methods
     def getLinkHtml(self):
