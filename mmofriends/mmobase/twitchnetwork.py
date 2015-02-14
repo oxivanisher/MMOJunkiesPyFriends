@@ -180,7 +180,25 @@ class TwitchNetwork(MMONetwork):
                     logger.warning("[%s] Unable to fetch channel for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
                     return (False, "Unable to update resources for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
 
+                # latelyCheck
+                lastOnline = False
+                if 'stream' in self.cache['channels'][userid]:
+                    lastOnline = True
+
                 self.cache['channels'][userid] = channel
+
+                nowOnline = False
+                if 'stream' in self.cache['channels'][userid]:
+                    nowOnline = True
+
+                if nowOnline != lastOnline:
+                    self.getCache("lately")
+                    if nowOnline:
+                        self.cache["lately"][time.time()].append('%s started streaming.' % (userNick))
+                    else:
+                        self.cache["lately"][time.time()].append('%s started streaming.' % (userNick))
+                    self.setCache("lately")
+
                 self.setCache("channels")
                 logger.debug("[%s] Fetched channel for %s" % (self.handle, userNick))
                 if 'logo' in channel:
