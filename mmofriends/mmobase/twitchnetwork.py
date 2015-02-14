@@ -214,21 +214,22 @@ class TwitchNetwork(MMONetwork):
         else:
             channel = { 'name': userid }
 
-        if isinstance(channel['name'], basestring):
-            logger.debug("[%s] Fetching stream for %s (%s)" % (self.handle, userNick, channel['name']))
-            self.getCache("streams")
-            (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
-            if ret and len(stream):
-                if 'stream' in stream:
-                    if stream['stream']:
-                        if 'preview' in stream['stream']:
-                            stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
-                if 'error' in stream.keys():
-                    logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
-                    return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
-                self.cache['streams'][unicode(userid)] = stream
-                self.setCache("streams")
-                logger.debug("[%s] Fetched stream for %s" % (self.handle, userNick))
+        if isinstance(channel, dict):
+            if isinstance(channel['name'], basestring):
+                logger.debug("[%s] Fetching stream for %s (%s)" % (self.handle, userNick, channel['name']))
+                self.getCache("streams")
+                (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
+                if ret and len(stream):
+                    if 'stream' in stream:
+                        if stream['stream']:
+                            if 'preview' in stream['stream']:
+                                stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
+                    if 'error' in stream.keys():
+                        logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
+                        return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
+                    self.cache['streams'][unicode(userid)] = stream
+                    self.setCache("streams")
+                    logger.debug("[%s] Fetched stream for %s" % (self.handle, userNick))
 
         return (True, "All resources updated for %s" % userNick)
 
