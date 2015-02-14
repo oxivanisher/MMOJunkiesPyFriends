@@ -425,9 +425,6 @@ class MMONetwork(object):
                     ret = method(logger)
                 except Exception as e:
                     logger.error("[%s] Exception catched:\n%s" % (self.handle, traceback.format_exc()))
-                    # exc_type, exc_obj, exc_tb = sys.exc_info()
-                    # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    # logger.error("[%s] %s Exception in %s:%s" % (self.handle, exc_type, fname, exc_tb.tb_lineno))
                     ret = False
                 if ret:
                     logger.info("[%s] -> %s" % (self.handle, ret))

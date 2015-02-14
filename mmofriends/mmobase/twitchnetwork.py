@@ -182,8 +182,9 @@ class TwitchNetwork(MMONetwork):
 
                 # latelyCheck
                 lastOnline = False
-                if 'stream' in self.cache['channels'][userid]:
-                    lastOnline = True
+                if userid in self.cache['channels'].keys():
+                    if 'stream' in self.cache['channels'][userid].keys():
+                        lastOnline = True
 
                 self.cache['channels'][userid] = channel
 
