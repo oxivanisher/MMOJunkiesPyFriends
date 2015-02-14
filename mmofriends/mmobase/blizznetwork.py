@@ -380,7 +380,7 @@ class BlizzNetwork(MMONetwork):
                 try:
                     if retMessage['code'] == 403:
                         self.updateLink(userid, None)
-                        logger.warning("[%s] Removed access token for %s because %s" % (self.handle, userid, retMessage['detail']))
+                        logger.warning("[%s] Removed access token for %s because %s" % (self.handle, self.getUserById(userid), retMessage['detail']))
                 except KeyError:
                     pass
                 
