@@ -527,6 +527,7 @@ class TS3Network(MMONetwork):
             try:
                 count += 1
                 ret = self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
+                break
             except EOFError as e:
                 self.log.warning("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
@@ -536,19 +537,15 @@ class TS3Network(MMONetwork):
             except KeyError as e:
                 self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
-                    return "Temporary TS3 Server occured. Please try again, sorry."
+                    return "Client not found. Please try again, sorry."
                 else:
                     time.sleep(0.1)
-                return "Client not found. Please try again, sorry."
             except Exception as e:
                 self.log.error("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
-                    return "Temporary TS3 Server occured. Please try again, sorry."
+                    return "Temporary TS3 Server error occured. Please try again, sorry."
                 else:
                     time.sleep(0.1)
-                return "Temporary TS3 Server error occured. Please try again, sorry."
-            if count > 5:
-                break
         self.log.info("[%s] Linking with code: %s" % (self.handle, self.getSessionValue('doLinkKey')))
         return "Please enter the number you recieved via teamspeak chat."
 
