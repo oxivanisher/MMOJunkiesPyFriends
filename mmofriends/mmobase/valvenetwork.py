@@ -286,24 +286,24 @@ class ValveNetwork(MMONetwork):
                     run = False
                 if 'players' in steamFriends:
                     for friend in steamFriends['players']:
-                        mmoUser = False
+                        internalUser = False
                         for link in mmoNetLinks:
                             if friend['steamid'] in link['network_data']:
-                                mmoUser = True
+                                internalUser = True
 
-                        if mmoUser:
+                        if internalUser:
                             if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
                                 self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[friend['personastate']])
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
                         if 'gameextrainfo' in friend:
                             self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
                         if 'gameid' in friend:
-                            if mmoUser:
+                            if internalUser:
                                 if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
                                     self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
                             self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
                         else:
-                            if mmoUser:
+                            if internalUser:
                                 if 'gameid' in self.cache['users'][friend['steamid']].keys():
                                     if self.cache['users'][friend['steamid']]['gameid']:
                                         self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
