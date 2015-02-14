@@ -254,12 +254,13 @@ class TS3Network(MMONetwork):
                         self.cache['userWatchdog'][client] = 0
                     if self.cache['userWatchdog'][client] < (time.time() - self.config['userWatchdogSpamTimeout']):
                         logger.info("[%s] Spamming user: %s" % (self.handle, self.cache['onlineClients'][client]['client_nickname']))
-                        if 'groups' in self.cache['clientDatabase'][client]:
-                            for group in self.cache['clientDatabase'][client]['groups']:
-                                if int(group['sgid']) == self.config['memberGroupId']:
-                                    # self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['defaultGuestGroupId'], client))
-                                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], client))
-                                # if int(group['sgid']) == self.config['adminGroupIds']:
+                        if client in self.cache['clientDatabase']:
+                            if 'groups' in self.cache['clientDatabase'][client]:
+                                for group in self.cache['clientDatabase'][client]['groups']:
+                                    if int(group['sgid']) == self.config['memberGroupId']:
+                                        # self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['defaultGuestGroupId'], client))
+                                        self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (group['sgid'], client))
+                                    # if int(group['sgid']) == self.config['adminGroupIds']:
 
                         self.cache['userWatchdog'][client] = time.time()
                         self.server.clientpoke(self.cache['onlineClients'][client]['clid'], self.config['userWatchdogSpamMessage'])
