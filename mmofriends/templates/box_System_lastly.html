@@ -1,0 +1,34 @@
+<ul id="systemLastly" class="list-group" style="margin-bottom: 0px;"></ul>
+<script type="text/javascript">
+	var timeout{{ box.netHandle }}{{ box.handle }};
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ){
+		var run = true;
+		if (force == undefined) {
+			if ($( "#systemLastly" ).parents('.col').is(":hidden")){
+				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
+			}
+		}
+		if (run) {
+			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+
+				$( "#systemLastly" ).fadeOut( 100, function () {
+					$( "#systemLastly" ).empty();
+					for (net in data) {
+						img = '<img class="partner_list_icon pull-right" src="' + data[net].icon + '" title="' + data[net].description + '" />';
+						var content = ""
+						for (item in data[net].data) {
+							content = content + '<br /><span>' + item + '</span><span class="pull-right">' + data[net].data[item] + '</span>';
+						}
+						$('#systemLastly').append('<li class="list-group-item" title="' + data[net].description + '"><strong>' + net + '</strong>' + img + content + '</li>');
+					}
+					$( "#systemLastly" ).fadeIn( 100 );
+				});
+			});
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 20);
+		}
+	}
+</script>

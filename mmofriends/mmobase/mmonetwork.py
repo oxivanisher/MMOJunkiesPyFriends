@@ -71,6 +71,7 @@ class MMONetwork(object):
         self.backgroundTasks = []
         self.dashboardBoxes = {}
         self.cache = {}
+        self.lastLatelyCheck = None
 
     # Helpers
     def getUserById(self, userId):
@@ -142,6 +143,9 @@ class MMONetwork(object):
 
     def prepareForFirstRequest(self):
         self.log.info("[%s] Running prepareForFirstRequest." % (self.handle))
+
+    def getLastly(self):
+        self.log.info("[%s] Running getLastly." % (self.handle))
 
     # Network linking methods
     def getLinkHtml(self):

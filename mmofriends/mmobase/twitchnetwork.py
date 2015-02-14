@@ -214,6 +214,9 @@ class TwitchNetwork(MMONetwork):
         if not logger:
             logger = self.log
 
+        # self.lastLatelyCheck
+        # newLatelyCheck = []
+
         okCount = 0
         nokCount = 0
         lastToken = ""
@@ -225,6 +228,7 @@ class TwitchNetwork(MMONetwork):
                 lastToken = link['network_data']
                 if ret:
                     okCount += 1
+                    # newLatelyCheck.append(message)
                 else:
                     nokCount += 1
             else:
@@ -248,6 +252,10 @@ class TwitchNetwork(MMONetwork):
         ret.append("netLinks: %s" % self.getSessionValue(self.linkIdName))
         ret.append("updateUserResources: %s" % self.updateUserResources())
         return '\n'.join(ret)
+
+    def getLastly(self):
+        self.getCache("lastly")
+        pass
 
     # Dashbord boxes
     def dashboard_channels(self, request):
