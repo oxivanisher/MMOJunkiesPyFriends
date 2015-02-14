@@ -7,7 +7,7 @@
 			var entry = data.lastly[id];
 			showMe = true;
 
-			$('#systemLastly').append('<tr><td class="text-wrap"><img class="partner_list_icon" src="{{ url_for(\'get_image\', imgType=\'network\', imgId=\'' + entry.net + '\') }}" />  ' + entry.age + ' ' + entry.text + '</td></tr>');
+			$('#systemLastly').append('<tr><td class="text-wrap">' + entry.age + ' ' + entry.text + '</td></tr>');
 
 		}
 
