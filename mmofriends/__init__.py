@@ -1012,6 +1012,7 @@ def getLastly(request):
     for net in MMONetworks.keys():
         ret = MMONetworks[net].getLastly()
         if ret:
+            log.info("ret: %s" % ret)
             for date in ret.keys():
                 lastlyReturn.append({'date': date, 'text': ret[date], 'net': net})
 
