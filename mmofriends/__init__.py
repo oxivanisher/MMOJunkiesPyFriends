@@ -1013,7 +1013,6 @@ def getLastly(request):
     for net in MMONetworks.keys():
         nets[net] = {   'name': MMONetworks[net].name,
                         'description': MMONetworks[net].description,
-                        'data': MMONetworks[net].getStats(),
                         'handle': net,
                         'icon': url_for('get_image', imgType='network', imgId=net) }
 
