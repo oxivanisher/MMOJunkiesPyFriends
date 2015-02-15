@@ -180,25 +180,7 @@ class TwitchNetwork(MMONetwork):
                     logger.warning("[%s] Unable to fetch channel for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
                     return (False, "Unable to update resources for %s: no name found in channel (%s)" % (self.handle, userNick, channel))
 
-                # lastlyCheck
-                lastOnline = False
-                if userid in self.cache['channels'].keys():
-                    if 'stream' in self.cache['channels'][userid].keys():
-                        lastOnline = True
-
                 self.cache['channels'][userid] = channel
-
-                nowOnline = False
-                if 'stream' in self.cache['channels'][userid]:
-                    nowOnline = True
-
-                if nowOnline != lastOnline:
-                    self.getCache("lastly")
-                    if nowOnline:
-                        self.cache["lastly"][time.time()] = '%s started streaming.' % (userNick)
-                    else:
-                        self.cache["lastly"][time.time()] = '%s started streaming.' % (userNick)
-                    self.setCache("lastly")
 
                 self.setCache("channels")
                 logger.debug("[%s] Fetched channel for %s" % (self.handle, userNick))
@@ -218,12 +200,29 @@ class TwitchNetwork(MMONetwork):
             if isinstance(channel['name'], basestring):
                 logger.debug("[%s] Fetching stream for %s (%s)" % (self.handle, userNick, channel['name']))
                 self.getCache("streams")
+                
+                lastOnline = False
+                if userid in self.cache['streams'].keys():
+                    if 'stream' in self.cache['streams'][channel['name']].keys():
+                        lastOnline = True
+                
                 (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
                 if ret and len(stream):
                     if 'stream' in stream:
+                        nowOnline = False
                         if stream['stream']:
+                            nowOnline = True
                             if 'preview' in stream['stream']:
                                 stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
+            
+                        if nowOnline != lastOnline:
+                            self.getCache("lastly")
+                            if nowOnline:
+                                self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
+                            else:
+                                self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
+                            self.setCache("lastly")
+
                     if 'error' in stream.keys():
                         logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
                         return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
