@@ -7,7 +7,7 @@
 			var entry = data.lastly[id];
 			showMe = true;
 			netData = data.net[net];
-			img = '<img class="partner_list_icon" src="' + netData.icon + '" title="' + netData.description + '" />';
+			img = '<img class="partner_list_icon" src="' + netData[icon] + '" title="' + netData[description] + '" />';
 
 			$('#systemLastly').append('<tr><td class="text-wrap">' + img + entry.age + ' ' + entry.text + '</td></tr>');
 
