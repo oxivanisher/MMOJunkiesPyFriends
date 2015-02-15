@@ -1011,7 +1011,7 @@ def getLastly(request):
     lastlyReturn = []
     nets = {}
     for net in MMONetworks.keys():
-        nets[net] = {   'name': MMONetworks[net].name:,
+        nets[net] = {   'name': MMONetworks[net].name,
                         'description': MMONetworks[net].description,
                         'data': MMONetworks[net].getStats(),
                         'handle': net,
