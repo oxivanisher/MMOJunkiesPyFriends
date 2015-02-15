@@ -208,30 +208,30 @@ class TwitchNetwork(MMONetwork):
                             lastOnline = True
                 
                 (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
+                nowOnline = False
                 if ret and len(stream):
                     if 'stream' in stream:
-                        nowOnline = False
                         if stream['stream']:
                             if 'preview' in stream['stream']:
                                 nowOnline = True
                                 stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
             
-                        if nowOnline != lastOnline:
-                            if userFetchMode:
-                                self.getCache("lastly")
-                                
-                                if nowOnline == True:
-                                    self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
-                                else:
-                                    self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
-                                self.setCache("lastly")
-
                     if 'error' in stream.keys():
                         logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
                         return (False, "Unable to update resources for %s: %s (%s)" % (userNick, stream['error'], stream['message']))
                     self.cache['streams'][unicode(userid)] = stream
                     self.setCache("streams")
                     logger.debug("[%s] Fetched stream for %s" % (self.handle, userNick))
+
+                if nowOnline != lastOnline:
+                    if userFetchMode:
+                        self.getCache("lastly")
+                                
+                        if nowOnline == True:
+                            self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
+                        else:
+                            self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
+                        self.setCache("lastly")
 
         return (True, "All resources updated for %s" % userNick)
 
