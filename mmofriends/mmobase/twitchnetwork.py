@@ -216,12 +216,14 @@ class TwitchNetwork(MMONetwork):
                                 stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
             
                         if nowOnline != lastOnline:
-                            self.getCache("lastly")
-                            if nowOnline:
-                                self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
-                            else:
-                                self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
-                            self.setCache("lastly")
+                            if userFetchMode:
+                                self.getCache("lastly")
+                                
+                                if nowOnline:
+                                    self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
+                                else:
+                                    self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
+                                self.setCache("lastly")
 
                     if 'error' in stream.keys():
                         logger.warning("[%s] Unable to fetch stream for %s: %s (%s)" % (self.handle, userNick, stream['error'], stream['message']))
