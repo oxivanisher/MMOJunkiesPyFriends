@@ -204,7 +204,7 @@ class TwitchNetwork(MMONetwork):
                 lastOnline = False
                 if userid in self.cache['streams'].keys():
                     if 'stream' in self.cache['streams'][channel['name']].keys():
-                        if 'preview' in self.cache['streams'][channel['name']]['stream']:
+                        if self.cache['streams'][channel['name']]['stream']:
                             if 'preview' in self.cache['streams'][channel['name']]['stream'].keys():
                                 lastOnline = True
                 
