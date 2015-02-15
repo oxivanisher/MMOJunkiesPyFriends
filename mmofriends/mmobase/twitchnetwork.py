@@ -204,15 +204,16 @@ class TwitchNetwork(MMONetwork):
                 lastOnline = False
                 if userid in self.cache['streams'].keys():
                     if 'stream' in self.cache['streams'][channel['name']].keys():
-                        lastOnline = True
+                        if 'preview' in self.cache['streams'][channel['name']]['stream'].keys():
+                            lastOnline = True
                 
                 (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
                 if ret and len(stream):
                     if 'stream' in stream:
                         nowOnline = False
                         if stream['stream']:
-                            nowOnline = True
                             if 'preview' in stream['stream']:
+                                nowOnline = True
                                 stream['stream']['preview'] = stream['stream']['preview'].replace('http://', '//')
             
                         if nowOnline != lastOnline:
