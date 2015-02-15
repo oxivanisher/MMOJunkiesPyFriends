@@ -228,7 +228,7 @@ class TwitchNetwork(MMONetwork):
                         self.getCache("lastly")
                                 
                         if nowOnline == True:
-                            self.cache["lastly"][time.time()] = '%s started streaming.' % (channel['name'])
+                            self.cache["lastly"][time.time()] = '%s started streaming %s.' % (channel['name'], (channel['game'])
                         else:
                             self.cache["lastly"][time.time()] = '%s stopped streaming.' % (channel['name'])
                         self.setCache("lastly")
