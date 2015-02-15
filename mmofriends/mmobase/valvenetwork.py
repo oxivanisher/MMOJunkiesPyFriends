@@ -37,6 +37,8 @@ class ValveNetwork(MMONetwork):
         self.onlineStates[4] = "Snooze"
         self.onlineStates[5] = "Looking for trade"
         self.onlineStates[6] = "Looking to play"
+
+        self.lastlyDontShow = [2, 3, 4, 5, 6]
         
         self.imgIconUrlBase = "http://media.steampowered.com/steamcommunity/public/images/apps"
 
@@ -292,8 +294,12 @@ class ValveNetwork(MMONetwork):
                                 internalUser = True
 
                         if internalUser:
-                            if self.cache['users'][friend['steamid']]['personastate'] != friend['personastate']:
-                                self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[friend['personastate']])
+                            tempState = friend['personastate']
+                            if friend['personastate'] in self.lastlyDontShow:
+                                tempState = 1
+                            if self.cache['users'][friend['steamid']]['personastate'] != tempState:
+                                self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[tempState])
+                                
                         self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
                         if 'gameextrainfo' in friend:
                             self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
