@@ -179,8 +179,17 @@ class ValveNetwork(MMONetwork):
             playerIds = []
             for playerId in self.cache['users'].keys():
                 playerIds.append(int(playerId))
-            maxSteamId = max(playerIds)
-            minSteamId = min(playerIds)
+        
+            try:
+                maxSteamId = max(playerIds)
+            except ValueError:
+                maxSteamId = 0
+                
+            try:
+                minSteamId = min(playerIds)
+            except ValueError:
+                minSteamId = 0
+                
             hour = datetime.datetime.now().time().hour
 
             # fetch friends and games played for friends
