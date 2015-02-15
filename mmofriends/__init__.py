@@ -1009,13 +1009,20 @@ def getSystemUsers(request):
 
 def getLastly(request):
     lastlyReturn = []
+    nets = {}
     for net in MMONetworks.keys():
+        nets[net] = {   'name': MMONetworks[net].name:,
+                        'description': MMONetworks[net].description,
+                        'data': MMONetworks[net].getStats(),
+                        'handle': net,
+                        'icon': url_for('get_image', imgType='network', imgId=net) }
+
         ret = MMONetworks[net].getLastly()
         if ret:
             for date in ret.keys():
                 lastlyReturn.append({'date': date, 'age': get_short_age(float(date)), 'text': ret[date], 'net': net})
 
-    return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30] }
+    return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})

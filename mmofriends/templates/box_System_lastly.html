@@ -6,8 +6,9 @@
 		for (id in data.lastly) {
 			var entry = data.lastly[id];
 			showMe = true;
+			img = '<img class="partner_list_icon" src="' + data.net[net].icon + '" title="' + data.net[net].description + '" />';
 
-			$('#systemLastly').append('<tr><td class="text-wrap">' + entry.age + ' ' + entry.text + '</td></tr>');
+			$('#systemLastly').append('<tr><td class="text-wrap">' + img + entry.age + ' ' + entry.text + '</td></tr>');
 
 		}
 
