@@ -202,9 +202,9 @@ class TwitchNetwork(MMONetwork):
                 self.getCache("streams")
                 
                 lastOnline = False
-                if userid in self.cache['streams'].keys():
-                    if 'stream' in self.cache['streams'][userid].keys():
-                        if self.cache['streams'][userid]['stream']:
+                if unicode(userid) in self.cache['streams'].keys():
+                    if 'stream' in self.cache['streams'][unicode(userid)].keys():
+                        if self.cache['streams'][unicode(userid)]['stream'] != None:
                             lastOnline = True
                 
                 (ret, stream) = self.queryTwitchApi("/streams/%s" % channel['name'], accessToken)
