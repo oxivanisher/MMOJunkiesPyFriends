@@ -295,38 +295,39 @@ class ValveNetwork(MMONetwork):
                 except Exception as e:
                     logger.error("[%s] fetchFromSteam failed: %s" % (self.handle, e))
                     run = False
-                if 'players' in steamFriends:
-                    for friend in steamFriends['players']:
-                        internalUser = False
-                        for link in mmoNetLinks:
-                            if friend['steamid'] in link['network_data']:
-                                internalUser = True
+                if steamFriends:
+                    if 'players' in steamFriends:
+                        for friend in steamFriends['players']:
+                            internalUser = False
+                            for link in mmoNetLinks:
+                                if friend['steamid'] in link['network_data']:
+                                    internalUser = True
 
-                        if internalUser:
-                            tempState = friend['personastate']
-                            if friend['personastate'] in self.lastlyDontShow:
-                                tempState = 1
-                            if self.cache['users'][friend['steamid']]['personastate'] != tempState:
-                                self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[tempState])
-                                self.cache['users'][friend['steamid']]['personastate'] = tempState
-                        # self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
-                        if 'gameextrainfo' in friend:
-                            self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
-                        if 'gameid' in friend:
                             if internalUser:
-                                if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
-                                    self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
-                            self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
-                        else:
-                            if internalUser:
-                                if 'gameid' in self.cache['users'][friend['steamid']].keys():
-                                    if self.cache['users'][friend['steamid']]['gameid']:
-                                        self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
-                            self.cache['users'][friend['steamid']]['gameid'] = None
-                        if 'lastlogoff' in friend:
-                            self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
-                        if 'profilestate' in friend:
-                            self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
+                                tempState = friend['personastate']
+                                if friend['personastate'] in self.lastlyDontShow:
+                                    tempState = 1
+                                if self.cache['users'][friend['steamid']]['personastate'] != tempState:
+                                    self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[tempState])
+                                    self.cache['users'][friend['steamid']]['personastate'] = tempState
+                            # self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
+                            if 'gameextrainfo' in friend:
+                                self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
+                            if 'gameid' in friend:
+                                if internalUser:
+                                    if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
+                                        self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
+                                self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
+                            else:
+                                if internalUser:
+                                    if 'gameid' in self.cache['users'][friend['steamid']].keys():
+                                        if self.cache['users'][friend['steamid']]['gameid']:
+                                            self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
+                                self.cache['users'][friend['steamid']]['gameid'] = None
+                            if 'lastlogoff' in friend:
+                                self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
+                            if 'profilestate' in friend:
+                                self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
         self.setCache("users")
         self.setCache("lastly")
         return "%s user states updated" % count
