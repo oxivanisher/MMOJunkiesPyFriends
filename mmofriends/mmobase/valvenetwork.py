@@ -295,7 +295,7 @@ class ValveNetwork(MMONetwork):
                 except Exception as e:
                     logger.error("[%s] fetchFromSteam failed: %s" % (self.handle, e))
                     run = False
-                if steamFriends:
+                if isinstance(steamFriends, list):
                     if 'players' in steamFriends:
                         for friend in steamFriends['players']:
                             internalUser = False
