@@ -315,7 +315,7 @@ class ValveNetwork(MMONetwork):
                                 self.cache['users'][friend['steamid']]['gameextrainfo'] = friend['gameextrainfo']
                             if 'gameid' in friend:
                                 if internalUser:
-                                    if self.cache['games'][friend['gameid']]:
+                                    if friend['gameid'] in self.cache['games'].keys():
                                         if self.cache['users'][friend['steamid']]['gameid'] != friend['gameid']:
                                             self.cache["lastly"][time.time()] = "%s is now playing %s" % (friend['personaname'], self.cache['games'][friend['gameid']]['name'])
                                 self.cache['users'][friend['steamid']]['gameid'] = friend['gameid']
