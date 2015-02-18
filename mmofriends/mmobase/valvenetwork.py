@@ -323,7 +323,8 @@ class ValveNetwork(MMONetwork):
                                 if internalUser:
                                     if 'gameid' in self.cache['users'][friend['steamid']].keys():
                                         if self.cache['users'][friend['steamid']]['gameid']:
-                                            self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
+                                            if self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]:
+                                                self.cache["lastly"][time.time()] = "%s stopped playing %s" % (friend['personaname'], self.cache['games'][self.cache['users'][friend['steamid']]['gameid']]['name'])
                                     self.cache['users'][friend['steamid']]['gameid'] = None
                             if 'lastlogoff' in friend:
                                 self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
