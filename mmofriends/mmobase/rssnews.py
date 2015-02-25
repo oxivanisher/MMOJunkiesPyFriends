@@ -92,7 +92,11 @@ class RSSNews(MMONetwork):
         for feed in [x for x in self.cache['feeds'].keys() if x not in self.config['rssSources']]:
             logger.debug("[%s] Removing old feed: %s" % (self.handle, feed))
             self.cache['feeds'].pop(feed, None)
-        self.setCache('feeds')
+
+            try:
+                self.setCache('feeds')
+            except TypeError as e:
+                logger.warning("[%s] Unable to save feed (TypeError): %s" % (self.handle, feed))
 
         return "Updated %s feeds" % len(self.cache['feeds'])
 
