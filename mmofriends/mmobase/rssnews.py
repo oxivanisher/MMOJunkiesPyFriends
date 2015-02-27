@@ -93,10 +93,10 @@ class RSSNews(MMONetwork):
             logger.debug("[%s] Removing old feed: %s" % (self.handle, feed))
             self.cache['feeds'].pop(feed, None)
 
-            try:
-                self.setCache('feeds')
-            except TypeError as e:
-                logger.warning("[%s] Unable to save feed (TypeError): %s" % (self.handle, feed))
+        try:
+            self.setCache('feeds')
+        except TypeError as e:
+            logger.warning("[%s] Unable to save feed (TypeError): %s" % (self.handle, feed))
 
         return "Updated %s feeds" % len(self.cache['feeds'])
 
