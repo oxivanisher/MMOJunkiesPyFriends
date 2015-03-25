@@ -398,14 +398,14 @@ class BlizzNetwork(MMONetwork):
                     charIndex = retMessage['characters'].index(char)
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
-                    logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
-                    if detailRetValue != False:
-                        try:
-                            self.cache['wowAchievments'][unicode(userid)]
-                        except KeyError:
-                            self.cache['wowAchievments'][unicode(userid)] = []
-                        self.cache['wowAchievments'][unicode(userid)].append(detailRetMessage)
+                    # logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                    # (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
+                    # if detailRetValue != False:
+                    #     try:
+                    #         self.cache['wowAchievments'][unicode(userid)]
+                    #     except KeyError:
+                    #         self.cache['wowAchievments'][unicode(userid)] = []
+                    #     self.cache['wowAchievments'][unicode(userid)].append(detailRetMessage)
                 self.setCache('wowAchievments')
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
