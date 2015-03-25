@@ -392,12 +392,13 @@ class BlizzNetwork(MMONetwork):
             self.getCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
                 for char in retMessage['characters']:
+                    charIndex = retMessage['characters'].index(char)
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
-                    logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][char]['name'], retMessage['characters'][char]['realm']))
-                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][char]['realm'], retMessage['characters'][char]['name']), accessToken)
+                    logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
                     if detailRetValue != False:
-                        retMessage['characters'][char] = detailRetMessage
+                        retMessage['characters'][charIndex] = detailRetMessage
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
             self.cache['wowProfiles'][unicode(userid)] = retMessage
