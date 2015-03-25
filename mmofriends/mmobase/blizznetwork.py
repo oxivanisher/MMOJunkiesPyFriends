@@ -391,7 +391,9 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][unicode(userid)] = retMessage
+            self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
+                self.getCache('wowProfilesAchievments')
                 for char in retMessage['characters']:
                     charIndex = retMessage['characters'].index(char)
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
@@ -400,10 +402,10 @@ class BlizzNetwork(MMONetwork):
                     (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
                     if detailRetValue != False:
                         retMessage['characters'][charIndex] = detailRetMessage
-                        self.cache['wowProfiles'][unicode(userid)] = retMessage
+                        self.cache['wowProfilesAchievments'][unicode(userid)] = retMessage
+                self.setCache('wowProfilesAchievments')
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
-            self.setCache('wowProfiles')
 
         # fetching d3 profile
         if self.cache['battletags'][unicode(userid)]:
