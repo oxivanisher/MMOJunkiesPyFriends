@@ -401,8 +401,11 @@ class BlizzNetwork(MMONetwork):
                     logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
                     (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
                     if detailRetValue != False:
-                        retMessage['characters'][charIndex] = detailRetMessage
-                        self.cache['wowProfilesAchievments'][unicode(userid)] = retMessage
+                        try:
+                            self.cache['wowProfilesAchievments'][unicode(userid)]
+                        except:
+                            self.cache['wowProfilesAchievments'][unicode(userid)] = []
+                        self.cache['wowProfilesAchievments'][unicode(userid)].append(detailRetMessage)
                 self.setCache('wowProfilesAchievments')
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
