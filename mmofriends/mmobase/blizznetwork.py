@@ -397,7 +397,7 @@ class BlizzNetwork(MMONetwork):
                     logger.debug("%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][char]['name'], retMessage['characters'][char]['realm']))
                     (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements' % (retMessage['characters'][char]['realm'], retMessage['characters'][char]['name']), accessToken)
                     if detailRetValue != False:
-                        retMessage['characters'][retMessage['characters'].index(char)] = detailRetMessage
+                        retMessage['characters'][char] = detailRetMessage
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
             self.cache['wowProfiles'][unicode(userid)] = retMessage
