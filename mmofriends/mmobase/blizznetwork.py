@@ -403,7 +403,7 @@ class BlizzNetwork(MMONetwork):
                     if detailRetValue != False:
                         try:
                             self.cache['wowProfilesAchievments'][unicode(userid)]
-                        except:
+                        except KeyError:
                             self.cache['wowProfilesAchievments'][unicode(userid)] = []
                         self.cache['wowProfilesAchievments'][unicode(userid)].append(detailRetMessage)
                 self.setCache('wowProfilesAchievments')
