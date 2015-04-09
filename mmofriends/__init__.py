@@ -335,6 +335,7 @@ def dev():
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
 def get_image(imgType, imgId):
     filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
+    fileName = ""
     log.debug("[System] Requesting img type <%s> id <%s>" % (imgType, imgId))
 
     try:
