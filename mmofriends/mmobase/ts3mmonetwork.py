@@ -63,8 +63,11 @@ class TS3Network(MMONetwork):
                     try:
                         clients[client['clid']] = client
                     except KeyError:
-                        logger.warning("refreshOnlineClients: Removing missing client %s" % client['clid'])
-                        clients.pop(client['clid'], None)
+                        logger.warning("refreshOnlineClients: Removing missing client %s" % client)
+                        try:
+                            clients.pop(client['clid'], None)
+                        except Exception:
+                            pass
                         pass
             except AttributeError:
                 return True
