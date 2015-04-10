@@ -11,6 +11,7 @@ import urllib
 import json
 import zlib
 import traceback
+import signal
 
 from flask import current_app
 from mmoutils import *
