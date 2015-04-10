@@ -267,8 +267,8 @@ def background_worker():
                     ret = MMONetworks[net].background_worker(log)
                     if ret:
                         log.info("[%s] -> Result: %s" % (net, ret))
-                except Timeout.Timeout:
-                     log.error("[%s] Catched hanging background worker. Killing it!" % (net))
+            except Timeout.Timeout:
+                 log.error("[%s] Catched hanging background worker. Killing it!" % (net))
 
         if firstLoop:
             log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))
