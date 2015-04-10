@@ -249,8 +249,6 @@ class TS3Network(MMONetwork):
             logger = self.log
         links = []
 
-        time.sleep(31)
-
         if self.connect():
             self.getCache('onlineClients')
             self.getCache('userWatchdog')
