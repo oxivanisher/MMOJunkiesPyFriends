@@ -50,24 +50,6 @@ except ImportError:
     log.error("[System] Please install Celery")
     sys.exit(2)
 
-class Timeout():
-    """Timeout class using ALARM signal."""
-    class Timeout(Exception):
-        pass
- 
-    def __init__(self, sec):
-        self.sec = sec
- 
-    def __enter__(self):
-        signal.signal(signal.SIGALRM, self.raise_timeout)
-        signal.alarm(self.sec)
- 
-    def __exit__(self, *args):
-        signal.alarm(0)    # disable alarm
- 
-    def raise_timeout(self, *args):
-        raise Timeout.Timeout()
-
 # try:
 #     import twitter
 # except ImportError:
@@ -262,13 +244,9 @@ def background_worker():
         loopCount += 1
         for net in MMONetworks.keys():
             ret = None
-            try:
-                with Timeout(30):
-                    ret = MMONetworks[net].background_worker(log)
-                    if ret:
-                        log.info("[%s] -> Result: %s" % (net, ret))
-            except Timeout.Timeout:
-                 log.error("[%s] Catched hanging background worker. Killing it!" % (net))
+            ret = MMONetworks[net].background_worker(log)
+            if ret:
+                log.info("[%s] -> Result: %s" % (net, ret))
 
         if firstLoop:
             log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))

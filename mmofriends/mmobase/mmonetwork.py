@@ -17,6 +17,24 @@ from mmoutils import *
 from mmouser import *
 from mmofriends import db
 
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+ 
+    def __init__(self, sec):
+        self.sec = sec
+ 
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+ 
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+ 
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
+
 class MMONetworkCache(db.Model):
     __tablename__ = 'mmonetcache'
     
@@ -423,9 +441,13 @@ class MMONetwork(object):
                 ret = None
                 logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
                 try:
-                    ret = method(logger)
+                    with Timeout(180):
+                        ret = method(logger)
                 except Exception as e:
                     logger.error("[%s] Exception catched:\n%s" % (self.handle, traceback.format_exc()))
+                    ret = False
+                except Timeout.Timeout:
+                    logger.error("[%s] Timeout reached. Background job '%s' killed!" % (self.handle, method.func_name))
                     ret = False
                 if ret:
                     logger.info("[%s] -> %s" % (self.handle, ret))
