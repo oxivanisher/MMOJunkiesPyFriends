@@ -442,7 +442,7 @@ class MMONetwork(object):
                 ret = None
                 logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
                 try:
-                    with Timeout(180):
+                    with Timeout(30):
                         ret = method(logger)
                 except Exception as e:
                     logger.error("[%s] Exception catched:\n%s" % (self.handle, traceback.format_exc()))
