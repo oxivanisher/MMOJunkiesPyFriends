@@ -442,13 +442,13 @@ class MMONetwork(object):
                 ret = None
                 logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
                 try:
-                    with Timeout(30):
+                    with Timeout(300):
                         ret = method(logger)
                 except Timeout.Timeout:
-                    logger.error("[%s] Timeout reached. Background job '%s' killed!" % (self.handle, method.func_name))
+                    logger.error("[%s] Timeout of 300 seconds reached. Background job '%s' killed!" % (self.handle, method.func_name))
                     ret = False
                 except Exception as e:
-                    logger.error("[%s] Exception catched:\n%s" % (self.handle, traceback.format_exc()))
+                    logger.error("[%s] Exception catched in '%s':\n%s" % (self.handle, method.func_name, traceback.format_exc()))
                     ret = False
                 if ret:
                     logger.info("[%s] -> %s" % (self.handle, ret))
