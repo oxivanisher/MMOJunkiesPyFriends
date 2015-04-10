@@ -180,8 +180,12 @@ class TS3Network(MMONetwork):
             result = self.sendCommand('servergrouplist')
             for group in result.data:
                 # logger.error("group id %s" % group)
-                self.cache['serverInfo']['groupList'][group['sgid']] = group
-                gcount += 1
+                try:
+                    self.cache['serverInfo']['groupList'][group['sgid']] = group
+                    gcount += 1
+                except KeyError:
+                    logger.info("[%s] Missing group information" % (self.handle))
+                    pass
 
             # fetching channel groups
             cgcount = 0

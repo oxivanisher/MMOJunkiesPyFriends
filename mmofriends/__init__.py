@@ -7,6 +7,7 @@ import os
 import logging
 import urllib
 import hashlib
+import signal
 
 from mmobase.mmouser import *
 from mmobase.mmonetwork import *
