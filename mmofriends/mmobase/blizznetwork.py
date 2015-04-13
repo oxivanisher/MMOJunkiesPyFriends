@@ -573,8 +573,11 @@ class BlizzNetwork(MMONetwork):
                 return char
 
         # unable to locate some prefered char. just return the first one.
-        return chars[0]
-
+        try:
+            return chars[0]
+        except IndexError:
+            return []
+            
     # Dashboard
     def dashboard_wowChars(self, request):
         self.log.debug("Dashboard wowChars")
