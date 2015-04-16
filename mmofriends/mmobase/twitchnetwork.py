@@ -136,7 +136,7 @@ class TwitchNetwork(MMONetwork):
                    'Authorization': 'OAuth %s' % accessToken}
         try:
             r = requests.get(self.baseUrl + what, headers=headers).json()
-        except ValueError as e:
+        except ValueError, ConnectionError as e:
             return (False, 'Unable to fetch data from Twitch: %s' % e)
         return (True, r)
 
