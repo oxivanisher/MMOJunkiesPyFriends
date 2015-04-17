@@ -88,7 +88,7 @@
 
 			// unlinked networks
 			for (id in data.linkNetwork) {
-				net = data.linkedNetworks[id];
+				net = data.linkNetwork[id];
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
 				var li = '<li class="list-group-item text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + '</li>';
