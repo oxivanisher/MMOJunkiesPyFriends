@@ -558,6 +558,7 @@ def getNetworksLinkData(request = None):
                                    'handle': netInfo.handle,
                                    'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
                                    'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
+                                   'relinkLink': url_for('network_link', handle=netInfo.handle, do='link'),
                                    'link_state': linkState,
                                    'linked_date': timestampToString(link['linked_date']) })
 
