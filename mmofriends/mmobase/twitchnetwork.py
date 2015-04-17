@@ -63,9 +63,9 @@ class TwitchNetwork(MMONetwork):
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
-        if not self.getSessionValue(self.linkIdName):
-            htmlFields['link'] = {'comment': "Login with Twitch.tv.",
-                                  'linkUrl': self.requestAuthorizationUrl()}
+        # if not self.getSessionValue(self.linkIdName):
+        htmlFields['link'] = {'comment': "Login with Twitch.tv.",
+                              'linkUrl': self.requestAuthorizationUrl()}
         return htmlFields
 
     # Oauth2 helper

@@ -111,10 +111,9 @@ class BlizzNetwork(MMONetwork):
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
-        self.log.error("test: " + self.getSessionValue(self.linkIdName))
-        if not self.getSessionValue(self.linkIdName):
-            htmlFields['link'] = {'comment': "Login with Battle.Net.",
-                                  'linkUrl': self.requestAuthorizationUrl()}
+        # if not self.getSessionValue(self.linkIdName):
+        htmlFields['link'] = {'comment': "Login with Battle.Net.",
+                              'linkUrl': self.requestAuthorizationUrl()}
         return htmlFields
 
     def loadNetworkToSession(self):
