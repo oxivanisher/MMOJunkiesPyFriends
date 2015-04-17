@@ -10,7 +10,7 @@ import random
 
 from mmoutils import *
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, CheckConstraint
 # from mmofriends import db, app
 db = SQLAlchemy()
 
