@@ -74,12 +74,12 @@
 			$("#networkLinks").empty();
 
 			// false linked networks
-			for (id in data.linkedNetworks) {
-				net = data.linkedNetworks[id];
+			for (id in data.reLinkNetworks) {
+				net = data.reLinkNetworks[id];
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
 				var sign = '<span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span>';
-				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + sign + '</li>';
+				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.reLinkNetworks[id] ) + sign + '</li>';
 				$("#networkLinks").append(li);
 			}
 
