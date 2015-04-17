@@ -81,7 +81,7 @@
 				net = data.reLinkNetworks[id];
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-				var sign = '<span class="glyphicon glyphicon-warning-sign"></span>';
+				var sign = ' <span class="glyphicon glyphicon-warning-sign"></span>';
 				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + sign + drawLinkContent( data.reLinkNetworks[id] ) + '</li>';
 				$("#networkLinks").append(li);
 			}
