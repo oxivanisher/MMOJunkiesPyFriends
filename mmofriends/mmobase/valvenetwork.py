@@ -385,10 +385,10 @@ class ValveNetwork(MMONetwork):
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
-        if not self.getSessionValue(self.linkIdName):
-            htmlFields['link'] = {
-                'comment': "Login with Steam.",
-                'linkUrl': url_for('oid_login', netHandle=self.handle) }
+        # if not self.getSessionValue(self.linkIdName):
+        htmlFields['link'] = {
+            'comment': "Login with Steam.",
+            'linkUrl': url_for('oid_login', netHandle=self.handle) }
         return htmlFields
 
     def devTest(self):

@@ -504,7 +504,8 @@ class TS3Network(MMONetwork):
         self.getCache('onlineClients')
         
         htmlFields = {}
-        if not self.getSessionValue(self.linkIdName) and not self.getSessionValue('doLinkKey'):
+        # if not self.getSessionValue(self.linkIdName) and not self.getSessionValue('doLinkKey'):
+        if not self.getSessionValue('doLinkKey'):
             htmlFields['action'] = url_for('network_link')
             htmlFields['dropdown'] = [{ 'name': '', 'value': "" }]
             currentLinks = []
