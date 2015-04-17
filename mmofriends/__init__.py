@@ -559,12 +559,12 @@ def getNetworksLinkData(request = None):
                                        'link_state': linkState,
                                        'linked_date': timestampToString(link['linked_date']) })
             else:
-                reLinkNetworks.append({ 'id': netKey,
+                reLinkNetworks.append({ 'id': net,
                                         'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                        'name': net.name,
-                                        'handle': net.handle,
-                                        'description': net.description,
-                                        'linkData': net.getLinkHtml() })
+                                        'name': netInfo.name,
+                                        'handle': netInfo.handle,
+                                        'description': netInfo.description,
+                                        'linkData': netInfo.getLinkHtml() })
 
     linkNetwork = []
     for netKey in MMONetworks.keys():
