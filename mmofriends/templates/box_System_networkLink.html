@@ -88,8 +88,8 @@
 					var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
 					var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
 				} else {
-					var link = '<a href="' + net.unlinkLink + '" title="Link information wrong. Please relink!"><span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span></a>';
-					var li = '<li class="list-group-item text-warning text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+					var link = '<a href="' + net.unlinkLink + '" title="Linking information wrong. Please relink!"><span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span></a>';
+					var li = '<li class="list-group-item text-warning text-wrap" title="Linking information wrong. Please relink!">' + img  + name + link + '</li>';
 				}
 				$("#networkLinks").append(li);
 			}
