@@ -11,6 +11,7 @@ import random
 from mmoutils import *
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
+from sqlalchemy import CheckConstraint 
 # from mmofriends import db, app
 db = SQLAlchemy()
 
@@ -27,7 +28,7 @@ class MMONetLink(db.Model):
     network_handle = db.Column(db.String(20))
     network_data = db.Column(db.String(200))
     linked_date = db.Column(db.Integer)
-    SQLAlchemy.UniqueConstraint(user_id, network_handle)
+    UniqueConstraint(user_id, network_handle)
 
     def __init__(self, user_id, network_handle, network_data = "", linked_date = 0):
         self.user_id = user_id
