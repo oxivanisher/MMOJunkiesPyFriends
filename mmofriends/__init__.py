@@ -696,7 +696,7 @@ def profile_register():
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email,
                               "MMOFriends Activation Email",
-                              "<h3>Hello %s</h3>We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%s'>this link</a>.<br><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
+                              "<h3>Hello %s</h3>We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.</b><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
                               'logo_banner1_mmo_color_qr.png'):
                     flash("Please check your mails at %s" % newUser.email, 'info')
                 else:
