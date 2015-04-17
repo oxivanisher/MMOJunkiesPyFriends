@@ -553,23 +553,22 @@ def getNetworksLinkData(request = None):
         netLinked = False
 
         for link in fetchNetworkLinksData[netKey]:
-            if link['network_handle'] == netKey:
-                netLinked = True
-                if link['network_data']:
-                    linkedNetworks.append({'id': netKey,
-                                           'name': net.name,
-                                           'description': net.description,
-                                           'handle': net.handle,
-                                           'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                           'unlinkLink': url_for('network_unlink', netHandle=net.handle, netLinkId=link['id']),
-                                           'linked_date': timestampToString(link['linked_date']) })
-                else:
-                    reLinkNetworks.append({ 'id': netKey,
-                                            'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                            'name': net.name,
-                                            'handle': net.handle,
-                                            'description': net.description,
-                                            'linkData': net.getLinkHtml() })
+            netLinked = True
+            if link['network_data']:
+                linkedNetworks.append({'id': netKey,
+                                       'name': net.name,
+                                       'description': net.description,
+                                       'handle': net.handle,
+                                       'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                       'unlinkLink': url_for('network_unlink', netHandle=net.handle, netLinkId=link['id']),
+                                       'linked_date': timestampToString(link['linked_date']) })
+            else:
+                reLinkNetworks.append({ 'id': netKey,
+                                        'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                        'name': net.name,
+                                        'handle': net.handle,
+                                        'description': net.description,
+                                        'linkData': net.getLinkHtml() })
 
         if not netLinked:
             linkNetwork.append({ 'id': netKey,
