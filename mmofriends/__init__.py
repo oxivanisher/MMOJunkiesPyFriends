@@ -560,7 +560,7 @@ def getNetworksLinkData(request = None):
                                        'linked_date': timestampToString(link['linked_date']) })
             else:
                 reLinkNetworks.append({ 'id': net,
-                                        'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                        'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
                                         'name': netInfo.name,
                                         'handle': netInfo.handle,
                                         'description': netInfo.description,
