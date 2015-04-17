@@ -81,10 +81,16 @@
 			// linked networks
 			for (id in data.linkedNetworks) {
 				net = data.linkedNetworks[id];
-				var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
+				//network_data
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-				var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+				if (net.link_state) {
+					var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
+					var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+				} else {
+					var link = '<a href="' + net.unlinkLink + '" title="Link information wrong. Please relink!"><span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span></a>';
+					var li = '<li class="list-group-item text-waring text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
+				}
 				$("#networkLinks").append(li);
 			}
 		}

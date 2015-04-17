@@ -549,12 +549,16 @@ def getNetworksLinkData(request = None):
     for net in fetchNetworkLinksData:
         netInfo = MMONetworks[net]
         for link in fetchNetworkLinksData[net]:
+            if link['network_data']:
+                linkState = True
+            else:
+                linkState = False
             linkedNetworks.append({'name': netInfo.name,
                                    'description': netInfo.description,
                                    'handle': netInfo.handle,
                                    'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
                                    'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
-                                   'network_data': link['network_data'],
+                                   'link_state': linkState,
                                    'linked_date': timestampToString(link['linked_date']) })
 
     linkNetwork = []
