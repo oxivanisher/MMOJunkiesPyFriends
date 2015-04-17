@@ -67,7 +67,8 @@
 
 				var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
 				var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
-			} 
+			}
+			console.log("returning: " + content);
 			return content;
 		}
 
@@ -87,6 +88,7 @@
 
 			// unlinked networks
 			for (id in data.linkNetwork) {
+				net = data.linkedNetworks[id];
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
 				var li = '<li class="list-group-item text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + '</li>';
