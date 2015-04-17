@@ -552,33 +552,27 @@ def getNetworksLinkData(request = None):
         net = MMONetworks[netKey]
         netLinked = False
 
+        netData = { 'id': netKey,
+                    'name': net.name,
+                    'description': net.description,
+                    'handle': net.handle,
+                    'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                    'linkData': net.getLinkHtml()
+        }
+
         for link in fetchNetworkLinksData[netKey]:
             if net.getLinkHtml():
                 netLinked = True
 
                 if link['network_data']:
-                    linkedNetworks.append({'id': netKey,
-                                           'name': net.name,
-                                           'description': net.description,
-                                           'handle': net.handle,
-                                           'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                           'unlinkLink': url_for('network_unlink', netHandle=net.handle, netLinkId=link['id']),
-                                           'linked_date': timestampToString(link['linked_date']) })
+                    netData['unlinkLink'] = url_for('network_unlink', netHandle=net.handle, netLinkId=link['id'])
+                    netData['linked_date'] = timestampToString(link['linked_date'])
+                    linkedNetworks.append( netData )
                 else:
-                    reLinkNetworks.append({ 'id': netKey,
-                                            'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                            'name': net.name,
-                                            'handle': net.handle,
-                                            'description': net.description,
-                                            'linkData': net.getLinkHtml() })
+                    reLinkNetworks.append( netData )
 
         if not netLinked and net.getLinkHtml():
-            linkNetwork.append({ 'id': netKey,
-                                 'icon': url_for('get_image', imgType='network', imgId=net.handle),
-                                 'name': net.name,
-                                 'handle': net.handle,
-                                 'description': net.description,
-                                 'linkData': net.getLinkHtml() })
+            linkNetwork.append( netData )
 
     return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks, 'reLinkNetworks': reLinkNetworks }
     # log.warning("No ")
