@@ -546,29 +546,32 @@ def getNetworksLinkData(request = None):
     log.debug("[System] Returning linked networks (get)")
     linkedNetworks = []
     reLinkNetworks = []
-    fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
-    for net in fetchNetworkLinksData:
-        netInfo = MMONetworks[net]
-        for link in fetchNetworkLinksData[net]:
-            if link['network_data']:
-                linkedNetworks.append({'name': netInfo.name,
-                                       'description': netInfo.description,
-                                       'handle': netInfo.handle,
-                                       'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
-                                       'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
-                                       'linked_date': timestampToString(link['linked_date']) })
-            else:
-                reLinkNetworks.append({ 'id': net,
-                                        'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
-                                        'name': netInfo.name,
-                                        'handle': netInfo.handle,
-                                        'description': netInfo.description,
-                                        'linkData': netInfo.getLinkHtml() })
-
     linkNetwork = []
+    fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
     for netKey in MMONetworks.keys():
         net = MMONetworks[netKey]
-        if net.getLinkHtml():
+        netLinked = False
+
+        for link in fetchNetworkLinksData[netKey]:
+            if link['network_handle'] == netKey:
+                netLinked = True
+                if link['network_data']:
+                    linkedNetworks.append({'id': netKey,
+                                           'name': net.name,
+                                           'description': net.description,
+                                           'handle': net.handle,
+                                           'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                           'unlinkLink': url_for('network_unlink', netHandle=net.handle, netLinkId=link['id']),
+                                           'linked_date': timestampToString(link['linked_date']) })
+                else:
+                    reLinkNetworks.append({ 'id': netKey,
+                                            'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                            'name': net.name,
+                                            'handle': net.handle,
+                                            'description': net.description,
+                                            'linkData': net.getLinkHtml() })
+
+        if not netLinked:
             linkNetwork.append({ 'id': netKey,
                                  'icon': url_for('get_image', imgType='network', imgId=net.handle),
                                  'name': net.name,
