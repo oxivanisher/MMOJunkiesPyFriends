@@ -545,22 +545,26 @@ def network_link():
 def getNetworksLinkData(request = None):
     log.debug("[System] Returning linked networks (get)")
     linkedNetworks = []
+    reLinkNetworks = []
     fetchNetworkLinksData = fetchNetworkLinks(session.get('userid'))
     for net in fetchNetworkLinksData:
         netInfo = MMONetworks[net]
         for link in fetchNetworkLinksData[net]:
             if link['network_data']:
-                linkState = True
+                linkedNetworks.append({'name': netInfo.name,
+                                       'description': netInfo.description,
+                                       'handle': netInfo.handle,
+                                       'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
+                                       'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
+                                       'link_state': linkState,
+                                       'linked_date': timestampToString(link['linked_date']) })
             else:
-                linkState = False
-            linkedNetworks.append({'name': netInfo.name,
-                                   'description': netInfo.description,
-                                   'handle': netInfo.handle,
-                                   'icon': url_for('get_image', imgType='network', imgId=netInfo.handle),
-                                   'unlinkLink': url_for('network_unlink', netHandle=netInfo.handle, netLinkId=link['id']),
-                                   'relinkLink': url_for('network_link', handle=netInfo.handle, do='link'),
-                                   'link_state': linkState,
-                                   'linked_date': timestampToString(link['linked_date']) })
+                reLinkNetworks.append({ 'id': netKey,
+                                        'icon': url_for('get_image', imgType='network', imgId=net.handle),
+                                        'name': net.name,
+                                        'handle': net.handle,
+                                        'description': net.description,
+                                        'linkData': net.getLinkHtml() })
 
     linkNetwork = []
     for netKey in MMONetworks.keys():
@@ -573,7 +577,7 @@ def getNetworksLinkData(request = None):
                                  'description': net.description,
                                  'linkData': net.getLinkHtml() })
 
-    return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks }
+    return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks, 'reLinkNetworks': reLinkNetworks }
     # log.warning("No ")
     # return redirect(url_for('index'))
 

@@ -47,34 +47,68 @@
 		    }
 		});
 
+		function drawLinkContent ( net ) {
+			var content = "";
+			if (net.linkData.link) {
+				var link = net.linkData.link
+				var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
+			} else if (net.linkData.dropdown) {
+				var htmlContent = '<input type="hidden" name="do" value="link" />';
+				htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
+				htmlContent += '<select class="form-control input-sm" name="id">';
+				for (id in net.linkData.dropdown) {
+					var item = net.linkData.dropdown[id];
+					htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
+				}
+				htmlContent += '</select>';
+				htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
+
+				var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
+				var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
+			} 
+			return content;
+		}
+
 		function drawLinkedNetworksContent( data ) {
 			loader = ' onclick="showWorking($(\'#{{ box.netHandle }}{{ box.handle }}-section\'));"';
 			$("#networkLinks").empty();
-			for (id in data.linkNetwork) {
-				net = data.linkNetwork[id];
-				if (net.linkData.link) {
-					var link = net.linkData.link
-					var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
-				} else if (net.linkData.dropdown) {
-					var htmlContent = '<input type="hidden" name="do" value="link" />';
-					htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
-					htmlContent += '<select class="form-control input-sm" name="id">';
-					for (id in net.linkData.dropdown) {
-						var item = net.linkData.dropdown[id];
-						htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
-					}
-					htmlContent += '</select>';
-					htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
 
-					var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
-					var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
-				} else {
-					continue;
-				}
+			// false linked networks
+			for (id in data.linkedNetworks) {
+				net = data.linkedNetworks[id];
+				var name = net.name + ' ' + net.description;
+				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
+				var sign = '<span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span>';
+				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + sign + '</li>';
+				$("#networkLinks").append(li);
+			}
+
+			// unlinked networks
+			for (id in data.linkNetwork) {
+				// net = data.linkNetwork[id];
+				// if (net.linkData.link) {
+				// 	var link = net.linkData.link
+				// 	var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
+				// } else if (net.linkData.dropdown) {
+				// 	var htmlContent = '<input type="hidden" name="do" value="link" />';
+				// 	htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
+				// 	htmlContent += '<select class="form-control input-sm" name="id">';
+				// 	for (id in net.linkData.dropdown) {
+				// 		var item = net.linkData.dropdown[id];
+				// 		htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
+				// 	}
+				// 	htmlContent += '</select>';
+				// 	htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
+
+				// 	var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
+				// 	var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
+				// } else {
+				// 	continue;
+				// }
 
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-				var li = '<li class="list-group-item text-warning text-wrap" title="Link to ' + net.name + '">' + img  + name + content + '</li>';
+				var li = '<li class="list-group-item text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + '</li>';
 				$("#networkLinks").append(li);
 			}
 
@@ -84,13 +118,8 @@
 				//network_data
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
-				if (net.link_state) {
-					var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
-					var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
-				} else {
-					var link = '<a href="' + net.relinkLink + '" title="Linking information wrong. Please relink!"><span class="glyphicon glyphicon-warning-sign text-warning pull-right"></span></a>';
-					var li = '<li class="list-group-item text-warning text-wrap" title="Linking information wrong. Please relink!">' + img  + name + link + '</li>';
-				}
+				var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
+				var li = '<li class="list-group-item text-success text-wrap" title="Linked since ' + net.linked_date + '">' + img  + name + link + '</li>';
 				$("#networkLinks").append(li);
 			}
 		}
