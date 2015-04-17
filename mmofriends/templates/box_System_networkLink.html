@@ -48,6 +48,7 @@
 		});
 
 		function drawLinkContent ( net ) {
+			console.log(net);
 			var content = "";
 			if (net.linkData.link) {
 				var link = net.linkData.link
@@ -85,27 +86,6 @@
 
 			// unlinked networks
 			for (id in data.linkNetwork) {
-				// net = data.linkNetwork[id];
-				// if (net.linkData.link) {
-				// 	var link = net.linkData.link
-				// 	var content = '<a href="' + link.linkUrl +'" ' + loader + ' class="btn btn-xs btn-default pull-right">' + link.comment + '</a>';
-				// } else if (net.linkData.dropdown) {
-				// 	var htmlContent = '<input type="hidden" name="do" value="link" />';
-				// 	htmlContent += '<input type="hidden" name="handle" value="' + net.handle + '" />';
-				// 	htmlContent += '<select class="form-control input-sm" name="id">';
-				// 	for (id in net.linkData.dropdown) {
-				// 		var item = net.linkData.dropdown[id];
-				// 		htmlContent += '<option value="' + item.value + '">' + item.name + '</option>';
-				// 	}
-				// 	htmlContent += '</select>';
-				// 	htmlContent += '<button class="btn btn-sm btn-default" type="submit">Login</button>';
-
-				// 	var form = '<div class="pull-right form-group">' + htmlContent + '</div>';
-				// 	var content = '<form action="' + net.linkData.action + '" method="post" id="linkForm" class="form-inline">' + form + '</form>';
-				// } else {
-				// 	continue;
-				// }
-
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
 				var li = '<li class="list-group-item text-wrap" title="Link to ' + net.name + '">' + img  + name + drawLinkContent( data.linkNetwork[id] ) + '</li>';
@@ -115,7 +95,6 @@
 			// linked networks
 			for (id in data.linkedNetworks) {
 				net = data.linkedNetworks[id];
-				//network_data
 				var name = net.name + ' ' + net.description;
 				var img ='<img src="' + net.icon + '" class="partner_list_icon" title="' + net.name + '" />';
 				var link = '<a href="' + net.unlinkLink + '" title="Unlink"><span class="glyphicon glyphicon-remove text-success pull-right"></span></a>';
