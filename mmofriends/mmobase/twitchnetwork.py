@@ -177,7 +177,7 @@ class TwitchNetwork(MMONetwork):
             if ret and len(channel):
                 if 'error' in channel.keys():
                     logger.warning("[%s] Unable to fetch channel for %s: %s (%s)" % (self.handle, userNick, channel['error'], channel['message']))
-                    if channel['message'] == "Unauthorized (Token invalid or missing required scope)":
+                    if channel['message'] == "Token invalid or missing required scope":
                         self.updateLink(userid, None)
                     return (False, "Unable to update resources for %s: %s (%s)" % (userNick, channel['error'], channel['message']))
                 elif 'name' not in channel.keys():
