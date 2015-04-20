@@ -565,13 +565,16 @@ def getNetworksLinkData(request = None):
                 netLinked = True
 
                 if link['network_data']:
+                    # linked network
                     netData['unlinkLink'] = url_for('network_unlink', netHandle=net.handle, netLinkId=link['id'])
                     netData['linked_date'] = timestampToString(link['linked_date'])
                     linkedNetworks.append( netData )
                 else:
+                    # wrong linked network
                     reLinkNetworks.append( netData )
 
         if not netLinked and net.getLinkHtml():
+            # unlinked network
             linkNetwork.append( netData )
 
     return { 'linkNetwork': linkNetwork, 'linkedNetworks': linkedNetworks, 'reLinkNetworks': reLinkNetworks }
