@@ -58,6 +58,14 @@
 			    ga('send', 'pageview');
 			{%- endif %}
 		</script>
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/de_DE/sdk.js#xfbml=1&version=v2.3&appId=441799419166656";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
 		{%- endblock %}
 	</head>
 	<body>
@@ -94,6 +102,7 @@
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
 						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+						<li><div class="fb-like" data-href="https://www.facebook.com/MMOJunkies.net" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 
