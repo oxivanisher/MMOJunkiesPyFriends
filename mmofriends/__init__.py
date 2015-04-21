@@ -50,7 +50,7 @@ except ImportError:
     sys.exit(2)
 
 try:
-    from flask.ext.babel import Babel
+    from flask.ext.babel import Babel, gettext
 except ImportError:
     log.error("[System] Please install the babel extension for flask")
     sys.exit(2)
