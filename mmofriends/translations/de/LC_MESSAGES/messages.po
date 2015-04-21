@@ -373,7 +373,7 @@ msgstr "Minuten gespielt total"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:383
 msgid "Minutes played last 2 weeks"
-msgstr "Minuten gespielt letzte 2 wochen"
+msgstr "Minuten gespielt letzte 2 Wochen"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:533
 msgid "Real Name"
