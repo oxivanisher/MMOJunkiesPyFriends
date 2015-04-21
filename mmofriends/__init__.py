@@ -546,7 +546,7 @@ def network_link():
                         flash(gettext('Successfully linked to network %(netdescr)s', netdescr=net.description), 'success')
                     else:
                         MMONetworks[request.form['handle']].clearLinkRequest()
-                        flash('Unable to link network %s. Please try again.' % net.description, 'error')
+                        flash(gettext('Unable to link network %(netdescr)s. Please try again.', netdescr=net.description), 'error')
                 elif request.form['do'] == 'cancel':
                     MMONetworks[request.form['handle']].clearLinkRequest()
             else:
@@ -600,9 +600,9 @@ def network_unlink(netHandle, netLinkId):
         abort(401)
     if request.method == 'GET':
         if MMONetworks[netHandle].unlink(session.get('userid'), netLinkId):
-            flash('Removed link to %s' % MMONetworks[netHandle].name, 'info')
+            flash(gettext('Removed link to %(netname)s', netname=MMONetworks[netHandle].name), 'info')
         else:
-            flash('Unable to remove link to %s' % MMONetworks[netHandle].name, 'error')
+            flash(gettext('Unable to remove link to %(netname)s', netname=MMONetworks[netHandle].name), 'error')
     return redirect(url_for('index'))
 
 # oid methods
@@ -647,19 +647,17 @@ def oauth2_login(netHandle):
         return redirect(url_for('index'))
     except Exception as e:
         log.error("[System] OpenID2 login for user %s and MMONetwork %s failed because: %s (%s)\nrequest args: %s\ne: %s" % (session['nick'], netHandle, request.args.get("error_description"), request.args.get("error"), request.args, e))
-        flash("Unable to link network %s. The administrator was informed of this bug. Please try again." % netHandle, 'error')
+        flash(gettext("Unable to link network %(networkhandle)s. The administrator was informed of this bug. Please try again.", networkhandle=netHandle), 'error')
         return redirect(url_for('index'))
     # for arg in request.args:
     #     print arg, request.args[arg]
     # print "requestAccessToken returned:", name
     if name:
-        message = "Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name)
-        log.info("[System] " + message)
-        flash(message, 'success')
+        log.info("[System] Authentication with %s successfull as %s." % (MMONetworks[netHandle].name, name))
+        flash(gettext("Authentication with %(nethandle)s successfull as %(username)s.", nethandle=MMONetworks[netHandle].name, username=name), 'success')
     else:
-        message = "Authentication with %s  NOT successfull" % MMONetworks[netHandle].name
-        log.warning("[System] " + message)
-        flash(message, 'error')
+        log.warning("[System] " + "Authentication with %s NOT successfull" % (MMONetworks[netHandle].name))
+        flash(gettext("Authentication with %(nethandle)s NOT successfull", nethandle=MMONetworks[netHandle].name), 'error')
     return redirect(url_for('index'))
 
 # profile routes
@@ -673,15 +671,15 @@ def profile_register():
             request.form['email']:
 
             if request.form['password'] != request.form['password2']:
-                flash("Passwords do not match!", 'error')
+                flash(gettext("Passwords do not match!"), 'error')
                 valid = False
 
             if len(request.form['nick']) < 3:
-                flash("Nickname is too short", 'error')
+                flash(gettext("Nickname is too short"), 'error')
                 valid = False
 
             if len(request.form['password']) < 8:
-                flash("Password is too short", 'error')
+                flash(gettext("Password is too short"), 'error')
                 valid = False
 
             #and further checks for registration plz
@@ -692,7 +690,7 @@ def profile_register():
 
         else:
             valid = False
-            flash("Please fill out all the fields!", 'error')
+            flash(gettext("Please fill out all the fields!"), 'error')
 
         if valid:
             newUser = MMOUser(request.form['nick'])
@@ -720,15 +718,15 @@ def profile_register():
                               "MMOJunkies Activation Email",
                               "<h3>Hello %s</h3>We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.</b><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
                               'logo_banner1_mmo_color_qr.png'):
-                    flash("Please check your mails at %s" % newUser.email, 'info')
+                    flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
                 else:
-                    flash("Error sending the email to you.", 'error')
+                    flash(gettext("Error sending the email to you."), 'error')
                 # return redirect(url_for('profile_login'))
                 return redirect(url_for('index'))
 
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db.session.rollback()
-                flash("SQL Alchemy Error: %s" % e, 'error')
+                flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
                 log.warning("[System] SQL Alchemy Error: %s" % e)
             # db.session.expire(newUser)
     
@@ -752,9 +750,9 @@ def profile_show(do = None):
                         myUser.setPassword(request.form['newpassword1'])
                         userChanged = True
                 else:
-                    flash("New passwords do not match!", 'error')
+                    flash(gettext("New passwords do not match!"), 'error')
             else:
-                flash("Old password not correct!", 'error')
+                flash(gettext("Old password not correct!"), 'error')
         elif request.form['do'] == "editprofile":
             if request.form['website'].startswith("http"):
                 myUser.website = request.form['website']
@@ -766,7 +764,7 @@ def profile_show(do = None):
         db.session.merge(myUser)
         db.session.flush()
         db.session.commit()
-        flash("Profile changed", 'success')
+        flash(gettext("Profile changed"), 'success')
 
     size = 80
     gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
@@ -796,18 +794,18 @@ def profile_verify(userId, verifyKey):
     log.info("[System] Verify userid %s" % userId)
     verifyUser = getUserById(userId)
     if not verifyUser:
-        flash("User not found to verify.")
+        flash(gettext("User not found to verify."))
     elif verifyUser.verify(verifyKey):
         db.session.merge(verifyUser)
         db.session.flush()
         db.session.commit()
         if verifyUser.veryfied:
             # db.session.expire(verifyUser)
-            flash("Verification ok. Please log in.", 'success')
+            flash(gettext("Verification ok. Please log in."), 'success')
             # return redirect(url_for('profile_login'))
             return redirect(url_for('index'))
         else:
-            flash("Verification NOT ok. Please try again.", 'error')
+            flash(gettext("Verification NOT ok. Please try again."), 'error')
     # db.session.expire(verifyUser)
     return redirect(url_for('index'))
 
@@ -821,17 +819,17 @@ def profile_login():
             myUser = getUserByNick(request.form['nick'])
         except Exception as e:
             log.warning('[System] Error finding user: "%s" -> %s' % (request.form['nick'], e))
-            flash('Error locating your user', 'error')
+            flash(gettext('Error locating your user'), 'error')
             
             return redirect(url_for('profile_logout'))
 
         if myUser:
             myUser.load()
             if not myUser.veryfied:
-                flash("User not yet veryfied. Please check your email for the unlock key.", 'info')
+                flash(gettext("User not yet veryfied. Please check your email for the unlock key."), 'info')
                 return redirect(url_for('index'))
             elif myUser.locked:
-                flash("User locked. Please contact an administrator.", 'info')
+                flash(gettext("User locked. Please contact an administrator."), 'info')
                 return redirect(url_for('index'))
             elif myUser.checkPassword(request.form['password']):
                 log.info("[System] <%s> logged in" % myUser.nick)
@@ -852,9 +850,9 @@ def profile_login():
 
             else:
                 log.info("[System] Invalid password for %s" % myUser.nick)
-                flash('Invalid login', 'error')
+                flash(gettext('Invalid login'), 'error')
         else:
-            flash('Invalid login', 'error')
+            flash(gettext('Invalid login'), 'error')
 
     return redirect(url_for('index'))
     # return render_template('profile_login.html')
