@@ -103,23 +103,24 @@ class BlizzNetwork(MMONetwork):
                 pass
 
         return {
-            'World of Warcraft Characters': wowChars,
-            'Starcraft 2 Profiles': sc2Chars,
-            'Diablo 3 Heores': d3Heroes,
+            gettext('World of Warcraft Characters'): wowChars,
+            gettext('Starcraft 2 Profiles'): sc2Chars,
+            gettext('Diablo 3 Heores'): d3Heroes,
         }
 
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
         # if not self.getSessionValue(self.linkIdName):
-        htmlFields['link'] = {'comment': "Login with Battle.Net.",
+        htmlFields['link'] = {'comment': gettext("Login with Battle.Net"),
                               'linkUrl': self.requestAuthorizationUrl()}
         return htmlFields
 
     def loadNetworkToSession(self):
         for link in self.getNetworkLinks(self.session['userid']):
             if not link['network_data']:
-                return (False, "Blizzard automatically removes permission to fetch your data after 30 days. Please klick <a href='%s' target='_blank'>this link</a> to reauthorize." % self.requestAuthorizationUrl())
+                return (False, "%s %s" % (gettext("Blizzard automatically removes permission to fetch your data after 30 days."),
+                                          gettext("Please klick <a href='%(link)s' target='_blank'>this link</a> to reauthorize.", link=self.requestAuthorizationUrl())))
         return super(BlizzNetwork, self).loadNetworkToSession()
 
     def getPartners(self, **kwargs):
@@ -529,27 +530,26 @@ class BlizzNetwork(MMONetwork):
         for wowRace in self.cache['wowCharRaces']['races']:
             if wowRace['id'] == race:
                 return wowRace['name']
-        return "Unknown"
+        return gettext("Unknown")
 
     def getWowGender(self, gender = False):
         if gender:
-            return "Female"
+            return gettext("Female")
         else:
-            return "Male"
+            return gettext("Male")
 
     def getWowClass(self, charClass):
         self.getCache('wowCharClasses')
         for wowClass in self.cache['wowCharClasses']['classes']:
             if wowClass['id'] == charClass:
                 return wowClass['name']
-        return "Unknown"
+        return gettext("Unknown")
 
     def getWowCharDescription(self, wowChar):
-        return "Level %s %s %s %s on %s" % (wowChar['level'],
-                                            self.getWowGender(wowChar['gender']),
-                                            self.getWowRace(wowChar['race']),
-                                            self.getWowClass(wowChar['class']),
-                                            wowChar['realm'])
+        return gettext("Level %(level)s %(gender)s %(race)s %(class)s on %(realm)s",
+                level=wowChar['level'], gender=self.getWowGender(wowChar['gender']),
+                race=self.getWowRace(wowChar['race']), class=self.getWowClass(wowChar['class']),
+                realm=wowChar['realm'])
 
     def getBestWowChar(self, chars):
         level = -1

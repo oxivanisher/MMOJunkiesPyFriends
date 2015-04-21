@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 12:57+0200\n"
+"POT-Creation-Date: 2015-04-21 13:26+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -25,99 +25,99 @@ msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:548
 #, python-format
 msgid "Unable to link network %(netdescr)s. Please try again."
-msgstr ""
+msgstr "Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte versuche es nocheinmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:602
 #, python-format
 msgid "Removed link to %(netname)s"
-msgstr ""
+msgstr "Link zum %(netname)s entfernt"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:604
 #, python-format
 msgid "Unable to remove link to %(netname)s"
-msgstr ""
+msgstr "Es ist nicht möglich den Link zu %(netname)s zu entfernen"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:649
 #, python-format
 msgid ""
 "Unable to link network %(networkhandle)s. The administrator was informed "
 "of this bug. Please try again."
-msgstr ""
+msgstr "Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator wurde über diesen Bug informiert. Bitte versuche es nocheinmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:656
 #, python-format
 msgid "Authentication with %(nethandle)s successfull as %(username)s."
-msgstr ""
+msgstr "Erfolgreich bei %(nethandle)s angemeldet als %(username)s."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:659
 #, python-format
 msgid "Authentication with %(nethandle)s NOT successfull"
-msgstr ""
+msgstr "Anmeldung bei %(nethandle)s NICHT erfolgreich"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:673
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "Die passwörter stimmen nicht überein!"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:677
 msgid "Nickname is too short"
-msgstr ""
+msgstr "Der Nickname ist zu kurz"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:681
 msgid "Password is too short"
-msgstr ""
+msgstr "Das Passwort ist zu kurz"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:692
 msgid "Please fill out all the fields!"
-msgstr ""
+msgstr "Bitte fülle alle Felder aus!"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:720
 #, python-format
 msgid "Please check your mails at %(emailaddr)s"
-msgstr ""
+msgstr "Bitte überprüfe dein Postfach von %(emailaddr)s"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:722
 msgid "Error sending the email to you."
-msgstr ""
+msgstr "Fehler beim senden der Email an dich."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:728
 msgid "SQL Alchemy Error"
-msgstr ""
+msgstr "SQL Alchemy Fehler"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
 msgid "New passwords do not match!"
-msgstr ""
+msgstr "Die neuen Passwörter stimmen nicht überein!"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
 msgid "Old password not correct!"
-msgstr ""
+msgstr "Das alte Passwort ist nicht korrekt!"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:766
 msgid "Profile changed"
-msgstr ""
+msgstr "Profil geändert"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:796
 msgid "User not found to verify."
-msgstr ""
+msgstr "Benutzer zum verifizieren nicht gefunden."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
 msgid "Verification ok. Please log in."
-msgstr ""
+msgstr "Verifizierung ok. Bitte melde dich an."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:807
 msgid "Verification NOT ok. Please try again."
-msgstr ""
+msgstr "Verifizierung NICHT ok. Bitte versuche es nocheinmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:821
 msgid "Error locating your user"
-msgstr ""
+msgstr "Fehler beim finden deines Benutzers"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:828
-msgid "User not yet veryfied. Please check your email for the unlock key."
-msgstr ""
+msgid "User not yet verified. Please check your email for the unlock key."
+msgstr "Benutzer noch nicht verifiziert. Bitte suche in deinen Emails nach dem Schlüssel."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:831
 msgid "User locked. Please contact an administrator."
-msgstr ""
+msgstr "Benutzer gesperrt. Bitte kontaktiere einen Administrator."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:852
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:854
@@ -127,6 +127,75 @@ msgstr "Login ungültig"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1047
 msgid "Statistics"
 msgstr "Statistiken"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1064
+msgid ""
+"You have no network connected. Please do so in the 'Network Connections' "
+"box."
+msgstr "Du hast kein Netzwerk verbunden. Bitte tu dies in der 'Network Connections' Box."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:106
+msgid "World of Warcraft Characters"
+msgstr "World of Warcraft Charaktere"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:107
+msgid "Starcraft 2 Profiles"
+msgstr "Starcraft 2 Profile"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:108
+msgid "Diablo 3 Heores"
+msgstr "Diablo 3 Helden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:115
+msgid "Login with Battle.Net"
+msgstr "Anmelden mit Battle.Net"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:122
+msgid ""
+"Blizzard automatically removes permission to fetch your data after 30 "
+"days."
+msgstr "Blizzard entfernt die Zugriffsrechte nach 30 Tagen."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:123
+#, python-format
+msgid ""
+"Please klick <a href='%(link)s' target='_blank'>this link</a> to "
+"reauthorize."
+msgstr "Bitte klicke <a href='%(link)s' target='_blank'>diesen Link</a> zum erneuten berechtigen."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:533
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:546
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:537
+msgid "Female"
+msgstr "Weiblich"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:539
+msgid "Male"
+msgstr "Männlich"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:551
+#, python-format
+msgid "Level %(level)s %(gender)s %(race)s %(class)s on %(realm)s"
+msgstr "Level %(level)s %(gender)s %(race)s %(class)s auf %(realm)s"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
+msgid "Nickname"
+msgstr "Nickname"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:5
+msgid "Password"
+msgstr "Passwort"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:8
+msgid "login"
+msgstr "anmelden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:8
+msgid "register"
+msgstr "registrieren"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:1
 msgid "About"
@@ -147,4 +216,12 @@ msgstr "Dein gamer Profil"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:5
 msgid "Connect to TS3 Server"
 msgstr "Verbinde zum TS3 Server"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:11
+msgid "Donate with PayPal"
+msgstr "Spenden mit PayPal"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_networkLink.html:4
+msgid "Loading..."
+msgstr "Lade..."
 

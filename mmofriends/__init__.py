@@ -825,7 +825,7 @@ def profile_login():
         if myUser:
             myUser.load()
             if not myUser.veryfied:
-                flash(gettext("User not yet veryfied. Please check your email for the unlock key."), 'info')
+                flash(gettext("User not yet verified. Please check your email for the unlock key."), 'info')
                 return redirect(url_for('index'))
             elif myUser.locked:
                 flash(gettext("User locked. Please contact an administrator."), 'info')
@@ -1061,7 +1061,7 @@ def index():
             if links[link]:
                 linked = True
         if not linked:
-            flash("You have no network connected. Please do so in the 'Network Connections' box.", 'info')
+            flash(gettext("You have no network connected. Please do so in the 'Network Connections' box."), 'info')
     boxes = []
     for box in SystemBoxes.keys():
         if checkShowBox(session, SystemBoxes[box]):
