@@ -273,7 +273,11 @@ except Exception as e:
 # localization methods
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+    sessionLang = session.get('displayLanguage')
+    if sessionLang:
+        return sessionLang
+    else:
+        return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
 # flask error handlers
 @app.errorhandler(404)
@@ -342,6 +346,12 @@ def dev():
             result = e
         ret.append({'handle': handle, 'result': result})
     return render_template('dev.html', result = ret)
+
+# language route
+@app.route('/Lang/<language>')
+def set_lang(language=None):
+    session['displayLanguage'] = language
+    return redirect(url_for('index'))
 
 # support routes
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
