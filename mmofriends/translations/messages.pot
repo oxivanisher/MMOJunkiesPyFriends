@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 14:27+0200\n"
+"POT-Creation-Date: 2015-04-21 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -383,6 +383,14 @@ msgstr ""
 msgid "Online/Offline"
 msgstr ""
 
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:649
+msgid "Anonymous"
+msgstr ""
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:650
+msgid "Login to view"
+msgstr ""
+
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:81
 msgid "Toggle navigation"
 msgstr ""
@@ -443,6 +451,7 @@ msgid "Registration"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:152
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:8
 msgid "Login"
 msgstr ""
 
@@ -467,11 +476,7 @@ msgid "Password"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:8
-msgid "login"
-msgstr ""
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:8
-msgid "register"
+msgid "Register"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:2

@@ -646,8 +646,8 @@ class ValveNetwork(MMONetwork):
                             nowPlayingUser['watchUrl'] = "#"
                             nowPlayingUser['img_icon_url'] = url_for('get_image', imgType='cache', imgId=self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url'])))
                             nowPlayingUser['appid'] = self.cache['games'][gameId]['appid']
-                            nowPlayingUser['username'] = "Anonymous"
-                            nowPlayingUser['friendof'] = "Login to view"
+                            nowPlayingUser['username'] = gettext("Anonymous")
+                            nowPlayingUser['friendof'] = gettext("Login to view")
     
                             if 'logged_in' in self.session:
                                 nowPlayingUser['username'] = self.cache['users'][user]['personaname']
