@@ -20,7 +20,7 @@ msgstr ""
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:546
 #, python-format
 msgid "Successfully linked to network %(netdescr)s"
-msgstr ""
+msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1050
 msgid "Statistics"
