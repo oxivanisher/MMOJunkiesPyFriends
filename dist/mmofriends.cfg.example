@@ -27,5 +27,11 @@ CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
 TWITTERURL = "https://twitter.com/realMMOJunkies/lists/news"
 TWITTERWIDGETID = "512207381640404992"
 
+# available languages
+LANGUAGES = {
+    'en': 'English',
+    'de': 'Deutsch'
+}
+
 # google analytics
 GOOGLEANALYTICS = "UA-55575556-1"

@@ -49,6 +49,12 @@ except ImportError:
     log.error("[System] Please install Celery")
     sys.exit(2)
 
+try:
+    from flask.ext.babel import Babel
+except ImportError:
+    log.error("[System] Please install the babel extension for flask")
+    sys.exit(2)
+
 # try:
 #     import twitter
 # except ImportError:
@@ -58,6 +64,7 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 Compress(app)
+babel = Babel(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 app.config['startupDate'] = time.time()
 
@@ -262,6 +269,11 @@ try:
 except Exception as e:
     log.error("[System] Background workers could not be started: %s" % (e))
     sys.exit(2)
+
+# localization methods
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
 # flask error handlers
 @app.errorhandler(404)
