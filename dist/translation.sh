@@ -20,14 +20,15 @@ $PYBABEL extract -F $DIR/../config/babel.cfg -o $MESSAGES $APPDIR
 
 for L in de es;
 do
-	# if [ ! -d "$TRANSLATIONDIR/$L" ];
-	# then
+	if [ ! -d "$TRANSLATIONDIR/$L" ];
+	then
 		echo "Initializing language $L"
 		$PYBABEL init -i $MESSAGES -d $TRANSLATIONDIR -l $L
 		RUNCOMPILE=false
-	# fi
+	fi
 done
 
+echo "Searching new strings"
 $PYBABEL update -i $MESSAGES -d $TRANSLATIONDIR
 
 if [ $RUNCOMPILE ];
@@ -35,4 +36,3 @@ then
 	echo "Compiling languages"
 	$PYBABEL compile -d $TRANSLATIONDIR
 fi
-
