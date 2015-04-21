@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 13:26+0200\n"
+"POT-Creation-Date: 2015-04-21 13:44+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -25,7 +25,9 @@ msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:548
 #, python-format
 msgid "Unable to link network %(netdescr)s. Please try again."
-msgstr "Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte versuche es nocheinmal."
+msgstr ""
+"Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte "
+"versuche es nocheinmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:602
 #, python-format
@@ -42,7 +44,9 @@ msgstr "Es ist nicht möglich den Link zu %(netname)s zu entfernen"
 msgid ""
 "Unable to link network %(networkhandle)s. The administrator was informed "
 "of this bug. Please try again."
-msgstr "Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator wurde über diesen Bug informiert. Bitte versuche es nocheinmal."
+msgstr ""
+"Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator "
+"wurde über diesen Bug informiert. Bitte versuche es nocheinmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:656
 #, python-format
@@ -113,7 +117,9 @@ msgstr "Fehler beim finden deines Benutzers"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:828
 msgid "User not yet verified. Please check your email for the unlock key."
-msgstr "Benutzer noch nicht verifiziert. Bitte suche in deinen Emails nach dem Schlüssel."
+msgstr ""
+"Benutzer noch nicht verifiziert. Bitte suche in deinen Emails nach dem "
+"Schlüssel."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:831
 msgid "User locked. Please contact an administrator."
@@ -132,7 +138,9 @@ msgstr "Statistiken"
 msgid ""
 "You have no network connected. Please do so in the 'Network Connections' "
 "box."
-msgstr "Du hast kein Netzwerk verbunden. Bitte tu dies in der 'Network Connections' Box."
+msgstr ""
+"Du hast kein Netzwerk verbunden. Bitte tu dies in der 'Network "
+"Connections' Box."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:106
 msgid "World of Warcraft Characters"
@@ -161,7 +169,9 @@ msgstr "Blizzard entfernt die Zugriffsrechte nach 30 Tagen."
 msgid ""
 "Please klick <a href='%(link)s' target='_blank'>this link</a> to "
 "reauthorize."
-msgstr "Bitte klicke <a href='%(link)s' target='_blank'>diesen Link</a> zum erneuten berechtigen."
+msgstr ""
+"Bitte klicke <a href='%(link)s' target='_blank'>diesen Link</a> zum "
+"erneuten berechtigen."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:533
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:546
@@ -177,9 +187,8 @@ msgid "Male"
 msgstr "Männlich"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:551
-#, python-format
-msgid "Level %(level)s %(gender)s %(race)s %(class)s on %(realm)s"
-msgstr "Level %(level)s %(gender)s %(race)s %(class)s auf %(realm)s"
+msgid "Level %(level)s %(gender)s %(race)s %(wowclass)s on %(realm)s"
+msgstr "Level %(level)s %(gender)s %(race)s %(wowclass)s auf %(realm)s"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
 msgid "Nickname"

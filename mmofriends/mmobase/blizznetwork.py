@@ -546,9 +546,9 @@ class BlizzNetwork(MMONetwork):
         return gettext("Unknown")
 
     def getWowCharDescription(self, wowChar):
-        return gettext("Level %(level)s %(gender)s %(race)s %(class)s on %(realm)s",
+        return gettext("Level %(level)s %(gender)s %(race)s %(wowclass)s on %(realm)s",
                 level=wowChar['level'], gender=self.getWowGender(wowChar['gender']),
-                race=self.getWowRace(wowChar['race']), class=self.getWowClass(wowChar['class']),
+                race=self.getWowRace(wowChar['race']), wowclass=self.getWowClass(wowChar['class']),
                 realm=wowChar['realm'])
 
     def getBestWowChar(self, chars):

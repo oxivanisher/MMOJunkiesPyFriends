@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 13:26+0200\n"
+"POT-Creation-Date: 2015-04-21 13:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,7 +112,7 @@ msgid "Error locating your user"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:828
-msgid "User not yet veryfied. Please check your email for the unlock key."
+msgid "User not yet verified. Please check your email for the unlock key."
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:831
@@ -178,7 +178,7 @@ msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:551
 #, python-format
-msgid "Level %(level)s %(gender)s %(race)s %(class)s on %(realm)s"
+msgid "Level %(level)s %(gender)s %(race)s %(wowclass)s on %(realm)s"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
