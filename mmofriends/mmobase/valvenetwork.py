@@ -12,6 +12,7 @@ import time
 import datetime
 
 from flask import current_app, url_for
+from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
@@ -30,13 +31,13 @@ class ValveNetwork(MMONetwork):
         self.maxUpdateUsers = 99
 
         self.onlineStates = {}
-        self.onlineStates[0] = "Offline"
-        self.onlineStates[1] = "Online"
-        self.onlineStates[2] = "Busy"
-        self.onlineStates[3] = "Away"
-        self.onlineStates[4] = "Snooze"
-        self.onlineStates[5] = "Looking for trade"
-        self.onlineStates[6] = "Looking to play"
+        self.onlineStates[0] = gettext("Offline")
+        self.onlineStates[1] = gettext("Online")
+        self.onlineStates[2] = gettext("Busy")
+        self.onlineStates[3] = gettext("Away")
+        self.onlineStates[4] = gettext("Snooze")
+        self.onlineStates[5] = gettext("Looking for trade")
+        self.onlineStates[6] = gettext("Looking to play")
 
         self.lastlyDontShow = [2, 3, 4, 5, 6]
         
@@ -357,7 +358,7 @@ class ValveNetwork(MMONetwork):
         match = self.steam_id_re.search(resp.identity_url)
         self.setSessionValue(self.linkIdName, match.group(1))
         self.saveLink(self.getSessionValue(self.linkIdName))
-        return ('You are now connected to steam', oid.get_next_url())
+        return (gettext('You are now connected to steam'), oid.get_next_url())
 
     # overwritten class methods
     def getStats(self):
@@ -376,10 +377,10 @@ class ValveNetwork(MMONetwork):
                 pass
 
         return {
-            'Users in Database': len(self.cache['users']),
-            'Games in Database': len(self.cache['games']),
-            'Minutes played forever': playedForever,
-            'Minutes played last 2 weeks': playedRecent,
+            gettext('Users in Database'): len(self.cache['users']),
+            gettext('Games in Database'): len(self.cache['games']),
+            gettext('Minutes played forever'): playedForever,
+            gettext('Minutes played last 2 weeks'): playedRecent,
         }
 
     def getLinkHtml(self):
@@ -387,7 +388,7 @@ class ValveNetwork(MMONetwork):
         htmlFields = {}
         # if not self.getSessionValue(self.linkIdName):
         htmlFields['link'] = {
-            'comment': "Login with Steam.",
+            'comment': "%s %s" % (gettext("Login with"), self.name),
             'linkUrl': url_for('oid_login', netHandle=self.handle) }
         return htmlFields
 
@@ -529,24 +530,24 @@ class ValveNetwork(MMONetwork):
         if self.session.get('admin'):
             self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][partnerId]['steamid'])
             try:
-                self.setPartnerDetail(moreInfo, "Real Name", self.cache['users'][partnerId]['realname'])
+                self.setPartnerDetail(moreInfo, gettext("Real Name"), self.cache['users'][partnerId]['realname'])
             except KeyError:
                 pass
 
         try:
-            self.setPartnerDetail(moreInfo, "Country Code", self.cache['users'][partnerId]['loccountrycode'])
+            self.setPartnerDetail(moreInfo, gettext("Country Code"), self.cache['users'][partnerId]['loccountrycode'])
         except KeyError:
             pass
         try:
-            self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['users'][partnerId]['timecreated']))
+            self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['users'][partnerId]['timecreated']))
         except KeyError:
             pass
         try:
-            self.setPartnerDetail(moreInfo, "Last Logoff", timestampToString(self.cache['users'][partnerId]['lastlogoff']))
+            self.setPartnerDetail(moreInfo, gettext("Last Logoff"), timestampToString(self.cache['users'][partnerId]['lastlogoff']))
         except KeyError:
             pass
-        self.setPartnerDetail(moreInfo, "Profile URL", self.cache['users'][partnerId]['profileurl'])
-        self.setPartnerDetail(moreInfo, "Online/Offline", self.onlineStates[self.cache['users'][partnerId]['personastate']])
+        self.setPartnerDetail(moreInfo, gettext("Profile URL"), self.cache['users'][partnerId]['profileurl'])
+        self.setPartnerDetail(moreInfo, gettext("Online/Offline"), self.onlineStates[self.cache['users'][partnerId]['personastate']])
 
         games = []
         if 'ownedGames' in self.cache['users'][partnerId]:

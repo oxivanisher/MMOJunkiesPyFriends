@@ -14,6 +14,7 @@ import traceback
 import signal
 
 from flask import current_app
+from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
 from mmofriends import db

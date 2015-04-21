@@ -11,6 +11,7 @@ import time
 import re
 
 from flask import current_app
+from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
@@ -49,8 +50,8 @@ class RSSNews(MMONetwork):
         entries = 0
         for feed in self.cache['feeds']:
             entries += len(self.cache['feeds'][feed]['entries'])
-        return { 'News feeds': len(self.config['rssSources']),
-                 'News entries': entries }
+        return { gettext('News feeds'): len(self.config['rssSources']),
+                 gettext('News entries'): entries }
 
     def getPartners(self, **kwargs):
         self.log.debug("[%s] List all partners for given user" % (self.handle))

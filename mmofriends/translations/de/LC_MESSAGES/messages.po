@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 13:44+0200\n"
+"POT-Creation-Date: 2015-04-21 14:27+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 msgid "Unable to link network %(netdescr)s. Please try again."
 msgstr ""
 "Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte "
-"versuche es nocheinmal."
+"versuche es noch einmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:602
 #, python-format
@@ -46,7 +46,7 @@ msgid ""
 "of this bug. Please try again."
 msgstr ""
 "Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator "
-"wurde über diesen Bug informiert. Bitte versuche es nocheinmal."
+"wurde über diesen Bug informiert. Bitte versuche es noch einmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:656
 #, python-format
@@ -109,7 +109,7 @@ msgstr "Verifizierung ok. Bitte melde dich an."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:807
 msgid "Verification NOT ok. Please try again."
-msgstr "Verifizierung NICHT ok. Bitte versuche es nocheinmal."
+msgstr "Verifizierung NICHT ok. Bitte versuche es noch einmal."
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:821
 msgid "Error locating your user"
@@ -142,29 +142,31 @@ msgstr ""
 "Du hast kein Netzwerk verbunden. Bitte tu dies in der 'Network "
 "Connections' Box."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:106
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:107
 msgid "World of Warcraft Characters"
 msgstr "World of Warcraft Charaktere"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:107
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:108
 msgid "Starcraft 2 Profiles"
 msgstr "Starcraft 2 Profile"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:108
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:109
 msgid "Diablo 3 Heores"
 msgstr "Diablo 3 Helden"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:115
-msgid "Login with Battle.Net"
-msgstr "Anmelden mit Battle.Net"
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:116
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/twitchnetwork.py:68
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:391
+msgid "Login with"
+msgstr "Anmelden mit"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:122
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:123
 msgid ""
 "Blizzard automatically removes permission to fetch your data after 30 "
 "days."
 msgstr "Blizzard entfernt die Zugriffsrechte nach 30 Tagen."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:123
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:124
 #, python-format
 msgid ""
 "Please klick <a href='%(link)s' target='_blank'>this link</a> to "
@@ -173,22 +175,300 @@ msgstr ""
 "Bitte klicke <a href='%(link)s' target='_blank'>diesen Link</a> zum "
 "erneuten berechtigen."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:533
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:546
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:534
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:547
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:450
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:537
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:538
 msgid "Female"
 msgstr "Weiblich"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:539
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:540
 msgid "Male"
 msgstr "Männlich"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:551
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/blizznetwork.py:552
+#, python-format
 msgid "Level %(level)s %(gender)s %(race)s %(wowclass)s on %(realm)s"
 msgstr "Level %(level)s %(gender)s %(race)s %(wowclass)s auf %(realm)s"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/rssnews.py:53
+msgid "News feeds"
+msgstr "News Kanäle"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/rssnews.py:54
+msgid "News entries"
+msgstr "News Einträge"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:300
+msgid "Clients Online"
+msgstr "Clients Online"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:301
+msgid "Clients in Database"
+msgstr "Clients in der Datenbank"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:337
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:35
+msgid "Online"
+msgstr "Online"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:339
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:34
+msgid "Offline"
+msgstr "Offline"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:443
+msgid "Description"
+msgstr "Beschreibung"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:444
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:542
+msgid "Created"
+msgstr "Erstellt"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:445
+msgid "Last Connection"
+msgstr "Zuletzt verbunden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:446
+msgid "Total Connections"
+msgstr "Total verbunden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:458
+msgid "Server Groups"
+msgstr "Server Gruppen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:461
+msgid "Last IP"
+msgstr "Letzte IP"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:462
+msgid "Bytes uploaded month"
+msgstr "Bytes hochgeladen diesen Monat"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:463
+msgid "Bytes downloaded month"
+msgstr "Bytes heruntergeladen diesen Monat"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:464
+msgid "Bytes uploaded total"
+msgstr "Bytes hochgeladen total"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:465
+msgid "Bytes downloaded total"
+msgstr "Bytes heruntergeladen diesen Monat"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:471
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:488
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:37
+msgid "Away"
+msgstr "Abwesend"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:472
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:489
+msgid "Away message"
+msgstr "Abwesenheits Nachricht"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:473
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:490
+msgid "Channel Group"
+msgstr "Kanal Gruppe"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:474
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:491
+msgid "Output muted"
+msgstr "Ausgabe stummgeschalten"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:475
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:492
+msgid "Output only muted"
+msgstr "Nur Ausgabe stummgeschalten"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:476
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:493
+msgid "Input muted"
+msgstr "Eingabe stummgeschalten"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:477
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:494
+msgid "Is channelcommander"
+msgstr "Ist Channelcommander"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:478
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:495
+msgid "Is recording"
+msgstr "Ist am aufnehmen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:479
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:496
+msgid "Is talker"
+msgstr "Ist am sprechen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:528
+msgid "Please choose a user."
+msgstr "Bitte wähle einen Benutzer."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:534
+#, python-format
+msgid "Your key is: %(key)s"
+msgstr "Dein Key ist: %(key)s"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:544
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:556
+msgid "Temporary TS3 Server error occured. Please try again, sorry."
+msgstr ""
+"Vorübergehender TS3 Server Fehler aufgetreten. Bitte versuche es noch "
+"einmal."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:550
+msgid "Client not found. Please try again, sorry."
+msgstr "Client nicht gefunden. Bitte versuche es noch einmal."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:560
+msgid "Please enter the number you recieved via teamspeak chat."
+msgstr "Bitte gib die Nummer ein, welche du im Teamspeak Chat erhalten hast."
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/twitchnetwork.py:60
+msgid "User Channels"
+msgstr "Benutzer Kanäle"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/twitchnetwork.py:61
+msgid "Streams Total"
+msgstr "Streams Total"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:36
+msgid "Busy"
+msgstr "Beschäftigt"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:38
+msgid "Snooze"
+msgstr "Schlummern"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:39
+msgid "Looking for trade"
+msgstr "Suche jemanden zum handeln"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:40
+msgid "Looking to play"
+msgstr "Suche jemanden zum spielen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:361
+msgid "You are now connected to steam"
+msgstr "Du bist jetzt verbunden mit Steam"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:380
+msgid "Users in Database"
+msgstr "Benutzer in der Datenbank"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:381
+msgid "Games in Database"
+msgstr "Spiele in der Datenbank"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:382
+msgid "Minutes played forever"
+msgstr "Minuten gespielt total"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:383
+msgid "Minutes played last 2 weeks"
+msgstr "Minuten gespielt letzte 2 wochen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:533
+msgid "Real Name"
+msgstr "Richtiger Name"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:538
+msgid "Country Code"
+msgstr "Länder Code"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:546
+msgid "Last Logoff"
+msgstr "Zuletzt abgemeldet"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:549
+msgid "Profile URL"
+msgstr "Profil URL"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:550
+msgid "Online/Offline"
+msgstr "Online/Offline"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:81
+msgid "Toggle navigation"
+msgstr "Navigation umschalten"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:105
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:1
+msgid "About"
+msgstr "Über"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:111
+msgid "Follow"
+msgstr "Folgen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:115
+msgid "Hidden boxes"
+msgstr "Versteckte boxen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:123
+msgid "Administration"
+msgstr "Verwaltung"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:125
+msgid "System Status"
+msgstr "System Status"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:126
+msgid "BG Jobs Status"
+msgstr "BG Jobs Status"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:127
+msgid "Celery Status"
+msgstr "Celery Status"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:128
+msgid "Networks"
+msgstr "Netzwerke"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:129
+msgid "Developer Tools"
+msgstr "Entwickler Werkzeuge"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:136
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:3
+msgid "Your profile settings"
+msgstr "Profileinstellungen"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:137
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:4
+msgid "Your gamer profile"
+msgstr "Dein gamer Profil"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:147
+msgid "Logout"
+msgstr "Abmelden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:151
+msgid "Registration"
+msgstr "Registrieren"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:152
+msgid "Login"
+msgstr "Anmelden"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:163
+msgid "Success message"
+msgstr "Erfolgs Nachricht"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:172
+msgid "Error message"
+msgstr "Fehler Meldung"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:181
+msgid "Info message"
+msgstr "Information"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
 msgid "Nickname"
@@ -206,21 +486,9 @@ msgstr "anmelden"
 msgid "register"
 msgstr "registrieren"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:1
-msgid "About"
-msgstr "Über"
-
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:2
 msgid "Connect Network"
 msgstr "Verbinde Netzwerk"
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:3
-msgid "Your profile settings"
-msgstr "Profileinstellungen"
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:4
-msgid "Your gamer profile"
-msgstr "Dein gamer Profil"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:5
 msgid "Connect to TS3 Server"

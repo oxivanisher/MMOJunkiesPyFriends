@@ -70,7 +70,7 @@
 		{%- endblock %}
 	</head>
 	<body>
-		{# <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />Loading...</div> -#}
+		{# <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />{{ _('Loading ...') }}</div> -#}
 		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none;"><img id="popupimg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="PopUp"/></span></div>
 		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none;"></span></div>
 		<nav class="navbar navbar-inverse" role="navigation">
@@ -78,7 +78,7 @@
 				{# Brand and toggle get grouped for better mobile display -#}
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-				 	<span class="sr-only">Toggle navigation</span>
+				 	<span class="sr-only">{{ _('Toggle navigation') }}</span>
 			        <span class="icon-bar"></span>
 			        <span class="icon-bar"></span>
 			        <span class="icon-bar"></span>
@@ -95,24 +95,24 @@
  						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Friends <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu"> -->
-								<li class="{% if url_for('partner_find') == request.path %}active{% endif %}"><a href="{{ url_for('partner_find') }}"><span class="glyphicon glyphicon-user"></span> Find new friends</a></li>
-								<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> Online Friends</a></li>
+								<li class="{% if url_for('partner_find') == request.path %}active{% endif %}"><a href="{{ url_for('partner_find') }}"><span class="glyphicon glyphicon-user"></span> {{ _('Find new friends') }}</a></li>
+								<li class="{% if url_for('partner_list') == request.path %}active{% endif %}"><a href="{{ url_for('partner_list') }}"><span class="glyphicon glyphicon-user"></span> {{ _('Online friends') }}</a></li>
  							</ul>
 						</li>
 						<li class="dropdown"></li> -#}
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
-						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('About') }}</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{# Social Links -#}
 						<li><a class="fb-like" data-href="https://www.facebook.com/MMOJunkies.net" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></a>
 						</li>
-						<li style="padding-top: 15px"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @realMMOJunkies</a></li>
+						<li style="padding-top: 15px"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">{{ _('Follow') }} @realMMOJunkies</a></li>
 
 						{# undo box remove -#}
 						<li class="dropdown" id="removedBoxesDropdownMenu" style="visibility: hidden; visible: hidden;">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span> Hidden Boxes <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span> {{ _('Hidden boxes') }} <span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu" id="removedBoxesDropdown">
 							</ul>
 						</li>
@@ -120,21 +120,21 @@
 					{% if session.logged_in -%}
 						{% if session.admin  -%}
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Administration <span class="caret"></span></a>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> {{ _('Administration') }} <span class="caret"></span></a>
 		         				<ul class="dropdown-menu" role="menu">
-									<li class="{% if url_for('admin_system_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_system_status') }}"><span class="glyphicon glyphicon-eye-open"></span> System Status</a></li>
-									<li class="{% if url_for('admin_bgjob_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_bgjob_status') }}"><span class="glyphicon glyphicon-eye-open"></span> BG Jobs Status</a></li>
-									<li class="{% if url_for('admin_celery_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_celery_status') }}"><span class="glyphicon glyphicon-eye-open"></span> Celery Status</a></li>
-									<li class="{% if url_for('network_admin') == request.path %}active{% endif %}"><a href="{{ url_for('network_admin') }}"><span class="glyphicon glyphicon-tasks"></span> Networks</a></li>
-									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}"><span class="glyphicon glyphicon-wrench"></span> Developer Tools</a></li>
+									<li class="{% if url_for('admin_system_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_system_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('System Status') }}</a></li>
+									<li class="{% if url_for('admin_bgjob_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_bgjob_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('BG Jobs Status') }}</a></li>
+									<li class="{% if url_for('admin_celery_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_celery_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('Celery Status') }}</a></li>
+									<li class="{% if url_for('network_admin') == request.path %}active{% endif %}"><a href="{{ url_for('network_admin') }}"><span class="glyphicon glyphicon-tasks"></span> {{ _('Networks') }}</a></li>
+									<li class="{% if url_for('dev') == request.path %}active{% endif %}"><a href="{{ url_for('dev') }}"><span class="glyphicon glyphicon-wrench"></span> {{ _('Developer Tools') }}</a></li>
 								</ul>
 							</li>
 						{% endif -%}
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu">
-								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> Profile Settings</a></li>
-								<li class="{% if url_for('partner_show', partnerId=session.userid) == request.path %}active{% endif %}"><a href="{{ url_for('partner_show', partnerId=session.userid) }}"><span class="glyphicon glyphicon-user"></span> Gamer Profile</a></li>
+								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> {{ _('Your profile settings') }}</a></li>
+								<li class="{% if url_for('partner_show', partnerId=session.userid) == request.path %}active{% endif %}"><a href="{{ url_for('partner_show', partnerId=session.userid) }}"><span class="glyphicon glyphicon-user"></span> {{ _('Your gamer profile') }}</a></li>
 
 								<li class="divider"></li>
 
@@ -144,12 +144,12 @@
 								{%- endfor %}
 
 								<li class="divider"></li>
-								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Logout') }}</a></li>
 							</ul>
 						</li>
 					{% else %}
-						<li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}"><span class="glyphicon glyphicon-user"></span> Registration</a></li>
-						<li><a href="{{ url_for('profile_login') }}"><span class="glyphicon glyphicon-off"></span> Login</a></li>
+						<li class="{% if url_for('profile_register') == request.path %}active{% endif %}"><a href="{{ url_for('profile_register') }}"><span class="glyphicon glyphicon-user"></span> {{ _('Registration') }}</a></li>
+						<li><a href="{{ url_for('profile_login') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Login') }}</a></li>
 					{% endif -%}
 					</ul>
 				</div>{# /.navbar-collapse #}
@@ -160,7 +160,7 @@
 		</div>
 		{%- with messages = get_flashed_messages(category_filter=["success"]) %}
 			{%- if messages %}
-				<div id="flashDialogSuccess" title="Success message">
+				<div id="flashDialogSuccess" title="{{ _('Success message') }}">
 				{%- for message in messages %}
 					<div class="flashMessage">{{ message }}</div>
 				{% endfor -%}
@@ -169,7 +169,7 @@
 		{% endwith -%}
 		{%- with messages = get_flashed_messages(category_filter=["error"]) %}
 			{%- if messages %}
-				<div id="flashDialogError" title="Error message">
+				<div id="flashDialogError" title="{{ _('Error message') }}">
 				{%- for message in messages %}
 					<div class="flashMessage">{{ message }}</div>
 				{% endfor -%}
@@ -178,7 +178,7 @@
 		{% endwith -%}
 		{%- with messages = get_flashed_messages(category_filter=["info"]) %}
 			{%- if messages %}
-				<div id="flashDialogInfo" title="Info message">
+				<div id="flashDialogInfo" title="{{ _('Info message') }}">
 				{%- for message in messages %}
 					<div class="flashMessage">{{ message }}</div>
 				{% endfor -%}

@@ -7,6 +7,7 @@ import os
 import random
 
 from flask import current_app, url_for
+from flask.ext.babel import Babel, gettext
 from mmofriends import db
 from mmonetwork import *
 from mmoutils import *
@@ -296,8 +297,8 @@ class TS3Network(MMONetwork):
         self.getCache('clientDatabase')
 
         return {
-            'Clients Online': len(self.cache['onlineClients']),
-            'Clients in Database': len(self.cache['clientDatabase']),
+            gettext('Clients Online'): len(self.cache['onlineClients']),
+            gettext('Clients in Database'): len(self.cache['clientDatabase']),
         }
 
     def getPartners(self, **kwargs):
@@ -333,9 +334,9 @@ class TS3Network(MMONetwork):
             nick = self.cache['clientDatabase'][cldbid]['client_nickname']
 
             if cldbid in self.cache['onlineClients']:
-                state = "Online"
+                state = gettext("Online")
             else:
-                state = "Offline"
+                state = gettext("Offline")
 
             # user server group
             try:
@@ -439,14 +440,14 @@ class TS3Network(MMONetwork):
                     self.cacheFile(avatar)
                     self.setPartnerAvatar(moreInfo, avatar)
 
-            self.setPartnerDetail(moreInfo, "Description", self.cache['clientDatabase'][cldbid]['client_description'])
-            self.setPartnerDetail(moreInfo, "Created", timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
-            self.setPartnerDetail(moreInfo, "Last Connection", timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))
-            self.setPartnerDetail(moreInfo, "Total Connections", self.cache['clientDatabase'][cldbid]['client_totalconnections'])
+            self.setPartnerDetail(moreInfo, gettext("Description"), self.cache['clientDatabase'][cldbid]['client_description'])
+            self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
+            self.setPartnerDetail(moreInfo, gettext("Last Connection"), timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))
+            self.setPartnerDetail(moreInfo, gettext("Total Connections"), self.cache['clientDatabase'][cldbid]['client_totalconnections'])
 
             userGroups = []
             userGroupIcon = 0
-            userGroupName = "Unknown"
+            userGroupName = gettext("Unknown")
             for group in self.cache['clientDatabase'][cldbid]['groups']:
                 for g in self.cache['serverInfo']['groupList'].keys():
                     if self.cache['serverInfo']['groupList'][g]['sgid'] == group['sgid']:
@@ -454,28 +455,28 @@ class TS3Network(MMONetwork):
                         self.cacheIcon(self.cache['serverInfo']['groupList'][g]['iconid'])
                 userGroups.append(group['name'])
                 userGroupName = group['name']
-            self.setPartnerDetail(moreInfo, "Server Groups", ', '.join(userGroups))
+            self.setPartnerDetail(moreInfo, gettext("Server Groups"), ', '.join(userGroups))
 
             if self.session.get('admin'):
-                self.setPartnerDetail(moreInfo, "Last IP", self.cache['clientDatabase'][cldbid]['client_lastip'])
-                self.setPartnerDetail(moreInfo, "Bytes uploaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_uploaded']))
-                self.setPartnerDetail(moreInfo, "Bytes downloaded month", bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_downloaded']))
-                self.setPartnerDetail(moreInfo, "Bytes uploaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
-                self.setPartnerDetail(moreInfo, "Bytes downloaded total", bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
+                self.setPartnerDetail(moreInfo, gettext("Last IP"), self.cache['clientDatabase'][cldbid]['client_lastip'])
+                self.setPartnerDetail(moreInfo, gettext("Bytes uploaded month"), bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, gettext("Bytes downloaded month"), bytes2human(self.cache['clientDatabase'][cldbid]['client_month_bytes_downloaded']))
+                self.setPartnerDetail(moreInfo, gettext("Bytes uploaded total"), bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_uploaded']))
+                self.setPartnerDetail(moreInfo, gettext("Bytes downloaded total"), bytes2human(self.cache['clientDatabase'][cldbid]['client_total_bytes_downloaded']))
 
             for entry in self.cache['clientInfoDatabase'].keys():
                 if self.cache['clientInfoDatabase'][entry]['client_unique_identifier'] == self.cache['clientDatabase'][cldbid]['client_unique_identifier']:
                     clientInfoDatabaseId = entry
             if entry in self.cache['clientInfoDatabase'].keys():
-                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][entry]['client_away'])
-                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][entry]['client_away_message'])
-                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][entry]['client_channel_group_id']]['name'])
-                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][entry]['client_output_muted'])
-                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][entry]['client_outputonly_muted'])
-                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][entry]['client_input_muted'])
-                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][entry]['client_is_channel_commander'])
-                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][entry]['client_is_recording'])
-                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][entry]['client_is_talker'])
+                self.setPartnerFlag(moreInfo, gettext("Away"), self.cache['clientInfoDatabase'][entry]['client_away'])
+                self.setPartnerDetail(moreInfo, gettext("Away message"), self.cache['clientInfoDatabase'][entry]['client_away_message'])
+                self.setPartnerDetail(moreInfo, gettext("Channel Group"), self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][entry]['client_channel_group_id']]['name'])
+                self.setPartnerFlag(moreInfo, gettext("Output muted"), self.cache['clientInfoDatabase'][entry]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Output only muted"), self.cache['clientInfoDatabase'][entry]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Input muted"), self.cache['clientInfoDatabase'][entry]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Is channelcommander"), self.cache['clientInfoDatabase'][entry]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, gettext("Is recording"), self.cache['clientInfoDatabase'][entry]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, gettext("Is talker"), self.cache['clientInfoDatabase'][entry]['client_is_talker'])
 
             tmpCldbid = cldbid
             if cldbid not in self.cache['clientInfoDatabase'].keys():
@@ -484,15 +485,15 @@ class TS3Network(MMONetwork):
                         tmpCldbid = entry
     
             if tmpCldbid in self.cache['clientInfoDatabase'].keys():
-                self.setPartnerFlag(moreInfo, "Away", self.cache['clientInfoDatabase'][tmpCldbid]['client_away'])
-                self.setPartnerDetail(moreInfo, "Away message", self.cache['clientInfoDatabase'][tmpCldbid]['client_away_message'])
-                self.setPartnerDetail(moreInfo, "Channel Group", self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][tmpCldbid]['client_channel_group_id']]['name'])
-                self.setPartnerFlag(moreInfo, "Output muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_output_muted'])
-                self.setPartnerFlag(moreInfo, "Output only muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_outputonly_muted'])
-                self.setPartnerFlag(moreInfo, "Input muted", self.cache['clientInfoDatabase'][tmpCldbid]['client_input_muted'])
-                self.setPartnerFlag(moreInfo, "Is channelcommander", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_channel_commander'])
-                self.setPartnerFlag(moreInfo, "Is recording", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_recording'])
-                self.setPartnerFlag(moreInfo, "Is talker", self.cache['clientInfoDatabase'][tmpCldbid]['client_is_talker'])
+                self.setPartnerFlag(moreInfo, gettext("Away"), self.cache['clientInfoDatabase'][tmpCldbid]['client_away'])
+                self.setPartnerDetail(moreInfo, gettext("Away message"), self.cache['clientInfoDatabase'][tmpCldbid]['client_away_message'])
+                self.setPartnerDetail(moreInfo, gettext("Channel Group"), self.cache['serverInfo']['channelGroupList'][self.cache['clientInfoDatabase'][tmpCldbid]['client_channel_group_id']]['name'])
+                self.setPartnerFlag(moreInfo, gettext("Output muted"), self.cache['clientInfoDatabase'][tmpCldbid]['client_output_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Output only muted"), self.cache['clientInfoDatabase'][tmpCldbid]['client_outputonly_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Input muted"), self.cache['clientInfoDatabase'][tmpCldbid]['client_input_muted'])
+                self.setPartnerFlag(moreInfo, gettext("Is channelcommander"), self.cache['clientInfoDatabase'][tmpCldbid]['client_is_channel_commander'])
+                self.setPartnerFlag(moreInfo, gettext("Is recording"), self.cache['clientInfoDatabase'][tmpCldbid]['client_is_recording'])
+                self.setPartnerFlag(moreInfo, gettext("Is talker"), self.cache['clientInfoDatabase'][tmpCldbid]['client_is_talker'])
 
         except KeyError as e:
             self.log.info("Missing client information to show in details: %s" % e)
@@ -524,13 +525,13 @@ class TS3Network(MMONetwork):
 
     def doLink(self, userId):
         if not userId:
-            return "Please choose a user."
+            return gettext("Please choose a user.")
         self.getCache('onlineClients')
         self.connect()
         self.log.debug("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
-        message = "Your MMOfriends key is: %s" % self.getSessionValue('doLinkKey')
+        message = gettext("Your key is: %(key)s", key=self.getSessionValue('doLinkKey'))
         count = 0
         while True:
             try:
@@ -540,23 +541,23 @@ class TS3Network(MMONetwork):
             except EOFError as e:
                 self.log.warning("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
-                    return "Temporary TS3 Server occured. Please try again, sorry."
+                    return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.1)
             except KeyError as e:
                 self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
-                    return "Client not found. Please try again, sorry."
+                    return gettext("Client not found. Please try again, sorry.")
                 else:
                     time.sleep(0.1)
             except Exception as e:
                 self.log.error("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
                 if count > 5:
-                    return "Temporary TS3 Server error occured. Please try again, sorry."
+                    return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.1)
         self.log.info("[%s] Linking with code: %s" % (self.handle, self.getSessionValue('doLinkKey')))
-        return "Please enter the number you recieved via teamspeak chat."
+        return gettext("Please enter the number you recieved via teamspeak chat.")
 
     def clearLinkRequest(self):
         self.log.debug("[%s] Clearing link requst" % (self.handle))

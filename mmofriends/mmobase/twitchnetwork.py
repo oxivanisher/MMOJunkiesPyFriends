@@ -13,6 +13,7 @@ import requests
 import urllib
 
 from flask import current_app, url_for
+from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
@@ -56,15 +57,15 @@ class TwitchNetwork(MMONetwork):
         self.getCache("streams")
 
         return {
-            'User Channels': len(self.cache['channels']),
-            'Streams Total': len(self.cache['streams'])
+            gettext('User Channels'): len(self.cache['channels']),
+            gettext('Streams Total'): len(self.cache['streams'])
         }
 
     def getLinkHtml(self):
         self.log.debug("Show linkHtml %s" % self.name)
         htmlFields = {}
         # if not self.getSessionValue(self.linkIdName):
-        htmlFields['link'] = {'comment': "Login with Twitch.tv.",
+        htmlFields['link'] = {'comment': "%s %s" % (gettext("Login with"), self.name),
                               'linkUrl': self.requestAuthorizationUrl()}
         return htmlFields
 
