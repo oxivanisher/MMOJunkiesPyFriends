@@ -542,7 +542,7 @@ def network_link():
                     return jsonify({ 'message': MMONetworks[request.form['handle']].doLink(request.form['id']) })
                 elif request.form['do'] == 'finalize':
                     if MMONetworks[request.form['handle']].finalizeLink(request.form['userKey']):
-                        flash('Successfully linked to network %s' % net.description, 'success')
+                        flash(gettext('Successfully linked to network %(netdescr)s', netdescr=net.description), 'success')
                     else:
                         MMONetworks[request.form['handle']].clearLinkRequest()
                         flash('Unable to link network %s. Please try again.' % net.description, 'error')
