@@ -1047,7 +1047,7 @@ def getLastly(request):
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
 # Dashboard functions
-SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': _('Statistics')})
+SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': gettext('Statistics')})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
 SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation', 'sticky': True})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
