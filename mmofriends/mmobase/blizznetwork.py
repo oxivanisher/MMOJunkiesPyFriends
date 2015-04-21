@@ -13,6 +13,7 @@ import requests
 import urllib
 
 from flask import current_app, url_for
+from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
 from mmonetwork import *
