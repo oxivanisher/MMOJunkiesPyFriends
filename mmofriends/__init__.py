@@ -273,8 +273,7 @@ except Exception as e:
 # localization methods
 @babel.localeselector
 def get_locale():
-    # return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
-    return 'de'
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
 # flask error handlers
 @app.errorhandler(404)
