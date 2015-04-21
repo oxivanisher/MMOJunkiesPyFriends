@@ -64,7 +64,6 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 Compress(app)
-babel = Babel(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 app.config['startupDate'] = time.time()
 
@@ -96,6 +95,7 @@ with app.test_request_context():
         app.logger.addHandler(mail_handler)
 
 # initialize stuff
+babel = Babel(app)
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 if not len(app.config['APPSECRET']):
     log.warning("[System] Generating random secret_key. All older cookies will be invalid, but i will NOT work with multiple processes (WSGI).")
