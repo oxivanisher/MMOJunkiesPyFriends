@@ -1,8 +1,8 @@
-<a href="{{ url_for('about') }}" class="btn btn-sm btn-primary btn-block">About</a>
-<!-- <a href="{{ url_for('network_link') }}" class="btn btn-sm btn-primary btn-block">Connect Network</a></li> -->
-<a href="{{ url_for('profile_show') }}" class="btn btn-sm btn-primary btn-block">Your profile settings</a>
-<a href="{{ url_for('partner_show', partnerId=session.userid) }}" class="btn btn-sm btn-primary btn-block">Your gamer profile</a>
-<a href="ts3server://{{ config.networkConfig.TS3.exturl }}?port={{ config.networkConfig.TS3.extport }}&nickname={{ session.nick }}&password={{ config.networkConfig.TS3.extpassword }}" class="btn btn-sm btn-primary btn-block"><img src="{{ url_for('get_image', imgType='network', imgId='TS3') }}" class="partner_list_icon" title="Connect to TS3 Server"> Connect to TS3 Server <img src="{{ url_for('get_image', imgType='network', imgId='TS3') }}" class="partner_list_icon" title="Connect to TS3 Server"></a>
+<a href="{{ url_for('about') }}" class="btn btn-sm btn-primary btn-block">{{ _('About') }}</a>
+<!-- <a href="{{ url_for('network_link') }}" class="btn btn-sm btn-primary btn-block">{{ _('Connect Network') }}</a></li> -->
+<a href="{{ url_for('profile_show') }}" class="btn btn-sm btn-primary btn-block">{{ _('Your profile settings') }}</a>
+<a href="{{ url_for('partner_show', partnerId=session.userid) }}" class="btn btn-sm btn-primary btn-block">{{ _('Your gamer profile') }}</a>
+<a href="ts3server://{{ config.networkConfig.TS3.exturl }}?port={{ config.networkConfig.TS3.extport }}&nickname={{ session.nick }}&password={{ config.networkConfig.TS3.extpassword }}" class="btn btn-sm btn-primary btn-block"><img src="{{ url_for('get_image', imgType='network', imgId='TS3') }}" class="partner_list_icon" title="Connect to TS3 Server"> {{ _('Connect to TS3 Server') }} <img src="{{ url_for('get_image', imgType='network', imgId='TS3') }}" class="partner_list_icon" title="Connect to TS3 Server"></a>
 {% if config.PAYPAL_ENCRIPTED -%}
 <br />
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
