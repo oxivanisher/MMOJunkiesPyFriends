@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-21 10:02+0200\n"
-"PO-Revision-Date: 2015-04-21 10:02+0200\n"
+"POT-Creation-Date: 2015-04-21 10:08+0200\n"
+"PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:545
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:546
 #, python-format
 msgid "Successfully linked to network %(netdescr)s"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1049
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1050
 msgid "Statistics"
 msgstr ""
 
