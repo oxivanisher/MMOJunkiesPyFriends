@@ -95,7 +95,6 @@ with app.test_request_context():
         app.logger.addHandler(mail_handler)
 
 # initialize stuff
-babel = Babel(app)
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
 if not len(app.config['APPSECRET']):
     log.warning("[System] Generating random secret_key. All older cookies will be invalid, but i will NOT work with multiple processes (WSGI).")
@@ -119,6 +118,7 @@ with app.test_request_context():
     # db.session.autocommit = True
     # db.session.autoflush = True
     oid = OpenID(app)
+    babel = Babel(app)
 
 # initialize twitter api for news
 # api = twitter.Api(consumer_key='bAngUFXT9c5FCRFkfQZjqAqJT',
