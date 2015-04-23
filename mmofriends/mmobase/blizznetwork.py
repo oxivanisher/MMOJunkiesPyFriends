@@ -209,7 +209,7 @@ class BlizzNetwork(MMONetwork):
             self.log.warning(message)
             return (False, message)
 
-    def getPartnerDetails(self, battletag):
+    def getPartnerDetails(self, partnerId):
         self.log.debug("List partner details")
         moreInfo = {}
 
@@ -218,42 +218,42 @@ class BlizzNetwork(MMONetwork):
         self.getCache('sc2Profiles')
         self.getCache('d3Profiles')
 
-        for link in self.getNetworkLinks():
-            if link['network_data'] == battletag:
-                battletag = self.cache['battletags'][str(link['user_id'])]
+        try:
+            self.setPartnerDetail(moreInfo, "Battletag", self.cache['battletags'][partnerId])
+            battletag = self.cache['battletags'][partnerId]
+        except KeyError:
+            #Probably empty database!
+            return moreInfo
 
-        for userid in self.cache['battletags'].keys():
-            if battletag == self.cache['battletags'][userid]:
-                # Starcraft 2
-                if userid in self.cache['sc2Profiles'].keys():
-                    try:
-                        for char in self.cache['sc2Profiles'][userid]['characters']:
-                            clantag = ""
-                            if char['clanTag']:
-                                clantag = "[%s] " % char['clanTag']
-                            self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
-                            self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
-                    except KeyError:
-                        pass
+        # Starcraft 2
+        if userid in self.cache['sc2Profiles'].keys():
+            try:
+                for char in self.cache['sc2Profiles'][userid]['characters']:
+                    clantag = ""
+                    if char['clanTag']:
+                        clantag = "[%s] " % char['clanTag']
+                    self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
+                    self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
+            except KeyError:
+                pass
 
+        # Diablo 3
+        if userid in self.cache['d3Profiles'].keys():
+            try:
+                for hero in self.cache['d3Profiles'][userid]['heroes']:
+                    self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
+            except KeyError:
+                pass
 
-                # Diablo 3
-                if userid in self.cache['d3Profiles'].keys():
-                    try:
-                        for hero in self.cache['d3Profiles'][userid]['heroes']:
-                            self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
-                    except KeyError:
-                        pass
-
-                # World of Warcraft
-                if userid in self.cache['wowProfiles'].keys():
-                    try:
-                        for char in self.cache['wowProfiles'][userid]['characters']:
-                            self.setPartnerDetail(moreInfo, "WoW", char['name'] + " (" + self.getWowCharDescription(char) + ")")
-                        bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
-                        self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], bestChar['race'], bestChar['gender']))
-                    except KeyError:
-                        pass
+        # World of Warcraft
+        if userid in self.cache['wowProfiles'].keys():
+            try:
+                for char in self.cache['wowProfiles'][userid]['characters']:
+                    self.setPartnerDetail(moreInfo, "WoW", char['name'] + " (" + self.getWowCharDescription(char) + ")")
+                bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+                self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], bestChar['race'], bestChar['gender']))
+            except KeyError:
+                pass
         
         return moreInfo
 
