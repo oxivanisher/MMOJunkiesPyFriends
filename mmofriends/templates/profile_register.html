@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}{{ _('Register') }}{% endblock %}
 {% block content %}
 <form action="{{ url_for('profile_register') }}" id="register" method="post" autocomplete="on">
-	<h2>Registration</h2>
+	<h2>{{ _('Registration') }}</h2>
 		<dl>
-			<dt>Nickname: *
+			<dt>{{ _('Nickname') }}: *
 			<dd><input type="text" name="nick" class="backend" value="{{ values.nick }}" autofocus="autofocus">
-			<dt>Password: *
+			<dt>{{ _('Password') }}: *
 			<dd><input type="password" name="password" class="backend" >
-			<dt>Again the password: *
+			<dt>{{ _('Again the password') }}: *
 			<dd><input type="password" name="password2" class="backend">
-			<dt>Email: *
+			<dt>{{ _('Email') }}: *
 			<dd><input type="text" name="email" class="backend" value="{{ values.email }}">
-			<dt>Website:
+			<dt>{{ _('Website') }}:
 			<dd><input type="text" name="website" class="backend" value="{{ values.website }}">
-			<dt>Real Name:
+			<dt>{{ _('Real Name') }}:
 			<dd><input type="text" name="name" class="backend" value="{{ values.name }}">
 		</dl>
-	<button class="btn btn-default" type="submit">submit</button> <button class="btn btn-default" type="reset">reset</button>
+	<button class="btn btn-default" type="submit">{{ _('Submit') }}</button> <button class="btn btn-default" type="reset">{{ _('Reset') }}</button>
 </form>
 {% endblock %}
