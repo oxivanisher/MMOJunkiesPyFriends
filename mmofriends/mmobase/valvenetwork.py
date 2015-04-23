@@ -379,8 +379,8 @@ class ValveNetwork(MMONetwork):
         return {
             gettext('Users in Database'): len(self.cache['users']),
             gettext('Games in Database'): len(self.cache['games']),
-            gettext('Minutes played forever'): playedForever,
-            gettext('Minutes played last 2 weeks'): playedRecent,
+            gettext('Played forever'): get_long_duration(playedForever * 60),
+            gettext('Played last 2 weeks'):get_long_duration(playedRecent * 60),
         }
 
     def getLinkHtml(self):

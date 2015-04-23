@@ -8,7 +8,7 @@ TRANSLATIONDIR=$APPDIR/translations
 MESSAGES=$TRANSLATIONDIR/messages.pot
 RUNCOMPILE=true
 
-PYBABEL=$(whereis pybabel)
+PYBABEL=$(whereis pybabel|awk '{print $2}')
 if [ "z" = "z$PYBABEL" ];
 then
 	PYBABEL=/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/pybabel
