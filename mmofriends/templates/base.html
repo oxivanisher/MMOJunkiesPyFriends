@@ -145,7 +145,9 @@
 
 								<li class="divider"></li>
 								{%- for key, value in config.LANGUAGES.iteritems() %}
-									<li><a href="{{ url_for('set_lang', language=key) }}"><span class="glyphicon glyphicon-eye-open"></span> {{ value }}</a></li>
+									{%- if key != get_locale() %}
+										<li><a href="{{ url_for('set_lang', language=key) }}"><span class="glyphicon glyphicon-eye-open"></span> {{ value }}</a></li>
+									{%- endif %}
 								{%- endfor %}
 								<li class="divider"></li>
 								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Logout') }}</a></li>
