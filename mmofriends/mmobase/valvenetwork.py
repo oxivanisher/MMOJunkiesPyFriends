@@ -517,41 +517,47 @@ class ValveNetwork(MMONetwork):
         moreInfo = {}
 
         try:
-            self.setPartnerDetail(moreInfo, "Nick", self.cache['users'][partnerId]['personaname'])
+            linkInfo = self.getNetworkLinks(partnerId)
+            steamId = linkInfo[0]['network_data']
+        except KeyError:
+            return moreInfo
+
+        try:
+            self.setPartnerDetail(moreInfo, "Nick", self.cache['users'][steamId]['personaname'])
         except KeyError:
             #Probably empty database!
             return moreInfo
         timer = time.time()
-        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['users'][partnerId]['avatarfull']))
+        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['users'][steamId]['avatarfull']))
         if ((time.time() - timer) > 0.01):
             self.log.info("after avatar caching! %s" % (time.time() - timer))
 
 
         if self.session.get('admin'):
-            self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][partnerId]['steamid'])
+            self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][steamId]['steamid'])
             try:
-                self.setPartnerDetail(moreInfo, gettext("Real Name"), self.cache['users'][partnerId]['realname'])
+                self.setPartnerDetail(moreInfo, gettext("Real Name"), self.cache['users'][steamId]['realname'])
             except KeyError:
                 pass
 
         try:
-            self.setPartnerDetail(moreInfo, gettext("Country Code"), self.cache['users'][partnerId]['loccountrycode'])
+            self.setPartnerDetail(moreInfo, gettext("Country Code"), self.cache['users'][steamId]['loccountrycode'])
         except KeyError:
             pass
         try:
-            self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['users'][partnerId]['timecreated']))
+            self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['users'][steamId]['timecreated']))
         except KeyError:
             pass
         try:
-            self.setPartnerDetail(moreInfo, gettext("Last Logoff"), timestampToString(self.cache['users'][partnerId]['lastlogoff']))
+            self.setPartnerDetail(moreInfo, gettext("Last Logoff"), timestampToString(self.cache['users'][steamId]['lastlogoff']))
         except KeyError:
             pass
-        self.setPartnerDetail(moreInfo, gettext("Profile URL"), self.cache['users'][partnerId]['profileurl'])
-        self.setPartnerDetail(moreInfo, gettext("Online/Offline"), self.onlineStates[self.cache['users'][partnerId]['personastate']])
+        self.setPartnerDetail(moreInfo, gettext("Profile URL"), self.cache['users'][steamId]['profileurl'])
+        self.setPartnerDetail(moreInfo, gettext("Online/Offline"), self.onlineStates[self.cache['users'][steamId]['personastate']])
 
         games = []
-        if 'ownedGames' in self.cache['users'][partnerId]:
-            for gameid in self.cache['users'][partnerId]['ownedGames']:
+        if 'ownedGames' in self.cache['users'][steamId]:
+            for gameid in self.cache['users'][steamId]['ownedGames']:
                 try:
                     games.append(self.cache['games'][str(gameid)]['name'])
                 except KeyError:
@@ -559,7 +565,7 @@ class ValveNetwork(MMONetwork):
             self.setPartnerDetail(moreInfo, "Games", ', '.join(games))
 
             # games = []
-            # for gameid in self.cache['users'][partnerId]['recentlyplayed']:
+            # for gameid in self.cache['users'][steamId]['recentlyplayed']:
             #     try:
             #         games.append(self.cache['games'][str(gameid)]['name'])
             #     except KeyError:
