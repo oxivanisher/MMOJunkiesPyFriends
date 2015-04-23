@@ -425,7 +425,7 @@ class TS3Network(MMONetwork):
 
         return (True, ret)
 
-    def getPartnerDetails(self, cldbid):
+    def getPartnerDetails(self, partnerId):
         moreInfo = {}
         self.getCache('onlineClients')
         self.getCache('clientDatabase')
