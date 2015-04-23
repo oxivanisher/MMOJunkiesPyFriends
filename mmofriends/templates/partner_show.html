@@ -32,7 +32,7 @@
 		</ul>
 	{%- endif -%}
 	{%- for net in networks -%}
-		{% -if net.linkData -%}
+		{%- if net.linkData -%}
 		<div id="{{ net.handle }}">
 			{%- for link in net.linkData -%}
 				<table>
