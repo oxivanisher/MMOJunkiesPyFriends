@@ -108,7 +108,6 @@ SystemBoxes = {}
 app.jinja_env.globals.update(timestampToString=timestampToString)
 app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
-app.jinja_env.globals.update(get_locale=get_locale)
 
 # initialize database
 db = SQLAlchemy(app)
@@ -276,9 +275,12 @@ except Exception as e:
 def get_locale():
     sessionLang = session.get('displayLanguage')
     if sessionLang:
+        session['currentLocale'] = sessionLang
         return sessionLang
     else:
-        return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+        browserLang = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+        session['currentLocale'] = browserLang
+        return browserLang
 
 # flask error handlers
 @app.errorhandler(404)
