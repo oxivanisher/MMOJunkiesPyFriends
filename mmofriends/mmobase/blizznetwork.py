@@ -232,7 +232,7 @@ class BlizzNetwork(MMONetwork):
                         clantag = "[%s] " % char['clanTag']
                     self.setPartnerDetail(moreInfo, "SC 2", "%s%s" % (clantag, char['displayName']))
                     self.setPartnerAvatar(moreInfo, self.cacheFile(char['avatar']['url']))
-            except KeyError:
+            except (KeyError, TypeError):
                 pass
 
         # Diablo 3
@@ -240,7 +240,7 @@ class BlizzNetwork(MMONetwork):
             try:
                 for hero in self.cache['d3Profiles'][partnerId]['heroes']:
                     self.setPartnerDetail(moreInfo, "D3", "%s lvl %s (%s)" % (hero['name'], hero['level'], hero['class']))
-            except KeyError:
+            except (KeyError, TypeError):
                 pass
 
         # World of Warcraft
@@ -250,7 +250,7 @@ class BlizzNetwork(MMONetwork):
                     self.setPartnerDetail(moreInfo, "WoW", char['name'] + " (" + self.getWowCharDescription(char) + ")")
                 bestChar = self.getBestWowChar(self.cache['wowProfiles'][partnerId]['characters'])
                 self.setPartnerAvatar(moreInfo, self.cacheWowAvatarFile(bestChar['thumbnail'], bestChar['race'], bestChar['gender']))
-            except KeyError:
+            except (KeyError, TypeError):
                 pass
         
         return moreInfo
