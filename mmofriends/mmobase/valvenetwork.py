@@ -373,9 +373,9 @@ class ValveNetwork(MMONetwork):
         except (KeyError, IndexError):
             return False
 
-        if int(self.cache['users'][steamId]['personastate']) not in self.lastlyDontShow:
-            return True
-        return False
+        if self.cache['users'][steamId]['personastate'] in self.lastlyDontShow:
+            return False
+        return True
 
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
