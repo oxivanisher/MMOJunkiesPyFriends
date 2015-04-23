@@ -281,21 +281,23 @@ def get_locale():
 
 # flask error handlers
 @app.errorhandler(404)
-def not_found(error):
-    flash("Page not found!", 'error')
-    # return render_template('profile_login.html'), 404
+def error_not_found(error):
+    flash(gettext("Page not found"), 'error')
     return redirect(url_for('index'))
 
 @app.errorhandler(401)
-def not_found(error):
-    flash("Unauthorized request", 'error')
-    # return render_template('profile_login.html'), 401
+def error_unauthorized_request(error):
+    flash(gettext("Unauthorized request"), 'error')
     return redirect(url_for('index'))
 
 @app.errorhandler(403)
-def not_found(error):
-    flash("Forbidden request", 'error')
-    # return render_template('profile_login.html'), 403
+def error_forbidden_request(error):
+    flash(gettext("Forbidden request"), 'error')
+    return redirect(url_for('index'))
+
+@app.errorhandler(500)
+def error_internal_server_error(error):
+    flash(gettext("The server encountered an internal error, probably a bug in the program. The administration was informed of this problem."), 'error')
     return redirect(url_for('index'))
 
 # app routes
