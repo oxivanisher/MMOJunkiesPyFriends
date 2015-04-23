@@ -58,6 +58,7 @@ class TwitchNetwork(MMONetwork):
         try:
             if partnerId in self.cache['channels'].keys():
                 userid = partnerId
+            return False
         except (KeyError, IndexError):
             return False
 
