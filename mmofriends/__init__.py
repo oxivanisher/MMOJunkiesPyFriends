@@ -297,7 +297,9 @@ def error_forbidden_request(error):
 
 @app.errorhandler(500)
 def error_internal_server_error(error):
-    return render_template('error.html', number = 500, message = gettext("The server encountered an internal error, probably a bug in the program. The administration was automatically informed of this problem."))
+    flash(gettext("The server encountered an internal error, probably a bug in the program. The administration was automatically informed of this problem."), 'error')
+    return redirect(url_for('index'))
+    # return render_template('error.html', number = 500, message = gettext("The server encountered an internal error, probably a bug in the program. The administration was automatically informed of this problem."))
 
 # app routes
 @app.before_first_request
