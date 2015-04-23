@@ -40,8 +40,11 @@
 						for (netId in data.nets) {
 							net = data.nets[netId];
 
-							if (user.nets.indexOf(netId) > -1) {
+							if (user.onlineNets.indexOf(netId) > -1) {
 								opac = 1;
+								linkUrl = user.url + "/" + netId;
+							} else if (user.nets.indexOf(netId) > -1) {
+								opac = 0.5;
 								linkUrl = user.url + "/" + netId;
 							} else {
 								opac = 0.1;
