@@ -435,7 +435,7 @@ class TS3Network(MMONetwork):
         try:
             linkInfo = self.getNetworkLinks(partnerId)
             cldbid = linkInfo[0]['network_data']
-        except KeyError:
+        except (KeyError, IndexError):
             return moreInfo
 
         try:
