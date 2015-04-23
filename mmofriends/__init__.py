@@ -926,11 +926,12 @@ def partner_show(partnerId, netHandle = None):
             netData['handle'] = MMONetworks[net].handle
 
             for link in linkInfo:
-                netData['linkData'].append(MMONetworks[net].getPartnerDetails(link['network_data']))
-                networks.append(netData)
-                count += 1
+                netContent = MMONetworks[net].getPartnerDetails(partnerId)
+                if netContent:
+                    netData['linkData'].append(netContent)
+                    networks.append(netData)
+                    count += 1
 
-    # print "zzzz", networks
     myUser = getUserById(partnerId)
     if not myUser:
         flash("User not found", 'error')

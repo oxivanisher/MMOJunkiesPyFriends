@@ -218,8 +218,6 @@ class BlizzNetwork(MMONetwork):
         self.getCache('sc2Profiles')
         self.getCache('d3Profiles')
 
-        partnerId = unicode(partnerId)
-
         try:
             self.setPartnerDetail(moreInfo, "Battletag", self.cache['battletags'][partnerId])
         except KeyError:
