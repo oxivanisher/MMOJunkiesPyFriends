@@ -50,7 +50,23 @@ class TwitchNetwork(MMONetwork):
             authorize_url='%s/oauth2/authorize' % self.baseUrl,
             access_token_url='%s/oauth2/token' % self.baseUrl)
 
-    # overwritten class methods
+    # Class overwrites
+    def checkForUserOnline(self, partnerId):
+        self.getCache("channels")
+        self.getCache("streams")
+
+        try:
+            if partnerId in self.cache['channels'].keys():
+                userid = partnerId
+        except (KeyError, IndexError):
+            return False
+
+        if unicode(userid) in self.cache['streams'].keys():
+            if 'stream' in self.cache['streams'][unicode(userid)].keys():
+                if self.cache['streams'][unicode(userid)]['stream'] != None:
+                    return True
+        return False
+
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
         self.getCache("channels")
