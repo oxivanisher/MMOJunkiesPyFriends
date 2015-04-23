@@ -146,7 +146,7 @@ class BlizzNetwork(MMONetwork):
                                 'name': self.handle,
                                 'title': self.name }]
                 friendImgs = []
-                linkId = self.cache['battletags'][userid]
+                # linkId = self.cache['battletags'][userid]
 
                 # World of warcraft
                 if userid in self.cache['wowProfiles'].keys():
@@ -191,7 +191,7 @@ class BlizzNetwork(MMONetwork):
                     except KeyError:
                         pass
 
-                result.append({ 'id': linkId,
+                result.append({ 'id': userid,
                                 'mmoid': userid,
                                 'nick': self.cache['battletags'][userid],
                                 'state': 'No info available',
