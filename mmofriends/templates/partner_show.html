@@ -32,8 +32,8 @@
 		</ul>
 	{%- endif -%}
 	{% for net in networks -%}
-		<div id="{{ net.handle }}">
 		{% if net.linkData -%}
+		<div id="{{ net.handle }}">
 			{% for link in net.linkData -%}
 				<table>
 					<tbody>
@@ -70,7 +70,7 @@
 			</div>
 			{% endfor %}
 		{% endif %}
-{% endfor %}
+	{% endfor %}
 </div>
 <script>
 	$(function() {
