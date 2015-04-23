@@ -373,7 +373,7 @@ class ValveNetwork(MMONetwork):
         except (KeyError, IndexError):
             return False
 
-        if self.cache['users'][steamId]['personastate'] in self.lastlyDontShow:
+        if self.cache['users'][unicode(steamId)]['personastate'] in self.lastlyDontShow:
             return False
         return True
 
