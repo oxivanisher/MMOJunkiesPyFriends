@@ -926,11 +926,9 @@ def partner_show(partnerId, netHandle = None):
             netData['handle'] = MMONetworks[net].handle
 
             for link in linkInfo:
-                netContent = MMONetworks[net].getPartnerDetails(partnerId)
-                if netContent:
-                    netData['linkData'].append(netContent)
-                    networks.append(netData)
-                    count += 1
+                netData['linkData'].append(MMONetworks[net].getPartnerDetails(partnerId))
+                networks.append(netData)
+                count += 1
 
     myUser = getUserById(partnerId)
     if not myUser:
