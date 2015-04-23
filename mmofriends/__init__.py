@@ -1016,12 +1016,14 @@ def getSystemUsers(request):
             if user.id == session['userid']:
                 continue
             if user.veryfied and not user.locked:
-                userNets, userNicks = [], []
+                userNets, userNicks, userOnlineNets = [], [], []
                 for net in friendNets:
                     for friend in friendNets[net]:
                         if str(friend['mmoid']) == str(user.id):
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
+                            if MMONetworks[net].checkForUserOnline(user.id):
+                                userOnlineNets.append(net)
 
                 for nick in user.nicks.all():
                     userNicks.append(nick.nick)
@@ -1036,7 +1038,8 @@ def getSystemUsers(request):
                                          'name': user.name,
                                          'website': user.website,
                                          'admin': user.admin,
-                                         'nets': userNets }
+                                         'nets': userNets,
+                                         'onlineNets': userOnlineNets }
 
         return { 'users': usersReturn, 'nets': netsReturn }
     else:
