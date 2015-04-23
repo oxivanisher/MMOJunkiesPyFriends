@@ -526,14 +526,8 @@ class ValveNetwork(MMONetwork):
             return moreInfo
 
         try:
-            linkInfo = self.getNetworkLinks(partnerId)
-            steamId = linkInfo[0]['network_data']
-        except KeyError:
-            return moreInfo
-
-        try:
             self.setPartnerDetail(moreInfo, "Nick", self.cache['users'][steamId]['personaname'])
-        except KeyError:
+        except (KeyError, TypeError):
             #Probably empty database!
             return moreInfo
         timer = time.time()
@@ -546,20 +540,20 @@ class ValveNetwork(MMONetwork):
             self.setPartnerDetail(moreInfo, "Steam ID", self.cache['users'][steamId]['steamid'])
             try:
                 self.setPartnerDetail(moreInfo, gettext("Real Name"), self.cache['users'][steamId]['realname'])
-            except KeyError:
+            except (KeyError, TypeError):
                 pass
 
         try:
             self.setPartnerDetail(moreInfo, gettext("Country Code"), self.cache['users'][steamId]['loccountrycode'])
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         try:
             self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['users'][steamId]['timecreated']))
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         try:
             self.setPartnerDetail(moreInfo, gettext("Last Logoff"), timestampToString(self.cache['users'][steamId]['lastlogoff']))
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         self.setPartnerDetail(moreInfo, gettext("Profile URL"), self.cache['users'][steamId]['profileurl'])
         self.setPartnerDetail(moreInfo, gettext("Online/Offline"), self.onlineStates[self.cache['users'][steamId]['personastate']])
