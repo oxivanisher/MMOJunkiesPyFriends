@@ -220,8 +220,7 @@ class BlizzNetwork(MMONetwork):
 
         try:
             self.setPartnerDetail(moreInfo, "Battletag", self.cache['battletags'][partnerId])
-        except KeyError:
-            #Probably empty database!
+        except (KeyError, IndexError):
             return moreInfo
 
         # Starcraft 2

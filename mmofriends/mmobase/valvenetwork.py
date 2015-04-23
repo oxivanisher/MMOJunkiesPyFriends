@@ -517,6 +517,15 @@ class ValveNetwork(MMONetwork):
         moreInfo = {}
 
         try:
+            if partnerId in self.cache['users'].keys():
+                steamId = partnerId
+            else:
+                linkInfo = self.getNetworkLinks(partnerId)
+                steamId = linkInfo[0]['network_data']
+        except (KeyError, IndexError):
+            return moreInfo
+
+        try:
             linkInfo = self.getNetworkLinks(partnerId)
             steamId = linkInfo[0]['network_data']
         except KeyError:

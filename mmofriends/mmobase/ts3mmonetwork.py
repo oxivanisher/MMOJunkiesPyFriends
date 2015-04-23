@@ -434,8 +434,11 @@ class TS3Network(MMONetwork):
         self.getCache('serverInfo')
 
         try:
-            linkInfo = self.getNetworkLinks(partnerId)
-            cldbid = linkInfo[0]['network_data']
+            if partnerId in self.cache['clientDatabase'].keys():
+                cldbid = partnerId
+            else:
+                linkInfo = self.getNetworkLinks(partnerId)
+                cldbid = linkInfo[0]['network_data']
         except (KeyError, IndexError):
             return moreInfo
 
