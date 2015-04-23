@@ -433,6 +433,12 @@ class TS3Network(MMONetwork):
         self.getCache('serverInfo')
 
         try:
+            linkInfo = self.getNetworkLinks(partnerId)
+            cldbid = linkInfo['network_data']
+        except KeyError:
+            return moreInfo
+
+        try:
         #fetch avatar
             if 'client_flag_avatar' in self.cache['clientDatabase'][cldbid].keys():
                 if self.cache['clientDatabase'][cldbid]['client_flag_avatar']:
