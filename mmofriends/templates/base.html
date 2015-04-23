@@ -144,12 +144,12 @@
 								{%- endfor %}
 
 								<li class="divider"></li>
-								{%- for key, value in config.LANGUAGES.iteritems() %}
-									{%- if key != session.currentLocale %}
-										<li><a href="{{ url_for('set_lang', language=key) }}"><span class="glyphicon glyphicon-eye-open"></span> {{ value }}</a></li>
-									{%- endif %}
+									{%- for key, value in config.LANGUAGES.iteritems() %}
+										{%- if key != session.currentLocale %}
+											<li><a href="{{ url_for('set_lang', language=key) }}"><span class="glyphicon glyphicon-eye-open"></span> {{ value }}</a></li>
+										{%- endif %}
+									{%- endfor %}
 									<li><a href="{{ url_for('set_lang') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('Reset') }}</a></li>
-								{%- endfor %}
 								<li class="divider"></li>
 								<li><a href="{{ url_for('profile_logout') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Logout') }}</a></li>
 							</ul>
