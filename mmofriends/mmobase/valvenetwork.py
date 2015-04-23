@@ -365,11 +365,11 @@ class ValveNetwork(MMONetwork):
         self.getCache('users')
 
         try:
-            # if partnerId in self.cache['users'].keys():
-            #     steamId = partnerId
-            # else:
-            linkInfo = self.getNetworkLinks(partnerId)
-            steamId = linkInfo[0]['network_data']
+            if partnerId in self.cache['users'].keys():
+                steamId = partnerId
+            else:
+                linkInfo = self.getNetworkLinks(partnerId)
+                steamId = linkInfo[0]['network_data']
         except (KeyError, IndexError):
             return False
 
