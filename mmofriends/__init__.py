@@ -353,6 +353,7 @@ def dev():
     return render_template('dev.html', result = ret)
 
 # language route
+@app.route('/Lang/')
 @app.route('/Lang/<language>')
 def set_lang(language=None):
     session['displayLanguage'] = language
