@@ -291,7 +291,7 @@ class TS3Network(MMONetwork):
             return "Unable to connect to server"
 
     # Class overwrites
-    def checkForUserOnline(self, userId):
+    def checkForUserOnline(self, partnerId):
         self.getCache('onlineClients')
 
         try:
