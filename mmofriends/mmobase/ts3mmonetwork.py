@@ -377,7 +377,8 @@ class TS3Network(MMONetwork):
                             'title': self.name
                         },{
                             'type': 'cache',
-                            'name': 'icon_' + str(int(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id']) + 4294967296),
+                            'name': 'icon_' + str(int(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id'])),
+                            # 'name': 'icon_' + str(int(self.cache['serverInfo']['serverInfo']['virtualserver_icon_id']) + 4294967296),
                             'title': channelName
                         }]
             try:
@@ -797,4 +798,5 @@ class TS3Network(MMONetwork):
         return self.cacheFile("avatar_%s" % flagAvatarId, cid)
 
     def cacheServerIcon(self, iconId):
-        self.cacheIcon((int(iconId) + 4294967296))
+        self.cacheIcon((int(iconId)))
+        # self.cacheIcon((int(iconId) + 4294967296))
