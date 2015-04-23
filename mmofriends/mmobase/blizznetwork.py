@@ -217,6 +217,7 @@ class BlizzNetwork(MMONetwork):
         self.getCache('wowProfiles')
         self.getCache('sc2Profiles')
         self.getCache('d3Profiles')
+        self.setPartnerDetail(moreInfo, "terst", "test 2")
 
         try:
             self.setPartnerDetail(moreInfo, "Battletag", self.cache['battletags'][partnerId])
