@@ -106,7 +106,7 @@ class MMONetwork(object):
         self.log.setLevel(level)
 
     def checkForUserOnline(self, userId):
-        return False
+        return True
 
     def getSessionValue(self, name):
         try:
