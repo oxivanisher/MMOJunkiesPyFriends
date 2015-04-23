@@ -373,7 +373,7 @@ class ValveNetwork(MMONetwork):
         except (KeyError, IndexError):
             return False
 
-        if self.onlineStates[self.cache['users'][friend['steamid']]['personastate']] not in self.lastlyDontShow:
+        if self.onlineStates[self.cache['users'][steamId]['personastate']] not in self.lastlyDontShow:
             return True
         return False
 
