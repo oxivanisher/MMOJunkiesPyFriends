@@ -360,7 +360,23 @@ class ValveNetwork(MMONetwork):
         self.saveLink(self.getSessionValue(self.linkIdName))
         return (gettext('You are now connected to steam'), oid.get_next_url())
 
-    # overwritten class methods
+    # Class overwrites
+    def checkForUserOnline(self, partnerId):
+        self.getCache('users')
+
+        try:
+            if partnerId in self.cache['users'].keys():
+                steamId = partnerId
+            else:
+                linkInfo = self.getNetworkLinks(partnerId)
+                steamId = linkInfo[0]['network_data']
+        except (KeyError, IndexError):
+            return False
+
+        if self.onlineStates[self.cache['users'][friend['steamid']]['personastate']] not in self.lastlyDontShow:
+            return True
+        return False
+
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
         self.getCache('games')
