@@ -1023,8 +1023,8 @@ def getSystemUsers(request):
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
 
-                # for nick in user.nicks.all():
-                #     userNicks.append(nick.nick)
+                for nick in user.nicks.all():
+                    userNicks.append(nick.nick)
 
                 gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(user.email.lower()).hexdigest() + "?"
                 gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(16)})
@@ -1032,7 +1032,7 @@ def getSystemUsers(request):
                 usersReturn[user.id] = { 'nick': user.nick,
                                          'avatar': gravatar_url,
                                          'url': url_for('partner_show', partnerId = user.id),
-                                         'aliases': user.nicks.all(),
+                                         'aliases': userNicks,
                                          'name': user.name,
                                          'website': user.website,
                                          'admin': user.admin,
