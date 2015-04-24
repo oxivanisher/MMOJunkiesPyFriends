@@ -590,12 +590,12 @@ class ValveNetwork(MMONetwork):
             #         games.append(self.cache['games'][str(gameid)]['name'])
             #     except KeyError:
             #         self.log.debug("Ignoring game ID %s" % gameid)
-            # self.setPartnerDetail(moreInfo, "Recently Played", ', '.join(games))
+            # self.setPartnerDetail(moreInfo, gettext("Recently Played"), ', '.join(games))
         
-        # self.setPartnerDetail(moreInfo, "Owned Games", steam_user.owned_games)
+        # self.setPartnerDetail(moreInfo, gettext("Owned Games"), steam_user.owned_games)
 
-        # if steam_user.currently_playing:
-        #     self.setPartnerDetail(moreInfo, "Currently Playing", steam_user.currently_playing.name)
+        if steam_user.currently_playing:
+            self.setPartnerDetail(moreInfo, gettext("Currently Playing"), steam_user.currently_playing.name)
 
         return moreInfo
 
