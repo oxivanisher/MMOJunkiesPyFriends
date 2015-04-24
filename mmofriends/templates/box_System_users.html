@@ -52,7 +52,9 @@
 							}
 							
 							mouseOver = '';
-							console.log('test: ' + user.detailLinks)
+							linkIndex = user.detailLinks.indexOf(netId);
+							console.log(user.detailLinks[linkIndex])
+							
 							
 							netIcon = '<img src="' + net.iconUrl + '" style="opacity: ' + opac + ';" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ' connected)' + mouseOver + '">';
 							if (linkUrl) {
