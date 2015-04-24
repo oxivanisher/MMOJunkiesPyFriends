@@ -62,9 +62,10 @@ class TwitchNetwork(MMONetwork):
             if 'stream' in self.cache['streams'][unicode(partnerId)].keys():
                 if self.cache['streams'][unicode(partnerId)]['stream'] != None:
                     self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("Yes"))
+                    self.setPartnerDetail(moreInfo, gettext("Viewers"), [unicode(partnerId)]['stream']['viewers'])
                     self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][partnerId]['status'])
                     self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][partnerId]['game'])
-                    self.setPartnerAvatar(moreInfo, self.cache['streams']['preview'] + "?" + int(time.time()))
+                    self.setPartnerAvatar(moreInfo, self.cache['streams'][unicode(partnerId)]['stream']['preview'] + "?" + int(time.time()))
                     online = True
             if not online:
                 self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("No"))
@@ -325,4 +326,9 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("Dashboard channels")
         self.getCache("channels")
         self.getCache("streams")
-        return { 'channels': self.cache['channels'], 'streams': self.cache['streams'] }
+
+        channelsWithLink = {}
+        for chan in self.cache['channels'].keys():
+            channelsWithLink[chan] = self.cache['channels'][chan]
+            channelsWithLink[chan]['detailLink'] = url_for('partner_details', netHandle=self.handle, partnerId=chan)
+        return { 'channels': channelsWithLink, 'streams': self.cache['streams'] }
