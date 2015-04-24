@@ -17,8 +17,10 @@
 
 				$( "#systemUsers" ).fadeOut( 100, function () {
 					$( "#systemUsers" ).empty();
+					console.log(data.users);
 					for (id in data.users) {
 						var user = data.users[id];
+						console.log(user);
 						var name = '<a href="' + user.url + '" title="' + user.name + '">' + user.nick + '</a>';
 
 						var nicks = '';
