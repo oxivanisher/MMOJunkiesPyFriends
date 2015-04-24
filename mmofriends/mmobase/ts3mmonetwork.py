@@ -466,6 +466,7 @@ class TS3Network(MMONetwork):
                     self.cacheFile(avatar)
                     self.setPartnerAvatar(moreInfo, avatar)
 
+            self.setPartnerDetail(moreInfo, gettext("Nickname"), self.cache['clientDatabase'][cldbid]['client_nickname'])
             self.setPartnerDetail(moreInfo, gettext("Description"), self.cache['clientDatabase'][cldbid]['client_description'])
             self.setPartnerDetail(moreInfo, gettext("Created"), timestampToString(self.cache['clientDatabase'][cldbid]['client_created']))
             self.setPartnerDetail(moreInfo, gettext("Last Connection"), timestampToString(self.cache['clientDatabase'][cldbid]['client_lastconnected']))

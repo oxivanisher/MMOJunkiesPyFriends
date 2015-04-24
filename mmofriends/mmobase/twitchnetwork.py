@@ -51,6 +51,58 @@ class TwitchNetwork(MMONetwork):
             access_token_url='%s/oauth2/token' % self.baseUrl)
 
     # Class overwrites
+    def getPartnerDetails(self, partnerId):
+        moreInfo = {}
+        self.getCache('channels')
+        self.getCache("streams")
+
+        try:
+            self.setPartnerDetail(moreInfo, gettext("Nickname"), self.cache['channels'][partnerId]['display_name'])
+            self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][partnerId]['status'])
+            self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][partnerId]['game'])
+            if 'stream' in self.cache['streams'][unicode(partnerId)].keys():
+                if self.cache['streams'][unicode(partnerId)]['stream'] != None:
+                    imgUrl = self.cache['streams']['preview'] + "?" + int(time.time());
+                    image = "<img class='img-responsive' src='" + imgUrl + "' title='" + self.cache['streams']['game'] + ": " + self.cache['streams']['status'] + "'/>";
+                    self.setPartnerDetail(moreInfo, gettext("Preview"), image)
+        except (KeyError, IndexError):
+            pass
+
+        return moreInfo
+
+    def getPartners(self, **kwargs):
+        self.log.debug("[%s] List all partners for given user" % (self.handle))
+
+        self.getCache('channels')
+        result = []
+        try:
+            allLinks = self.getNetworkLinks()
+            for userid in self.cache['channels'].keys():
+                if str(userid) == str(self.session['userid']):
+                    continue
+
+                myProducts = [{ 'type': 'network',
+                                'name': self.handle,
+                                'title': self.name }]
+
+                result.append({ 'id': userid,
+                                'mmoid': userid,
+                                'nick': self.cache['channels'][userid]['display_name'],
+                                'state': 'No info available',
+                                'netHandle': self.handle,
+                                'networkText': self.name,
+                                'networkImgs': myProducts,
+                                'friendImgs': []
+                            })
+
+            return (True, result)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
+            self.log.warning(message)
+            return (False, message)
+
     def checkForUserOnline(self, partnerId):
         self.getCache("channels")
         self.getCache("streams")
@@ -110,39 +162,6 @@ class TwitchNetwork(MMONetwork):
         self.updateUserResources()
         self.getCache("channels")
         return self.cache['channels'][self.session['userid']]['display_name']
-
-    def getPartners(self, **kwargs):
-        self.log.debug("[%s] List all partners for given user" % (self.handle))
-
-        self.getCache('channels')
-        result = []
-        try:
-            allLinks = self.getNetworkLinks()
-            for userid in self.cache['channels'].keys():
-                if str(userid) == str(self.session['userid']):
-                    continue
-
-                myProducts = [{ 'type': 'network',
-                                'name': self.handle,
-                                'title': self.name }]
-
-                result.append({ 'id': userid,
-                                'mmoid': userid,
-                                'nick': self.cache['channels'][userid]['display_name'],
-                                'state': 'No info available',
-                                'netHandle': self.handle,
-                                'networkText': self.name,
-                                'networkImgs': myProducts,
-                                'friendImgs': []
-                            })
-
-            return (True, result)
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            message = "Unable to connect to Network: %s %s %s:%s" % (exc_type, e, fname, exc_tb.tb_lineno )
-            self.log.warning(message)
-            return (False, message)
 
     # twitch api methods
     def queryTwitchApi(self, what, accessToken = None):

@@ -543,7 +543,7 @@ class ValveNetwork(MMONetwork):
             return moreInfo
 
         try:
-            self.setPartnerDetail(moreInfo, "Nick", self.cache['users'][steamId]['personaname'])
+            self.setPartnerDetail(moreInfo, gettext("Nickname"), self.cache['users'][steamId]['personaname'])
         except (KeyError, TypeError):
             #Probably empty database!
             return moreInfo
