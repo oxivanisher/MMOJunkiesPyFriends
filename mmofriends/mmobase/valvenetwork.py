@@ -594,8 +594,8 @@ class ValveNetwork(MMONetwork):
         
         # self.setPartnerDetail(moreInfo, gettext("Owned Games"), steam_user.owned_games)
 
-        if steam_user.currently_playing:
-            self.setPartnerDetail(moreInfo, gettext("Currently Playing"), steam_user.currently_playing.name)
+        if self.cache['users'][steamId]['gameextrainfo']:
+            self.setPartnerDetail(moreInfo, gettext("Currently Playing"), self.cache['users'][steamId]['gameextrainfo'])
 
         return moreInfo
 
