@@ -58,15 +58,13 @@ class TwitchNetwork(MMONetwork):
 
         try:
             self.setPartnerDetail(moreInfo, gettext("Nickname"), self.cache['channels'][partnerId]['display_name'])
-            self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][partnerId]['status'])
-            self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][partnerId]['game'])
             online = False
             if 'stream' in self.cache['streams'][unicode(partnerId)].keys():
                 if self.cache['streams'][unicode(partnerId)]['stream'] != None:
                     self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("Yes"))
-                    imgUrl = self.cache['streams']['preview'] + "?" + int(time.time());
-                    image = "<img class='img-responsive' src='" + imgUrl + "' title='" + self.cache['streams']['game'] + ": " + self.cache['streams']['status'] + "'/>";
-                    self.setPartnerDetail(moreInfo, gettext("Preview"), image)
+                    self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][partnerId]['status'])
+                    self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][partnerId]['game'])
+                    self.setPartnerAvatar(moreInfo, self.cache['streams']['preview'] + "?" + int(time.time()))
                     online = True
             if not online:
                 self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("No"))
