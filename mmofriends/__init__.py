@@ -1013,6 +1013,7 @@ def getSystemUsers(request):
 
         users = MMOUser.query.all()
         for user in users:
+            detailLinks = {}
             if user.id == session['userid']:
                 continue
             if user.veryfied and not user.locked:
@@ -1024,6 +1025,7 @@ def getSystemUsers(request):
                             userNets.append(net)
                             if MMONetworks[net].checkForUserOnline(user.id):
                                 userOnlineNets.append(net)
+                            detailLinks[net] = url_for('partner_details', netHandle=friend.netHandle, partnerId=friend.id)
 
                 for nick in user.nicks.all():
                     userNicks.append(nick.nick)
@@ -1039,7 +1041,8 @@ def getSystemUsers(request):
                                          'website': user.website,
                                          'admin': user.admin,
                                          'nets': userNets,
-                                         'onlineNets': userOnlineNets }
+                                         'onlineNets': userOnlineNets,
+                                         'detailLinks': detailLinks }
 
         return { 'users': usersReturn, 'nets': netsReturn }
     else:

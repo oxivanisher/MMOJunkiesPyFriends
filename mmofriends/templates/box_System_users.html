@@ -51,7 +51,10 @@
 								linkUrl = false;
 							}
 							
-							netIcon = '<img src="' + net.iconUrl + '" style="opacity: ' + opac + ';" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ' connected)' + '">';
+							mouseOver = '';
+							console.log('test:' + user.detailLinks.netId)
+							
+							netIcon = '<img src="' + net.iconUrl + '" style="opacity: ' + opac + ';" class="partner_list_icon pull-right" title="' + net.name + ' ' + net.description + ' (' + net.usersConnected + ' connected)' + mouseOver + '">';
 							if (linkUrl) {
 								netIcon = '<a href="' + linkUrl + '" title="' + net.name + ' ' + net.description + '">' + netIcon + '</a>';
 							}
