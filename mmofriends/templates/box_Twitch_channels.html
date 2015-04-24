@@ -14,6 +14,11 @@
 				url = "http://twitch.tv/" + id;
 			}
 			
+			mouseOver = '';
+			if (user.detailLink) {
+				mouseOver = ' onmouseover="showInfoPopup(\'' + data.channels[id].detailLink + '\');" onmouseout="hideInfoPopup();"';
+			}
+
 			var image = "";
 			var status = "text-warning";
 			var glyph = "glyphicon-remove";
@@ -33,10 +38,10 @@
 
 			if (drawOnline && online) {
 				showMe = true
-				$('#twitchChannelsOnline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
+				$('#twitchChannelsOnline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
 			} else if (! drawOnline && ! online) {
 				showMe = true
-				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
+				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
 			}
 		}
 		return showMe
