@@ -68,8 +68,18 @@ class TwitchNetwork(MMONetwork):
                     self.setPartnerAvatar(moreInfo, self.cache['streams'][unicode(partnerId)]['stream']['preview'] + "?" + int(time.time()))
                     online = True
             if not online:
-                self.setPartnerAvatar(moreInfo, self.cache['streams'][unicode(partnerId)]['stream']['logo'])
                 self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("No"))
+
+                if 'logo' in self.cache['channels'][unicode(partnerId)]:
+                    if self.cache['channels'][unicode(partnerId)]['logo']:
+                        self.setPartnerAvatar(moreInfo, self.cache['channels'][unicode(partnerId)]['logo'])
+                elif 'banner' in self.cache['channels'][unicode(partnerId)]:
+                    if self.cache['channels'][unicode(partnerId)]['banner']:
+                        self.setPartnerAvatar(moreInfo, self.cache['channels'][unicode(partnerId)]['banner'])
+                elif 'video_banner' in self.cache['channels'][unicode(partnerId)]:
+                    if self.cache['channels'][unicode(partnerId)]['video_banner']:
+                        self.setPartnerAvatar(moreInfo, self.cache['channels'][unicode(partnerId)]['video_banner'])
+                
         except (KeyError, IndexError):
             pass
 
