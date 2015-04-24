@@ -330,6 +330,11 @@ def before_request():
             if not ret:
                 flash(Markup(message), 'error')
 
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 300
+    return response
+
 # main routes
 @app.route('/About')
 def about():
