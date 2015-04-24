@@ -1044,7 +1044,7 @@ def getSystemUsers(request):
                                          'onlineNets': userOnlineNets,
                                          'detailLinks': detailLinks }
 
-        return { 'users': usersReturn, 'nets': netsReturn }
+        return { 'users': sorted(users, key=lambda k: len(k['userOnlineNets'])), 'nets': netsReturn }
     else:
         abort(401)
 
