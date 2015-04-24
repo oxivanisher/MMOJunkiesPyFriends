@@ -371,7 +371,7 @@ class ValveNetwork(MMONetwork):
         self.getCache('online')
 
         try:
-            if partnerId in self.cache['online'].keys():
+            if partnerId in self.cache['online']:
                 return True
         except (KeyError, IndexError):
             pass
