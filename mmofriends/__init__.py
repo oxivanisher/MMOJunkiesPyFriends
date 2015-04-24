@@ -332,7 +332,8 @@ def before_request():
 
 @app.after_request
 def add_header(response):
-    response.cache_control.max_age = 30
+    response.cache_control.max_age = 300
+    response.cache_control.min_fresh = 5
     return response
 
 # main routes
