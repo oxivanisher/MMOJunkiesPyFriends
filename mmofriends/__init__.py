@@ -1018,13 +1018,16 @@ def getSystemUsers(request):
                 continue
             if user.veryfied and not user.locked:
                 userNets, userNicks, userOnlineNets = [], [], []
+                sortOrder = 0
                 for net in friendNets:
                     for friend in friendNets[net]:
                         if str(friend['mmoid']) == str(user.id):
                             netsReturn[net]['usersConnected'] += 1
                             userNets.append(net)
+                            sortOrder += 1
                             if MMONetworks[net].checkForUserOnline(user.id):
                                 userOnlineNets.append(net)
+                                sortOrder += 3
                             detailLinks[net] = url_for('partner_details', netHandle=net, partnerId=user.id)
 
                 for nick in user.nicks.all():
@@ -1042,9 +1045,10 @@ def getSystemUsers(request):
                                          'admin': user.admin,
                                          'nets': userNets,
                                          'onlineNets': userOnlineNets,
-                                         'detailLinks': detailLinks }
+                                         'detailLinks': detailLinks,
+                                         'sortOrder': sortOrder }
 
-        return { 'users': sorted(users, key=lambda k: len(k['userOnlineNets'])), 'nets': netsReturn }
+        return { 'users': sorted(users, key=lambda k: k['sortOrder']), 'nets': netsReturn }
     else:
         abort(401)
 
