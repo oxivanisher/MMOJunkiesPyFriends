@@ -9,14 +9,13 @@
 			if (data.channels[id]) {
 				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" /> ' + data.channels[id].display_name;
 				url = data.channels[id].url;
+				if (data.channels[id].detailLink) {
+					mouseOver = ' onmouseover="showInfoPopup(\'' + data.channels[id].detailLink + '\');" onmouseout="hideInfoPopup();"';
+				}
 			} else {
 				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" /> ' + id;
 				url = "http://twitch.tv/" + id;
-			}
-			
-			mouseOver = '';
-			if (data.channels[id].detailLink) {
-				mouseOver = ' onmouseover="showInfoPopup(\'' + data.channels[id].detailLink + '\');" onmouseout="hideInfoPopup();"';
+				mouseOver = '';
 			}
 
 			var image = "";
