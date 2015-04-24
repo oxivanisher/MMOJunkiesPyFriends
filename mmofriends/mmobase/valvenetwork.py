@@ -549,6 +549,12 @@ class ValveNetwork(MMONetwork):
             return moreInfo
         timer = time.time()
         self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['users'][steamId]['avatarfull']))
+
+        try:
+            self.setPartnerDetail(moreInfo, gettext("Currently Playing"), self.cache['users'][steamId]['gameextrainfo'])
+        except KeyError:
+            pass
+
         if ((time.time() - timer) > 0.01):
             self.log.info("after avatar caching! %s" % (time.time() - timer))
 
@@ -593,9 +599,6 @@ class ValveNetwork(MMONetwork):
             # self.setPartnerDetail(moreInfo, gettext("Recently Played"), ', '.join(games))
         
         # self.setPartnerDetail(moreInfo, gettext("Owned Games"), steam_user.owned_games)
-
-        if self.cache['users'][steamId]['gameextrainfo']:
-            self.setPartnerDetail(moreInfo, gettext("Currently Playing"), self.cache['users'][steamId]['gameextrainfo'])
 
         return moreInfo
 
