@@ -1048,7 +1048,7 @@ def getSystemUsers(request):
                                          'detailLinks': detailLinks,
                                          'sortOrder': sortOrder }
 
-        return { 'users': sorted(users, key=lambda k: k['sortOrder']), 'nets': netsReturn }
+        return { 'users': sorted(usersReturn, key=lambda k: k['sortOrder']), 'nets': netsReturn }
     else:
         abort(401)
 
