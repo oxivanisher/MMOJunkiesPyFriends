@@ -1048,7 +1048,7 @@ def getSystemUsers(request):
                                          'onlineNets': userOnlineNets,
                                          'detailLinks': detailLinks}
 
-                if sortOrder not in sortOrders.keys()
+                if sortOrder not in sortOrders.keys():
                     sortOrders[sortOrder] = []
                 sortOrders[sortOrder].append(user.id)
         sortedUsers = []
