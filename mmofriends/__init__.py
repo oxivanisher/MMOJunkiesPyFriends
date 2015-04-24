@@ -1012,6 +1012,7 @@ def getSystemUsers(request):
                 log.info("[System] Unable to fetch network users from %s" % findList)
 
         users = MMOUser.query.all()
+        sortOrders = {}
         for user in users:
             detailLinks = {}
             if user.id == session['userid']:
@@ -1045,10 +1046,10 @@ def getSystemUsers(request):
                                          'admin': user.admin,
                                          'nets': userNets,
                                          'onlineNets': userOnlineNets,
-                                         'detailLinks': detailLinks,
-                                         'sortOrder': sortOrder }
+                                         'detailLinks': detailLinks}
+                # sortOrders[sortOrder] = 
 
-        return { 'users': sorted(usersReturn, key=lambda k: k['sortOrder']), 'nets': netsReturn }
+        return { 'users': usersReturn, 'nets': netsReturn }
     else:
         abort(401)
 
