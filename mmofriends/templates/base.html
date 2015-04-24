@@ -130,6 +130,9 @@
 								</ul>
 							</li>
 						{% endif -%}
+
+						<li><a href="ts3server://{{ config.networkConfig.TS3.exturl }}?port={{ config.networkConfig.TS3.extport }}&nickname={{ session.nick }}&password={{ config.networkConfig.TS3.extpassword }}"><img src="{{ url_for('get_image', imgType='network', imgId='TS3') }}" class="partner_list_icon" title="{{ _('Connect to TS3 Server') }}"></a></li>
+
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-off"></span> {{ session.nick }}<span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu">
