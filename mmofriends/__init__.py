@@ -1047,9 +1047,16 @@ def getSystemUsers(request):
                                          'nets': userNets,
                                          'onlineNets': userOnlineNets,
                                          'detailLinks': detailLinks}
-                # sortOrders[sortOrder] = 
 
-        return { 'users': usersReturn, 'nets': netsReturn }
+                if sortOrder not in sortOrders.keys()
+                    sortOrders[sortOrder] = []
+                sortOrders[sortOrder].append(user.id)
+        sortedUsers = []
+        for order in sorted(sortOrder.keys()):
+            for userData in sortOrder[order]:
+                sortedUsers.append(userData)
+
+        return { 'users': sortedUsers, 'nets': netsReturn }
     else:
         abort(401)
 
