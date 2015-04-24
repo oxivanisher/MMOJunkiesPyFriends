@@ -71,8 +71,8 @@
 	</head>
 	<body>
 		{# <div id="loadingOverlay"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading" />{{ _('Loading ...') }}</div> -#}
-		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none;"><img id="popupimg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="PopUp"/></span></div>
-		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none;"></span></div>
+		<div><span id="imgpopup" class="position_bottom_left glow ui-widget-content" style="display: none; z-index:3;"><img id="popupimg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="PopUp"/></span></div>
+		<div><span id="infopopup" class="position_bottom_right glow ui-widget-content" style="display: none; z-index:3;"></span></div>
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="container-fluid">
 				{# Brand and toggle get grouped for better mobile display -#}
