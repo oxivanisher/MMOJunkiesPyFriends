@@ -305,7 +305,7 @@ class ValveNetwork(MMONetwork):
                             for link in mmoNetLinks:
                                 if friend['steamid'] in link['network_data']:
                                     internalUser = True
-                                    if int(friend['personastate']) not in self.lastlyDontShow:
+                                    if int(friend['personastate']):
                                         onlineUsers.append(link['user_id'])
 
                             if internalUser:
