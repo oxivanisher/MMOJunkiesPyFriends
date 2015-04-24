@@ -52,8 +52,11 @@
 							}
 							
 							mouseOver = '';
+							if (user.detailLinks[netId]) {
+								mouseOver = 'onmouseover="showInfoPopup(\'' + user.detailLinks[netId] + '\');" onmouseout="hideInfoPopup();"';
+							}
 							// linkIndex = user.detailLinks.indexOf(netId);
-							console.log(user.detailLinks.netId);
+							// console.log(user.detailLinks.netId);
 							console.log(user.detailLinks[netId]);
 							
 							
