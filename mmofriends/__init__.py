@@ -1025,7 +1025,7 @@ def getSystemUsers(request):
                             userNets.append(net)
                             if MMONetworks[net].checkForUserOnline(user.id):
                                 userOnlineNets.append(net)
-                            detailLinks[net] = url_for('partner_details', netHandle=friend.netHandle, partnerId=friend.id)
+                            detailLinks[net] = url_for('partner_details', netHandle=net, partnerId=friend.id)
 
                 for nick in user.nicks.all():
                     userNicks.append(nick.nick)
