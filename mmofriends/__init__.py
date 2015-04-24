@@ -1052,7 +1052,7 @@ def getSystemUsers(request):
                     sortOrders[sortOrder] = []
                 sortOrders[sortOrder].append(user.id)
         sortedUsers = []
-        for order in sorted(sortOrders.keys()):
+        for order in sorted(sortOrders.keys(), reverse=True):
             for sortUserId in sortOrders[order]:
                 sortedUsers.append(usersReturn[sortUserId])
 
