@@ -18,7 +18,12 @@
 			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" ' + onclickGame + ' /> ';
 			display_name = display_name + user.username + ': ' + user.gamename
 
-			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '"">' + display_name + '</label>';
+			mouseOver = '';
+			if (user.detailLink) {
+				mouseOver = 'onmouseover="showInfoPopup(\'' + user.detailLink + '\');" onmouseout="hideInfoPopup();"';
+			}
+
+			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '" ' + mouseOver + '>' + display_name + '</label>';
 
 			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;">' + content + '</li>');
 			showMe = true;
