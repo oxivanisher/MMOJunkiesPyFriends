@@ -23,9 +23,9 @@
 				mouseOver = 'onmouseover="showInfoPopup(\'' + user.detailLink + '\');" onmouseout="hideInfoPopup();"';
 			}
 
-			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '" ' + mouseOver + '>' + display_name + '</label>';
+			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '">' + display_name + '</label>';
 
-			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;">' + content + '</li>');
+			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;" ' + mouseOver + '>' + content + '</li>');
 			showMe = true;
 		}
 		return showMe;
