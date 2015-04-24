@@ -275,6 +275,7 @@ class ValveNetwork(MMONetwork):
         self.getCache("lastly")
         self.getCache('users')
         self.getCache('game')
+        self.getCache('online')
         allUsers = []
         for user in self.cache['users'].keys():
             allUsers.append(user)
@@ -282,6 +283,7 @@ class ValveNetwork(MMONetwork):
         mmoNetLinks = self.getNetworkLinks()
 
         run = True
+        onlineUsers = []
         logger.debug("All friends: %s" % len(allUsers))
         while run:
             fetchFriends = allUsers[:self.maxUpdateUsers]
@@ -303,6 +305,8 @@ class ValveNetwork(MMONetwork):
                             for link in mmoNetLinks:
                                 if friend['steamid'] in link['network_data']:
                                     internalUser = True
+                                    if friend['personastate'] not in self.lastlyDontShow:
+                                        onlineUsers.append(link['user_id'])
 
                             if internalUser:
                                 tempState = friend['personastate']
@@ -335,8 +339,10 @@ class ValveNetwork(MMONetwork):
                                 self.cache['users'][friend['steamid']]['lastlogoff'] = friend['lastlogoff']
                             if 'profilestate' in friend:
                                 self.cache['users'][friend['steamid']]['profilestate'] = friend['profilestate']
+        self.cache["online"] = onlineUsers
         self.setCache("users")
         self.setCache("lastly")
+        self.setCache("online")
         return "%s user states updated" % count
 
     # oid methods
@@ -362,20 +368,15 @@ class ValveNetwork(MMONetwork):
 
     # Class overwrites
     def checkForUserOnline(self, partnerId):
-        self.getCache('users')
+        self.getCache('online')
 
         try:
             if partnerId in self.cache['users'].keys():
-                steamId = partnerId
-            else:
-                linkInfo = self.getNetworkLinks(partnerId)
-                steamId = linkInfo[0]['network_data']
+                return True
         except (KeyError, IndexError):
-            return False
+            pass
 
-        if self.cache['users'][unicode(steamId)]['personastate'] in self.lastlyDontShow:
-            return False
-        return True
+        return False
 
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
