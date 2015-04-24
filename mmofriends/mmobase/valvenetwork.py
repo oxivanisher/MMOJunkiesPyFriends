@@ -689,7 +689,7 @@ class ValveNetwork(MMONetwork):
                                                 friendOf.append(self.getUserById(link['user_id']).nick)
                                 nowPlayingUser['friendof'] = ', '.join(friendOf)
                                 nowPlayingUser['watchUrl'] = watchLinkBase + user
-                                nowPlayingUser['detailLink'] = url_for('partner_details', netHandle=self.handle, partnerId=link['user_id'])
+                                nowPlayingUser['detailLink'] = url_for('partner_details', netHandle=self.handle, partnerId=user)
     
                             if int(user) in internalUsers:
                                 nowPlayingUser['internal'] = True
