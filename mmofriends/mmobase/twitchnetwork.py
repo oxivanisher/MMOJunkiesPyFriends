@@ -68,6 +68,7 @@ class TwitchNetwork(MMONetwork):
                     self.setPartnerAvatar(moreInfo, self.cache['streams'][unicode(partnerId)]['stream']['preview'] + "?" + int(time.time()))
                     online = True
             if not online:
+                self.setPartnerAvatar(moreInfo, self.cache['streams'][unicode(partnerId)]['stream']['logo'])
                 self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("No"))
         except (KeyError, IndexError):
             pass
@@ -331,4 +332,6 @@ class TwitchNetwork(MMONetwork):
         for chan in self.cache['channels'].keys():
             channelsWithLink[chan] = self.cache['channels'][chan]
             channelsWithLink[chan]['detailLink'] = url_for('partner_details', netHandle=self.handle, partnerId=chan)
+            channelsWithLink[chan]['mmoUserName'] = self.getUserById(chan).nick
+            channelsWithLink[chan].pop('stream_key', None)
         return { 'channels': channelsWithLink, 'streams': self.cache['streams'] }
