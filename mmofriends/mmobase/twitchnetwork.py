@@ -59,26 +59,26 @@ class TwitchNetwork(MMONetwork):
         try:
             self.setPartnerDetail(moreInfo, gettext("Nickname"), self.cache['channels'][partnerId]['display_name'])
             online = False
-            if 'stream' in self.cache['streams'][unicode(partnerId)].keys():
-                if self.cache['streams'][unicode(partnerId)]['stream'] != None:
+            if 'stream' in self.cache['streams'][partnerId].keys():
+                if self.cache['streams'][partnerId]['stream'] != None:
                     self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("Yes"))
-                    self.setPartnerDetail(moreInfo, gettext("Viewers"), self.cache['streams'][unicode(partnerId)]['stream']['viewers'])
-                    self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][unicode(partnerId)]['status'])
-                    self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][unicode(partnerId)]['game'])
-                    self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['streams'][unicode(partnerId)]['stream']['preview'] + "?" + int(time.time())))
+                    self.setPartnerDetail(moreInfo, gettext("Viewers"), self.cache['streams'][partnerId]['stream']['viewers'])
+                    self.setPartnerDetail(moreInfo, gettext("Status"), self.cache['channels'][partnerId]['status'])
+                    self.setPartnerDetail(moreInfo, gettext("Game"), self.cache['channels'][partnerId]['game'])
+                    self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['streams'][partnerId]['stream']['preview'] + "?" + int(time.time())))
                     online = True
             if not online:
                 self.setPartnerDetail(moreInfo, gettext("Streaming"), gettext("No"))
 
-                if 'logo' in self.cache['channels'][unicode(partnerId)].keys():
-                    if self.cache['channels'][unicode(partnerId)]['logo']:
-                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][unicode(partnerId)]['logo']))
-                elif 'banner' in self.cache['channels'][unicode(partnerId)].keys():
-                    if self.cache['channels'][unicode(partnerId)]['banner']:
-                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][unicode(partnerId)]['banner']))
-                elif 'video_banner' in self.cache['channels'][unicode(partnerId)].keys():
-                    if self.cache['channels'][unicode(partnerId)]['video_banner']:
-                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][unicode(partnerId)]['video_banner']))
+                if 'logo' in self.cache['channels'][partnerId].keys():
+                    if self.cache['channels'][partnerId]['logo']:
+                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][partnerId]['logo']))
+                elif 'banner' in self.cache['channels'][partnerId].keys():
+                    if self.cache['channels'][partnerId]['banner']:
+                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][partnerId]['banner']))
+                elif 'video_banner' in self.cache['channels'][partnerId].keys():
+                    if self.cache['channels'][partnerId]['video_banner']:
+                        self.setPartnerAvatar(moreInfo, self.cacheFile(self.cache['channels'][partnerId]['video_banner']))
                 
         except (KeyError, IndexError):
             pass
