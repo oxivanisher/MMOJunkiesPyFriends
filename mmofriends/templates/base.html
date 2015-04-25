@@ -106,9 +106,13 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{# Social Links -#}
-						<li><a class="fb-like" data-href="https://www.facebook.com/MMOJunkies.net" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></a>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> {{ _('Social') }} <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a class="fb-like" data-href="https://www.facebook.com/MMOJunkies.net" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></a></li>
+								<li style="padding-top: 15px"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">{{ _('Follow') }} @realMMOJunkies</a></li>
+							</ul>
 						</li>
-						<li style="padding-top: 15px"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">{{ _('Follow') }} @realMMOJunkies</a></li>
 
 						{# undo box remove -#}
 						<li class="dropdown" id="removedBoxesDropdownMenu" style="visibility: hidden; visible: hidden;">
