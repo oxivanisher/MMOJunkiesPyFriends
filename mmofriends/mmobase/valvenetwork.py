@@ -633,7 +633,8 @@ class ValveNetwork(MMONetwork):
         gamesUsers = {}
         returnUsers = []
 
-        gamesNowPlaying = []
+        intGamesNowPlaying = []
+        extGamesNowPlaying = []
 
         internalUsers = []
         allLinks = self.getNetworkLinks()
@@ -693,10 +694,10 @@ class ValveNetwork(MMONetwork):
     
                             if int(user) in internalUsers:
                                 nowPlayingUser['internal'] = True
+                                intGamesNowPlaying.append(nowPlayingUser)
                             else:
                                 nowPlayingUser['internal'] = False
-    
-                            gamesNowPlaying.append(nowPlayingUser)
+                                extGamesNowPlaying.append(nowPlayingUser)
                 except KeyError:
                     pass
 
@@ -731,7 +732,7 @@ class ValveNetwork(MMONetwork):
         return { 'games2weeks': getHighestRated(return2weeks, 'weight'),
                  'gamesForever': getHighestRated(returnForever, 'weight'),
                  'gamesUsers': getHighestRated(returnUsers, 'weight'),
-                 'gamesNowPlaying': gamesNowPlaying }
+                 'gamesNowPlaying': intGamesNowPlaying + extGamesNowPlaying }
 
         # if what == 'games2weeks':
         #     return getHighestRated(return2weeks, 'weight')
