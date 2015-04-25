@@ -551,7 +551,7 @@ class TS3Network(MMONetwork):
         return htmlFields
 
     def doLink(self, userId):
-        if not self.getUserById(userId):
+        if not userId:
             return gettext("Please choose a user.")
         self.getCache('onlineClients')
         self.connect()
@@ -566,19 +566,19 @@ class TS3Network(MMONetwork):
                 ret = self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
                 break
             except EOFError as e:
-                self.log.warning("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
+                self.log.warning("[%s] Unable to link network for %s because: %s" % (self.handle, userId, e))
                 if count > 5:
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.1)
             except KeyError as e:
-                self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s" % (self.handle, self.getUserById(userId), e))
+                self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s" % (self.handle, userId, e))
                 if count > 5:
                     return gettext("Client not found. Please try again, sorry.")
                 else:
                     time.sleep(0.1)
             except Exception as e:
-                self.log.error("[%s] Unable to link network for %s because: %s" % (self.handle, self.getUserById(userId), e))
+                self.log.error("[%s] Unable to link network for %s because: %s" % (self.handle, userId, e))
                 if count > 5:
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
