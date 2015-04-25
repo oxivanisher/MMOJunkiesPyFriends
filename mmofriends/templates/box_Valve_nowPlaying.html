@@ -1,4 +1,5 @@
-<ul id="steamNowPlaying" class="list-group" style="margin-bottom: 0px;"></ul>
+{# <ul id="steamNowPlaying" class="list-group" style="margin-bottom: 0px;"></ul> #}
+<table id="steamNowPlaying" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function drawNowPlayingContent{{ box.netHandle }}{{ box.handle }}( data ) {
@@ -23,9 +24,13 @@
 				mouseOver = 'onmouseover="showInfoPopup(\'' + user.detailLink + '\');" onmouseout="hideInfoPopup();"';
 			}
 
-			var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '">' + display_name + '</label>';
+			// var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '">' + display_name + '</label>';
 
-			$('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;" ' + mouseOver + '>' + content + '</li>');
+			// $('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;" ' + mouseOver + '>' + content + '</li>');
+
+			$('#steamNowPlaying').append('<tr><td class="text-wrap" ' + mouseOver + ' title="Friend of: ' + user.friendof + '">'+ display_name + '</td></tr>');
+
+
 			showMe = true;
 		}
 		return showMe;
