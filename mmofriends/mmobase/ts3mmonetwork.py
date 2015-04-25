@@ -551,7 +551,7 @@ class TS3Network(MMONetwork):
         return htmlFields
 
     def doLink(self, userId):
-        if not userId:
+        if not self.getUserById(userId):
             return gettext("Please choose a user.")
         self.getCache('onlineClients')
         self.connect()
