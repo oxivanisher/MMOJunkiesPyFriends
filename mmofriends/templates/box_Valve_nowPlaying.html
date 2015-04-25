@@ -12,24 +12,23 @@
 			var onclickWatch = 'onclick="window.open(\'' + user.watchUrl + '\')"';
 
 			if (user.internal) {
-				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" ' + onclickUser + ' /> ';
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId='System') }}" title="{{ box.netHandle }}" ' + onclickUser + ' style="cursor: pointer;"/> ';
 			} else {
-				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" ' + onclickUser + ' /> ';
+				display_name = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=box.netHandle) }}" title="{{ box.netHandle }}" ' + onclickUser + ' style="cursor: pointer;"/> ';
 			}
-			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" ' + onclickGame + ' /> ';
+			display_name = display_name + '<img class="partner_list_icon" src="' + user.img_icon_url + '" title="{{ box.netHandle }}" ' + onclickGame + ' style="cursor: pointer;"/> ';
 			display_name = display_name + user.username + ': ' + user.gamename
 
 			mouseOver = '';
 			if (user.detailLink) {
-				mouseOver = 'onmouseover="showInfoPopup(\'' + user.detailLink + '\');" onmouseout="hideInfoPopup();"';
+				mouseOver = ' onmouseover="showInfoPopup(\'' + user.detailLink + '\');" onmouseout="hideInfoPopup();"';
 			}
 
 			// var content = '<label class="control-label text-wrap clickable" title="Friend of: ' + user.friendof + '">' + display_name + '</label>';
 
 			// $('#steamNowPlaying').append('<li class="list-group-item" ' + onclickWatch + ' style="cursor: pointer;" ' + mouseOver + '>' + content + '</li>');
 
-			$('#steamNowPlaying').append('<tr><td class="text-wrap" ' + mouseOver + ' title="Friend of: ' + user.friendof + '">'+ display_name + '</td></tr>');
-
+			$('#steamNowPlaying').append('<tr><td class="text-wrap"' + mouseOver + ' title="Friend of: ' + user.friendof + '">'+ display_name + '</td></tr>');
 
 			showMe = true;
 		}
