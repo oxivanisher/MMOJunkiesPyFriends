@@ -1085,9 +1085,9 @@ def getLastly(request):
 # Dashboard functions
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': gettext('Statistics')})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
-SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation', 'sticky': True})
+#SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation', 'sticky': True})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
-SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users'})
+SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users', 'sticky': True})
 SystemBoxes["lastly"] = createDashboardBox(getLastly, "System", "lastly", {'title': 'Lastly on MMOJunkies'})
 
 # Dashboard routes

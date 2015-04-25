@@ -110,14 +110,16 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> {{ _('Social') }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li><a class="fb-like" data-href="https://www.facebook.com/MMOJunkies.net" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></a></li>
-								<li style="padding-top: 15px; padding-left: 15px;"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">{{ _('Follow') }} @realMMOJunkies</a></li>
+								<li style="padding: 15px;"><a href="https://twitter.com/realMMOJunkies" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">{{ _('Follow') }} @realMMOJunkies</a></li>
 								{% if config.PAYPAL_ENCRIPTED -%}
+									<li style="padding: 15px;">
 									<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 										<input type="hidden" name="cmd" value="_s-xclick">
 										<input type="hidden" name="encrypted" value="{{ config.PAYPAL_ENCRIPTED }}">
 										<input type="submit" value="{{ _('Donate with PayPal') }}" alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal." class="btn btn-sm btn-primary btn-block">
 										<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 									</form>
+									</li>
 								{%- endif %}
 							</ul>
 						</li>
