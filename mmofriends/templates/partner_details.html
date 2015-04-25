@@ -18,7 +18,7 @@
 		<tr>
 			<td nowrap style="vertical-align: top; padding-right: 6px">{{ detail.key }}</td>
 			<td>
-				{%- if detail.value.startswith('http://') or detail.value.startswith('https://') -%}
+				{%- if detail.value.startswith('http://') or detail.value.startswith('https://') or detail.value.startswith('//') -%}
 					<a href="detail.value" target="_blank">{{ detail.value|truncate(50, True) }}</a>
 				{%- else -%}
 					{{ detail.value|truncate(50, True) }}
