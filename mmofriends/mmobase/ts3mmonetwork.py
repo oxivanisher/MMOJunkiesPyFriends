@@ -567,19 +567,19 @@ class TS3Network(MMONetwork):
                 break
             except EOFError as e:
                 if count > 10:
-                    self.log.warning("[%s] Unable to link network for %s because: %s" % (self.handle, userId, e))
+                    self.log.warning("[%s] Unable to link network for %s because: %s (%s)" % (self.handle, userId, e, ret))
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
             except KeyError as e:
                 if count > 10:
-                    self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s" % (self.handle, userId, e))
+                    self.log.warning("[%s] Unable to link network for %s because onlineclient was not found: %s (%s)" % (self.handle, userId, e, ret))
                     return gettext("Client not found. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
             except Exception as e:
                 if count > 10:
-                    self.log.error("[%s] Unable to link network for %s because: %s" % (self.handle, userId, e))
+                    self.log.error("[%s] Unable to link network for %s because: %s (%s)" % (self.handle, userId, e, ret))
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
