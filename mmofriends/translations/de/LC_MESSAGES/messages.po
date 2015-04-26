@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-26 23:49+0200\n"
+"POT-Creation-Date: 2015-04-27 00:13+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -26,8 +26,8 @@ msgid "Password is too short"
 msgstr "Das Passwort ist zu kurz"
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:313
-msgid "Page not found"
-msgstr "Seite nicht gefunden"
+msgid "Bad Request"
+msgstr "Fehlerhafte Anfrage"
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:318
 msgid "Unauthorized request"
@@ -38,6 +38,10 @@ msgid "Forbidden request"
 msgstr "Unzulässige Anfrage"
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:328
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:333
 msgid ""
 "The server encountered an internal error, probably a bug in the program. "
 "The administration was automatically informed of this problem."
@@ -46,29 +50,29 @@ msgstr ""
 "Programm. Der Administrator wurde automatisch über dieses Problem "
 "informiert."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:592
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:597
 #, python-format
 msgid "Successfully linked to network %(netdescr)s"
 msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:595
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:600
 #, python-format
 msgid "Unable to link network %(netdescr)s. Please try again."
 msgstr ""
 "Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte "
 "versuche es noch einmal."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:649
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:654
 #, python-format
 msgid "Removed link to %(netname)s"
 msgstr "Link zum %(netname)s entfernt"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:651
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:656
 #, python-format
 msgid "Unable to remove link to %(netname)s"
 msgstr "Es ist nicht möglich den Link zu %(netname)s zu entfernen"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:696
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:701
 #, python-format
 msgid ""
 "Unable to link network %(networkhandle)s. The administrator was informed "
@@ -77,29 +81,29 @@ msgstr ""
 "Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator "
 "wurde über diesen Bug informiert. Bitte versuche es noch einmal."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:703
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:708
 #, python-format
 msgid "Authentication with %(nethandle)s successfull as %(username)s."
 msgstr "Erfolgreich bei %(nethandle)s angemeldet als %(username)s."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:706
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:711
 #, python-format
 msgid "Authentication with %(nethandle)s NOT successfull"
 msgstr "Anmeldung bei %(nethandle)s NICHT erfolgreich"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:719
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:724
 msgid "Nickname is too short"
 msgstr "Der Nickname ist zu kurz"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:726
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:731
 msgid "Please fill out all the fields!"
 msgstr "Bitte fülle alle Felder aus!"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:751
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:756
 msgid "MMOJunkies Activation Email"
 msgstr "MMOJunkies Aktivierungs Email"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:757
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>We are happy to welcome you to "
@@ -107,114 +111,114 @@ msgid ""
 "link</a>.<br><br><b>To remove the recurring message in Teamspeak, you "
 "have to connect yout TS3 user in the 'Network Connections' box."
 msgstr ""
-"<h3>Hallo %(nick)s</h3>Es freut uns dich herzlich zu "
-"MMOJunkies begrüssen zu dürfen!<br>Bitte bestätige deinen Account mit"
-"<a href='%(url)s'>diesem Link</a>.<br><br><b>Um die wiederkehrenden "
-"Nachrichtem im Teamspeak los zu werden, musst du dich mit Teamspeak "
-"verbinden in der Box 'Network Connections'."
+"<h3>Hallo %(nick)s</h3>Es freut uns dich herzlich zu MMOJunkies begrüssen"
+" zu dürfen!<br>Bitte bestätige deinen Account mit<a href='%(url)s'>diesem"
+" Link</a>.<br><br><b>Um die wiederkehrenden Nachrichtem im Teamspeak los "
+"zu werden, musst du dich mit Teamspeak verbinden in der Box 'Network "
+"Connections'."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:757
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:787
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:806
 msgid "<br><br>Have fun and see you soon ;)"
 msgstr "<br><br>Viel spass und bis bald ;)"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:800
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:759
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:789
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:808
 #, python-format
 msgid "Please check your mails at %(emailaddr)s"
 msgstr "Bitte überprüfe dein Postfach von %(emailaddr)s"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:756
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:761
 msgid "Error sending the email to you."
 msgstr "Fehler beim senden der Email an dich."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:762
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:767
 msgid "SQL Alchemy Error"
 msgstr "SQL Alchemy Fehler"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:783
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
 msgid "MMOJunkies Password Reset"
 msgstr "MMOJunkies Passwort zurücksetzen"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:787
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>You can reset your password with <a "
 "href='%(url)s'>this link</a>. If you did not request this password reset,"
 " you can just ignore it. Your current password is still valid.</b>"
 msgstr ""
-"<h3>Hallo %(nick)s</h3>Du kannst dein Passwort mit <a href="
-"'%(url)s'>diesem Link</a> zurücksetzen. Falls du diese Anfrage "
-"nicht ausgelöst hast, kannst du dieses Email einfach ignorieren. "
-"Dein bisheriges Passwort ist weiterhin gültig."
+"<h3>Hallo %(nick)s</h3>Du kannst dein Passwort mit <a "
+"href='%(url)s'>diesem Link</a> zurücksetzen. Falls du diese Anfrage nicht"
+" ausgelöst hast, kannst du dieses Email einfach ignorieren. Dein "
+"bisheriges Passwort ist weiterhin gültig."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:788
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:791
 msgid "No user found with this email address"
 msgstr "Es wurde kein Benutzer mit dieser Emailadresse gefunden."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:797
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:805
 msgid "MMOJunkies New Password"
 msgstr "MMOJUnkies Neues Passwort"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:806
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. "
 "Please change it right after you logged in."
 msgstr ""
-"<h3>Hallo %(nick)s</h3>Dein Passwort ist nun <b>%(password)s</b>. "
-"Bitte wechsle es nachdem du dich auf der Seite eingeloggt hast."
+"<h3>Hallo %(nick)s</h3>Dein Passwort ist nun <b>%(password)s</b>. Bitte "
+"wechsle es nachdem du dich auf der Seite eingeloggt hast."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:811
 msgid "Wrong verification link. Please request a new one."
 msgstr "Falscher verifizerungs Link. Bitte lasse dir einen neune senden."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:824
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:832
 msgid "Old password not correct!"
 msgstr "Das alte Passwort ist nicht korrekt!"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:836
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:844
 msgid "Profile changed"
 msgstr "Profil geändert"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:866
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:874
 msgid "User not found to verify."
 msgstr "Benutzer zum verifizieren nicht gefunden."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:873
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:881
 msgid "Verification ok. Please log in."
 msgstr "Verifizierung ok. Bitte melde dich an."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:877
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:885
 msgid "Verification NOT ok. Please try again."
 msgstr "Verifizierung NICHT ok. Bitte versuche es noch einmal."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:891
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:899
 msgid "Error locating your user"
 msgstr "Fehler beim finden deines Benutzers"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:898
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:906
 msgid "User not yet verified. Please check your email for the unlock key."
 msgstr ""
 "Benutzer noch nicht verifiziert. Bitte suche in deinen Emails nach dem "
 "Schlüssel."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:901
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:909
 msgid "User locked. Please contact an administrator."
 msgstr "Benutzer gesperrt. Bitte kontaktiere einen Administrator."
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:922
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:924
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:930
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:932
 msgid "Invalid login"
 msgstr "Login ungültig"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1139
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1147
 msgid "Statistics"
 msgstr "Statistiken"
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1151
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1159
 msgid ""
 "You have no network connected. Please do so in the 'Network Connections' "
 "box."

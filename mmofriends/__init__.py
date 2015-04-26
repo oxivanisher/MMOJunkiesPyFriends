@@ -308,9 +308,9 @@ def get_locale():
         return browserLang
 
 # flask error handlers
-@app.errorhandler(404)
-def error_not_found(error):
-    flash(gettext("Page not found"), 'error')
+@app.errorhandler(400)
+def error_unauthorized_request(error):
+    flash(gettext("Bad Request"), 'error')
     return redirect(url_for('index'))
 
 @app.errorhandler(401)
@@ -321,6 +321,11 @@ def error_unauthorized_request(error):
 @app.errorhandler(403)
 def error_forbidden_request(error):
     flash(gettext("Forbidden request"), 'error')
+    return redirect(url_for('index'))
+
+@app.errorhandler(404)
+def error_not_found(error):
+    flash(gettext("Page not found"), 'error')
     return redirect(url_for('index'))
 
 @app.errorhandler(500)
@@ -765,45 +770,48 @@ def profile_register():
     
     return render_template('profile_register.html', values = request.form)
 
-@app.route('/Profile/PasswordReset/', methods=['POST', 'GET'])
-@app.route('/Profile/PasswordReset/<userId>/<verifyKey>', methods=['POST', 'GET'])
+@app.route('/Profile/PasswordReset/Request/', methods=['POST'])
+def profile_password_reset_request():
+    if session.get('logged_in'):
+        return redirect(url_for('index'))
+    log.info('[System] Password reset request (step 1/2) for: "%s"' % (request.form['email']))
+    myUser = getUserByEmail(request.form['email'])
+    if myUser:
+        myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+        db.session.merge(myUser)
+        db.session.flush()
+        db.session.commit()
+        actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
+        if send_email(app, myUser.email,
+                      gettext("MMOJunkies Password Reset"),
+                      gettext("<h3>Hello %(nick)s</h3>You can reset your password with <a href='%(url)s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b>", nick=myUser.nick, url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
+                      'logo_banner1_mmo_color_qr.png'):
+            flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
+    else:
+        flash(gettext("No user found with this email address"))
+    return redirect(url_for('index'))
+
+@app.route('/Profile/PasswordReset/Verify/<userId>/<verifyKey>', methods=['GET'])
 def profile_password_reset(userId = None, verifyKey = None):
     if session.get('logged_in'):
         return redirect(url_for('index'))
-    if request.method == 'POST':
-        log.info('[System] Password reset request (step 1/2) for: "%s"' % (request.form['email']))
-        myUser = getUserByEmail(request.form['email'])
-        if myUser:
-            myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
-            db.session.merge(myUser)
-            db.session.flush()
-            db.session.commit()
-            actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
+    log.info('[System] Password reset request (step 2/2) for: "%s"' % (request.form['email']))
+    myUser = getUserById(userId)
+    if myUser:
+        if myUser.verifyKey == verifyKey:
+            newPassword = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(12))
+            myUser.setPassword(newPassword)
             if send_email(app, myUser.email,
-                          gettext("MMOJunkies Password Reset"),
-                          gettext("<h3>Hello %(nick)s</h3>You can reset your password with <a href='%(url)s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b>", nick=myUser.nick, url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
+                          gettext("MMOJunkies New Password"),
+                          gettext("<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. Please change it right after you logged in.", nick=myUser.nick, password=newPassword) + gettext("<br><br>Have fun and see you soon ;)"),
                           'logo_banner1_mmo_color_qr.png'):
                 flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
         else:
-            flash(gettext("No user found with this email address"))
-    elif request.method == 'GET':
-        log.info('[System] Password reset request (step 2/2) for: "%s"' % (request.form['email']))
-        myUser = getUserById(userId)
-        if myUser:
-            if myUser.verifyKey == verifyKey:
-                newPassword = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(12))
-                myUser.setPassword(newPassword)
-                if send_email(app, myUser.email,
-                              gettext("MMOJunkies New Password"),
-                              gettext("<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. Please change it right after you logged in.", nick=myUser.nick, password=newPassword) + gettext("<br><br>Have fun and see you soon ;)"),
-                              'logo_banner1_mmo_color_qr.png'):
-                    flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
-            else:
-                myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
-                flash(gettext("Wrong verification link. Please request a new one."))
-            db.session.merge(myUser)
-            db.session.flush()
-            db.session.commit()
+            myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            flash(gettext("Wrong verification link. Please request a new one."))
+        db.session.merge(myUser)
+        db.session.flush()
+        db.session.commit()
     return redirect(url_for('index'))
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])

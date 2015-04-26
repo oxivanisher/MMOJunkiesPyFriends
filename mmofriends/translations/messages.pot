@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-26 23:49+0200\n"
+"POT-Creation-Date: 2015-04-27 00:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgid "Password is too short"
 msgstr ""
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:313
-msgid "Page not found"
+msgid "Bad Request"
 msgstr ""
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:318
@@ -38,61 +38,65 @@ msgid "Forbidden request"
 msgstr ""
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:328
+msgid "Page not found"
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:333
 msgid ""
 "The server encountered an internal error, probably a bug in the program. "
 "The administration was automatically informed of this problem."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:592
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:597
 #, python-format
 msgid "Successfully linked to network %(netdescr)s"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:595
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:600
 #, python-format
 msgid "Unable to link network %(netdescr)s. Please try again."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:649
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:654
 #, python-format
 msgid "Removed link to %(netname)s"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:651
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:656
 #, python-format
 msgid "Unable to remove link to %(netname)s"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:696
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:701
 #, python-format
 msgid ""
 "Unable to link network %(networkhandle)s. The administrator was informed "
 "of this bug. Please try again."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:703
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:708
 #, python-format
 msgid "Authentication with %(nethandle)s successfull as %(username)s."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:706
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:711
 #, python-format
 msgid "Authentication with %(nethandle)s NOT successfull"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:719
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:724
 msgid "Nickname is too short"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:726
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:731
 msgid "Please fill out all the fields!"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:751
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:756
 msgid "MMOJunkies Activation Email"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:757
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>We are happy to welcome you to "
@@ -101,32 +105,32 @@ msgid ""
 "have to connect yout TS3 user in the 'Network Connections' box."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:757
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:787
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:806
 msgid "<br><br>Have fun and see you soon ;)"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:800
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:759
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:789
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:808
 #, python-format
 msgid "Please check your mails at %(emailaddr)s"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:756
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:761
 msgid "Error sending the email to you."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:762
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:767
 msgid "SQL Alchemy Error"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:783
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
 msgid "MMOJunkies Password Reset"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:787
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>You can reset your password with <a "
@@ -134,67 +138,67 @@ msgid ""
 " you can just ignore it. Your current password is still valid.</b>"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:788
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:791
 msgid "No user found with this email address"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:797
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:805
 msgid "MMOJunkies New Password"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:806
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. "
 "Please change it right after you logged in."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:811
 msgid "Wrong verification link. Please request a new one."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:824
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:832
 msgid "Old password not correct!"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:836
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:844
 msgid "Profile changed"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:866
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:874
 msgid "User not found to verify."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:873
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:881
 msgid "Verification ok. Please log in."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:877
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:885
 msgid "Verification NOT ok. Please try again."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:891
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:899
 msgid "Error locating your user"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:898
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:906
 msgid "User not yet verified. Please check your email for the unlock key."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:901
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:909
 msgid "User locked. Please contact an administrator."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:922
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:924
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:930
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:932
 msgid "Invalid login"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1139
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1147
 msgid "Statistics"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1151
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1159
 msgid ""
 "You have no network connected. Please do so in the 'Network Connections' "
 "box."

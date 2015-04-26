@@ -7,7 +7,7 @@
 	</dl>
 </form>
 <br />
-<form action="{{ url_for('profile_password_reset') }}" id="pwreset" method="post" autocomplete="on">
+<form action="{{ url_for('profile_password_reset_request') }}" id="pwreset" method="post" autocomplete="on">
 	<dl>
 		<dt>{{ _('Password lost') }}:
 		<dd><input type="text" name="email" class="backend" placeholder="{{ _('Email') }}">
