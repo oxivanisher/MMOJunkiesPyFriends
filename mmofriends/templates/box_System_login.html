@@ -1,20 +1,16 @@
 <form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
 	<dl>
-		<dt>{{ _('Nickname') }}:
-		<dd><input type="text" name="nick" class="backend" autofocus="autofocus">
-		<dt>{{ _('Password') }}:
-		<dd><input type="password" name="password" class="backend">
+		<dt>{{ _('Login') }}:
+		<dd><input type="text" name="nick" class="backend" autofocus="autofocus" placeholder="{{ _('Nickname') }}">
+		<dd><input type="password" name="password" class="backend" placeholder="{{ _('Password') }}">
 	</dl>
 	<button class="btn btn-default" type="submit">{{ _('Login') }}</button> <a href="{{ url_for('profile_register') }}" class="btn btn-default">{{ _('Register') }}</a>
 </form>
 <br />
-<br />
-<br />
 <form action="{{ url_for('profile_password_reset') }}" id="pwreset" method="post" autocomplete="on">
 	<dl>
-		<dt>{{ _('Email') }}:
-		<dd><input type="text" name="email" class="backend">
+		<dt>{{ _('Password lost') }}:
+		<dd><input type="text" name="email" class="backend" placeholder="{{ _('Email') }}">
 	</dl>
 	<button class="btn btn-default" type="submit">{{ _('Password lost') }}</button>
 </form>
-
