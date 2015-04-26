@@ -3,8 +3,8 @@
 		<dt>{{ _('Login') }}:
 		<dd><input type="text" name="nick" class="backend" autofocus="autofocus" placeholder="{{ _('Nickname') }}">
 		<dd><input type="password" name="password" class="backend" placeholder="{{ _('Password') }}">
+		<dd><button class="btn btn-default" type="submit">{{ _('Login') }}</button> <a href="{{ url_for('profile_register') }}" class="btn btn-default">{{ _('Register') }}</a>
 	</dl>
-	<button class="btn btn-default" type="submit">{{ _('Login') }}</button> <a href="{{ url_for('profile_register') }}" class="btn btn-default">{{ _('Register') }}</a>
 </form>
 <br />
 <br />
@@ -12,6 +12,6 @@
 	<dl>
 		<dt>{{ _('Password lost') }}:
 		<dd><input type="text" name="email" class="backend" placeholder="{{ _('Email') }}">
+		<dd><button class="btn btn-default" type="submit">{{ _('Password lost') }}</button>
 	</dl>
-	<button class="btn btn-default" type="submit">{{ _('Password lost') }}</button>
 </form>
