@@ -781,7 +781,7 @@ def profile_password_reset(userId = None, verifyKey = None):
             actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
             if send_email(app, myUser.email,
                           "MMOJunkies Password Reset",
-                          "<h3>Hello %s</h3>You can reset your password with <a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br>ybr>Have fun and see you soon ;)" % (myUser.nick, actUrl),
+                          "<h3>Hello %s</h3>You can reset your password with <a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br><br>Have fun and see you soon ;)" % (myUser.nick, actUrl),
                           'logo_banner1_mmo_color_qr.png'):
                 flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
         else:
