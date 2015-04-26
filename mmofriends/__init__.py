@@ -1093,7 +1093,7 @@ def getSystemUsers(request):
                             sortOrder += 1
                             if MMONetworks[net].checkForUserOnline(user.id):
                                 userOnlineNets.append(net)
-                                sortOrder += 3
+                                sortOrder += 5
                             detailLinks[net] = url_for('partner_details', netHandle=net, partnerId=user.id)
 
                 for nick in user.nicks.all():
