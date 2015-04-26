@@ -40,7 +40,7 @@
 				$('#twitchChannelsOnline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
 			} else if (! drawOnline && ! online) {
 				showMe = true
-				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
+				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
 			}
 		}
 		return showMe
