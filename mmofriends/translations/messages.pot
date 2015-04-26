@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-26 22:53+0200\n"
+"POT-Creation-Date: 2015-04-26 23:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,7 +89,8 @@ msgid "Please fill out all the fields!"
 msgstr ""
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:781
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:800
 #, python-format
 msgid "Please check your mails at %(emailaddr)s"
 msgstr ""
@@ -102,52 +103,56 @@ msgstr ""
 msgid "SQL Alchemy Error"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:783
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:788
 msgid "No user found with this email address"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:804
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
+msgid "Wrong verification link. Please request a new one."
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:824
 msgid "Old password not correct!"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:816
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:836
 msgid "Profile changed"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:846
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:866
 msgid "User not found to verify."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:853
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:873
 msgid "Verification ok. Please log in."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:857
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:877
 msgid "Verification NOT ok. Please try again."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:871
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:891
 msgid "Error locating your user"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:878
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:898
 msgid "User not yet verified. Please check your email for the unlock key."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:881
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:901
 msgid "User locked. Please contact an administrator."
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:902
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:904
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:922
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:924
 msgid "Invalid login"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1119
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1139
 msgid "Statistics"
 msgstr ""
 
-#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1131
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1151
 msgid ""
 "You have no network connected. Please do so in the 'Network Connections' "
 "box."
