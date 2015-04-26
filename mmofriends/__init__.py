@@ -185,6 +185,14 @@ def getUserByNick(nick = None):
         else:
             return False
 
+def getUserByEmail(email = None):
+    with app.test_request_context():
+        ret = MMOUser.query.filter(MMOUser.email.ilike(email)).first()
+        if ret:
+            return ret
+        else:
+            return False
+
 def getUserById(userId = None):
     with app.test_request_context():
         if not userId:
@@ -759,13 +767,24 @@ def profile_register():
 
 @app.route('/Profile/PasswordReset', methods=['GET', 'POST'])
 def profile_password_reset():
+    if session.get('logged_in'):
+        return redirect(url_for('index'))
     if request.method == 'POST':
-        if request.form['nick'] and \
-            request.form['password'] and \
-            request.form['password2'] and \
-            request.form['email']:
-
-            valid = checkPassword(request.form['password'], request.form['password2'])
+        myUser = getUserByEmail(request.form['email'])
+        if myUser:
+            myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
+            if send_email(app, myUser.email,
+                          "MMOJunkies Password Reset",
+                          "<h3>Hello %s</h3>You can reset your password with<a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
+                          'logo_banner1_mmo_color_qr.png'):
+                flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
+        else:
+            flash(gettext("No user found with this email address"))
+    elif request.method == 'GET':
+        # valid = checkPassword(request.form['password'], request.form['password2'])
+        pass
+    return redirect(url_for('index'))
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show(do = None):
