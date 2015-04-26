@@ -765,7 +765,7 @@ def profile_register():
     
     return render_template('profile_register.html', values = request.form)
 
-@app.route('/Profile/PasswordReset', methods=['POST', 'GET'])
+@app.route('/Profile/PasswordReset/', methods=['POST', 'GET'])
 @app.route('/Profile/PasswordReset/<userId>/<verifyKey>', methods=['POST', 'GET'])
 def profile_password_reset(userId = None, verifyKey = None):
     if session.get('logged_in'):
