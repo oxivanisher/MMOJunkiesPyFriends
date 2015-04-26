@@ -908,6 +908,7 @@ def profile_password_reset_request():
     log.info('[System] Password reset request (step 1/2) for email: %s' % (request.form['email']))
     myUser = getUserByEmail(request.form['email'])
     if myUser:
+        myUser.load()
         myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
         db.session.merge(myUser)
         db.session.flush()
@@ -929,6 +930,7 @@ def profile_password_reset_verify(userId, verifyKey):
     log.info('[System] Password reset request (step 2/2) for user id: %s' % (userId))
     myUser = getUserById(userId)
     if myUser:
+        myUser.load()
         if myUser.verifyKey == verifyKey:
             newPassword = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(12))
             myUser.setPassword(newPassword)
