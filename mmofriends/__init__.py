@@ -220,6 +220,23 @@ def getBox(netHandle, methodHandle):
     else:
         return MMONetworks[netHandle].getDashboardBox(methodHandle)
 
+def checkPassword(password1, password2):
+    valid = True
+    if password1 != password2:
+        flash(gettext("Passwords do not match!"), 'error')
+        valid = False
+
+    if len(password1) < 8:
+        flash(gettext("Password is too short"), 'error')
+        valid = False
+
+    #and further checks for registration plz
+    # - user needs to be uniq!
+    # - minimal field length
+    # - is the website a website?
+    # - max length (cut oversize)
+    return valid
+
 # background worker methods (celery)
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
@@ -685,29 +702,16 @@ def oauth2_login(netHandle):
 @app.route('/Profile/Register', methods=['GET', 'POST'])
 def profile_register():
     if request.method == 'POST':
-        valid = True
         if request.form['nick'] and \
             request.form['password'] and \
             request.form['password2'] and \
             request.form['email']:
 
-            if request.form['password'] != request.form['password2']:
-                flash(gettext("Passwords do not match!"), 'error')
-                valid = False
-
             if len(request.form['nick']) < 3:
                 flash(gettext("Nickname is too short"), 'error')
                 valid = False
-
-            if len(request.form['password']) < 8:
-                flash(gettext("Password is too short"), 'error')
-                valid = False
-
-            #and further checks for registration plz
-            # - user needs to be uniq!
-            # - minimal field length
-            # - is the website a website?
-            # - max length (cut oversize)
+            else:
+                valid = checkPassword(request.form['password'], request.form['password2'])
 
         else:
             valid = False
@@ -752,6 +756,18 @@ def profile_register():
             # db.session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
+
+@app.route('/Profile/PasswordReset', methods=['GET', 'POST'])
+def profile_password_reset():
+    if request.method == 'POST':
+        if request.form['nick'] and \
+            request.form['password'] and \
+            request.form['password2'] and \
+            request.form['email']:
+
+            valid = checkPassword(request.form['password'], request.form['password2'])
+
+
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show(do = None):
