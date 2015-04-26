@@ -765,25 +765,45 @@ def profile_register():
     
     return render_template('profile_register.html', values = request.form)
 
-@app.route('/Profile/PasswordReset', methods=['GET', 'POST'])
-def profile_password_reset():
+@app.route('/Profile/PasswordReset', methods=['POST'])
+@app.route('/Profile/PasswordReset/<userId>/<verifyKey>', methods=['GET'])
+def profile_password_reset(userId = None, verifyKey = None):
     if session.get('logged_in'):
         return redirect(url_for('index'))
     if request.method == 'POST':
+        log.info('[System] Password reset request (step 1/2) for: "%s"' % (request.form['email']))
         myUser = getUserByEmail(request.form['email'])
         if myUser:
             myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+            db.session.merge(myUser)
+            db.session.flush()
+            db.session.commit()
             actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
             if send_email(app, myUser.email,
                           "MMOJunkies Password Reset",
-                          "<h3>Hello %s</h3>You can reset your password with<a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
+                          "<h3>Hello %s</h3>You can reset your password with<a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br>Have fun and see you soon ;)" % (myUser.nick, actUrl),
                           'logo_banner1_mmo_color_qr.png'):
                 flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
         else:
             flash(gettext("No user found with this email address"))
     elif request.method == 'GET':
-        # valid = checkPassword(request.form['password'], request.form['password2'])
-        pass
+        log.info('[System] Password reset request (step 2/2) for: "%s"' % (request.form['email']))
+        myUser = getUserById(userId)
+        if myUser:
+            if myUser.verifyKey == verifyKey:
+                newPassword = 
+                myUser.setPassword(newPassword)
+                if send_email(app, myUser.email,
+                              "MMOJunkies New Password",
+                              "<h3>Hello %s</h3>Your new password is now <b>%s</b>. Please change it right after you logged in.<br><br>Have fun and see you soon ;)" % (myUser.nick, newPassword),
+                              'logo_banner1_mmo_color_qr.png'):
+                    flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
+            else:
+                myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+                flash(gettext("Wrong verification link. Please request a new one."))
+            db.session.merge(myUser)
+            db.session.flush()
+            db.session.commit()
     return redirect(url_for('index'))
 
 @app.route('/Profile/Show', methods=['GET', 'POST'])
