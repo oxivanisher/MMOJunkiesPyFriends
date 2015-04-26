@@ -791,7 +791,7 @@ def profile_password_reset(userId = None, verifyKey = None):
         myUser = getUserById(userId)
         if myUser:
             if myUser.verifyKey == verifyKey:
-                newPassword = 
+                newPassword = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(12))
                 myUser.setPassword(newPassword)
                 if send_email(app, myUser.email,
                               "MMOJunkies New Password",
