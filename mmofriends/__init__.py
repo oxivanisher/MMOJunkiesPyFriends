@@ -767,8 +767,6 @@ def profile_password_reset():
 
             valid = checkPassword(request.form['password'], request.form['password2'])
 
-
-
 @app.route('/Profile/Show', methods=['GET', 'POST'])
 def profile_show(do = None):
     # gravatar: https://de.gravatar.com/site/implement/images/python/
@@ -780,14 +778,9 @@ def profile_show(do = None):
     if request.method == 'POST':
         if request.form['do'] == "pwchange":
             if myUser.checkPassword(request.form['oldpassword']):
-                if request.form['newpassword1'] == request.form['newpassword2']:
-                    if len(request.form['newpassword1']) < 8:
-                        flash("Password is too short", 'error')
-                    else:
-                        myUser.setPassword(request.form['newpassword1'])
-                        userChanged = True
-                else:
-                    flash(gettext("New passwords do not match!"), 'error')
+                if checkPassword(request.form['newpassword1'], request.form['newpassword2']):
+                    myUser.setPassword(request.form['newpassword1'])
+                    userChanged = True
             else:
                 flash(gettext("Old password not correct!"), 'error')
         elif request.form['do'] == "editprofile":
