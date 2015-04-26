@@ -7,7 +7,9 @@
 	</dl>
 	<button class="btn btn-default" type="submit">{{ _('Login') }}</button> <a href="{{ url_for('profile_register') }}" class="btn btn-default">{{ _('Register') }}</a>
 </form>
-
+<br />
+<br />
+<br />
 <form action="{{ url_for('profile_password_reset') }}" id="pwreset" method="post" autocomplete="on">
 	<dl>
 		<dt>{{ _('Email') }}:
