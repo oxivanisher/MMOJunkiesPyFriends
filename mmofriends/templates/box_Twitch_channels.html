@@ -35,12 +35,16 @@
 			var label = '<label class="control-label ' + status + ' text-wrap clickable" for="inputSuccess1">' + display_name + '</label>';
 			var content = label + icon + image;
 
+			{%- if not session.logged_in -%}
+				mouseOver = '';
+			{% endif -%}
+
 			if (drawOnline && online) {
 				showMe = true
 				$('#twitchChannelsOnline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
 			} else if (! drawOnline && ! online) {
 				showMe = true
-				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + '>' + content + '</li>');
+				$('#twitchChannelsOffline').append('<li class="list-group-item clickable" ' + onclick + mouseOver + '>' + content + '</li>');
 			}
 		}
 		return showMe
