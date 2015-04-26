@@ -783,7 +783,7 @@ def profile_password_reset(userId = None, verifyKey = None):
                           "MMOJunkies Password Reset",
                           "<h3>Hello %s</h3>You can reset your password with<a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br>Have fun and see you soon ;)" % (myUser.nick, actUrl),
                           'logo_banner1_mmo_color_qr.png'):
-                flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
+                flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
         else:
             flash(gettext("No user found with this email address"))
     elif request.method == 'GET':
@@ -797,7 +797,7 @@ def profile_password_reset(userId = None, verifyKey = None):
                               "MMOJunkies New Password",
                               "<h3>Hello %s</h3>Your new password is now <b>%s</b>. Please change it right after you logged in.<br><br>Have fun and see you soon ;)" % (myUser.nick, newPassword),
                               'logo_banner1_mmo_color_qr.png'):
-                    flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
+                    flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
             else:
                 myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
                 flash(gettext("Wrong verification link. Please request a new one."))
