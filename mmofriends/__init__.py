@@ -748,8 +748,8 @@ def profile_register():
                 db.session.commit()
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email,
-                              "MMOJunkies Activation Email",
-                              "<h3>Hello %s</h3>We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.</b><br>Have fun and see you soon ;)" % (request.form['nick'], actUrl),
+                              gettext("MMOJunkies Activation Email"),
+                              gettext("<h3>Hello %(nick)s</h3>We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.", nick=request.form['nick'], url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
                               'logo_banner1_mmo_color_qr.png'):
                     flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
                 else:
@@ -780,8 +780,8 @@ def profile_password_reset(userId = None, verifyKey = None):
             db.session.commit()
             actUrl = app.config['WEBURL'] + url_for('profile_password_reset', userId=myUser.id, verifyKey=myUser.verifyKey)
             if send_email(app, myUser.email,
-                          "MMOJunkies Password Reset",
-                          "<h3>Hello %s</h3>You can reset your password with <a href='%s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b><br><br>Have fun and see you soon ;)" % (myUser.nick, actUrl),
+                          gettext("MMOJunkies Password Reset"),
+                          gettext("<h3>Hello %(nick)s</h3>You can reset your password with <a href='%(url)s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b>", nick=myUser.nick, url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
                           'logo_banner1_mmo_color_qr.png'):
                 flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
         else:
@@ -794,8 +794,8 @@ def profile_password_reset(userId = None, verifyKey = None):
                 newPassword = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(12))
                 myUser.setPassword(newPassword)
                 if send_email(app, myUser.email,
-                              "MMOJunkies New Password",
-                              "<h3>Hello %s</h3>Your new password is now <b>%s</b>. Please change it right after you logged in.<br><br>Have fun and see you soon ;)" % (myUser.nick, newPassword),
+                              gettext("MMOJunkies New Password"),
+                              gettext("<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. Please change it right after you logged in.", nick=myUser.nick, password=newPassword) + gettext("<br><br>Have fun and see you soon ;)"),
                               'logo_banner1_mmo_color_qr.png'):
                     flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
             else:

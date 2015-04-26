@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-26 23:33+0200\n"
+"POT-Creation-Date: 2015-04-26 23:49+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -95,6 +95,30 @@ msgstr "Der Nickname ist zu kurz"
 msgid "Please fill out all the fields!"
 msgstr "Bitte fülle alle Felder aus!"
 
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:751
+msgid "MMOJunkies Activation Email"
+msgstr "MMOJunkies Aktivierungs Email"
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>We are happy to welcome you to "
+"MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this "
+"link</a>.<br><br><b>To remove the recurring message in Teamspeak, you "
+"have to connect yout TS3 user in the 'Network Connections' box."
+msgstr ""
+"<h3>Hallo %(nick)s</h3>Es freut uns dich herzlich zu "
+"MMOJunkies begrüssen zu dürfen!<br>Bitte bestätige deinen Account mit"
+"<a href='%(url)s'>diesem Link</a>.<br><br><b>Um die wiederkehrenden "
+"Nachrichtem im Teamspeak los zu werden, musst du dich mit Teamspeak "
+"verbinden in der Box 'Network Connections'."
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+msgid "<br><br>Have fun and see you soon ;)"
+msgstr "<br><br>Viel spass und bis bald ;)"
+
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:800
@@ -110,9 +134,38 @@ msgstr "Fehler beim senden der Email an dich."
 msgid "SQL Alchemy Error"
 msgstr "SQL Alchemy Fehler"
 
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:783
+msgid "MMOJunkies Password Reset"
+msgstr "MMOJunkies Passwort zurücksetzen"
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>You can reset your password with <a "
+"href='%(url)s'>this link</a>. If you did not request this password reset,"
+" you can just ignore it. Your current password is still valid.</b>"
+msgstr ""
+"<h3>Hallo %(nick)s</h3>Du kannst dein Passwort mit <a href="
+"'%(url)s'>diesem Link</a> zurücksetzen. Falls du diese Anfrage "
+"nicht ausgelöst hast, kannst du dieses Email einfach ignorieren. "
+"Dein bisheriges Passwort ist weiterhin gültig."
+
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:788
 msgid "No user found with this email address"
 msgstr "Es wurde kein Benutzer mit dieser Emailadresse gefunden."
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:797
+msgid "MMOJunkies New Password"
+msgstr "MMOJUnkies Neues Passwort"
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. "
+"Please change it right after you logged in."
+msgstr ""
+"<h3>Hallo %(nick)s</h3>Dein Passwort ist nun <b>%(password)s</b>. "
+"Bitte wechsle es nachdem du dich auf der Seite eingeloggt hast."
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
 msgid "Wrong verification link. Please request a new one."
@@ -706,5 +759,4 @@ msgstr "Neuer Nickname"
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/templates/search_result.html:2
 msgid "Search Result for"
 msgstr "Suchresultat für"
-
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-26 23:33+0200\n"
+"POT-Creation-Date: 2015-04-26 23:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,6 +88,25 @@ msgstr ""
 msgid "Please fill out all the fields!"
 msgstr ""
 
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:751
+msgid "MMOJunkies Activation Email"
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>We are happy to welcome you to "
+"MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this "
+"link</a>.<br><br><b>To remove the recurring message in Teamspeak, you "
+"have to connect yout TS3 user in the 'Network Connections' box."
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+msgid "<br><br>Have fun and see you soon ;)"
+msgstr ""
+
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:754
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:786
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:800
@@ -103,8 +122,31 @@ msgstr ""
 msgid "SQL Alchemy Error"
 msgstr ""
 
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:783
+msgid "MMOJunkies Password Reset"
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:784
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>You can reset your password with <a "
+"href='%(url)s'>this link</a>. If you did not request this password reset,"
+" you can just ignore it. Your current password is still valid.</b>"
+msgstr ""
+
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:788
 msgid "No user found with this email address"
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:797
+msgid "MMOJunkies New Password"
+msgstr ""
+
+#: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:798
+#, python-format
+msgid ""
+"<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. "
+"Please change it right after you logged in."
 msgstr ""
 
 #: /home/oxi/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:803
