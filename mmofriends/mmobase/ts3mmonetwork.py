@@ -562,6 +562,7 @@ class TS3Network(MMONetwork):
         count = 0
         while True:
             count += 1
+            ret = None
             try:
                 ret = self.server.clientpoke(self.cache['onlineClients'][userId]['clid'], message)
                 break
