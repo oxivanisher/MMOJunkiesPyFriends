@@ -21,7 +21,12 @@
 			<td>{{ user.name }}</td>
 			<td>{{ user.email }}</td>
 			<td>{{ user.website }}</td>
-			<td><a href="{{ url_for('admin_user_management_toggleadmin', userId=user.id) }}">{{ user.admin }}</a></td>
+			<td>
+			{%- if session.id == user.id %}
+				{{ user.admin }}
+			{% else %}
+				<a href="{{ url_for('admin_user_management_toggleadmin', userId=user.id) }}">{{ user.admin }}</a></td>
+			{%- endif -%}
 			<td><a href="{{ url_for('admin_user_management_togglelock', userId=user.id) }}">{{ user.locked }}</a></td>
 			<td>{{ user.veryfied }}</td>
 		</tr>

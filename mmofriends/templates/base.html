@@ -122,11 +122,13 @@
 						</li>
 
 						{# undo box remove -#}
+						{% if url_for('index') == request.path %}
 						<li class="dropdown" id="removedBoxesDropdownMenu" style="visibility: hidden; visible: hidden;">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span> {{ _('Hidden boxes') }} <span class="caret"></span></a>
 	         				<ul class="dropdown-menu" role="menu" id="removedBoxesDropdown">
 							</ul>
 						</li>
+						{% endif %}
 
 					{% if session.logged_in -%}
 						{% if session.admin  -%}
