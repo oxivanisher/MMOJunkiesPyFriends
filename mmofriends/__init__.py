@@ -354,7 +354,7 @@ def before_request():
     except KeyError:
         session['requests'] = 0
 
-    if session.get('logmeout'):
+    if session.get('logmeout') == True:
         session['logmeout'] = False
         session.pop('logmeout', None)
         return redirect(url_for('profile_logout'))
@@ -363,7 +363,7 @@ def before_request():
         if time.time() - session.get('last_lock_check') > 30:
             log.warning("[System] Lock check for user: '%s'" % (session.get('nick')))
             myUser = getUserById(session.get('userid'))
-            if myUser.lock == True:
+            if myUser.locked == True:
                 session['logmeout'] = True
             if myUser.admin != session.get('admin'):
                 session['logmeout'] = True
