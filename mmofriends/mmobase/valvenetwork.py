@@ -44,10 +44,10 @@ class ValveNetwork(MMONetwork):
         self.imgIconUrlBase = "http://media.steampowered.com/steamcommunity/public/images/apps"
 
         # background updater methods
-        self.registerWorker(self.updateUsers, 3600)
-        self.registerWorker(self.updateUserAvatars, 3600)
+        self.registerWorker(self.updateUsers, 3650)
+        self.registerWorker(self.updateUserAvatars, 3640)
         self.registerWorker(self.checkForNewUsers, 10)
-        self.registerWorker(self.updateUsersOnlineState, 60)
+        self.registerWorker(self.updateUsersOnlineState, 56)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_games2weeks, 'games2weeks', {'title': 'Minutes played last two weeks','template': 'box_jQCloud.html'})

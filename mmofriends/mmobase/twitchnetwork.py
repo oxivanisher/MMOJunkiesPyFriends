@@ -37,7 +37,7 @@ class TwitchNetwork(MMONetwork):
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
 
         # background updater methods$
-        self.registerWorker(self.updateAllUserResources, 60)
+        self.registerWorker(self.updateAllUserResources, 55)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_channels, 'channels', {'title': 'Streams'})

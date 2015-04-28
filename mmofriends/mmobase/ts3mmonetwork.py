@@ -36,13 +36,13 @@ class TS3Network(MMONetwork):
         self.adminMethods.append((self.cacheFiles, 'Cache files'))
 
         # background updater methods
-        self.registerWorker(self.updateServerInfo, 900)
-        self.registerWorker(self.cacheAvailableClients, 10800)
-        self.registerWorker(self.loadMissingClientInformations, 10800)
+        self.registerWorker(self.updateServerInfo, 902)
+        self.registerWorker(self.cacheAvailableClients, 10700)
+        self.registerWorker(self.loadMissingClientInformations, 10600)
         self.registerWorker(self.refreshOnlineClients, 10)
-        self.registerWorker(self.updateOnlineClientInfos, 60)
-        self.registerWorker(self.cacheFiles, 900)
-        self.registerWorker(self.userWatchdog, 120)
+        self.registerWorker(self.updateOnlineClientInfos, 58)
+        self.registerWorker(self.cacheFiles, 901)
+        self.registerWorker(self.userWatchdog, 121)
 
     # background worker methods
     def refreshOnlineClients(self, logger = None):

@@ -62,8 +62,8 @@ class BlizzNetwork(MMONetwork):
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
         # background updater methods
-        self.registerWorker(self.updateBaseResources, 10800)
-        self.registerWorker(self.updateAllUserResources, 3600)
+        self.registerWorker(self.updateBaseResources, 39600)
+        self.registerWorker(self.updateAllUserResources, 3500)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_wowChars, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_jQCloud.html'})
@@ -310,7 +310,8 @@ class BlizzNetwork(MMONetwork):
         count = 0
         accessToken = False
         for link in self.getNetworkLinks():
-            accessToken = link['network_data']
+            if link['network_data']:
+                accessToken = link['network_data']
 
         for entry in self.wowDataResourcesList.keys():
             self.forceCacheUpdate(entry)

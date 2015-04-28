@@ -31,7 +31,7 @@ class RSSNews(MMONetwork):
         # self.setLogLevel(logging.DEBUG)
 
         # background updater methods
-        self.registerWorker(self.updateNews, 600)
+        self.registerWorker(self.updateNews, 559)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_getNews, 'getNews', {'title': 'News feeds' })
