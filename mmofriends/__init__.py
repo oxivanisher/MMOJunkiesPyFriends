@@ -510,7 +510,7 @@ def admin_user_management_togglelock(userId):
 @app.route('/Administration/User_Management/ToggleAdmin/<userId>')
 def admin_user_management_toggleadmin(userId):
     check_admin_permissions()
-    if userId != session['userid']:
+    if int(userId) != session.get('userid'):
         myUser = getUserById(userId)
         if myUser:
             myUser.load()
