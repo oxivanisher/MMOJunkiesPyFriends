@@ -133,6 +133,7 @@
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> {{ _('Administration') }} <span class="caret"></span></a>
 		         				<ul class="dropdown-menu" role="menu">
+									<li class="{% if url_for('admin_user_management') == request.path %}active{% endif %}"><a href="{{ url_for('admin_user_management') }}"><span class="glyphicon glyphicon-user"></span> {{ _('User Management') }}</a></li>
 									<li class="{% if url_for('admin_system_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_system_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('System Status') }}</a></li>
 									<li class="{% if url_for('admin_bgjob_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_bgjob_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('BG Jobs Status') }}</a></li>
 									<li class="{% if url_for('admin_celery_status') == request.path %}active{% endif %}"><a href="{{ url_for('admin_celery_status') }}"><span class="glyphicon glyphicon-eye-open"></span> {{ _('Celery Status') }}</a></li>
