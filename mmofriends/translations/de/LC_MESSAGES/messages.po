@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-04-28 10:06+0200\n"
+"POT-Creation-Date: 2015-04-28 16:15+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -50,29 +50,29 @@ msgstr ""
 "Programm. Der Administrator wurde automatisch über dieses Problem "
 "informiert."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:602
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:648
 #, python-format
 msgid "Successfully linked to network %(netdescr)s"
 msgstr "Erfolgreich verknüpft mit dem Netzwerk %(netdescr)s"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:605
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:651
 #, python-format
 msgid "Unable to link network %(netdescr)s. Please try again."
 msgstr ""
 "Es ist nicht möglich sich zum Netzwerk %(netdescr)s zu verbinden. Bitte "
 "versuche es noch einmal."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:659
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:705
 #, python-format
 msgid "Removed link to %(netname)s"
 msgstr "Link zum %(netname)s entfernt"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:661
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:707
 #, python-format
 msgid "Unable to remove link to %(netname)s"
 msgstr "Es ist nicht möglich den Link zu %(netname)s zu entfernen"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:706
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:752
 #, python-format
 msgid ""
 "Unable to link network %(networkhandle)s. The administrator was informed "
@@ -81,29 +81,29 @@ msgstr ""
 "Fehler beim verbinden zum Netzwerk %(networkhandle)s. Der Administrator "
 "wurde über diesen Bug informiert. Bitte versuche es noch einmal."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:713
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:759
 #, python-format
 msgid "Authentication with %(nethandle)s successfull as %(username)s."
 msgstr "Erfolgreich bei %(nethandle)s angemeldet als %(username)s."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:716
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:762
 #, python-format
 msgid "Authentication with %(nethandle)s NOT successfull"
 msgstr "Anmeldung bei %(nethandle)s NICHT erfolgreich"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:729
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:775
 msgid "Nickname is too short"
 msgstr "Der Nickname ist zu kurz"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:736
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:782
 msgid "Please fill out all the fields!"
 msgstr "Bitte fülle alle Felder aus!"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:761
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:807
 msgid "MMOJunkies Activation Email"
 msgstr "MMOJunkies Aktivierungs Email"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:762
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:808
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>We are happy to welcome you to "
@@ -117,71 +117,71 @@ msgstr ""
 "zu werden, musst du dich mit Teamspeak verbinden in der Box 'Network "
 "Connections'."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:762
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:924
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:944
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:808
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:971
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:991
 msgid "<br><br>Have fun and see you soon ;)"
 msgstr "<br><br>Viel spass und bis bald ;)"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:764
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:926
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:946
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:810
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:973
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:993
 #, python-format
 msgid "Please check your mails at %(emailaddr)s"
 msgstr "Bitte überprüfe dein Postfach von %(emailaddr)s"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:766
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:812
 msgid "Error sending the email to you."
 msgstr "Fehler beim senden der Email an dich."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:772
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:818
 msgid "SQL Alchemy Error"
 msgstr "SQL Alchemy Fehler"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:793
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:839
 msgid "Old password not correct!"
 msgstr "Das alte Passwort ist nicht korrekt!"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:805
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:851
 msgid "Profile changed"
 msgstr "Profil geändert"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:835
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:881
 msgid "User not found to verify."
 msgstr "Benutzer zum verifizieren nicht gefunden."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:842
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:888
 msgid "Verification ok. Please log in."
 msgstr "Verifizierung ok. Bitte melde dich an."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:846
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:892
 msgid "Verification NOT ok. Please try again."
 msgstr "Verifizierung NICHT ok. Bitte versuche es noch einmal."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:860
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:906
 msgid "Error locating your user"
 msgstr "Fehler beim finden deines Benutzers"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:867
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:913
 msgid "User not yet verified. Please check your email for the unlock key."
 msgstr ""
 "Benutzer noch nicht verifiziert. Bitte suche in deinen Emails nach dem "
 "Schlüssel."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:870
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:916
 msgid "User locked. Please contact an administrator."
 msgstr "Benutzer gesperrt. Bitte kontaktiere einen Administrator."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:891
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:893
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:938
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:940
 msgid "Invalid login"
 msgstr "Login ungültig"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:923
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:970
 msgid "MMOJunkies Password Reset"
 msgstr "MMOJunkies Passwort zurücksetzen"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:924
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:971
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>You can reset your password with <a "
@@ -193,15 +193,15 @@ msgstr ""
 " ausgelöst hast, kannst du dieses Email einfach ignorieren. Dein "
 "bisheriges Passwort ist weiterhin gültig."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:928
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:975
 msgid "No user found with this email address"
 msgstr "Es wurde kein Benutzer mit dieser Emailadresse gefunden."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:943
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:990
 msgid "MMOJunkies New Password"
 msgstr "MMOJUnkies Neues Passwort"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:944
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:991
 #, python-format
 msgid ""
 "<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. "
@@ -210,15 +210,15 @@ msgstr ""
 "<h3>Hallo %(nick)s</h3>Dein Passwort ist nun <b>%(password)s</b>. Bitte "
 "wechsle es nachdem du dich auf der Seite eingeloggt hast."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:949
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:996
 msgid "Wrong verification link. Please request a new one."
 msgstr "Falscher verifizerungs Link. Bitte lasse dir einen neune senden."
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1155
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1202
 msgid "Statistics"
 msgstr "Statistiken"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1167
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/__init__.py:1214
 msgid ""
 "You have no network connected. Please do so in the 'Network Connections' "
 "box."
@@ -307,6 +307,7 @@ msgstr "Offline"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/ts3mmonetwork.py:469
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/twitchnetwork.py:60
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:546
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:8
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:4
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/partner_find.html:8
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/partner_list.html:8
@@ -501,6 +502,7 @@ msgid "Currently Playing"
 msgstr "Spielt gerade"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/mmobase/valvenetwork.py:565
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:9
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:17
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:13
 msgid "Real Name"
@@ -540,14 +542,54 @@ msgstr "Über"
 msgid "Background Jobs Status"
 msgstr "Hintergrund Job Status"
 
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_bulk_email.html:2
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_bulk_email.html:4
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:138
+msgid "Bulk Email"
+msgstr "Massen Email"
+
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_celery_status.html:2
 msgid "Background Worker Status"
 msgstr "Hintergrund Arbeiter Status"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_system_status.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:137
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:140
 msgid "System Status"
 msgstr "System Status"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:2
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:139
+msgid "User Management"
+msgstr "Benutzer Verwaltung"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:4
+msgid "Registred Users"
+msgstr "Registrierte Benutzer"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:10
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:13
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:13
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:11
+msgid "Email"
+msgstr "Email"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:11
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:15
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:12
+msgid "Website"
+msgstr "Homepage"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:12
+msgid "Admin"
+msgstr "Admin"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:13
+msgid "Locked"
+msgstr "Gesperrt"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:14
+msgid "Verified"
+msgstr "Verifiziert"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:81
 msgid "Toggle navigation"
@@ -566,51 +608,47 @@ msgstr "Folgen"
 msgid "Donate with PayPal"
 msgstr "Spenden mit PayPal"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:126
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:127
 msgid "Hidden boxes"
 msgstr "Versteckte boxen"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:134
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:136
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:136
-msgid "User Management"
-msgstr "Benutzer Verwaltung"
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:138
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:141
 msgid "BG Jobs Status"
 msgstr "BG Jobs Status"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:139
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:142
 msgid "Celery Status"
 msgstr "Celery Status"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:140
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:143
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/partner_find.html:7
 msgid "Networks"
 msgstr "Netzwerke"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:141
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:144
 msgid "Developer Tools"
 msgstr "Entwickler Werkzeuge"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:146
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:149
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:5
 msgid "Connect to TS3 Server"
 msgstr "Verbinde zum TS3 Server"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:151
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:154
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:3
 msgid "Your profile settings"
 msgstr "Profileinstellungen"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:152
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:155
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:4
 msgid "Your gamer profile"
 msgstr "Dein gamer Profil"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:167
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:170
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:20
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:17
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:31
@@ -618,31 +656,31 @@ msgstr "Dein gamer Profil"
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:169
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:172
 msgid "Logout"
 msgstr "Abmelden"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:173
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:176
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:5
 msgid "Registration"
 msgstr "Registrieren"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:174
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:177
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:6
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_login.html:2
 msgid "Login"
 msgstr "Anmelden"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:185
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:188
 msgid "Success message"
 msgstr "Erfolgs Nachricht"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:194
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:197
 msgid "Error message"
 msgstr "Fehler Meldung"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:203
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:206
 msgid "Info message"
 msgstr "Information"
 
@@ -661,12 +699,6 @@ msgstr "Registrieren"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:14
 msgid "Password lost"
 msgstr "Passwort vergessen"
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:13
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:13
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:11
-msgid "Email"
-msgstr "Email"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:2
 msgid "Connect Network"
@@ -729,11 +761,6 @@ msgstr "Senden"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:11
 msgid "Again the password"
 msgstr "Noch einmal das Passwort"
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:15
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:12
-msgid "Website"
-msgstr "Homepage"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:2
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:9

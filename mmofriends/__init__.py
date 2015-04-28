@@ -597,6 +597,11 @@ def admin_bgjob_status():
     infos['methodStats'] = methodStats
     return render_template('admin_bgjob_status.html', infos = infos)
 
+@app.route('/Administration/BulkEmail')
+def admin_bulk_email():
+    check_admin_permissions()
+    return render_template('admin_bulk_email.html')
+
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
 def network_show(netHandle):
