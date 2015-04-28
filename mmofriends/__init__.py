@@ -504,6 +504,7 @@ def admin_user_management_togglelock(userId):
         log.info("[System] Lockstate of user %s was changed to: %s" % (myUser.nick, myUser.locked))
         db.session.merge(myUser)
         db.session.flush()
+        db.session.commit()
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
