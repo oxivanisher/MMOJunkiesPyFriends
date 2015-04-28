@@ -498,7 +498,7 @@ def admin_user_management():
 def admin_user_management_togglelock(id):
     check_admin_permissions()
 
-    myUser = getUserByEmail(id)
+    myUser = getUserById(id)
     if myUser:
         myUser.load()
         myUser.locked = not myUser.locked
