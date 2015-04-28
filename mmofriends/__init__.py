@@ -501,10 +501,26 @@ def admin_user_management_togglelock(userId):
     if myUser:
         myUser.load()
         myUser.locked = not myUser.locked
-        log.info("[System] Lockstate of user %s was changed to: %s" % (myUser.nick, myUser.locked))
+        log.info("[System] Lock state of '%s' was changed to: %s" % (myUser.nick, myUser.locked))
         db.session.merge(myUser)
         db.session.flush()
         db.session.commit()
+    return redirect(url_for('admin_user_management'))
+
+@app.route('/Administration/User_Management/ToggleAdmin/<userId>')
+def admin_user_management_toggleadmin(userId):
+    check_admin_permissions()
+    if userId != session['userid']:
+        myUser = getUserById(userId)
+        if myUser:
+            myUser.load()
+            myUser.admin = not myUser.admin
+            log.info("[System] Admin state of '%s' was changed to: %s" % (myUser.nick, myUser.admin))
+            db.session.merge(myUser)
+            db.session.flush()
+            db.session.commit()
+    else:
+        flash(gettext("You can not change yourself!"))
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
