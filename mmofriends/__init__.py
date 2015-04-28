@@ -494,17 +494,16 @@ def admin_user_management():
     infos['registredUsers'] = registredUsers
     return render_template('admin_user_management.html', infos = infos)
 
-@app.route('/Administration/User_Management/ToggleLock/<id>')
-def admin_user_management_togglelock(id):
+@app.route('/Administration/User_Management/ToggleLock/<userId>')
+def admin_user_management_togglelock(userId):
     check_admin_permissions()
-
-    myUser = getUserById(id)
+    myUser = getUserById(userId)
     if myUser:
         myUser.load()
         myUser.locked = not myUser.locked
+        log.info("[System] Lockstate of user %s was changed to: %s" % (myUser.nick, myUser.locked))
         db.session.merge(myUser)
         db.session.flush()
-
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
@@ -550,7 +549,6 @@ def admin_celery_status():
 @app.route('/Administration/Background_Jobs_Status')
 def admin_bgjob_status():
     check_admin_permissions()
-
     methodStats = []
     for handle in MMONetworks.keys():
         network = MMONetworks[handle]
@@ -576,21 +574,19 @@ def network_show(netHandle):
 
 @app.route('/Network/Administration', methods = ['GET'])
 def network_admin():
-    if session.get('logged_in') and session.get('admin'):
-        return render_template('network_admin.html', networks = getAdminMethods())
-    abort(403)
+    check_admin_permissions()
+    return render_template('network_admin.html', networks = getAdminMethods())
 
 @app.route('/Network/Administration/<networkHandle>/<int:index>', methods = ['GET'])
 def network_admin_do(networkHandle, index):
-    if session.get('logged_in') and session.get('admin'):
-        ret = {}
-        ret['networkName'] = MMONetworks[networkHandle].name
-        (method, ret['methodName']) = MMONetworks[networkHandle].adminMethods[index]
-        (retValue, ret['methodResult']) = method()
-        if not retValue:
-            flash(ret['methodResult'], 'error')
-        return render_template('network_admin.html', networks = getAdminMethods(), result = ret)
-    abort(403)
+    check_admin_permissions()
+    ret = {}
+    ret['networkName'] = MMONetworks[networkHandle].name
+    (method, ret['methodName']) = MMONetworks[networkHandle].adminMethods[index]
+    (retValue, ret['methodResult']) = method()
+    if not retValue:
+        flash(ret['methodResult'], 'error')
+    return render_template('network_admin.html', networks = getAdminMethods(), result = ret)
 
 @app.route('/Network/Link', methods=['GET', 'POST'])
 def network_link():
