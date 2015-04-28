@@ -357,11 +357,12 @@ def before_request():
     if session.get('logmeout') == True:
         session['logmeout'] = False
         session.pop('logmeout', None)
+        log.warning("[System] Forcing logout of '%s'" % (session.get('nick')))
         return redirect(url_for('profile_logout'))
 
     if session.get('logged_in'):
         if time.time() - session.get('last_lock_check') > 30:
-            log.warning("[System] Lock check for user: '%s'" % (session.get('nick')))
+            log.info("[System] Lock check for user '%s'" % (session.get('nick')))
             myUser = getUserById(session.get('userid'))
             if myUser.locked == True:
                 session['logmeout'] = True
