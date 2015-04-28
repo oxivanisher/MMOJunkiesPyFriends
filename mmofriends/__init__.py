@@ -468,12 +468,18 @@ def admin_system_status():
                             'name': network.name,
                             'className': network.__class__.__name__,
                             'description': network.description })
+    infos = {}
+    infos['loadedNets'] = loadedNets
+    return render_template('admin_system_status.html', infos = infos)
 
+@app.route('/Administration/User_Management')
+def admin_user_management():
     registredUsers = []
     with app.test_request_context():
         users = MMOUser.query.all()
         for user in users:
-            registredUsers.append({ 'nick': user.nick,
+            registredUsers.append({ 'id': user.id,
+                                    'nick': user.nick,
                                     'name': user.name,
                                     'email': user.email,
                                     'website': user.website,
@@ -482,9 +488,8 @@ def admin_system_status():
                                     'veryfied': user.veryfied })
 
     infos = {}
-    infos['loadedNets'] = loadedNets
     infos['registredUsers'] = registredUsers
-    return render_template('admin_system_status.html', infos = infos)
+    return render_template('admin_user_management.html', infos = infos)
 
 @app.route('/Administration/Celery_Status')
 def admin_celery_status():

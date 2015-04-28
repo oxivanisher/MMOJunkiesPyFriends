@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ _('User Management')}}{% endblock %}
+{% block content %}
+<h3>Registred Users</h3>
+<table class='table-striped' style='width: 100%;'>
+	<thead>
+		<tr>
+			<th>Nick</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Website</th>
+			<th>Admin</th>
+			<th>Locked</th>
+			<th>Veryfied</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in infos.registredUsers %}
+		<tr>
+			<td><a href="{{ url_for('partner_show', partnerId=user.id) }}">{{ user.nick }}</a></td>
+			<td>{{ user.name }}</td>
+			<td>{{ user.email }}</td>
+			<td>{{ user.website }}</td>
+			<td>{{ user.admin }}</td>
+			<td>{{ user.locked }}</td>
+			<td>{{ user.veryfied }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
