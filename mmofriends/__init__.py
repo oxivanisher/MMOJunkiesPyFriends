@@ -355,20 +355,18 @@ def before_request():
         session['requests'] = 0
 
     if session.get('logmeout'):
+        session['logmeout'] = False
         session.pop('logmeout', None)
         return redirect(url_for('profile_logout'))
 
     if session.get('logged_in'):
-        if session.get('last_lock_check'):
-            if time.time() - session.get('last_lock_check') > 30:
-                log.warning("[System] Lock check for user: '%s'" % (session.get('nick')))
-                myUser = getUserById(session.get('userid'))
-                if myUser.lock:
-                    session['logmeout'] = True
-                if myUser.admin != session.get('admin'):
-                    session['logmeout'] = True
-                session['last_lock_check'] = time.time()
-        else:
+        if time.time() - session.get('last_lock_check') > 30:
+            log.warning("[System] Lock check for user: '%s'" % (session.get('nick')))
+            myUser = getUserById(session.get('userid'))
+            if myUser.lock == True:
+                session['logmeout'] = True
+            if myUser.admin != session.get('admin'):
+                session['logmeout'] = True
             session['last_lock_check'] = time.time()
 
         for handle in MMONetworks.keys():
@@ -912,6 +910,7 @@ def profile_login():
                 session['admin'] = myUser.admin
                 session['logindate'] = time.time()
                 session['networks'] = []
+                session['last_lock_check'] = time.time()
                 for net in MMONetworks.keys():
                     session['networks'].append({'name': MMONetworks[net].name, 'handle': MMONetworks[net].handle})
                 session['requests'] = 0
