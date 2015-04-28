@@ -355,19 +355,26 @@ def before_request():
         session['requests'] = 0
 
     if session.get('logmeout') == True:
+        log.warning("[System] Forcing logout of '%s' because '%s'" % (session.get('nick'), session.get('logmeoutreason')))
         session['logmeout'] = False
+        session['logmeoutreason'] = False
         session.pop('logmeout', None)
-        log.warning("[System] Forcing logout of '%s'" % (session.get('nick')))
+        session.pop('logmeoutreason', None)
         return redirect(url_for('profile_logout'))
 
     if session.get('logged_in'):
-        if time.time() - session.get('last_lock_check') > 30:
+        if time.time() - session.get('last_lock_check') > 300:
             log.info("[System] Lock check for user '%s'" % (session.get('nick')))
             myUser = getUserById(session.get('userid'))
             if myUser.locked == True:
                 session['logmeout'] = True
+                session['logmeoutreason'] = "User is locked"
             if myUser.admin != session.get('admin'):
                 session['logmeout'] = True
+                session['logmeoutreason'] = "Admin rights changed"
+            if myUser.nick != session.get('nick'):
+                session['logmeout'] = True
+                session['logmeoutreason'] = "Nickname changed"
             session['last_lock_check'] = time.time()
 
         for handle in MMONetworks.keys():
