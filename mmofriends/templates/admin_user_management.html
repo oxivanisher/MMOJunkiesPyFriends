@@ -22,7 +22,7 @@
 			<td>{{ user.email }}</td>
 			<td>{{ user.website }}</td>
 			<td>{{ user.admin }}</td>
-			<td>{{ user.locked }}</td>
+			<td><a href="{{ url_for('admin_user_management_togglelock', partnerId=user.id) }}">{{ user.locked }}</a></td>
 			<td>{{ user.veryfied }}</td>
 		</tr>
 		{% endfor %}
