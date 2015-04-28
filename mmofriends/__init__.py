@@ -363,7 +363,7 @@ def before_request():
         return redirect(url_for('profile_logout'))
 
     if session.get('logged_in'):
-        if time.time() - session.get('last_lock_check') > 300:
+        if time.time() - session.get('last_lock_check') > 30:
             log.info("[System] Lock check for user '%s'" % (session.get('nick')))
             myUser = getUserById(session.get('userid'))
             if myUser.locked == True:
