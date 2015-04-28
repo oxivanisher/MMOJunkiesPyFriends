@@ -355,6 +355,18 @@ def before_request():
         session['requests'] = 0
 
     if session.get('logged_in'):
+        if session.get('last_lock_check'):
+            if time.time() - session.get('last_lock_check') > 30:
+                log.warning("[System] Lock check for user: '%s'" % (session.get('nick')))
+                myUser = getUserById(session.get('userid'))
+                if myUser.lock:
+                    return redirect(url_for('profile_logout'))
+                if myUser.admin != session.get('admin'):
+                    return redirect(url_for('profile_logout'))
+                session['last_lock_check'] = time.time()
+        else:
+            session['last_lock_check'] = time.time()
+
         for handle in MMONetworks.keys():
             (ret, message) = MMONetworks[handle].loadNetworkToSession()
             if not ret:
@@ -519,8 +531,6 @@ def admin_user_management_toggleadmin(userId):
             db.session.merge(myUser)
             db.session.flush()
             db.session.commit()
-    else:
-        flash(gettext("You can not change yourself!"))
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
