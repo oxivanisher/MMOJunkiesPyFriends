@@ -453,13 +453,16 @@ def get_sitemap_xml():
     return '\n'.join(ret)
 
 # admin routes
-@app.route('/Administration/System_Status')
-def admin_system_status():
+def check_admin_permissions():
     if not session.get('logged_in'):
         abort(401)
     if not session.get('admin'):
         log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
+
+@app.route('/Administration/System_Status')
+def admin_system_status():
+    check_admin_permissions()
 
     loadedNets = []
     for handle in MMONetworks.keys():
@@ -491,13 +494,22 @@ def admin_user_management():
     infos['registredUsers'] = registredUsers
     return render_template('admin_user_management.html', infos = infos)
 
+@app.route('/Administration/User_Management/ToggleLock/<id>')
+def admin_user_management_togglelock(id):
+    check_admin_permissions()
+
+    myUser = getUserByEmail(id)
+    if myUser:
+        myUser.load()
+        myUser.locked = not myUser.locked
+        db.session.merge(myUser)
+        db.session.flush()
+
+    return redirect(url_for('admin_user_management'))
+
 @app.route('/Administration/Celery_Status')
 def admin_celery_status():
-    if not session.get('logged_in'):
-        abort(401)
-    if not session.get('admin'):
-        log.warning("[System] <%s> tried to access admin without permission!")
-        abort(403)
+    check_admin_permissions()
 
     registeredWorkers = []
     i = celery.control.inspect()
@@ -537,11 +549,7 @@ def admin_celery_status():
 
 @app.route('/Administration/Background_Jobs_Status')
 def admin_bgjob_status():
-    if not session.get('logged_in'):
-        abort(401)
-    if not session.get('admin'):
-        log.warning("[System] <%s> tried to access admin without permission!")
-        abort(403)
+    check_admin_permissions()
 
     methodStats = []
     for handle in MMONetworks.keys():
