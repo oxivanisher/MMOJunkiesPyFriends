@@ -596,8 +596,8 @@ def admin_bgjob_status():
         network = MMONetworks[handle]
         network.getCache('backgroundTasks')
         network.getCache('currentBackgroundTasks')
-        if 'message' in network.cache['currentBackgroundTasks'].keys():
-            currentTasks[handle] = network.cache['currentBackgroundTasks']['message']
+        if 'message' in network.cache['liveBGTask'].keys():
+            currentTasks[handle] = network.cache['liveBGTask']['message']
         for task in network.cache['backgroundTasks'].keys():
             methodStats.append(network.cache['backgroundTasks'][task])
 
