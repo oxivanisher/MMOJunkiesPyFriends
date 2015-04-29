@@ -31,7 +31,12 @@
 					Waiting
 				{%- endif -%}
 			</td>
-			<td>{{ task.result }}</td>
+			<td>{%- if task.handle in infos.currentTasks.items() -%}
+					{{ infos.currentTasks[task.handle] }}
+				{%- else -%}
+					{{ task.result }}
+				{%- endif -%}
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>
