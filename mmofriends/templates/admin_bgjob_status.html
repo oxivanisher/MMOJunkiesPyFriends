@@ -26,16 +26,30 @@
 				{%- if task.end > task.start -%}
 					{{ (task.end-task.start)|round(3, 'ceil') }} sec
 				{%- elif task.start > task.end -%}
-					{% if task.handle in infos.currentTasks %}
-						<strong><abbr title="{{ infos.currentTask[task.handle] }}">Active</abbr></strong>
-					{% else %}
-						<strong>Active</strong>
-					{% endif %}
+					<strong>Active</strong>
 				{%- else -%}
 					Waiting
 				{%- endif -%}
 			</td>
 			<td>{{ task.result }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<br />
+<h3>Background Tasks</h3>
+<table class='table-striped' style='width: 100%;'>
+	<thead>
+		<tr>
+			<th>Net</th>
+			<th>Message</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for key, value in infos.currentTasks %}
+		<tr>
+			<td>{{ key }}</td>
+			<td>{{ value }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
