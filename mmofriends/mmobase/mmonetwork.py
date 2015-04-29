@@ -466,6 +466,11 @@ class MMONetwork(object):
                 logger.info("[%s] -> Removing task %s" % (self.handle, method.func_name))
                 self.backgroundTasks.pop(index)
 
+    def setBackgroundWorkerResult(self, funcName, message):
+        self.getCache('backgroundTasks')
+        self.cache['backgroundTasks'][funcName]['result'] = message
+        self.setCache('backgroundTasks')
+
     def registerWorker(self, method, timeout):
         self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))

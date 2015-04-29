@@ -357,7 +357,9 @@ class BlizzNetwork(MMONetwork):
             background = False
             logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
         else:
-            logger.info("[%s] Background updating the resources for userid %s" % (self.handle, userid))
+            message = "[%s] Background updating the resources for userid %s" % (self.handle, userid)
+            self.setBackgroundWorkerResult(__name__, message)
+            logger.info(message)
 
         if not accessToken:
             if userid != self.session['userid']:
