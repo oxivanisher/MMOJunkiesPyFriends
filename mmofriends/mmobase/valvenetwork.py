@@ -783,7 +783,7 @@ class ValveNetwork(MMONetwork):
             if 'ownedGames' in self.cache['users'][steamId]:
                 for gameid in self.cache['users'][steamId]['ownedGames'].keys():
                     try:
-                        if gameName == self.cache['games'][gameid]['name']
+                        if gameName == self.cache['games'][gameid]['name']:
                             steamIds.append(steamId)
                     except KeyError:
                         pass
