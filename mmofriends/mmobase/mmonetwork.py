@@ -468,9 +468,9 @@ class MMONetwork(object):
                 self.backgroundTasks.pop(index)
 
     def setBackgroundWorkerResult(self, message):
-        self.getCache('currentBackgroundTasks')
-        self.cache['currentBackgroundTasks']['message'] = message
-        self.setCache('currentBackgroundTasks')
+        self.getCache('liveBGTask')
+        self.cache['liveBGTask']['message'] = message
+        self.setCache('liveBGTask')
 
     def registerWorker(self, method, timeout):
         self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
