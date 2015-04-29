@@ -744,6 +744,56 @@ class ValveNetwork(MMONetwork):
         # else:
         #     return {}
 
+    # Game methods
+    def getGames(self):
+        self.getCache('games')
+        games = []
+        for gameid in 
+            games.append(self.cache['games'][gameid]['name'])
+        return games
+
+    def getGamesOfUser(self, userId):
+        self.getCache('users')
+        self.getCache('games')
+        games = []
+
+        if partnerId in self.cache['users'].keys():
+            steamId = partnerId
+        else:
+            linkInfo = self.getNetworkLinks(partnerId)
+            steamId = linkInfo[0]['network_data']
+
+        if 'ownedGames' in self.cache['users'][steamId]:
+            for gameid in self.cache['users'][steamId]['ownedGames']:
+                try:
+                    games.append(self.cache['games'][str(gameid)]['name'])
+                except KeyError:
+                    pass
+
+        return games
+
+    def getUsersOfGame(self, gameName):
+        self.getCache('users')
+        self.getCache('games')
+        steamIds = []
+        users = []
+        links = self.getNetworkLinks()
+
+        for steamId in self.cache['users'].keys():
+            if 'ownedGames' in self.cache['users'][steamId]:
+                for gameid in self.cache['users'][steamId]['ownedGames']:
+                    try:
+                        if gameName == self.cache['games'][str(gameid)]['name']
+                            steamIds.append(steamId)
+                    except KeyError:
+                        pass
+
+        for link in links:
+            if link['network_data'] in steamIds:
+                users.append(link['user_id'])
+
+        return users
+
     # Dashboard
     def dashboard_games2weeks(self, request):
         self.log.debug("Dashboard games2weeks")
