@@ -584,6 +584,37 @@ class BlizzNetwork(MMONetwork):
             return chars[0]
         except IndexError:
             return []
+
+    # Game methods
+    def getGames(self):
+        return ['Worlf of Warcraft', 'Starcraft 2', 'Diablo 3']
+
+    def getGamesOfUser(self, userId):
+        self.getCache('wowProfiles')
+        self.getCache('d3Profiles')
+        self.getCache('sc2Profiles')
+
+        ret = []
+        if unicode(userid) in self.cache['wowProfiles'].keys():
+            ret.append('Worlf of Warcraft')
+        if unicode(userid) in self.cache['d3Profiles'].keys():
+            ret.append('Diablo 3')
+        if unicode(userid) in self.cache['sc2Profiles'].keys():
+            ret.append('Starcraft 2')
+        return ret
+
+    def getUsersOfGame(self, gameName):
+        if gameName == 'Worlf of Warcraft':
+            self.getCache('wowProfiles')
+            return self.cache['wowProfiles'].keys()
+
+        if gameName == 'Starcraft 2':
+            self.getCache('sc2Profiles')
+            return self.cache['sc2Profiles'].keys()
+
+        if gameName == 'Diablo 3':
+            self.getCache('d3Profiles')
+            return self.cache['d3Profiles'].keys()
             
     # Dashboard
     def dashboard_wowChars(self, request):
