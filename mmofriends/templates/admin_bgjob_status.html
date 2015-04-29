@@ -26,7 +26,11 @@
 				{%- if task.end > task.start -%}
 					{{ (task.end-task.start)|round(3, 'ceil') }} sec
 				{%- elif task.start > task.end -%}
-					<strong>Active</strong>
+					{% if task.handle in infos.currentTasks %}
+						<strong><abbr title="{{ infos.currentTask[task.handle] }}">Active</abbr></strong>
+					{% else %}
+						<strong>Active</strong>
+					{% endif %}
 				{%- else -%}
 					Waiting
 				{%- endif -%}

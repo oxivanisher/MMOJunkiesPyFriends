@@ -467,10 +467,10 @@ class MMONetwork(object):
                 logger.info("[%s] -> Removing task %s" % (self.handle, method.func_name))
                 self.backgroundTasks.pop(index)
 
-    def setBackgroundWorkerResult(self, funcName, message):
-        self.getCache('backgroundTasks')
-        self.cache['backgroundTasks'][funcName]['result'] = message
-        self.setCache('backgroundTasks')
+    def setBackgroundWorkerResult(self, message):
+        self.getCache('currentBackgroundTasks')
+        self.cache['currentBackgroundTasks']['message'] = message
+        self.setCache('currentBackgroundTasks')
 
     def registerWorker(self, method, timeout):
         self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
@@ -478,6 +478,16 @@ class MMONetwork(object):
 
     def registerDashboardBox(self, method, handle, settings = {}):
         self.dashboardBoxes[handle] = createDashboardBox(method, self.handle, handle, settings)
+
+    # Game methods
+    def getGames(self):
+        pass
+
+    def getGamesOfUser(self, userId):
+        pass
+
+    def getUsersOfGame(self, gameName):
+        pass
 
     # Dashboard methods
     def getDashboardBoxes(self):

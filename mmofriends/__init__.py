@@ -591,14 +591,18 @@ def admin_celery_status():
 def admin_bgjob_status():
     check_admin_permissions()
     methodStats = []
+    currentTasks = {}
     for handle in MMONetworks.keys():
         network = MMONetworks[handle]
         network.getCache('backgroundTasks')
+        network.getCache('currentBackgroundTasks')
+        currentTasks[handle] = network.cache['currentBackgroundTasks']['message']
         for task in network.cache['backgroundTasks'].keys():
             methodStats.append(network.cache['backgroundTasks'][task])
 
     infos = {}
     infos['methodStats'] = methodStats
+    infos['currentTasks'] = currentTasks
     return render_template('admin_bgjob_status.html', infos = infos)
 
 @app.route('/Administration/BulkEmail')
