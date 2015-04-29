@@ -36,7 +36,7 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
 
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
