@@ -322,10 +322,12 @@ class BlizzNetwork(MMONetwork):
         if accessToken:
             for entry in self.wowDataResourcesList.keys():
                 count += 1
+                self.setBackgroundWorkerResult('updateBaseResources', 'Updating wow resource %s' % (self.wowDataResourcesList[entry]))
                 self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
 
             for entry in self.sc2DataResourcesList.keys():
                 count += 1
+                self.setBackgroundWorkerResult('updateBaseResources', 'Updating sc2 resource %s' % (self.wowDataResourcesList[entry]))
                 self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
 
         # self.saveAllData()
@@ -435,7 +437,6 @@ class BlizzNetwork(MMONetwork):
     def updateResource(self, entry, location, accessToken = None):
         message = "[%s] Updating resource from %s" % (self.handle, location)
         self.log.debug(message)
-        self.setBackgroundWorkerResult('updateResource', message)
         self.getCache(entry)
         # if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300) or len(self.cache[entry]) == 0:
         (resValue, resData)  = self.queryBlizzardApi(location, accessToken)
