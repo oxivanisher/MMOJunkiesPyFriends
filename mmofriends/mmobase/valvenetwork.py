@@ -748,7 +748,7 @@ class ValveNetwork(MMONetwork):
     def getGames(self):
         self.getCache('games')
         games = []
-        for gameid in self.cache['games'].keys()
+        for gameid in self.cache['games'].keys():
             games.append(self.cache['games'][gameid]['name'])
         return games
 
