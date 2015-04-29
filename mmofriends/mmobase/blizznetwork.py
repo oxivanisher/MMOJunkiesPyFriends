@@ -322,12 +322,12 @@ class BlizzNetwork(MMONetwork):
         if accessToken:
             for entry in self.wowDataResourcesList.keys():
                 count += 1
-                self.setBackgroundWorkerResult('updateBaseResources', 'Updating wow resource %s' % (self.wowDataResourcesList[entry]))
+                # self.setBackgroundWorkerResult('updateBaseResources', 'Updating wow resource %s' % (entry))
                 self.updateResource(entry, self.wowDataResourcesList[entry], accessToken)
 
             for entry in self.sc2DataResourcesList.keys():
                 count += 1
-                self.setBackgroundWorkerResult('updateBaseResources', 'Updating sc2 resource %s' % (self.wowDataResourcesList[entry]))
+                # self.setBackgroundWorkerResult('updateBaseResources', 'Updating sc2 resource %s' % (entry))
                 self.updateResource(entry, self.sc2DataResourcesList[entry], accessToken)
 
         # self.saveAllData()
@@ -360,7 +360,7 @@ class BlizzNetwork(MMONetwork):
             logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
         else:
             message = "[%s] Background updating the resources for userid %s" % (self.handle, userid)
-            self.setBackgroundWorkerResult('updateUserResources', message)
+            # self.setBackgroundWorkerResult('updateUserResources', message)
             logger.info(message)
 
         if not accessToken:
