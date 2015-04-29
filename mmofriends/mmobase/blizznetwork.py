@@ -358,7 +358,7 @@ class BlizzNetwork(MMONetwork):
             logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
         else:
             message = "[%s] Background updating the resources for userid %s" % (self.handle, userid)
-            self.setBackgroundWorkerResult(__name__, message)
+            self.setBackgroundWorkerResult('updateUserResources', message)
             logger.info(message)
 
         if not accessToken:
@@ -435,7 +435,7 @@ class BlizzNetwork(MMONetwork):
     def updateResource(self, entry, location, accessToken = None):
         message = "[%s] Updating resource from %s" % (self.handle, location)
         self.log.debug(message)
-        self.setBackgroundWorkerResult(__name__, message)
+        self.setBackgroundWorkerResult('updateResource', message)
         self.getCache(entry)
         # if self.getCacheAge(entry) < self.config['updateLock'] - random.randint(1, 300) or len(self.cache[entry]) == 0:
         (resValue, resData)  = self.queryBlizzardApi(location, accessToken)
