@@ -633,6 +633,7 @@ def admin_bulk_email():
             okCount = 0
             nokCount = 0
             for user in MMOUser.query.all():
+                user.load()
                 if user.nick != "oxi":
                     continue
                 if send_email(app, user.email,
