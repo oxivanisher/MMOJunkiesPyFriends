@@ -327,7 +327,7 @@ def get_locale():
 
 # flask error handlers
 @app.errorhandler(400)
-def error_unauthorized_request(error):
+def error_bad_request(error):
     flash(gettext("Bad Request"), 'error')
     return redirect(url_for('index'))
 
