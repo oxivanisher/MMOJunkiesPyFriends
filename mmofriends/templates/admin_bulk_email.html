@@ -2,7 +2,7 @@
 {% block title %}{{ _('Bulk Email')}}{% endblock %}
 {% block content %}
 <h3>{{ _('Bulk Email')}}</h3>
-<form action="{{ url_for('admin_bulk_email') }}" id="login" method="post" autocomplete="on">
+<form action="{{ url_for('admin_bulk_email') }}" id="bulkmail" method="post" autocomplete="on">
 	<dl>
 		<dd><input type="text" name="subject" class="backend" autofocus="autofocus" placeholder="{{ _('Subject') }}">
 		<dd><textarea rows="4" cols="50" name="message"><h3>Hello %(nick)s</h3>
