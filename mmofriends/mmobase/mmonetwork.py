@@ -481,13 +481,13 @@ class MMONetwork(object):
 
     # Game methods
     def getGames(self):
-        pass
+        return []
 
     def getGamesOfUser(self, userId):
-        pass
+        return []
 
     def getUsersOfGame(self, gameName):
-        pass
+        return []
 
     # Dashboard methods
     def getDashboardBoxes(self):

@@ -245,6 +245,24 @@ def checkPassword(password1, password2):
     # - max length (cut oversize)
     return valid
 
+def getGames():
+    games = {}
+    for net in MMONetworks.keys():
+        games[net] = MMONetworks[net].getGames()
+    return games
+
+def getGamesOfUser(userId):
+    games = {}
+    for net in MMONetworks.keys():
+        games[net] = MMONetworks[net].getGamesOfUser(userId)
+    return games
+
+def getUsersOfGame(gameName):
+    nets = []
+    for net in MMONetworks.keys():
+        nets[net] = MMONetworks[net].getUsersOfGame(gameName)
+    return nets
+
 # background worker methods (celery)
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])

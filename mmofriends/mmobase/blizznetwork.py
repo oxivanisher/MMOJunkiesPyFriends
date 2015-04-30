@@ -615,6 +615,8 @@ class BlizzNetwork(MMONetwork):
         if gameName == 'Diablo 3':
             self.getCache('d3Profiles')
             return self.cache['d3Profiles'].keys()
+
+        return []
             
     # Dashboard
     def dashboard_wowChars(self, request):
