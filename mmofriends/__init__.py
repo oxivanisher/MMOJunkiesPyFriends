@@ -637,7 +637,7 @@ def admin_bulk_email():
                 if user.nick != "oxi":
                     continue
                 if send_email(app, user.email, request.form['subject'],
-                    gettext("<h3>Hello %(nick)s</h3>", nick=user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
+                    "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
                     'logo_banner1_mmo_color_qr.png'):
                     okCount += 1
                 else:
@@ -849,7 +849,7 @@ def profile_register():
                 actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
                 if send_email(app, newUser.email,
                               gettext("MMOJunkies Activation Email"),
-                              gettext("<h3>Hello %(nick)s</h3>", nick=request.form['nick']) + gettext("We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.", url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
+                              "<h3>%s %s</h3>" % (gettext("Hello"), request.form['nick']) + gettext("We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.", url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
                               'logo_banner1_mmo_color_qr.png'):
                     flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
                 else:
