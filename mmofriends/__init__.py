@@ -258,7 +258,7 @@ def getGamesOfUser(userId):
     return games
 
 def getUsersOfGame(gameName):
-    nets = []
+    nets = {}
     for net in MMONetworks.keys():
         nets[net] = MMONetworks[net].getUsersOfGame(gameName)
     return nets
