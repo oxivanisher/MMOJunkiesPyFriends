@@ -3,6 +3,7 @@
 {% block content %}
 <h3>{{ _('Bulk Email')}}</h3>
 <form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
+<input type="hidden" name="do" value="send">
 	<dl>
 		<dd><input type="text" name="subject" class="backend" autofocus="autofocus" placeholder="{{ _('Subject') }}">
 		<dd><textarea rows="4" cols="50" name="message"><h3>Hello %(nick)s</h3>
