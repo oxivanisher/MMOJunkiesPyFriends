@@ -625,9 +625,9 @@ def admin_bgjob_status():
     return render_template('admin_bgjob_status.html', infos = infos)
 
 @app.route('/Administration/BulkEmail', methods = ['GET', 'POST'])
-def admin_bulk_email(do = None, message = None, subject = None):
+def admin_bulk_email(message = None, subject = None):
     check_admin_permissions()
-    if do == 'send' and message and subject:
+    if message and subject:
         okCount = 0
         nokCount = 0
         for user in MMOUser.query.all():
