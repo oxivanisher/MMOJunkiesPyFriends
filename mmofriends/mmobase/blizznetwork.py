@@ -596,7 +596,7 @@ class BlizzNetwork(MMONetwork):
 
         ret = []
         if unicode(userid) in self.cache['wowProfiles'].keys():
-            ret.append('Worlf of Warcraft')
+            ret.append('World of Warcraft')
         if unicode(userid) in self.cache['d3Profiles'].keys():
             ret.append('Diablo 3')
         if unicode(userid) in self.cache['sc2Profiles'].keys():
