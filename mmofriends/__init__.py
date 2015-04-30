@@ -628,20 +628,21 @@ def admin_bgjob_status():
 def admin_bulk_email():
     check_admin_permissions()
     retMessage = ""
-    if request.form['message'] and request.form['subject']:
-        okCount = 0
-        nokCount = 0
-        for user in MMOUser.query.all():
-            if user.nick != "oxi":
-                continue
-            if send_email(app, user.email,
-                          gettext(request.form['subject']),
-                          gettext(request.form['message']),
-                          'logo_banner1_mmo_color_qr.png'):
-                okCount += 1
-            else:
-                nokCount += 1
-        retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
+    if request.method == 'POST':
+        if request.form['message'] and request.form['subject']:
+            okCount = 0
+            nokCount = 0
+            for user in MMOUser.query.all():
+                if user.nick != "oxi":
+                    continue
+                if send_email(app, user.email,
+                              gettext(request.form['subject']),
+                              gettext(request.form['message']),
+                              'logo_banner1_mmo_color_qr.png'):
+                    okCount += 1
+                else:
+                    nokCount += 1
+            retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
 
     return render_template('admin_bulk_email.html', retMessage = retMessage)
 
