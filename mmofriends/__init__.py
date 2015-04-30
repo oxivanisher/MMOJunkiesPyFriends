@@ -627,6 +627,7 @@ def admin_bgjob_status():
 @app.route('/Administration/BulkEmail', methods = ['GET', 'POST'])
 def admin_bulk_email():
     check_admin_permissions()
+    retMessage = ""
     if request.form['message'] and request.form['subject']:
         okCount = 0
         nokCount = 0
@@ -640,9 +641,9 @@ def admin_bulk_email():
                 okCount += 1
             else:
                 nokCount += 1
-        flash(gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount))
+        retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
 
-    return render_template('admin_bulk_email.html')
+    return render_template('admin_bulk_email.html', retMessage = retMessage)
 
 # network routes
 @app.route('/Network/Show/<netHandle>', methods = ['GET'])
