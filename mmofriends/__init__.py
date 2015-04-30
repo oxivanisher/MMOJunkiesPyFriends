@@ -624,7 +624,7 @@ def admin_bgjob_status():
     infos['currentTasks'] = currentTasks
     return render_template('admin_bgjob_status.html', infos = infos)
 
-@app.route('/Administration/BulkEmail', methods = ['POST'])
+@app.route('/Administration/BulkEmail', methods = ['GET', 'POST'])
 def admin_bulk_email(do = None, message = None, subject = None):
     check_admin_permissions()
     if do == 'send' and message and subject:
