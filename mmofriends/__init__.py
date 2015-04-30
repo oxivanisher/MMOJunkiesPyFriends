@@ -1220,6 +1220,26 @@ def getLastly(request):
 
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
+# Gaming JSON API
+@app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
+def json_get_games(self):
+    log.info("[System] Trying to show JSON games")
+    return jsonify(getGames())
+
+@app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
+def json_get_games_of_user(self, userId):
+    log.info("[System] Trying to show JSON games of user")
+    if not session.get('logged_in'):
+        abort(401)
+    return jsonify(getGamesOfUser(userId))
+
+@app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
+def json_get_users_of_game(self, gameName):
+    log.info("[System] Trying to show JSON users of game")
+    if not session.get('logged_in'):
+        abort(401)
+    return jsonify(getUsersOfGame(gameName))
+
 # Dashboard functions
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users', 'sticky': True})
 SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin': False, 'title': 'Login'})
