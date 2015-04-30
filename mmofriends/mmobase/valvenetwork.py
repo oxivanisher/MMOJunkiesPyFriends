@@ -757,10 +757,10 @@ class ValveNetwork(MMONetwork):
         self.getCache('games')
         games = []
 
-        if partnerId in self.cache['users'].keys():
-            steamId = partnerId
+        if userId in self.cache['users'].keys():
+            steamId = userId
         else:
-            linkInfo = self.getNetworkLinks(partnerId)
+            linkInfo = self.getNetworkLinks(userId)
             steamId = linkInfo[0]['network_data']
 
         if 'ownedGames' in self.cache['users'][steamId]:
