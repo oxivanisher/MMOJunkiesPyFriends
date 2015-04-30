@@ -636,10 +636,7 @@ def admin_bulk_email():
                 user.load()
                 if user.nick != "oxi":
                     continue
-                if send_email(app, user.email,
-                              gettext(request.form['subject']),
-                              gettext(request.form['message']),
-                              'logo_banner1_mmo_color_qr.png'):
+                if send_email(app, user.email, request.form['subject'], request.form['message'], 'logo_banner1_mmo_color_qr.png'):
                     okCount += 1
                 else:
                     nokCount += 1
