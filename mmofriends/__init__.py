@@ -1222,19 +1222,19 @@ def getLastly(request):
 
 # Gaming JSON API
 @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
-def json_get_games(self):
+def json_get_games():
     log.info("[System] Trying to show JSON games")
     return jsonify(getGames())
 
 @app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
-def json_get_games_of_user(self, userId):
+def json_get_games_of_user(userId):
     log.info("[System] Trying to show JSON games of user")
     if not session.get('logged_in'):
         abort(401)
     return jsonify(getGamesOfUser(userId))
 
 @app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
-def json_get_users_of_game(self, gameName):
+def json_get_users_of_game(gameName):
     log.info("[System] Trying to show JSON users of game")
     if not session.get('logged_in'):
         abort(401)
