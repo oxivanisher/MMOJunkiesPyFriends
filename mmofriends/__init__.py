@@ -640,7 +640,7 @@ def admin_bulk_email(message = None, subject = None):
                 okCount += 1
             else:
                 nokCount += 1
-        flash(gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s" % (okCount, nokCount)))
+        flash(gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount))
 
     return render_template('admin_bulk_email.html')
 
