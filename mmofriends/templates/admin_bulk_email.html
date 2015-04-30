@@ -2,33 +2,11 @@
 {% block title %}{{ _('Bulk Email')}}{% endblock %}
 {% block content %}
 <h3>{{ _('Bulk Email')}}</h3>
-<table class='table-striped' style='width: 100%;'>
-<tr><td>Session Requests</td><td>{{ session.requests }}</td></tr>
-<tr><td>Session Login Date</td><td>{{ timestampToString(session.logindate) }}</td></tr>
-<tr><td>Application Startup Date</td><td>{{ timestampToString(config.startupDate) }}</td></tr>
-</table>
-<br />
-<h3>Loaded Networks</h3>
-<table class='table-striped' style='width: 100%;'>
-	<thead>
-		<tr>
-			<th>Icon</th>
-			<th>Class</th>
-			<th>Handle</th>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for net in infos.loadedNets %}
-		<tr>
-			<td><img class="partner_list_icon" src="{{ url_for('get_image', imgType='network', imgId=net.handle) }}" title="{{ net.name }}"/></td>
-			<td>{{ net.className }}</td>
-			<td>{{ net.handle }}</td>
-			<td><a href="{{ url_for('network_admin', networkHandle=net.handle) }}">{{ net.name }}</a></td>
-			<td>{{ net.description }}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+<form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
+	<dl>
+		<dd><input type="text" name="subject" class="backend" autofocus="autofocus" placeholder="{{ _('Subject') }}">
+		<dd><textarea rows="4" cols="50" name="message"><h3>Hello %(nick)s</h3>Here goes the text<br><br><br>Have fun and see you soon ;)</textarea>
+		<dd><button class="btn btn-default" type="submit">{{ _('Send') }}</button>
+	</dl>
+</form>
 {% endblock %}

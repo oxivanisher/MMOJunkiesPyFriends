@@ -624,9 +624,24 @@ def admin_bgjob_status():
     infos['currentTasks'] = currentTasks
     return render_template('admin_bgjob_status.html', infos = infos)
 
-@app.route('/Administration/BulkEmail')
-def admin_bulk_email():
+@app.route('/Administration/BulkEmail', methods = ['POST'])
+def admin_bulk_email(do = None, message = None, subject = None):
     check_admin_permissions()
+    if do == 'send' and message and subject:
+        okCount = 0
+        nokCount = 0
+        for user in MMOUser.query.all():
+            if user.nick != "oxi":
+                continue
+            if send_email(app, user.email,
+                          gettext(subject),
+                          gettext(message),
+                          'logo_banner1_mmo_color_qr.png'):
+                okCount += 1
+            else:
+                nokCount += 1
+        flash(gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s" % (okCount, nokCount)))
+
     return render_template('admin_bulk_email.html')
 
 # network routes
