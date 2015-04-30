@@ -604,7 +604,7 @@ class BlizzNetwork(MMONetwork):
         return ret
 
     def getUsersOfGame(self, gameName):
-        if gameName == 'Worlf of Warcraft':
+        if gameName == 'World of Warcraft':
             self.getCache('wowProfiles')
             return self.cache['wowProfiles'].keys()
 
