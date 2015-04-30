@@ -5,7 +5,9 @@
 <form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
 	<dl>
 		<dd><input type="text" name="subject" class="backend" autofocus="autofocus" placeholder="{{ _('Subject') }}">
-		<dd><textarea rows="4" cols="50" name="message"><h3>Hello %(nick)s</h3>Here goes the text<br><br><br>Have fun and see you soon ;)</textarea>
+		<dd><textarea rows="4" cols="50" name="message"><h3>Hello %(nick)s</h3>
+Here goes the text<br>
+<br><br>Have fun and see you soon ;)</textarea>
 		<dd><button class="btn btn-default" type="submit">{{ _('Send') }}</button>
 	</dl>
 </form>
