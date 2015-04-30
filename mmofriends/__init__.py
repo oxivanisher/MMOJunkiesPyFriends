@@ -625,17 +625,17 @@ def admin_bgjob_status():
     return render_template('admin_bgjob_status.html', infos = infos)
 
 @app.route('/Administration/BulkEmail', methods = ['GET', 'POST'])
-def admin_bulk_email(message = None, subject = None):
+def admin_bulk_email():
     check_admin_permissions()
-    if message and subject:
+    if request.form['message'] and request.form['subject']:
         okCount = 0
         nokCount = 0
         for user in MMOUser.query.all():
             if user.nick != "oxi":
                 continue
             if send_email(app, user.email,
-                          gettext(subject),
-                          gettext(message),
+                          gettext(request.form['subject']),
+                          gettext(request.form['message']),
                           'logo_banner1_mmo_color_qr.png'):
                 okCount += 1
             else:
