@@ -19,7 +19,7 @@
 	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
 		var run = true;
 		if (force == undefined) {
-			if ($( "#systemLastly" ).parents('.col').is(":hidden")){
+			if ($( "#systemLinks" ).parents('.col').is(":hidden")){
 				run = false;
 			} else if (windowIdleCheck()) {
 				run = false;
@@ -32,10 +32,10 @@
 
 				console.log(data);
 
-				// $( "#systemLastly" ).fadeOut( 100, function () {
-				// 	$('#systemLastly').empty();
+				// $( "#systemLinks" ).fadeOut( 100, function () {
+				// 	$('#systemLinks').empty();
 				// 	if (drawLastlyContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
-				// 		$( "#systemLastly" ).fadeIn( 100 );
+				// 		$( "#systemLinks" ).fadeIn( 100 );
 				// 	}
 				// });
 
