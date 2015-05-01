@@ -1237,7 +1237,7 @@ def getLastly(request):
 
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
-def getSystemStats(request):
+def getGameLinks(request):
     return { 'games': getGames() }
 
 # Gaming JSON API
