@@ -1,0 +1,46 @@
+<table id="systemLastly" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
+<script type="text/javascript">
+	var timeout{{ box.netHandle }}{{ box.handle }};
+	function drawLastlyContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
+		// showMe = false;
+		// for (id in data.lastly) {
+		// 	var entry = data.lastly[id];
+		// 	var netData = data.net[entry.net];
+		// 	showMe = true;
+		// 	img = '<img class="partner_list_icon" src="' + netData.icon + '" title="' + netData.description + '" />';
+
+		// 	$('#systemLastly').append('<tr><td class="text-wrap">' + img + ' ' + entry.age + ' ' + entry.text + '</td></tr>');
+
+		// }
+
+		showMe = true;
+		return showMe
+	}
+	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
+		var run = true;
+		if (force == undefined) {
+			if ($( "#systemLastly" ).parents('.col').is(":hidden")){
+				run = false;
+			} else if (windowIdleCheck()) {
+				run = false;
+			}
+		}
+		if (run) {
+			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
+			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
+			$.getJSON( dataUrl ).done( function( data ) {
+
+				console.log(data);
+
+				// $( "#systemLastly" ).fadeOut( 100, function () {
+				// 	$('#systemLastly').empty();
+				// 	if (drawLastlyContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
+				// 		$( "#systemLastly" ).fadeIn( 100 );
+				// 	}
+				// });
+
+			});
+			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 31000);
+		}
+	}
+</script>

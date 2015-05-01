@@ -1237,6 +1237,9 @@ def getLastly(request):
 
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
+def getSystemStats(request):
+    return { 'games': getGames() }
+
 # Gaming JSON API
 @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
 def json_get_games():
@@ -1263,7 +1266,8 @@ SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin
 #SystemBoxes["navigation"] = createDashboardBox(tmpFunc, "System", "navigation", {'loggedin': True, 'title': 'Navigation', 'sticky': True})
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["lastly"] = createDashboardBox(getLastly, "System", "lastly", {'title': 'Lastly on MMOJunkies'})
-SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': gettext('Statistics')})
+SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
+SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links', 'development': True})
 
 # Dashboard routes
 @app.route('/')
