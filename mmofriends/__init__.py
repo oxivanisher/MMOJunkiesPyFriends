@@ -1241,14 +1241,14 @@ def getGameLinks(request):
     return { 'games': getGames() }
 
 # Gaming JSON API
+@app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
+def get_game_icon(netId, gameId):
+    return redirect(MMONetworks[netId].getGameIcon(gameId))
+
 @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
 def json_get_games():
     log.info("[System] Trying to show JSON games")
     return jsonify(getGames())
-
-@app.route('/Api/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
-def get_game_icon(netId, gameId):
-    return MMONetworks[netId].getGameIcon(gameId)
 
 @app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
 def json_get_games_of_user(userId):
