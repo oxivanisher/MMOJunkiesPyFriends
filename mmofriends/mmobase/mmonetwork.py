@@ -92,6 +92,7 @@ class MMONetwork(object):
         self.backgroundTasks = []
         self.dashboardBoxes = {}
         self.cache = {}
+        self.products = {}
 
     # Helpers
     def getUserById(self, userId):
@@ -482,6 +483,9 @@ class MMONetwork(object):
     # Game methods
     def getGames(self):
         return []
+
+    def getGameIcon(gameId):
+        return ""
 
     def getGamesOfUser(self, userId):
         return []

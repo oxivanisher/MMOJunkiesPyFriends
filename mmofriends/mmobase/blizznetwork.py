@@ -34,6 +34,9 @@ class BlizzNetwork(MMONetwork):
         self.baseUrl = 'https://%s.api.battle.net' % self.config['region']
         self.avatarUrl = 'http://%s.battle.net/' % (self.config['region'])
         self.locale = 'en_US'
+        self.products = { 'worldofwarcraft': 'World of Warcraft',
+                          'starcraft2': 'Starcraft 2',
+                          'diablo3': 'Diablo 3' }
 
         # activate debug while development
         # self.setLogLevel(logging.DEBUG)
@@ -161,7 +164,7 @@ class BlizzNetwork(MMONetwork):
                                                     'title': bestChar['name'] + '@' + bestChar['realm'] })
                                 myProducts.append({ 'type': 'product',
                                                     'name': 'worldofwarcraft',
-                                                    'title': 'World of Warcraft' })
+                                                    'title': self.products['worldofwarcraft'] })
                             except KeyError:
                                 pass
 
@@ -174,7 +177,7 @@ class BlizzNetwork(MMONetwork):
                                                 'title': "[%s] %s" % (character['clanTag'], character['displayName']) })
                         myProducts.append({ 'type': 'product',
                                             'name': 'starcraft2',
-                                            'title': 'Starcraft 2' })
+                                            'title': self.products['starcraft2'] })
                     except KeyError:
                         pass
 
@@ -184,7 +187,7 @@ class BlizzNetwork(MMONetwork):
                         if len(self.cache['d3Profiles'][userid]['heroes']) > 0:
                             myProducts.append({ 'type': 'product',
                                                 'name': 'diablo3',
-                                                'title': 'Diablo 3' })
+                                                'title': self.products['diablo3'] })
                             # friendImgs.append({ 'type': 'product',
                             #                     'name': 'diablo3',
                             #                     'title': 'Diablo 3' })
@@ -587,7 +590,10 @@ class BlizzNetwork(MMONetwork):
 
     # Game methods
     def getGames(self):
-        return ['Worlf of Warcraft', 'Starcraft 2', 'Diablo 3']
+        return self.products
+
+    def getGameIcon(gameId):
+        return url_for('get_image', imgType='product', imgId=gameId)
 
     def getGamesOfUser(self, userId):
         self.getCache('wowProfiles')
@@ -596,23 +602,23 @@ class BlizzNetwork(MMONetwork):
 
         ret = []
         if unicode(userId) in self.cache['wowProfiles'].keys():
-            ret.append('World of Warcraft')
+            ret.append('worldofwarcraft')
         if unicode(userId) in self.cache['d3Profiles'].keys():
-            ret.append('Diablo 3')
+            ret.append('diablo3')
         if unicode(userId) in self.cache['sc2Profiles'].keys():
-            ret.append('Starcraft 2')
+            ret.append('starcraft2')
         return ret
 
-    def getUsersOfGame(self, gameName):
-        if gameName == 'World of Warcraft':
+    def getUsersOfGame(self, gameHandle):
+        if gameHandle == 'worldofwarcraft':
             self.getCache('wowProfiles')
             return self.cache['wowProfiles'].keys()
 
-        if gameName == 'Starcraft 2':
+        if gameHandle == 'starcraft2':
             self.getCache('sc2Profiles')
             return self.cache['sc2Profiles'].keys()
 
-        if gameName == 'Diablo 3':
+        if gameHandle == 'diablo3':
             self.getCache('d3Profiles')
             return self.cache['d3Profiles'].keys()
 
