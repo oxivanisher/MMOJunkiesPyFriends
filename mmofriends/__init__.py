@@ -1240,11 +1240,12 @@ def getLastly(request):
 def getGameLinks(request):
     return { 'games': getGames() }
 
-# Gaming JSON API
+# Gaming URLs
 @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
 def get_game_icon(netId, gameId):
     return redirect(MMONetworks[netId].getGameIcon(gameId))
 
+# Gaming JSON API
 @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
 def json_get_games():
     log.info("[System] Trying to show JSON games")

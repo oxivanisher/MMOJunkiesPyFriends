@@ -66,6 +66,33 @@ class MMONetworkCache(db.Model):
     def age(self):
         return int(time.time()) - self.last_update
 
+class MMOGameLink(db.Model):
+    __tablename__ = 'mmogamelink'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('mmouser.id'))
+    user = db.relationship('MMOUser', backref=db.backref('links', lazy='dynamic'))
+    network_handle = db.Column(db.String(20))
+    gameId = db.Column(db.String(255))
+    link = db.Column(db.String(255))
+    name = db.Column(db.String(20))
+    comment = db.Column(db.UnicodeText)
+    date = db.Column(db.Integer)
+
+    def __init__(self, user_id, network_handle, gameId, link, name = "", comment = "", date = 0):
+        self.user_id = user_id
+        self.network_handle = network_handle
+        self.gameId = gameId
+        self.link = link
+        self.name = name
+        self.comment = comment
+        if not date:
+            date = int(time.time())
+        self.date = date
+
+    def __repr__(self):
+        return '<MMOGameLink %r>' % self.id
+
 class MMONetwork(object):
 
     def __init__(self, app, session, handle):
