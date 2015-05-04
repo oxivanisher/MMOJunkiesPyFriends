@@ -1238,6 +1238,7 @@ def getLastly(request):
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
 def getGameLinks(request):
+    # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
     return { 'games': getGames() }
 
 # Gaming URLs
