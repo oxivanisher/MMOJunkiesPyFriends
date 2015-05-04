@@ -484,7 +484,7 @@ class MMONetwork(object):
     def getGames(self):
         return []
 
-    def getGameIcon(gameId):
+    def getGameIcon(self, gameId):
         return ""
 
     def getGamesOfUser(self, userId):

@@ -755,7 +755,7 @@ class ValveNetwork(MMONetwork):
             games[gameid] = self.cache['games'][gameid]['name']
         return games
 
-    def getGameIcon(gameId):
+    def getGameIcon(self, gameId):
         return url_for('get_image', imgType='cache', imgId=self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url'])))
 
     def getGamesOfUser(self, userId):

@@ -592,7 +592,7 @@ class BlizzNetwork(MMONetwork):
     def getGames(self):
         return self.products
 
-    def getGameIcon(gameId):
+    def getGameIcon(self, gameId):
         return url_for('get_image', imgType='product', imgId=gameId)
 
     def getGamesOfUser(self, userId):
