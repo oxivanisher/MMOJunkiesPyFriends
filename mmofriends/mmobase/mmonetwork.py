@@ -71,7 +71,7 @@ class MMOGameLink(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey('mmouser.id'))
-    user = db.relationship('MMOUser', backref=db.backref('links', lazy='dynamic'))
+    user = db.relationship('MMOUser', backref=db.backref('gamelinks', lazy='dynamic'))
     network_handle = db.Column(db.String(20))
     gameId = db.Column(db.String(255))
     link = db.Column(db.String(255))
