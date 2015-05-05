@@ -16,6 +16,9 @@ from mmobase.valvenetwork import *
 from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
+
+from mmoblueprints.gaming_api import gaming_api
+
 log = getLogger(level=logging.INFO)
 
 # flask imports
@@ -110,7 +113,6 @@ app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
 
 # loading blueprints
-from gaming_api import gaming_api
 app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database

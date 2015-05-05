@@ -10,11 +10,12 @@ from mmobase.valvenetwork import *
 from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
+
 log = getLogger(level=logging.INFO)
 
 # flask imports
 try:
-    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
+    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup, Blueprint
 except ImportError:
     log.error("[System] Please install flask")
     sys.exit(2)
