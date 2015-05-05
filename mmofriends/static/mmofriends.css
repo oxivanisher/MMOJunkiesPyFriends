@@ -9,6 +9,7 @@ body { padding-bottom: 22px;
 .content_block {
   background-color: #FFF;
   padding: 5px;
+  border: 1px #000;
 /*  opacity: 0.1;
   filter: alpha(opacity=10); /* For IE8 and earlier */*/
 }
