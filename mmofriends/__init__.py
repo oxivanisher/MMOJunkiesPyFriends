@@ -55,6 +55,8 @@ except ImportError:
     log.error("[System] Please install the babel extension for flask")
     sys.exit(2)
 
+app.register_blueprint(gaming_api, url_prefix='/Games')
+
 # try:
 #     import twitter
 # except ImportError:
@@ -245,23 +247,23 @@ def checkPassword(password1, password2):
     # - max length (cut oversize)
     return valid
 
-def getGames():
-    games = {}
-    for net in MMONetworks.keys():
-        games[net] = MMONetworks[net].getGames()
-    return games
+# def getGames():
+#     games = {}
+#     for net in MMONetworks.keys():
+#         games[net] = MMONetworks[net].getGames()
+#     return games
 
-def getGamesOfUser(userId):
-    games = {}
-    for net in MMONetworks.keys():
-        games[net] = MMONetworks[net].getGamesOfUser(userId)
-    return games
+# def getGamesOfUser(userId):
+#     games = {}
+#     for net in MMONetworks.keys():
+#         games[net] = MMONetworks[net].getGamesOfUser(userId)
+#     return games
 
-def getUsersOfGame(gameName):
-    nets = {}
-    for net in MMONetworks.keys():
-        nets[net] = MMONetworks[net].getUsersOfGame(gameName)
-    return nets
+# def getUsersOfGame(gameName):
+#     nets = {}
+#     for net in MMONetworks.keys():
+#         nets[net] = MMONetworks[net].getUsersOfGame(gameName)
+#     return nets
 
 # background worker methods (celery)
 def make_celery(app):
@@ -1237,34 +1239,34 @@ def getLastly(request):
 
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
-def getGameLinks(request):
-    # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
-    return { 'games': getGames() }
+# def getGameLinks(request):
+#     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
+#     return { 'games': getGames() }
 
-# Gaming URLs
-@app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
-def get_game_icon(netId, gameId):
-    return redirect(MMONetworks[netId].getGameIcon(gameId))
+# # Gaming URLs
+# @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
+# def get_game_icon(netId, gameId):
+#     return redirect(MMONetworks[netId].getGameIcon(gameId))
 
-# Gaming JSON API
-@app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
-def json_get_games():
-    log.info("[System] Trying to show JSON games")
-    return jsonify(getGames())
+# # Gaming JSON API
+# @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
+# def json_get_games():
+#     log.info("[System] Trying to show JSON games")
+#     return jsonify(getGames())
 
-@app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
-def json_get_games_of_user(userId):
-    log.info("[System] Trying to show JSON games of user")
-    if not session.get('logged_in'):
-        abort(401)
-    return jsonify(getGamesOfUser(userId))
+# @app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
+# def json_get_games_of_user(userId):
+#     log.info("[System] Trying to show JSON games of user")
+#     if not session.get('logged_in'):
+#         abort(401)
+#     return jsonify(getGamesOfUser(userId))
 
-@app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
-def json_get_users_of_game(gameName):
-    log.info("[System] Trying to show JSON users of game")
-    if not session.get('logged_in'):
-        abort(401)
-    return jsonify(getUsersOfGame(gameName))
+# @app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
+# def json_get_users_of_game(gameName):
+#     log.info("[System] Trying to show JSON users of game")
+#     if not session.get('logged_in'):
+#         abort(401)
+#     return jsonify(getUsersOfGame(gameName))
 
 # Dashboard functions
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users', 'sticky': True})
