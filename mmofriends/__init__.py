@@ -1243,7 +1243,14 @@ def getLastly(request):
 
 def getGameLinks(request):
     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
-    return { 'games': getGames() }
+    retLinks = []
+    for link in MMOGameLink.query.filter(user_id=session['user_id']):
+        retLinks.append({'net': link.network_handle,
+                         'gameId': link.gameId,
+                         'link': link.link,
+                         'name': link.name,
+                         'comment': link.comment})
+    return { 'games': getGames(), 'links': retLinks }
 
 # Gaming URLs
 @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
