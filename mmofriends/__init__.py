@@ -1244,7 +1244,7 @@ def getLastly(request):
 def getGameLinks(request):
     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
     retLinks = []
-    for link in MMOGameLink.query.filter_by(user_id=session['user_id']):
+    for link in MMOGameLink.query.filter_by(user_id=session['userid']):
         retLinks.append({'net': link.network_handle,
                          'gameId': link.gameId,
                          'link': link.link,
