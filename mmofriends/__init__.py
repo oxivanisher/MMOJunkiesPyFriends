@@ -1277,7 +1277,7 @@ SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["lastly"] = createDashboardBox(getLastly, "System", "lastly", {'title': 'Lastly on MMOJunkies'})
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
-SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links', 'development': True})
+# SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links', 'development': True})
 
 # Dashboard routes
 @app.route('/')
