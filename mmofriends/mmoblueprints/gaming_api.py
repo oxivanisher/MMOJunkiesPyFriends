@@ -11,6 +11,8 @@ from ..mmobase.blizznetwork import *
 from ..mmobase.twitchnetwork import *
 from ..mmobase.rssnews import *
 
+from .. import MMONetworks
+
 log = getLogger(level=logging.INFO)
 
 # flask imports
