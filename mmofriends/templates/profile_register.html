@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Register') }}{% endblock %}
-{% block content %}
-<form action="{{ url_for('profile_register') }}" id="register" method="post" autocomplete="on">
+{% block content -%}
+<div class="content_block"><form action="{{ url_for('profile_register') }}" id="register" method="post" autocomplete="on">
 	<h2>{{ _('Registration') }}</h2>
 		<dl>
 			<dt>{{ _('Nickname') }}: *
@@ -18,5 +18,5 @@
 			<dd><input type="text" name="name" class="backend" value="{{ values.name }}">
 		</dl>
 	<button class="btn btn-default" type="submit">{{ _('Submit') }}</button> <button class="btn btn-default" type="reset">{{ _('Reset') }}</button>
-</form>
+</form></dev>
 {% endblock %}

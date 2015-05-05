@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Link Network') }}{% endblock %}
-{% block content %}
-{% if doLinkReturn %}
+{% block content -%}
+<div class="content_block">
+{%- if doLinkReturn -%}
 	<h3>{{ doLinkReturn.name }}: {{ doLinkReturn.description }}</h3>
 	<strong>{{ doLinkReturn.doLinkReturn }}</strong>
 	<form action="{{ url_for('network_link') }}" method="post" autocomplete="off" class="form-inline" role="form">
@@ -70,5 +71,6 @@
 	<a href="{{ url_for('network_unlink', netHandle=net.handle, netLinkId=net.linkId) }}" title="Linked since {{ net.linked_date }}"><span class="glyphicon glyphicon-remove"></span></a></dt>
 {% endfor %}
 </dl>
-{% endif %}
-{% endblock %}
+{% endif -%}
+</div>
+{%- endblock %}

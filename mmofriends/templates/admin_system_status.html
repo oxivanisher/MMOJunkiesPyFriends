@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('System Status')}}{% endblock %}
-{% block content %}
-<h3>Session Stats</h3>
+{% block content -%}
+<div class="content_block"><h3>Session Stats</h3>
 <table class='table-striped' style='width: 100%;'>
 <tr><td>Session Requests</td><td>{{ session.requests }}</td></tr>
 <tr><td>Session Login Date</td><td>{{ timestampToString(session.logindate) }}</td></tr>
@@ -30,5 +30,5 @@
 		</tr>
 		{% endfor %}
 	</tbody>
-</table>
+</table></div>
 {% endblock %}

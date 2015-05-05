@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Profile') }}{% endblock %}
-{% block content %}
-<img src="{{ userAvatar }}" title="myUser.nick" class="profileAvatar glow"/>
+{% block content -%}
+<div class="content_block"><img src="{{ userAvatar }}" title="myUser.nick" class="profileAvatar glow"/>
 
 <table class='table table-striped'>
 <form action="{{ url_for('profile_show') }}" id="profile" method="post">
@@ -56,5 +56,5 @@
 		</td>
 	</tr>
 </form>
-</table>
+</table></div>
 {% endblock %}

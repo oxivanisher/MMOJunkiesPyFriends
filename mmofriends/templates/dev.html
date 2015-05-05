@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Development') }}{% endblock %}
-{% block content %}
-<h3>Dev Test Output</h3>
+{% block content -%}
+<div class="content_block"><h3>Dev Test Output</h3>
 {% for net in result %}
 <h4>{{ net.handle }}</h4>
-<pre>{{ net.result }}</pre>
+<pre>{{ net.result }}</pre></div>
 {% endfor %}
 {% endblock %}

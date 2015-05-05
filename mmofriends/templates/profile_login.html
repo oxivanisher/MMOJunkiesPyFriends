@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Login') }}{% endblock %}
-{% block content %}
-<form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
+{% block content -%}
+<div class="content_block"><form action="{{ url_for('profile_login') }}" id="login" method="post" autocomplete="on">
 	<h2>Login</h2>
 		<dl>
 			<dt>{{ _('Nickname') }}:
@@ -10,5 +10,5 @@
 			<dd><input type="password" name="password" class="backend">
 		</dl>
 	<button class="btn btn-default" type="submit">{{ _('Submit') }}</button>
-</form>
+</form></dev>
 {% endblock %}

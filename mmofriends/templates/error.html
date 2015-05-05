@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Error') }}{% endblock %}
-{% block content %}
+{% block content -%}
+	<div class="content_block">
 	<h3>{{_('Error')}} {{ number }}</h3>
 	<strong>{{ message }}</strong><br />
 	<a href="{{ url_for('index') }}">{{_('Dashboard')}}</a>
+	</div>
 {% endblock %}

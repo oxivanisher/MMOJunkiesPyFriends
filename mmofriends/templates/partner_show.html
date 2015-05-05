@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Show Friend') }}{% endblock %}
-{% block content %}
-<div id="tabs">
+{% block content -%}
+<div class="content_block"><div id="tabs">
 	<table>
 		<tr>
 			<td style="vertical-align: top;"><img src="{{ userAvatar }}" title="myUser.nick" class="profileAvatar glow" /></td>
@@ -76,5 +76,5 @@
 	$(function() {
 		$( "#tabs" ).tabs({ active: {{ active }} });
 	});
-</script>
+</script></dev>
 {% endblock %}

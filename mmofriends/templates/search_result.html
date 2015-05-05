@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Search Result for') }} {{ token }} in {{ Field }}{% endblock %}
-{% block content %}
-<table class='table table-striped' id='dt_friendstable'>
+{% block content -%}
+<div class="content_block"><table class='table table-striped' id='dt_friendstable'>
 	<thead>
 		<tr>
 			<th>Title</th>
@@ -28,5 +28,5 @@
 		</tr>
 	{% endfor %}
 	</tbody>
-</table>
+</table></div>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ ('List Friends') }}{% endblock %}
-{% block content %}
-<table class='table table-striped' id='dt_friendstable'>
+{% block content -%}
+<div class="content_block"><table class='table table-striped' id='dt_friendstable'>
 	<thead>
 		<tr>
  			<th style='width:80px;'>{{ _('Network') }}</th>
@@ -44,5 +44,5 @@
 		</tr>
 	{% endfor %}
 	</tbody>
-</table>
+</table></div>
 {% endblock %}
