@@ -17,7 +17,7 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
 
-from mmoblueprints.gaming_api import *
+# from mmoblueprints.gaming_api import *
 
 from helpers import *
 
@@ -115,7 +115,7 @@ app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
 
 # loading blueprints
-app.register_blueprint(gaming_api, url_prefix='/Games')
+# app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database
 db = SQLAlchemy(app)
@@ -1245,34 +1245,34 @@ def getLastly(request):
 
     return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
-# def getGameLinks(request):
-#     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
-#     return { 'games': getGames() }
+def getGameLinks(request):
+    # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
+    return { 'games': getGames() }
 
-# # Gaming URLs
-# @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
-# def get_game_icon(netId, gameId):
-#     return redirect(MMONetworks[netId].getGameIcon(gameId))
+# Gaming URLs
+@app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
+def get_game_icon(netId, gameId):
+    return redirect(MMONetworks[netId].getGameIcon(gameId))
 
-# # Gaming JSON API
-# @app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
-# def json_get_games():
-#     log.info("[System] Trying to show JSON games")
-#     return jsonify(getGames())
+# Gaming JSON API
+@app.route('/Api/Games/Get/', methods = ['POST', 'GET'])
+def json_get_games():
+    log.info("[System] Trying to show JSON games")
+    return jsonify(getGames())
 
-# @app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
-# def json_get_games_of_user(userId):
-#     log.info("[System] Trying to show JSON games of user")
-#     if not session.get('logged_in'):
-#         abort(401)
-#     return jsonify(getGamesOfUser(userId))
+@app.route('/Api/Games/GetGamesOfUser/<userId>', methods = ['POST', 'GET'])
+def json_get_games_of_user(userId):
+    log.info("[System] Trying to show JSON games of user")
+    if not session.get('logged_in'):
+        abort(401)
+    return jsonify(getGamesOfUser(userId))
 
-# @app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
-# def json_get_users_of_game(gameName):
-#     log.info("[System] Trying to show JSON users of game")
-#     if not session.get('logged_in'):
-#         abort(401)
-#     return jsonify(getUsersOfGame(gameName))
+@app.route('/Api/Games/GetUsersOfGame/<gameName>', methods = ['POST', 'GET'])
+def json_get_users_of_game(gameName):
+    log.info("[System] Trying to show JSON users of game")
+    if not session.get('logged_in'):
+        abort(401)
+    return jsonify(getUsersOfGame(gameName))
 
 # Dashboard functions
 SystemBoxes["users"] = createDashboardBox(getSystemUsers, "System", "users", {'loggedin': True, 'title': 'Users', 'sticky': True})
@@ -1281,7 +1281,7 @@ SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["lastly"] = createDashboardBox(getLastly, "System", "lastly", {'title': 'Lastly on MMOJunkies'})
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
-# SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links', 'development': True})
+SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links', 'development': True})
 
 # Dashboard routes
 @app.route('/')
