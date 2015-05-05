@@ -17,7 +17,7 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
 
-from mmoblueprints.gaming_api import gaming_api
+from mmoblueprints.gaming_api import *
 
 log = getLogger(level=logging.INFO)
 
