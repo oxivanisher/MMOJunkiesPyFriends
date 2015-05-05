@@ -8,7 +8,7 @@ body { padding-bottom: 22px;
 
 .content_block {
   background-color: #FFF;
-  margin: 5px;
+  padding: 5px;
 /*  opacity: 0.1;
   filter: alpha(opacity=10); /* For IE8 and earlier */*/
 }
