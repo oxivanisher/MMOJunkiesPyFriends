@@ -1,7 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup, Blueprint
+# system imports
+from mmobase.mmouser import *
+from mmobase.mmonetwork import *
+from mmobase.mmoutils import *
+from mmobase.ts3mmonetwork import *
+from mmobase.valvenetwork import *
+from mmobase.blizznetwork import *
+from mmobase.twitchnetwork import *
+from mmobase.rssnews import *
+log = getLogger(level=logging.INFO)
+
+# flask imports
+try:
+    from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
+except ImportError:
+    log.error("[System] Please install flask")
+    sys.exit(2)
+
+try:
+    from flask.ext.sqlalchemy import SQLAlchemy
+    from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
+except ImportError:
+    log.error("[System] Please install the sqlalchemy extension for flask")
+    sys.exit(2)
 
 gaming_api = Blueprint('gaming_api', __name__)
 
