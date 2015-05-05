@@ -110,6 +110,7 @@ app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
 
 # loading blueprints
+from gaming_api import gaming_api
 app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database
