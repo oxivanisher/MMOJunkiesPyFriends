@@ -55,8 +55,6 @@ except ImportError:
     log.error("[System] Please install the babel extension for flask")
     sys.exit(2)
 
-app.register_blueprint(gaming_api, url_prefix='/Games')
-
 # try:
 #     import twitter
 # except ImportError:
@@ -110,6 +108,9 @@ SystemBoxes = {}
 app.jinja_env.globals.update(timestampToString=timestampToString)
 app.jinja_env.globals.update(get_short_duration=get_short_duration)
 app.jinja_env.globals.update(get_short_age=get_short_age)
+
+# loading blueprints
+app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database
 db = SQLAlchemy(app)
