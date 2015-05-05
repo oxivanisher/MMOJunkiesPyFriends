@@ -3,6 +3,7 @@ body { padding-bottom: 22px;
        background-repeat: no-repeat;
        background-position: center top;
        background-color: #808080;
+       background-attachment:fixed;
 }
 
 .shadow {
