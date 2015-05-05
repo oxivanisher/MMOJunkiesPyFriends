@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 # system imports
-from mmobase.mmouser import *
-from mmobase.mmonetwork import *
-from mmobase.mmoutils import *
-from mmobase.ts3mmonetwork import *
-from mmobase.valvenetwork import *
-from mmobase.blizznetwork import *
-from mmobase.twitchnetwork import *
-from mmobase.rssnews import *
+from ..mmobase.mmouser import *
+from ..mmobase.mmonetwork import *
+from ..mmobase.mmoutils import *
+from ..mmobase.ts3mmonetwork import *
+from ..mmobase.valvenetwork import *
+from ..mmobase.blizznetwork import *
+from ..mmobase.twitchnetwork import *
+from ..mmobase.rssnews import *
 
 log = getLogger(level=logging.INFO)
 
