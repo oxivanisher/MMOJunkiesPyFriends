@@ -6,6 +6,10 @@ body { padding-bottom: 22px;
        background-attachment:fixed;
 }
 
+.content_block {
+  background-color: #FFF;
+}
+
 .shadow {
   -moz-box-shadow:  3px 3px 4px 3px #ccc;
   -webkit-box-shadow: 3px 3px 4px 3px #ccc;
