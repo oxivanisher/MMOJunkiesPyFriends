@@ -1,8 +1,9 @@
 body { padding-bottom: 22px;
-       background-image: url("static/img/minimal_grau_1920.jpg");
+       background-image: url("img/minimal_grau_1920.jpg");
        background-repeat: no-repeat;
        background-position: center top;
- }
+       background-color: #808080;
+}
 
 .shadow {
   -moz-box-shadow:  3px 3px 4px 3px #ccc;
