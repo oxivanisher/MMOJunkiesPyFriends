@@ -36,7 +36,9 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
         self.products = { 'worldofwarcraft': 'World of Warcraft',
                           'starcraft2': 'Starcraft 2',
-                          'diablo3': 'Diablo 3' }
+                          'diablo3': 'Diablo 3',
+                          'hearthstone': 'Hearthstone',
+                          'hots': 'Heroes of the Storm' }
 
         # activate debug while development
         # self.setLogLevel(logging.DEBUG)
@@ -600,7 +602,7 @@ class BlizzNetwork(MMONetwork):
         self.getCache('d3Profiles')
         self.getCache('sc2Profiles')
 
-        ret = []
+        ret = ['hots', 'hearthstone']
         if unicode(userId) in self.cache['wowProfiles'].keys():
             ret.append('worldofwarcraft')
         if unicode(userId) in self.cache['d3Profiles'].keys():
@@ -621,6 +623,14 @@ class BlizzNetwork(MMONetwork):
         if gameHandle == 'diablo3':
             self.getCache('d3Profiles')
             return self.cache['d3Profiles'].keys()
+
+        if gameHandle == 'hearthstone':
+            self.getCache('battletags')
+            return self.cache['battletags'].keys()
+
+        if gameHandle == 'hots':
+            self.getCache('battletags')
+            return self.cache['battletags'].keys()
 
         return []
             
