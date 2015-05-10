@@ -767,7 +767,10 @@ class ValveNetwork(MMONetwork):
             steamId = userId
         else:
             linkInfo = self.getNetworkLinks(userId)
-            steamId = linkInfo[0]['network_data']
+            try:
+                steamId = linkInfo[0]['network_data']
+            except IndexError:
+                return games
 
         if 'ownedGames' in self.cache['users'][steamId]:
             for gameid in self.cache['users'][steamId]['ownedGames']:
