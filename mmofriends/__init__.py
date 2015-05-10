@@ -1252,6 +1252,38 @@ def getGameLinks(request):
                          'comment': link.comment})
     return { 'games': getGames(), 'links': retLinks }
 
+# Link methods
+@app.route('/GameLinks/Show')
+def game_links_show():
+    # twitterData = {'widgetUrl': app.config['TWITTERURL'], 'widgetId': app.config['TWITTERWIDGETID']}
+    links = ""
+    return render_template('game_links.html', links = links)
+
+@app.route('/GameLinks/Add', methods = ['POST', 'GET'])
+def game_links_add():
+    check_admin_permissions()
+    retMessage = ""
+    if request.method == 'POST':
+        if request.form['message'] and request.form['subject']:
+            okCount = 0
+            nokCount = 0
+            for user in MMOUser.query.all():
+                user.load()
+                if user.nick != "oxi":
+                    continue
+                if send_email(app, user.email, request.form['subject'],
+                    "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
+                    'logo_banner1_mmo_color_qr.png'):
+                    okCount += 1
+                else:
+                    nokCount += 1
+            retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
+
+        return render_template('game_links.html', links = links)    
+    else:
+        return render_template('game_links_add.html', games = getGamesOfUser(session['userid']))
+
+
 # Gaming URLs
 @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
 def get_game_icon(netId, gameId):

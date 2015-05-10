@@ -761,7 +761,7 @@ class ValveNetwork(MMONetwork):
     def getGamesOfUser(self, userId):
         self.getCache('users')
         self.getCache('games')
-        games = []
+        games = {}
 
         if userId in self.cache['users'].keys():
             steamId = userId
@@ -772,7 +772,7 @@ class ValveNetwork(MMONetwork):
         if 'ownedGames' in self.cache['users'][steamId]:
             for gameid in self.cache['users'][steamId]['ownedGames']:
                 try:
-                    games.append(self.cache['games'][str(gameid)]['name'])
+                    games[gameid] = self.cache['games'][str(gameid)]['name']
                 except KeyError:
                     pass
 

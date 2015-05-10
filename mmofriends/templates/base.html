@@ -102,7 +102,25 @@
 						<li class="dropdown"></li> -#}
 						{% endif -%}
 						<li><a href="#" target="_blank" onclick="return popUpChat();"><span class="glyphicon glyphicon-user"></span> Chat</a></li>
+
+						{#Game Links -#}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tower"></span> {{ _('Games and Gamers') }} <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+
+								<li><a href="{{ url_for('game_links_show') }}"><span class="glyphicon glyphicon-link"></span> {{ _('Game links') }}</a></li>
+								<li><a href="{{ url_for('game_links_add') }}"><span class="glyphicon glyphicon-link"></span> {{ _('Add game link') }}</a></li>
+
+								<li class="divider"></li>
+								<!-- <li><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Connect Network</a></li> -->
+								{%- for net in session.networks %}
+									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
+								{%- endfor %}
+							</ul>
+						</li>
+
 						<li class="{% if url_for('about') == request.path %}active{% endif %}"><a href="{{ url_for('about') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('About') }}</a></li>
+
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{# Social Links -#}
@@ -153,13 +171,6 @@
 	         				<ul class="dropdown-menu" role="menu">
 								<li class="{% if url_for('profile_show') == request.path %}active{% endif %}"><a href="{{ url_for('profile_show') }}"><span class="glyphicon glyphicon-user"></span> {{ _('Your profile settings') }}</a></li>
 								<li class="{% if url_for('partner_show', partnerId=session.userid) == request.path %}active{% endif %}"><a href="{{ url_for('partner_show', partnerId=session.userid) }}"><span class="glyphicon glyphicon-user"></span> {{ _('Your gamer profile') }}</a></li>
-
-								<li class="divider"></li>
-
-								<!-- <li><a href="{{ url_for('network_link') }}"><span class="glyphicon glyphicon-tasks"></span> Connect Network</a></li> -->
-								{%- for net in session.networks %}
-									<li><a href="{{ url_for('network_show', netHandle=net.handle) }}"><span class="glyphicon glyphicon-tasks"></span> {{ net.name }}</a></li>
-								{%- endfor %}
 
 								<li class="divider"></li>
 									{%- for key, value in config.LANGUAGES.iteritems() %}

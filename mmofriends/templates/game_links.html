@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Game links')}}{% endblock %}
+{% block content -%}
+<div class="content_block">
+<h3>{{ _('Game links')}}</h3>
+<table class='table table-striped' id='dt_friendstable'>
+	<thead>
+		<tr>
+ 			<th style='width:80px;'>{{ _('Network') }}</th>
+			<th style='width:80px;'>{{ _('Game') }}</th>
+			<th style='width:80px;'>{{ _('Name') }}</th>
+			<th style='width:80px;'>{{ _('Date') }}</th>
+			<th style='width:80px;'>{{ _('User') }}</th>
+		</tr>
+	</thead>
+	<thead>
+		<tr>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+			<th><input style='width:100%;'/></th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for link in links %}
+		<tr onmouseover="showInfoPopup('{{ url_for('partner_details', netHandle=friend.netHandle, partnerId=friend.id) }}');"
+			onmouseout="hideInfoPopup();" 
+			{% if friend.mmoid -%}
+				onclick="document.location='{{ url_for('network_show', netHandle=friend.netHandle) }}'"
+			{%- endif -%}>
+			<td>
+				<a href="{{ url_for('network_show', netHandle=friend.netHandle) }}">
+				{%- for img in friend.networkImgs -%}
+					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
+				{%- endfor -%}
+				{{ friend.networkText }}</a>
+			</td>
+			<td>{% if friend.mmoid -%}
+					<a href="{{ url_for('partner_show', netHandle=friend.netHandle, partnerId=friend.mmoid) }}">
+				{%- endif -%}
+				{%- for img in friend.friendImgs -%}
+					<img class="partner_list_icon" src="{{ url_for('get_image', imgType=img.type, imgId=img.name) }}" title="{{ img.title }}" />
+				{%- endfor -%}
+				{{ friend.nick }}
+				{%- if friend.mmoid -%}
+					</a>
+				{%- endif -%}</td>
+			<td>{{ friend.state }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table></div>
+{% endblock %}

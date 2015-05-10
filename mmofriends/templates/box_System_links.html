@@ -1,7 +1,7 @@
-<table id="systemLinks" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
+<table id="systemGameLinks" style="width: 100%; margin-bottom: 0px; table-layout: fixed;" class="table-striped"></table>
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
-	function drawLinkContent{{ box.netHandle }}{{ box.handle }}( data, drawOnline ) {
+	function drawLinkContent{{ box.netHandle }}{{ box.handle }}( data ) {
 		// showMe = false;
 		// for (id in data.lastly) {
 		// 	var entry = data.lastly[id];
@@ -12,6 +12,16 @@
 		// 	$('#systemLinks').append('<tr><td class="text-wrap">' + img + ' ' + entry.age + ' ' + entry.text + '</td></tr>');
 
 		// }
+		for (net in data.games) {
+			console.log(data.games[net].keys());
+			if (net.keys().length > 0) {
+				avatar = "";
+				name = "";
+				nicks = "";
+				nets = "";
+				$( "#systemGameLinks" ).append('<tr><td class="text-wrap">'+ avatar + name + nicks + '</td><td style="width:' + (Object.keys(data.nets).length * 18) + 'px;">' + nets + '</td></tr>');
+			}
+		}
 
 		showMe = true;
 		return showMe
@@ -29,8 +39,8 @@
 			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 			$.getJSON( dataUrl ).done( function( data ) {
-
 				console.log(data);
+				drawLinkContent{{ box.netHandle }}{{ box.handle }}( data );
 
 				// $( "#systemLinks" ).fadeOut( 100, function () {
 				// 	$('#systemLinks').empty();

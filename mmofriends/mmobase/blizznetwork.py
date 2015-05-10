@@ -600,14 +600,14 @@ class BlizzNetwork(MMONetwork):
         self.getCache('d3Profiles')
         self.getCache('sc2Profiles')
 
-        ret = []
+        games = {}
         if unicode(userId) in self.cache['wowProfiles'].keys():
-            ret.append('worldofwarcraft')
+            games['worldofwarcraft'] = self.products['worldofwarcraft']
         if unicode(userId) in self.cache['d3Profiles'].keys():
-            ret.append('diablo3')
+            games['diablo3'] = self.products['diablo3']
         if unicode(userId) in self.cache['sc2Profiles'].keys():
-            ret.append('starcraft2')
-        return ret
+            games['starcraft2'] = self.products['starcraft2']
+        return games
 
     def getUsersOfGame(self, gameHandle):
         if gameHandle == 'worldofwarcraft':

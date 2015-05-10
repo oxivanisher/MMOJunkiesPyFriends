@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Add game link') }}{% endblock %}
+{% block content -%}
+<div class="content_block"><form action="{{ url_for('game_links_add') }}" id="addLink" method="post" autocomplete="off">
+	<h2>{{ _('Add game link') }}</h2>
+		<dl>
+			<dt>{{ _('Game') }}:
+			<dd><select name="game">
+			{% for name, data in games.items() %}
+				{{ name }} - {{ data }}
+				{% for content in data %}
+					{{ content }}
+					{#
+					<option value="{{ key }}">{{ name }} - {{ value }}</option>
+					#}
+				{% endfor %}
+			{% endfor %}
+			</select>
+			<dt>{{ _('Link') }}:
+			<dd><input type="text" name="link" class="backend" >
+			<dt>{{ _('Name') }}:
+			<dd><input type="text" name="name" class="backend">
+			<dt>{{ _('Comment') }}:
+			<dd><input type="text" name="comment" class="backend">
+		</dl>
+	<button class="btn btn-default" type="submit">{{ _('Submit') }}</button> <button class="btn btn-default" type="reset">{{ _('Reset') }}</button>
+</form></dev>
+{% endblock %}
