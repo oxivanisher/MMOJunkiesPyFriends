@@ -6,15 +6,13 @@
 		<dl>
 			<dt>{{ _('Game') }}:
 			<dd><select name="game">
-			{% for name, data in games.items() %}
-				{{ name }} - {{ data }}
-				{% for content in data %}
-					{{ content }}
-					{#
-					<option value="{{ key }}">{{ name }} - {{ value }}</option>
-					#}
-				{% endfor %}
-			{% endfor %}
+			{%- for netHandle, netGames in games|dictsort(by="value") -%}
+				{%- if netGames|length -%}
+					{% for gameId, gameName in netGames|dictsort(by="value") %}
+				<option value="{{ netHandle }}|{{ gameId }}">{{ networks[netHandle] }} - {{ gameName }}</option>
+					{%- endfor -%}
+				{%- endif -%}
+			{%- endfor -%}
 			</select>
 			<dt>{{ _('Link') }}:
 			<dd><input type="text" name="link" class="backend" >

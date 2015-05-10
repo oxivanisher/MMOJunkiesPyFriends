@@ -249,6 +249,12 @@ def checkPassword(password1, password2):
     # - max length (cut oversize)
     return valid
 
+def getNetworks():
+    networks = {}
+    for net in MMONetworks.keys():
+        networks[net] = MMONetworks[net].name
+    return networks
+
 def getGames():
     games = {}
     for net in MMONetworks.keys():
@@ -444,8 +450,9 @@ def set_lang(language=None):
     return redirect(url_for('index'))
 
 # support routes
+@app.route('/Images/<imgType>/', methods = ['GET', 'POST'])
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
-def get_image(imgType, imgId):
+def get_image(imgType, imgId = None):
     filePath = os.path.join(app.config['scriptPath'], 'static', imgType)
     fileName = ""
     log.debug("[System] Requesting img type <%s> id <%s>" % (imgType, imgId))
@@ -1244,49 +1251,58 @@ def getLastly(request):
 def getGameLinks(request):
     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
     retLinks = []
-    for link in MMOGameLink.query.filter_by(user_id=session['userid']):
-        retLinks.append({'net': link.network_handle,
-                         'gameId': link.gameId,
-                         'link': link.link,
-                         'name': link.name,
-                         'comment': link.comment})
+    myGames = getGamesOfUser(session['userid'])
+    for link in MMOGameLink.query.all():
+        if link.gameId in myGames[link.network_handle].keys():
+            retLinks.append({'net': link.network_handle,
+                             'gameId': link.gameId,
+                             'link': link.link,
+                             'name': link.name,
+                             'comment': link.comment})
     return { 'games': getGames(), 'links': retLinks }
 
-# Link methods
+# Game link methods
 @app.route('/GameLinks/Show')
 def game_links_show():
-    # twitterData = {'widgetUrl': app.config['TWITTERURL'], 'widgetId': app.config['TWITTERWIDGETID']}
-    links = ""
-    return render_template('game_links.html', links = links)
+    allLinks = MMOGameLink.query.all()
+    links = []
+    myGames = getGamesOfUser(session['userid'])
+    for link in allLinks:
+        if link.gameId in myGames[link.network_handle].keys():
+            links.append(link)
+    return render_template('game_links.html', links = links, games = myGames, networks = getNetworks())
 
 @app.route('/GameLinks/Add', methods = ['POST', 'GET'])
 def game_links_add():
     check_admin_permissions()
     retMessage = ""
     if request.method == 'POST':
-        if request.form['message'] and request.form['subject']:
-            okCount = 0
-            nokCount = 0
-            for user in MMOUser.query.all():
-                user.load()
-                if user.nick != "oxi":
-                    continue
-                if send_email(app, user.email, request.form['subject'],
-                    "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
-                    'logo_banner1_mmo_color_qr.png'):
-                    okCount += 1
-                else:
-                    nokCount += 1
-            retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
+        if request.form['game'] and request.form['name'] and request.form['link']:
+            game = request.form['game'].split('|')
+            newLink = MMOGameLink(session['userid'],
+                                  game[0],
+                                  game[1],
+                                  request.form['link'],
+                                  request.form['name'],
+                                  request.form['comment'])
 
-        return render_template('game_links.html', links = links)    
+            db.session.add(newLink)
+            try:
+                db.session.flush()
+                db.session.commit()
+            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+                db.session.rollback()
+                flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
+                log.warning("[System] SQL Alchemy Error: %s" % e)
+
+        return redirect(url_for('game_links_show'))
     else:
-        return render_template('game_links_add.html', games = getGamesOfUser(session['userid']))
-
+        return render_template('game_links_add.html', games = getGamesOfUser(session['userid']), networks = getNetworks())
 
 # Gaming URLs
+@app.route('/Games/Icon/', methods = ['POST', 'GET'])
 @app.route('/Games/Icon/<netId>/<gameId>', methods = ['POST', 'GET'])
-def get_game_icon(netId, gameId):
+def get_game_icon(netId = None, gameId = None):
     return redirect(MMONetworks[netId].getGameIcon(gameId))
 
 # Gaming JSON API

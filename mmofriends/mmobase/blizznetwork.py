@@ -36,7 +36,9 @@ class BlizzNetwork(MMONetwork):
         self.locale = 'en_US'
         self.products = { 'worldofwarcraft': 'World of Warcraft',
                           'starcraft2': 'Starcraft 2',
-                          'diablo3': 'Diablo 3' }
+                          'diablo3': 'Diablo 3',
+                          'hearthstone': 'Hearthstone',
+                          'hots': 'Heroes of the Storm' }
 
         # activate debug while development
         # self.setLogLevel(logging.DEBUG)
@@ -600,13 +602,15 @@ class BlizzNetwork(MMONetwork):
         self.getCache('d3Profiles')
         self.getCache('sc2Profiles')
 
-        games = {}
-        if unicode(userId) in self.cache['wowProfiles'].keys():
-            games['worldofwarcraft'] = self.products['worldofwarcraft']
-        if unicode(userId) in self.cache['d3Profiles'].keys():
-            games['diablo3'] = self.products['diablo3']
-        if unicode(userId) in self.cache['sc2Profiles'].keys():
-            games['starcraft2'] = self.products['starcraft2']
+        games = self.products
+
+        if unicode(userId) not in self.cache['wowProfiles'].keys():
+            games.pop("worldofwarcraft", None)
+        if unicode(userId) not in self.cache['d3Profiles'].keys():
+            games.pop("diablo3", None)
+        if unicode(userId) not in self.cache['sc2Profiles'].keys():
+            games.pop("starcraft2", None)
+
         return games
 
     def getUsersOfGame(self, gameHandle):
@@ -621,6 +625,14 @@ class BlizzNetwork(MMONetwork):
         if gameHandle == 'diablo3':
             self.getCache('d3Profiles')
             return self.cache['d3Profiles'].keys()
+
+        if gameHandle == 'hearthstone':
+            self.getCache('battletags')
+            return self.cache['battletags'].keys()
+
+        if gameHandle == 'hots':
+            self.getCache('battletags')
+            return self.cache['battletags'].keys()
 
         return []
             

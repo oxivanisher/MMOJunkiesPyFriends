@@ -2,34 +2,23 @@
 <script type="text/javascript">
 	var timeout{{ box.netHandle }}{{ box.handle }};
 	function drawLinkContent{{ box.netHandle }}{{ box.handle }}( data ) {
-		// showMe = false;
-		// for (id in data.lastly) {
-		// 	var entry = data.lastly[id];
-		// 	var netData = data.net[entry.net];
-		// 	showMe = true;
-		// 	img = '<img class="partner_list_icon" src="' + netData.icon + '" title="' + netData.description + '" />';
+		for (link in data.links) {
+			showMe = true;
 
-		// 	$('#systemLinks').append('<tr><td class="text-wrap">' + img + ' ' + entry.age + ' ' + entry.text + '</td></tr>');
-
-		// }
-		for (net in data.games) {
-			console.log(data.games[net].keys());
-			if (net.keys().length > 0) {
-				avatar = "";
-				name = "";
-				nicks = "";
-				nets = "";
-				$( "#systemGameLinks" ).append('<tr><td class="text-wrap">'+ avatar + name + nicks + '</td><td style="width:' + (Object.keys(data.nets).length * 18) + 'px;">' + nets + '</td></tr>');
-			}
+			netIcon = '<img class="partner_list_icon" src="{{ url_for('get_image', imgType='network') }}' + data.links[link].net + '" />';
+			gameIcon = '<img class="partner_list_icon" src="{{ url_for('get_game_icon') }}' + data.links[link].net + '/' + data.links[link].gameId + '" />';
+			url = data.links[link].link;
+			title = data.links[link].comment;
+			name = data.links[link].name;
+			$( "#systemGameLinks" ).append('<tr><td style="width: 36px;">' + netIcon + gameIcon + '</td><td class="text-wrap"><a href="' + url + '" title="' + title + '" target="_new">'+ name + '</a></td></tr>');
 		}
 
-		showMe = true;
 		return showMe
 	}
 	function redrawBox{{ box.netHandle }}{{ box.handle }}( force ) {
 		var run = true;
 		if (force == undefined) {
-			if ($( "#systemLinks" ).parents('.col').is(":hidden")){
+			if ($( "#systemGameLinks" ).parents('.col').is(":hidden")){
 				run = false;
 			} else if (windowIdleCheck()) {
 				run = false;
@@ -39,16 +28,12 @@
 			clearTimeout(timeout{{ box.netHandle }}{{ box.handle }});
 			var dataUrl = "{{ url_for('dashboard_method_json', netHandle=box.netHandle, methodHandle=box.handle) }}";
 			$.getJSON( dataUrl ).done( function( data ) {
-				console.log(data);
-				drawLinkContent{{ box.netHandle }}{{ box.handle }}( data );
-
-				// $( "#systemLinks" ).fadeOut( 100, function () {
-				// 	$('#systemLinks').empty();
-				// 	if (drawLinkContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
-				// 		$( "#systemLinks" ).fadeIn( 100 );
-				// 	}
-				// });
-
+				$( "#systemGameLinks" ).fadeOut( 100, function () {
+					$('#systemGameLinks').empty();
+					if (drawLinkContent{{ box.netHandle }}{{ box.handle }}( data, true )) {
+						$( "#systemGameLinks" ).fadeIn( 100 );
+					}
+				});
 			});
 			timeout{{ box.netHandle }}{{ box.handle }} = setTimeout(redrawBox{{ box.netHandle }}{{ box.handle }}, 331000);
 		}

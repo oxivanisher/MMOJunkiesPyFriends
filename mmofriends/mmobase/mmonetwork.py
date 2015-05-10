@@ -79,6 +79,8 @@ class MMOGameLink(db.Model):
     comment = db.Column(db.UnicodeText)
     date = db.Column(db.Integer)
 
+    __table_args__ = (db.UniqueConstraint(network_handle, gameId, link, name="net_game_link_uc"), )
+
     def __init__(self, user_id, network_handle, gameId, link, name = "", comment = "", date = 0):
         self.user_id = user_id
         self.network_handle = network_handle
