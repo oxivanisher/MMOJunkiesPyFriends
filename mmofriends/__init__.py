@@ -1397,35 +1397,35 @@ def paypal_webhook():
     #probably should have a sanity check here on the size of the form data to guard against DoS attacks
     verify_args = itertools.chain(request.form.iteritems(), IPN_VERIFY_EXTRA_PARAMS)
     verify_string = '&'.join(('%s=%s' % (param, value) for param, value in verify_args))
-    #req = Request(verify_string)
-    response = urllib.urlopen(IPN_URLSTRING, data=verify_string)
-    status = response.read()
 
-    if status == 'VERIFIED':
-        # print "PayPal transaction was verified successfully."
-        # Do something with the verified transaction details.
-        newPayment = MMOPayPalPaymant(request.form.get('item_name'),
-                                      request.form.get('item_number'),
-                                      request.form.get('custom'),
-                                      request.form.get('payment_status'),
-                                      request.form.get('payment_amount'),
-                                      request.form.get('payment_currency'),
-                                      request.form.get('payment_type'),
-                                      request.form.get('txn_id'),
-                                      request.form.get('txn_type'),
-                                      request.form.get('receiver_email'),
-                                      request.form.get('payer_email'))
+    with closing(urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
+        response_string = paypal_verify_request.read()
+        if response_string != 'VERIFIED':
+            raise ValueError('Did not receive expected IPN confirmation from PayPal')
+        else:
+            newPayment = MMOPayPalPaymant(request.form.get('item_name'),
+                                          request.form.get('item_number'),
+                                          request.form.get('custom'),
+                                          request.form.get('payment_status'),
+                                          request.form.get('payment_amount'),
+                                          request.form.get('payment_currency'),
+                                          request.form.get('payment_type'),
+                                          request.form.get('txn_id'),
+                                          request.form.get('txn_type'),
+                                          request.form.get('receiver_email'),
+                                          request.form.get('payer_email'))
 
-        db.session.add(newPayment)
-        try:
-            db.session.flush()
-            db.session.commit()
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db.session.rollback()
-            log.warning("[System] SQL Alchemy Error: %s" % e)
+            db.session.add(newPayment)
+            try:
+                db.session.flush()
+                db.session.commit()
+            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+                db.session.rollback()
+                log.warning("[System] SQL Alchemy Error: %s" % e)
 
-        log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))
-    else:
-        log.warning('Paypal IPN string {arg} did not validate'.format(arg=request.form.get('verify_string')))
+            log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))
 
     return jsonify({'status':'complete'})
+
+
+def paypal_webhook():
