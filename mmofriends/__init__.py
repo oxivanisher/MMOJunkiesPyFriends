@@ -7,7 +7,7 @@ import os
 import logging
 import urllib
 import hashlib
-from itertools import chain
+import itertools
 
 from mmobase.mmouser import *
 from mmobase.mmonetwork import *
@@ -1395,10 +1395,10 @@ IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 @ordered_storage
 def paypal_webhook():
     #probably should have a sanity check here on the size of the form data to guard against DoS attacks
-    verify_args = chain(request.form.iteritems(), IPN_VERIFY_EXTRA_PARAMS)
+    verify_args = itertools.chain(request.form.iteritems(), IPN_VERIFY_EXTRA_PARAMS)
     verify_string = '&'.join(('%s=%s' % (param, value) for param, value in verify_args))
     #req = Request(verify_string)
-    response = urlopen(IPN_URLSTRING, data=verify_string)
+    response = urllib.urlopen(IPN_URLSTRING, data=verify_string)
     status = response.read()
 
     if status == 'VERIFIED':
