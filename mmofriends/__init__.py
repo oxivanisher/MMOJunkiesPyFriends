@@ -1402,7 +1402,7 @@ def paypal_webhook():
     with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
         response_string = paypal_verify_request.read()
         if response_string != 'VERIFIED':
-            raise ValueError('Did not receive expected IPN confirmation from PayPal')
+            raise ValueError('Did not receive expected IPN confirmation from PayPal. String is: %s' % response_string)
         else:
             newPayment = MMOPayPalPaymant(request.form.get('item_name'),
                                           request.form.get('item_number'),
