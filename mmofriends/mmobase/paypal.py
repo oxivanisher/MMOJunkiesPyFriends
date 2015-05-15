@@ -37,10 +37,3 @@ class MMOPayPalPaymant(db.Model):
     def __repr__(self):
         return '<MMOPayPalPaymant %r>' % self.id
 
-def ordered_storage(f):
-    import werkzeug.datastructures
-    import flask
-    def decorator(*args, **kwargs):
-        flask.request.parameter_storage_class = werkzeug.datastructures.ImmutableOrderedMultiDict
-        return f(*args, **kwargs)
-    return decorator

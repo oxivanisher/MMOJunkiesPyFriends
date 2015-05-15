@@ -1393,6 +1393,14 @@ def json_partner_details(netHandle, partnerId):
 IPN_URLSTRING = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 
+def ordered_storage(f):
+    import werkzeug.datastructures
+    import flask
+    def decorator(*args, **kwargs):
+        flask.request.parameter_storage_class = werkzeug.datastructures.ImmutableOrderedMultiDict
+        return f(*args, **kwargs)
+    return decorator
+
 @app.route('/PayPal/IPN', methods=['POST'])
 @ordered_storage
 def paypal_webhook():
