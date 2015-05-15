@@ -35,3 +35,6 @@ LANGUAGES = {
 
 # google analytics
 GOOGLEANALYTICS = "UA-55575556-1"
+
+# PayPal
+PAYPAL_HOSTEDBUTTON = ""
