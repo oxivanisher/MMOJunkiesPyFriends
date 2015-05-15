@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from mmofriends import db
+
 class MMOPayPalPaymant(db.Model):
     __tablename__ = 'mmopaypalpayment'
 
