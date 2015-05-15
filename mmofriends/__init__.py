@@ -1389,8 +1389,8 @@ def json_partner_details(netHandle, partnerId):
     return jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
 
 # PayPal
-# IPN_URLSTRING = 'https://www.paypal.com/cgi-bin/webscr'
-IPN_URLSTRING = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+IPN_URLSTRING = 'https://www.paypal.com/cgi-bin/webscr'
+# IPN_URLSTRING = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 
 @app.route('/PayPal/IPN', methods=['POST'])
