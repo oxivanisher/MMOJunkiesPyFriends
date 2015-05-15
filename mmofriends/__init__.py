@@ -1410,7 +1410,8 @@ def paypal_webhook():
     log.info(request.form)
     log.info(verify_string)
 
-    with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.encode('utf-8'))) as paypal_verify_request:
+    # with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.encode('utf-8'))) as paypal_verify_request:
+    with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
         # response_string = paypal_verify_request.read()
         # if response_string != 'VERIFIED':
         #     raise ValueError('Did not receive expected IPN confirmation from PayPal. String is: %s' % response_string)
@@ -1428,7 +1429,8 @@ def paypal_webhook():
                                       request.form.get('receiver_id'),
                                       request.form.get('payer_email'),
                                       request.form.get('test_ipn'),
-                                      paypal_verify_request.read())
+                                      paypal_verify_request.read(),
+                                      request.form.get('memo'))
 
         db.session.add(newPayment)
         try:
