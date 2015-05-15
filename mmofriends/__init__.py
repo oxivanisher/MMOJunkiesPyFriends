@@ -7,6 +7,7 @@ import os
 import logging
 import urllib
 import hashlib
+from itertools import chain
 
 from mmobase.mmouser import *
 from mmobase.mmonetwork import *
@@ -16,6 +17,7 @@ from mmobase.valvenetwork import *
 from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
+from mmobase.paypal import *
 
 log = getLogger(level=logging.INFO)
 
@@ -1384,3 +1386,43 @@ def json_partner_details(netHandle, partnerId):
     if not session.get('logged_in'):
         abort(401)
     return jsonify(MMONetworks[netHandle].getPartnerDetails(partnerId))
+
+# PayPal
+IPN_URLSTRING = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
+
+@app.route('/PayPal/IPN', methods=['POST'])
+@ordered_storage
+def paypal_webhook():
+    #probably should have a sanity check here on the size of the form data to guard against DoS attacks
+    verify_args = chain(request.form.iteritems(), IPN_VERIFY_EXTRA_PARAMS)
+    verify_string = '&'.join(('%s=%s' % (param, value) for param, value in verify_args))
+    #req = Request(verify_string)
+    response = urlopen(IPN_URLSTRING, data=verify_string)
+    status = response.read()
+
+    if status == 'VERIFIED':
+        # print "PayPal transaction was verified successfully."
+        # Do something with the verified transaction details.
+        newPayment = MMOPayPalPaymant(request.form.get('item_name'),
+                                      request.form.get('item_number'),
+                                      request.form.get('payment_status'),
+                                      request.form.get('payment_amount'),
+                                      request.form.get('payment_currency'),
+                                      request.form.get('txn_id'),
+                                      request.form.get('receiver_email'),
+                                      request.form.get('payer_email'))
+
+        db.session.add(newPayment)
+        try:
+            db.session.flush()
+            db.session.commit()
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+            db.session.rollback()
+            log.warning("[System] SQL Alchemy Error: %s" % e)
+
+        log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))
+    else:
+        log.warning('Paypal IPN string {arg} did not validate'.format(arg=request.form.get('verify_string')))
+
+    return jsonify({'status':'complete'})
