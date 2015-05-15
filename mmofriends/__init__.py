@@ -1406,10 +1406,13 @@ def paypal_webhook():
         # Do something with the verified transaction details.
         newPayment = MMOPayPalPaymant(request.form.get('item_name'),
                                       request.form.get('item_number'),
+                                      request.form.get('custom'),
                                       request.form.get('payment_status'),
                                       request.form.get('payment_amount'),
                                       request.form.get('payment_currency'),
+                                      request.form.get('payment_type'),
                                       request.form.get('txn_id'),
+                                      request.form.get('txn_type'),
                                       request.form.get('receiver_email'),
                                       request.form.get('payer_email'))
 
