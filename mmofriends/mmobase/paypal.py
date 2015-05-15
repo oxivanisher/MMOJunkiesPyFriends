@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
+
 from mmofriends import db
 
 class MMOPayPalPaymant(db.Model):
