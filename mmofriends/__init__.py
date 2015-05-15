@@ -1425,6 +1425,7 @@ def paypal_webhook():
                                           request.form.get('txn_id'),
                                           request.form.get('txn_type'),
                                           request.form.get('receiver_email'),
+                                          request.form.get('receiver_id'),
                                           request.form.get('payer_email'))
 
             db.session.add(newPayment)
