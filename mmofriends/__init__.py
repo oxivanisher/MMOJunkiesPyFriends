@@ -1399,7 +1399,7 @@ def paypal_webhook():
     verify_args = itertools.chain(request.form.iteritems(), IPN_VERIFY_EXTRA_PARAMS)
     verify_string = '&'.join(('%s=%s' % (param, value) for param, value in verify_args))
 
-    with contextlib.closing(urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
+    with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
         response_string = paypal_verify_request.read()
         if response_string != 'VERIFIED':
             raise ValueError('Did not receive expected IPN confirmation from PayPal')
