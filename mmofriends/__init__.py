@@ -1426,6 +1426,3 @@ def paypal_webhook():
             log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))
 
     return jsonify({'status':'complete'})
-
-
-def paypal_webhook():
