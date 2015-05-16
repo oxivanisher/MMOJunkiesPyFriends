@@ -241,7 +241,7 @@ def send_email(app, msgto, msgsubject, msgtext, image):
 
 # Dashboard methods
 def createDashboardBox(method, netHandle, handle, settings = {}, data = {}):
-    logging.info("[%s] Registered dashboard box %s (%s)" % (netHandle, handle, method.func_name))
+    logging.debug("[%s] Registered dashboard box %s (%s)" % (netHandle, handle, method.func_name))
 
     options = []
     options.append(('admin', False))

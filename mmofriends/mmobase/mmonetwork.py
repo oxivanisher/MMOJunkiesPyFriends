@@ -503,7 +503,7 @@ class MMONetwork(object):
         self.setCache('liveBGTask')
 
     def registerWorker(self, method, timeout):
-        self.log.info("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
+        self.log.debug("[%s] Registered background worker %s (%s)" % (self.handle, method.func_name, timeout))
         self.backgroundTasks.append((method, timeout, 0))
 
     def registerDashboardBox(self, method, handle, settings = {}):
