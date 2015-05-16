@@ -1407,10 +1407,12 @@ def paypal_webhook():
     #probably should have a sanity check here on the size of the form data to guard against DoS attacks
     verify_args = itertools.chain(IPN_VERIFY_EXTRA_PARAMS, request.form.iteritems())
     verify_string = '&'.join(('%s=%s' % (param, value) for param, value in verify_args))
+    test = urllib.urlencode(IPN_VERIFY_EXTRA_PARAMS, request.form.iteritems())
+    log.warning(verify_string)
+    log.warning(test)
     # log.info(request.form)
     # log.info(verify_string)
-
-    log.warning(request.headers['Content-Type'])
+    # log.warning(request.headers['Content-Type'])
 
     # with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.encode('utf-8'))) as paypal_verify_request:
     with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.decode('ascii', 'replace'))) as paypal_verify_request:
