@@ -195,10 +195,10 @@ class MMONetwork(object):
         self.log.debug("[%s] Loading admin stuff" % (self.handle))
 
     def prepareForFirstRequest(self):
-        self.log.info("[%s] Running prepareForFirstRequest." % (self.handle))
+        self.log.debug("[%s] Running prepareForFirstRequest." % (self.handle))
 
     def getLastly(self):
-        self.log.info("[%s] Running getLastly." % (self.handle))
+        self.log.debug("[%s] Running getLastly." % (self.handle))
         self.getCache("lastly")
         return self.cache["lastly"]
 
