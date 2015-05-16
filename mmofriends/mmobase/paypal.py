@@ -16,6 +16,7 @@ class MMOPayPalPaymant(db.Model):
     payment_amount =  db.Column(db.String(255))
     payment_currency =  db.Column(db.String(255))
     payment_type =  db.Column(db.String(255))
+    payment_date =  db.Column(db.String(255))
     txn_id =  db.Column(db.String(255))
     txn_type =  db.Column(db.String(255))
     receiver_email =  db.Column(db.String(255))
@@ -26,7 +27,7 @@ class MMOPayPalPaymant(db.Model):
     memo =  db.Column(db.String(255))
     date = db.Column(db.Integer)
 
-    def __init__(self, item_name, item_number, custom, payment_status, payment_amount, payment_currency, payment_type, txn_id, txn_type, receiver_email, receiver_id, payer_email, test_ipn, response_string, memo):
+    def __init__(self, item_name, item_number, custom, payment_status, payment_amount, payment_currency, payment_type, payment_date, txn_id, txn_type, receiver_email, receiver_id, payer_email, test_ipn, response_string, memo):
         self.item_name = item_name
         self.item_number = item_number
         self.custom = custom
@@ -34,6 +35,7 @@ class MMOPayPalPaymant(db.Model):
         self.payment_amount = payment_amount
         self.payment_currency = payment_currency
         self.payment_type = payment_type
+        self.payment_date = payment_date
         self.txn_id = txn_id
         self.txn_type = txn_type
         self.receiver_email = receiver_email
