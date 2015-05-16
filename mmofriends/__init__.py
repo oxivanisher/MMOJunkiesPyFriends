@@ -1414,11 +1414,11 @@ def paypal_webhook():
     # log.warning(test)
     # log.info(request.form)
     log.info(verify_string)
-    log.info(verify_string.encode('ascii', 'ignore'))
+    log.info(verify_string.encode('ascii', 'replace'))
     # log.warning(request.headers['Content-Type'])
 
     # with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.encode('utf-8'))) as paypal_verify_request:
-    with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
+    with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string.encode('ascii', 'replace'))) as paypal_verify_request:
     # with contextlib.closing(urllib.urlopen(IPN_URLSTRING, data=verify_string)) as paypal_verify_request:
         # response_string = paypal_verify_request.read()
         # if response_string != 'VERIFIED':
