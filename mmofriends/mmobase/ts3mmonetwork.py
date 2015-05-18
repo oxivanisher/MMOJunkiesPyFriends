@@ -249,6 +249,7 @@ class TS3Network(MMONetwork):
         if not logger:
             logger = self.log
         links = []
+        userLinks = {}
 
         if self.connect():
             self.getCache('onlineClients')
@@ -256,6 +257,7 @@ class TS3Network(MMONetwork):
             self.getCache('clientDatabase')
             for link in self.getNetworkLinks():
                 links.append(link['network_data'])
+                userLinks[link['network_data']] = link['user_id']
             for client in self.cache['onlineClients'].keys():
                 if client not in links:
                     if client not in self.cache['userWatchdog']:
@@ -279,11 +281,26 @@ class TS3Network(MMONetwork):
                 else:
                     logger.debug("[%s] Not spaming (already linked): %s (%s)" % (self.handle, self.cache['onlineClients'][client]['client_nickname'], client))
                     if 'groups' in self.cache['clientDatabase'][client]:
+                        myUser = MMOUser.query.filter_by(id=userLinks[client]).first()
+                        myUser.load()
+                        doner = False
+                        inDonerGroup = False
+                        if myUser.donated > 0:
+                            doner = True
+
                         for group in self.cache['clientDatabase'][client]['groups']:
                             if int(group['sgid']) in self.config['guestGroups']:
                                 logger.warning("[%s] Setting missing member group of %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                                 self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['memberGroupId'], client))
                                 self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (int(group['sgid']), client))
+                            if int(group['sgid']) == self.config['donerGroupId']:
+                                inDonerGroup = True
+                                if not doner:
+                                    logger.warning("[%s] Removing from doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
+                                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
+                        if doner and not inDonerGroup:
+                            logger.warning("[%s] Adding to doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
+                            self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
 
             self.setCache('userWatchdog')
             return "%s users spamed" % (spamedCount)

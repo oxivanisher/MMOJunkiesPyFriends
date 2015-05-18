@@ -11,7 +11,7 @@
 					({{ myUser.name }})
 				{%- endif -%}
 				{% if myUser.donated %}
-					Donated: {{ myUser.donated }}€
+					| {{ _('Donated') }}: {{ myUser.donated }}€
 				{%- endif -%}
 				</h3>
 				{%- if myUser.website %}
