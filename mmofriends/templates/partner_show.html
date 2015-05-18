@@ -10,6 +10,9 @@
 				{%- if myUser.name %}
 					({{ myUser.name }})
 				{%- endif -%}
+				{% if myUser.donated %}
+					Donated: {{ myUser.donated }}€
+				{%- endif -%}
 				</h3>
 				{%- if myUser.website %}
 					<a href="{{ myUser.website }}" target="_blank" title="{{ myUser.website }}">{{ myUser.website }}</a>
