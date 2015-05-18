@@ -3,7 +3,8 @@
 
 import time
 
-from mmofriends import db
+# from mmofriends import db
+db = SQLAlchemy()
 
 class MMOPayPalPayment(db.Model):
     __tablename__ = 'mmopaypalpayment'
