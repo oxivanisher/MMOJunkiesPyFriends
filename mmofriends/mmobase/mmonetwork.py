@@ -415,7 +415,7 @@ class MMONetwork(object):
             db.session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError, OperationalError) as e:
             db.session.rollback()
-            log.warning("[%s] SQL Alchemy Error on set Cache: %s" % (self.handle, e))
+            log.warning("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
         # db.session.expire(ret)
 
     def getCacheAge(self, name):
@@ -439,8 +439,12 @@ class MMONetwork(object):
             
         ret.last_update = 0
         db.session.merge(ret)
-        db.session.flush()
-        db.session.commit()
+        try:
+            db.session.flush()
+            db.session.commit()
+        except (IntegrityError, InterfaceError, InvalidRequestError, OperationalError) as e:
+            db.session.rollback()
+            log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
         # db.session.expire(ret)
 
     # Background worker methods
