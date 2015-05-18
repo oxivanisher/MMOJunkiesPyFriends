@@ -177,5 +177,5 @@ class MMOUser(db.Model):
         amount = float(0)
         donations = MMOPayPalPayment.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
         for donation in donations:
-            amount += donation.payment_amount
+            amount += float(donation.payment_amount)
         self.donated = amount
