@@ -4,6 +4,7 @@
 import time
 
 # from mmofriends import db
+from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class MMOPayPalPayment(db.Model):
