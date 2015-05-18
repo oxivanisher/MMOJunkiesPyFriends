@@ -419,7 +419,7 @@ class MMONetwork(object):
         try:
             db.session.flush()
             db.session.commit()
-        except (IntegrityError, InterfaceError, InvalidRequestError, OperationalError) as e:
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
             db.session.rollback()
             log.warning("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
         # db.session.expire(ret)
@@ -448,7 +448,7 @@ class MMONetwork(object):
         try:
             db.session.flush()
             db.session.commit()
-        except (IntegrityError, InterfaceError, InvalidRequestError, OperationalError) as e:
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
             db.session.rollback()
             log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
         # db.session.expire(ret)
