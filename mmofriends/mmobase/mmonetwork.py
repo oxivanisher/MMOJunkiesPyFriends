@@ -410,8 +410,12 @@ class MMONetwork(object):
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
         db.session.merge(ret)
-        db.session.flush()
-        db.session.commit()
+        try:
+            db.session.flush()
+            db.session.commit()
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+            db.session.rollback()
+            log.warning("[%s] SQL Alchemy Error on set Cache: %s" % (self.handle, e))
         # db.session.expire(ret)
 
     def getCacheAge(self, name):

@@ -14,7 +14,7 @@ TS3:
    - 7
    - 8
   memberGroupId: 9
-  donatorGroupId: 11
+  donerGroupId: 11
 Blizz:
   name: Battle.Net
   class: BlizzNetwork
