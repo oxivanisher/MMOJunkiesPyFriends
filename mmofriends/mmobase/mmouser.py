@@ -9,6 +9,7 @@ import string
 import random
 
 from mmoutils import *
+from paypal import *
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 # from mmofriends import db, app
