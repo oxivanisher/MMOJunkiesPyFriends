@@ -93,6 +93,7 @@ class MMOUser(db.Model):
         self.locked = True
         self.veryfied = False
         self.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
+        self.donated = float(0)
         self.load()
 
     def __repr__(self):
@@ -174,4 +175,4 @@ class MMOUser(db.Model):
         donations = MMOPayPalPaymant.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
         for donation in donations:
             amount += donation.payment_amount
-        return amount
+        self.donated = amount
