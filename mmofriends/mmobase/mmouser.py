@@ -12,8 +12,9 @@ from mmoutils import *
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 # from mmofriends import db, app
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
+from mmofriends import db
 from paypal import MMOPayPalPayment
 
 class MMOUserLevel(object):
