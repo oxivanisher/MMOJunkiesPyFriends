@@ -102,14 +102,14 @@ class MMOUser(db.Model):
     def load(self):
         self.log = logging.getLogger(__name__)
         self.loadDonations()
-        self.log.debug("[User] Loaded MMOUser %s" % self.nick)
+        self.log.debug("[User] Loaded MMOUser %s" % (self.getDisplayName()))
 
     def lock(self):
-        self.log.debug("[User] Lock MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Lock MMOUser %s" % (self.getDisplayName()))
         self.locked = True
 
     def unlock(self):
-        self.log.debug("[User] Unlock MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Unlock MMOUser %s" % (self.getDisplayName()))
         self.locked = False
 
     def verify(self, key):
@@ -121,19 +121,19 @@ class MMOUser(db.Model):
             return False
 
     def refreshNetworks(self):
-        self.log.debug("[User] Refresh MMONetwork for MMOUser %s" % self.getDisplayName())
+        self.log.debug("[User] Refresh MMONetwork for MMOUser %s" % (self.getDisplayName()))
         pass
 
     def getDisplayName(self):
         return self.nick + " (" + self.name + ")"
 
     def setPassword(self, password):
-        self.log.info("[User] Setting new Password for MMOUser %s" % self.getDisplayName())
+        self.log.info("[User] Setting new Password for MMOUser %s" % (self.getDisplayName()))
         hash_object = hashlib.sha512(password)
         self.password = hash_object.hexdigest()
 
     def checkPassword(self, password):
-        self.log.info("[User] Checking password for MMOUser %s" % self.getDisplayName())
+        self.log.info("[User] Checking password for MMOUser %s" % (self.getDisplayName()))
         hash_object = hashlib.sha512(password)
         if self.password == hash_object.hexdigest():
             return True
@@ -171,7 +171,7 @@ class MMOUser(db.Model):
         return False
 
     def loadDonations(self):
-        self.log.debug("[User] Calculating donations for MMOUser %s" % (nickId, self.getDisplayName()))
+        self.log.debug("[User] Calculating donations for MMOUser %s" % (self.getDisplayName()))
         amount = float(0)
         donations = MMOPayPalPaymant.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
         for donation in donations:
