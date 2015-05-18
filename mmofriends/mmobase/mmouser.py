@@ -79,7 +79,7 @@ class MMOUser(db.Model):
 
     def __init__(self, nick):
         self.log = logging.getLogger(__name__)
-        self.log.debug("[User] Initializing MMOUser: %s" % nick)
+        self.log.debug("[User] Initializing MMOUser %s" % self.getDisplayName())
         self.nick = nick
         self.name = None
         self.email = None
@@ -100,7 +100,7 @@ class MMOUser(db.Model):
 
     def load(self):
         self.log = logging.getLogger(__name__)
-        self.log.debug("[User] Loaded MMOUser: %s" % self.nick)
+        self.log.debug("[User] Loaded MMOUser %s" % self.nick)
 
     def lock(self):
         self.log.debug("[User] Lock MMOUser %s" % self.getDisplayName())
@@ -126,12 +126,12 @@ class MMOUser(db.Model):
         return self.nick + " (" + self.name + ")"
 
     def setPassword(self, password):
-        self.log.info("[User] Setting new Password")
+        self.log.info("[User] Setting new Password for MMOUser %s" % self.getDisplayName())
         hash_object = hashlib.sha512(password)
         self.password = hash_object.hexdigest()
 
     def checkPassword(self, password):
-        self.log.info("[User] Checking password")
+        self.log.info("[User] Checking password for MMOUser %s" % self.getDisplayName())
         hash_object = hashlib.sha512(password)
         if self.password == hash_object.hexdigest():
             return True
@@ -139,7 +139,7 @@ class MMOUser(db.Model):
             return False
 
     def addNick(self, nick = None):
-        self.log.info("[User] Adding Nick: %s" % nick)
+        self.log.info("[User] Adding Nick: %s for MMOUser %s" % (nick, self.getDisplayName()))
         if nick:
             newNick = MMOUserNick(self.id, nick)
             try:
@@ -154,7 +154,7 @@ class MMOUser(db.Model):
         return False
 
     def removeNick(self, nickId = None):
-        self.log.info("[User] Removing NickID: %s" % nickId)
+        self.log.info("[User] Removing NickID: %s for MMOUser %s" % (nickId, self.getDisplayName()))
         if nickId:
             oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
             try:
