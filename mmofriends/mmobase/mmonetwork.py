@@ -381,7 +381,7 @@ class MMONetwork(object):
     def getCache(self, name):
         try:
             ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
-        except (IntegrityError, InterfaceError, InvalidRequestError, OperationalError) as e:
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
             db.session.rollback()
             log.warning("[%s] SQL Alchemy Error on getCache: %s" % (self.handle, e))
             ret = False
