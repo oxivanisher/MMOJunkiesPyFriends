@@ -167,3 +167,11 @@ class MMOUser(db.Model):
                 return False
             return True
         return False
+
+    def getDonations(self):
+        self.log.debug("[User] Calculating donations for MMOUser %s" % (nickId, self.getDisplayName()))
+        amount = float(0)
+        donations = MMOPayPalPaymant.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
+        for donation in donations:
+            amount += donation.payment_amount
+        return amount
