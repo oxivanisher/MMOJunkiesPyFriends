@@ -5,7 +5,7 @@ import time
 
 from mmofriends import db
 
-class MMOPayPalPaymant(db.Model):
+class MMOPayPalPayment(db.Model):
     __tablename__ = 'mmopaypalpayment'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -47,5 +47,5 @@ class MMOPayPalPaymant(db.Model):
         self.date = int(time.time())
 
     def __repr__(self):
-        return '<MMOPayPalPaymant %r>' % self.id
+        return '<MMOPayPalPayment %r>' % self.id
 

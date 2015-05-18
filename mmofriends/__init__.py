@@ -1425,7 +1425,7 @@ def paypal_webhook():
         # if response_string != 'VERIFIED':
         #     raise ValueError('Did not receive expected IPN confirmation from PayPal. String is: %s' % response_string)
         # else:
-        newPayment = MMOPayPalPaymant(request.form.get('item_name'),
+        newPayment = MMOPayPalPayment(request.form.get('item_name'),
                                       request.form.get('item_number'),
                                       request.form.get('custom'),
                                       request.form.get('payment_status'),
