@@ -9,11 +9,12 @@ import string
 import random
 
 from mmoutils import *
-from paypal import MMOPayPalPayment
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
 # from mmofriends import db, app
 db = SQLAlchemy()
+
+from paypal import MMOPayPalPayment
 
 class MMOUserLevel(object):
 
