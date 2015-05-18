@@ -283,10 +283,7 @@ class TS3Network(MMONetwork):
                     if 'groups' in self.cache['clientDatabase'][client]:
                         myUser = MMOUser.query.filter_by(id=userLinks[client]).first()
                         myUser.load()
-                        doner = False
                         inDonerGroup = False
-                        if myUser.donated > 0:
-                            doner = True
 
                         for group in self.cache['clientDatabase'][client]['groups']:
                             if int(group['sgid']) in self.config['guestGroups']:
@@ -295,10 +292,11 @@ class TS3Network(MMONetwork):
                                 self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (int(group['sgid']), client))
                             if int(group['sgid']) == self.config['donerGroupId']:
                                 inDonerGroup = True
-                                if not doner:
+                                if myUser.donated == float(0):
                                     logger.warning("[%s] Removing from doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                                     self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
-                        if doner and not inDonerGroup:
+                                    inDonerGroup = False
+                        if myUser.donated > float(0) and not inDonerGroup:
                             logger.warning("[%s] Adding to doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                             self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
 
