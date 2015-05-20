@@ -75,7 +75,7 @@ class MMOGameLink(db.Model):
     network_handle = db.Column(db.String(20))
     gameId = db.Column(db.String(255))
     link = db.Column(db.String(255))
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(255))
     comment = db.Column(db.UnicodeText)
     date = db.Column(db.Integer)
 
