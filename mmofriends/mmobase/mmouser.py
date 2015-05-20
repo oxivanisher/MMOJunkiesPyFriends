@@ -175,7 +175,12 @@ class MMOUser(db.Model):
     def loadDonations(self):
         self.log.debug("[User] Calculating donations for MMOUser %s" % (self.getDisplayName()))
         amount = float(0)
-        donations = MMOPayPalPayment.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
-        for donation in donations:
-            amount += float(donation.payment_amount)
+        try:
+            donations = MMOPayPalPayment.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
+            for donation in donations:
+                amount += float(donation.payment_amount)
+        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+            db.session.rollback()
+            self.log.warning("[User] SQL Alchemy Error: %s" % e)
         self.donated = amount
+
