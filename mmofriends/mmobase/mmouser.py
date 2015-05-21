@@ -150,7 +150,7 @@ class MMOUser(db.Model):
                 db.session.add(newNick)
                 db.session.flush()
                 db.session.commit()
-            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
                 db.session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
@@ -165,7 +165,7 @@ class MMOUser(db.Model):
                 db.session.delete(oldNick)
                 db.session.flush()
                 db.session.commit()
-            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
                 db.session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
@@ -179,7 +179,7 @@ class MMOUser(db.Model):
             donations = MMOPayPalPayment.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
             for donation in donations:
                 amount += float(donation.payment_amount)
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+        except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
             db.session.rollback()
             self.log.warning("[User] SQL Alchemy Error: %s" % e)
         self.donated = amount
