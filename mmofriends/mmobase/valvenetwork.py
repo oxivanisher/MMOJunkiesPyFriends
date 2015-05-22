@@ -756,7 +756,10 @@ class ValveNetwork(MMONetwork):
         return games
 
     def getGameIcon(self, gameId):
-        return url_for('get_image', imgType='cache', imgId=self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url'])))
+        try:
+            return url_for('get_image', imgType='cache', imgId=self.cacheFile(self.getImgUrl(gameId, self.cache['games'][gameId]['img_icon_url'])))
+        except KeyError:
+            return url_for('get_image', imgTypw='network', imgId='system')
 
     def getGamesOfUser(self, userId):
         self.getCache('users')
