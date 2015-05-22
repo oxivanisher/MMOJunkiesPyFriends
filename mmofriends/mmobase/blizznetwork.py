@@ -465,7 +465,11 @@ class BlizzNetwork(MMONetwork):
         payload = {'access_token': accessToken,
                    'apikey': self.config['apikey'],
                    'locale': self.locale}
-        r = requests.get(self.baseUrl + what, params=payload).json()
+
+        try:
+            r = requests.get(self.baseUrl + what, params=payload).json()
+        except ValueError as e:
+            return (False, e)
      
         try:
             if r['code']:
