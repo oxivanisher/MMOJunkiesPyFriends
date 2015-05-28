@@ -416,7 +416,7 @@ class MMONetwork(object):
         try:
             ret.set(self.cache[name])
         except TypeError as e:
-            self.log.warning("[%s] setCache - Unable to set cache: %s (%s)" % (self.handle, name, e))
+            self.log.warning("[%s] setCache - Unable to set cache (TypeError): %s (%s)" % (self.handle, name, e))
             raise TypeError
 
         ret.last_update = int(time.time())
