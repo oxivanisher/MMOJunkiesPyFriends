@@ -87,6 +87,7 @@ class RSSNews(MMONetwork):
                 for entry in feedData['entries']:
                     newEntries.append(fixDate(entry))
 
+            print feedData
             feedData['entries'] = newEntries
             self.cache['feeds'][feed] = feedData
 
