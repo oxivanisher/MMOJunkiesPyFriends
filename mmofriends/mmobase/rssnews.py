@@ -75,7 +75,12 @@ class RSSNews(MMONetwork):
         for feed in self.config['rssSources']:
             logger.debug("[%s] Fetching feed from %s" % (self.handle, feed))
             try:
-                feedData = fixDate(feedparser.parse(feed))
+                d = feedparser.parse(feed)
+                if d.bozo:
+                    logger.warning("[%s] Feed from %s is not well formated" % (self.handle, feed))
+                    continue
+                else:
+                    feedData = fixDate(d)
             except Exception as e:
                 logger.warning("[%s] Error %s with feedparser for feed: %s" % (self.handle, e, feed))
                 continue
@@ -87,7 +92,6 @@ class RSSNews(MMONetwork):
                 for entry in feedData['entries']:
                     newEntries.append(fixDate(entry))
 
-            print feedData
             feedData['entries'] = newEntries
             self.cache['feeds'][feed] = feedData
 
