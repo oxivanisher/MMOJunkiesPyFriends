@@ -121,7 +121,10 @@ db = SQLAlchemy(app)
 with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
-    db.create_all()
+    try:
+        db.create_all()
+    except OperationalError:
+        return render_template('epic_fail.html')
     # db.session.autocommit = True
     # db.session.autoflush = True
     oid = OpenID(app)
