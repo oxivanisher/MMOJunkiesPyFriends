@@ -318,6 +318,7 @@ def background_worker():
             lastNotify = time.time()
             log.warning("[System] Background worker status: Loop no.: %s; Uptime: %s" % (loopCount, get_long_duration(lastNotify - startupTime)))
 
+        db.session.remove()
         time.sleep(1)
 
 try:
@@ -365,9 +366,13 @@ def error_internal_server_error(error):
     return index()
 
 # app routes
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
+
 @app.before_first_request
 def before_first_request():
-    db.session.remove()
+    # db.session.remove()
     loadNetworks()
 
 @app.before_request
@@ -379,7 +384,7 @@ def before_request():
     else:
         session['crawlerRun'] = False
 
-    db.session.remove()
+    # db.session.remove()
     try:
         session['requests'] += 1
     except KeyError:
