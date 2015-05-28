@@ -393,13 +393,13 @@ class MMONetwork(object):
                 # for key, value in json.loads(ret.cache_data).iteritems():
                 #     output_dict[convertToInt(key)] = value
                 # self.cache[name] = output_dict
-                self.log.debug("[%s] getCache - loading db data to cache: %s" % (self.handle, name))
+                self.log.debug("[%s] getCache - Loading %s Bytes of data to cache: %s" % (self.handle, len(ret.cache_data), name))
                 self.cache[name] = json.loads(ret.cache_data)
             except ValueError as e:
-                self.log.debug("[%s] getCache - setting up new cache: %s" % (self.handle, name))
+                self.log.debug("[%s] getCache - Setting up new cache: %s" % (self.handle, name))
                 self.cache[name] = {}
         else:
-            self.log.debug("[%s] getCache - setting up new cache: %s" % (self.handle, name))
+            self.log.debug("[%s] getCache - Setting up new cache: %s" % (self.handle, name))
             self.cache[name] = {}
 
         # db.session.commit()
@@ -408,10 +408,10 @@ class MMONetwork(object):
         # self.log.debug("Saving cache: %s" % name)
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
-            self.log.debug("[%s] setCache - found existing cache: %s" % (self.handle, name))
+            self.log.debug("[%s] setCache - Found existing cache: %s" % (self.handle, name))
             ret.set(self.cache[name])
         else:
-            self.log.debug("[%s] setCache - created new cache:  %s" % (self.handle, name))
+            self.log.debug("[%s] setCache - Created new cache:  %s" % (self.handle, name))
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
