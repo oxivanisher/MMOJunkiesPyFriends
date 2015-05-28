@@ -409,11 +409,16 @@ class MMONetwork(object):
         ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         if ret:
             self.log.debug("[%s] setCache - Found existing cache: %s" % (self.handle, name))
-            ret.set(self.cache[name])
         else:
             self.log.debug("[%s] setCache - Created new cache: %s" % (self.handle, name))
             ret = MMONetworkCache(self.handle, name)
+
+        try:
             ret.set(self.cache[name])
+        except TypeError as e:
+            self.log.warning("[%s] setCache - Unable to set cache: %s" % (self.handle, name))
+            raise TypeError
+
         ret.last_update = int(time.time())
         db.session.merge(ret)
         try:
