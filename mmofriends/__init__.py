@@ -305,9 +305,8 @@ def background_worker():
             connected = True
         except OperationalError:
             retryCount += 1
-            else:
-                db.session.remove()
-                time.sleep(0.1)
+            db.session.remove()
+            time.sleep(0.1)
     if retryCount:
         log.warning("[System] Background worker reconnected to DB after %s tries." % retryCount)
 
