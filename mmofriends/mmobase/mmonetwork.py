@@ -411,7 +411,7 @@ class MMONetwork(object):
             self.log.debug("[%s] setCache - Found existing cache: %s" % (self.handle, name))
             ret.set(self.cache[name])
         else:
-            self.log.debug("[%s] setCache - Created new cache:  %s" % (self.handle, name))
+            self.log.debug("[%s] setCache - Created new cache: %s" % (self.handle, name))
             ret = MMONetworkCache(self.handle, name)
             ret.set(self.cache[name])
         ret.last_update = int(time.time())
