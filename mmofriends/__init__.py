@@ -384,11 +384,20 @@ def before_request():
     else:
         session['crawlerRun'] = False
 
-    # detect lost mysql connection
-    try:
-        db.session.execute("select 1").fetchall()
-    except OperationalError:
-        db.session.remove()
+    # detect and handle lost mysql connection
+    connected = False
+    retryCount = 0
+    while not connected:
+        try:
+            db.session.execute("select 1").fetchall()
+            connected = True
+        except OperationalError:
+            retryCount += 1
+            if retryCount > 20:
+                return render_template('epic_fail.html')
+            else:
+                db.session.remove()
+                time.sleep(0.1)
 
     try:
         session['requests'] += 1
