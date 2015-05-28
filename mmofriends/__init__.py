@@ -372,7 +372,7 @@ def shutdown_session(exception=None):
 
 @app.before_first_request
 def before_first_request():
-    # db.session.remove()
+    db.session.remove()
     loadNetworks()
 
 @app.before_request
