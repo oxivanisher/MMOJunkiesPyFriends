@@ -18,12 +18,11 @@
 		<tr>
 			<td nowrap style="vertical-align: top; padding-right: 6px">{{ detail.key }}</td>
 			<td>
-				{%- if type(detail.value) is string -%}
-					{%- if detail.value.startswith('http://') or detail.value.startswith('https://') or detail.value.startswith('//') -%}
-						<a href="detail.value" target="_blank">{{ detail.value|truncate(50, True) }}</a>
-					{%- else -%}
-						{{ detail.value|truncate(50, True) }}
-					{%- endif -%}
+				{%- set myValue = detail.value|string -%}
+				{%- if myValue.startswith('http://') or myValue.startswith('https://') or myValue.startswith('//') -%}
+					<a href="myValue" target="_blank">{{ myValue|truncate(50, True) }}</a>
+				{%- else -%}
+					{{ myValue|truncate(50, True) }}
 				{%- endif -%}
 			</td>
 		</tr>
