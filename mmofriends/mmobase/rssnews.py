@@ -97,7 +97,7 @@ class RSSNews(MMONetwork):
         try:
             self.setCache('feeds')
         except TypeError as e:
-            logger.warning("[%s] Unable to save feed (TypeError): %s" % (self.handle, feed))
+            logger.warning("[%s] Unable to save feed (TypeError): %s -> %s" % (self.handle, feed, type(self.cache['feeds'])))
 
         return "Updated %s feeds" % len(self.cache['feeds'])
 
