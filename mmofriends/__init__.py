@@ -123,8 +123,8 @@ with app.test_request_context():
     from mmobase.mmonetwork import *
     try:
         db.create_all()
-    except OperationalError:
-        pass
+    except OperationalError as e:
+        log.warning("System] Unable to create or check database tables! DB Server is probably not available...")
     # db.session.autocommit = True
     # db.session.autoflush = True
     oid = OpenID(app)
