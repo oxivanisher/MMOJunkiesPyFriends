@@ -31,7 +31,7 @@ except ImportError:
 
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
-    from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError
+    from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 except ImportError:
     log.error("[System] Please install the sqlalchemy extension for flask")
     sys.exit(2)
@@ -384,7 +384,12 @@ def before_request():
     else:
         session['crawlerRun'] = False
 
-    # db.session.remove()
+    # detect lost mysql connection
+    try:
+        db.session.execute("select 1").fetchall()
+    except OperationalError:
+        db.session.remove()
+
     try:
         session['requests'] += 1
     except KeyError:
