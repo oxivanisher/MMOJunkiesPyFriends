@@ -303,7 +303,7 @@ def background_worker():
         try:
             db.session.execute("select 1").fetchall()
             connected = True
-        except OperationalError:
+        except OperationalError as e:
             retryCount += 1
             db.session.remove()
             time.sleep(0.1)
@@ -325,9 +325,9 @@ def background_worker():
             try:
                 db.session.execute("select 1").fetchall()
                 connected = True
-            except OperationalError:
+            except OperationalError as e:
                 if not retryCount:
-                    log.warning("[System] Background worker lost DB connection. Sleeping...")
+                    log.warning("[System] Background worker encountered DB OperationalError: %s Sleeping..." % (e))
                 retryCount += 1
                 db.session.remove()
                 time.sleep(0.1)

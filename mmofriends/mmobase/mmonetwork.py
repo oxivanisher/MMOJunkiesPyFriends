@@ -503,6 +503,10 @@ class MMONetwork(object):
                     self.getCache('backgroundTasks')
                     logger.error("[%s] Timeout of 300 seconds reached. Background job '%s' killed!\n%s\n%s" % (self.handle, method.func_name, traceback.format_exc(), self.cache['backgroundTasks'][method.func_name]['result']))
                     ret = False
+                except OperationalError as e:
+                    logger.warning("[%s] Background worker encountered DB OperationalError (%s) while working on %s." % (self.handle, e, method.func_name))
+                    db.session.remove()
+                    ret = False
                 except Exception as e:
                     logger.error("[%s] Exception catched in '%s':\n%s" % (self.handle, method.func_name, traceback.format_exc()))
                     ret = False
