@@ -319,6 +319,21 @@ def background_worker():
     startupTime = time.time()
     work = True
     while work:
+        connected = False
+        retryCount = 0
+        while not connected:
+            try:
+                db.session.execute("select 1").fetchall()
+                connected = True
+            except OperationalError:
+                if not retryCount:
+                    log.warning("[System] Background worker lost DB connection. Sleeping...")
+                retryCount += 1
+                db.session.remove()
+                time.sleep(0.1)
+        if retryCount:
+            log.warning("[System] Background worker reconnected to DB after %s tries" % (retryCount))
+
         log.setLevel(logging.INFO)
         loopCount += 1
         for net in MMONetworks.keys():
