@@ -296,7 +296,7 @@ celery = make_celery(app)
 @celery.task()
 def background_worker():
     log.setLevel(logging.INFO)
-    log.warning("[System] Background worker is is checking DB connection")
+    log.warning("[System] Background worker is checking DB connection")
     connected = False
     retryCount = 0
     while not connected:
