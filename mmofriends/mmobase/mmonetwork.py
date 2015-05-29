@@ -15,6 +15,7 @@ import signal
 
 from flask import current_app
 from flask.ext.babel import Babel, gettext
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 from mmoutils import *
 from mmouser import *
 from mmofriends import db
