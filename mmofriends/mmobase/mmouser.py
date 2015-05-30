@@ -127,7 +127,10 @@ class MMOUser(db.Model):
         pass
 
     def getDisplayName(self):
-        return self.nick + " (" + self.name + ")"
+        if self.name:
+            return self.nick + " (" + self.name + ")"
+        else:
+            return self.nick
 
     def setPassword(self, password):
         self.log.info("[User] Setting new Password for MMOUser %s" % (self.getDisplayName()))
