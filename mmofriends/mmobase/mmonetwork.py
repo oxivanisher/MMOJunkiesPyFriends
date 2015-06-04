@@ -496,9 +496,10 @@ class MMONetwork(object):
                 self.setCache('backgroundTasks')
 
                 ret = None
-                logger.info("[%s] %s (%s)" % (self.handle, method.func_name, timeout))
+                logger.info("[%s] %s (all %s seconds)" % (self.handle, method.func_name, timeout))
                 try:
                     with Timeout(300):
+                        startTime = time.time()
                         ret = method(logger)
                 except Timeout.Timeout:
                     self.getCache('backgroundTasks')
@@ -512,7 +513,7 @@ class MMONetwork(object):
                     logger.error("[%s] Exception catched in '%s':\n%s" % (self.handle, method.func_name, traceback.format_exc()))
                     ret = False
                 if ret:
-                    logger.info("[%s] -> %s" % (self.handle, ret))
+                    logger.info("[%s] -> %s (took %s seconds)" % (self.handle, ret, int(time.time() - startTime)))
 
                 self.getCache('backgroundTasks')
                 self.cache['backgroundTasks'][method.func_name]['end'] = time.time()
