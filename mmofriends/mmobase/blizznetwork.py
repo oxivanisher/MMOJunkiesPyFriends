@@ -373,22 +373,23 @@ class BlizzNetwork(MMONetwork):
 
                 (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', link['network_data'])
                 if retValue != False:
-                    for char in retMessage['characters']:
-                        charIndex = retMessage['characters'].index(char)
+                    if 'characters' in retMessage.keys():
+                        for char in retMessage['characters']:
+                            charIndex = retMessage['characters'].index(char)
 
-                        if char['level'] < 10:
-                            lowieCount += 1
-                            logger.debug("[%s] Not updating feed for %s@%s, level too low." % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                        else:
-                            logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                            (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), link['network_data'])
-                            if detailRetValue != False:
-                                try:
-                                    self.cache['wowFeeds'][unicode(link['user_id'])]
-                                except KeyError:
-                                    self.cache['wowFeeds'][unicode(link['user_id'])] = {}
-                                self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
-                                feedCount += 1
+                            if char['level'] < 10:
+                                lowieCount += 1
+                                logger.debug("[%s] Not updating feed for %s@%s, level too low." % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                            else:
+                                logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                                (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), link['network_data'])
+                                if detailRetValue != False:
+                                    try:
+                                        self.cache['wowFeeds'][unicode(link['user_id'])]
+                                    except KeyError:
+                                        self.cache['wowFeeds'][unicode(link['user_id'])] = {}
+                                    self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                                    feedCount += 1
 
                     logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
 
@@ -397,6 +398,24 @@ class BlizzNetwork(MMONetwork):
                 nokCount += 1
 
         self.setCache('wowFeeds')
+
+        self.getCache('lastly')
+        for userid in self.cache['wowFeeds'].keys():
+            for char in self.cache['wowFeeds'][userid].keys():
+                if 'feed' in self.cache['wowFeeds'][userid][char].keys():
+                    charName = self.cache['wowFeeds'][userid][char]['name']
+                    charRealm = self.cache['wowFeeds'][userid][char]['realm']
+                    for entry in self.cache['wowFeeds'][userid][char]['feed']:
+                        if entry['type'] == 'ACHIEVEMENT':
+                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW achievment of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                        elif entry['type'] == 'CRITERIA':
+                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW achievment criteria of %s@%s: %s for %s" % (charName, charRealm, entry['criteria']['description'], entry['achievement']['title'])
+                        elif entry['type'] == 'BOSSKILL':
+                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW boss kill of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                        # elif entry['type'] == 'LOOT':
+                        #     self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW item loot of %s@%s: %s" % (charName, charRealm, entry['itemId'])
+
+        self.setCache('lastly')
 
         return "%s feeds from %s users updated. Ignored because unlinked: %s, lowie: %s." % (feedCount, okCount, nokCount, lowieCount)
 
