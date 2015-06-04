@@ -69,6 +69,7 @@ class BlizzNetwork(MMONetwork):
         # background updater methods
         self.registerWorker(self.updateBaseResources, 39600)
         self.registerWorker(self.updateAllUserResources, 3500)
+        self.registerWorker(self.updateUserFeeds, 120)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_wowChars, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_jQCloud.html'})
@@ -345,13 +346,52 @@ class BlizzNetwork(MMONetwork):
         okCount = 0
         nokCount = 0
         for link in self.getNetworkLinks():
-            logger.debug("[%s] Updating user resources for userid %s" % (self.handle, link['user_id']))
+            logger.debug("[%s] Updating user resources for %s" % (self.handle, self.getUserById(link['user_id']).nick))
             if link['network_data']:
                 self.updateUserResources(link['user_id'], link['network_data'])
                 okCount += 1
             else:
                 nokCount += 1
         return "%s user resources updated, %s ignored" % (okCount, nokCount)
+
+    def updateUserFeeds(self, logger = None):
+        if not logger:
+            logger = self.log
+
+        self.getCache('wowFeeds')
+
+        okCount = 0
+        nokCount = 0
+        for link in self.getNetworkLinks():
+            logger.debug("[%s] Updating user feed for %s" % (self.handle, self.getUserById(link['user_id']).nick))
+            if link['network_data']:
+
+                self.setBackgroundWorkerResult("[%s] Background updating the feeds for %s" % (self.handle, self.getUserById(link['user_id']).nick))
+
+                (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', link['network_data'])
+                if retValue != False:
+                    for char in retMessage['characters']:
+                        charIndex = retMessage['characters'].index(char)
+
+                        logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                        (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
+                        if detailRetValue != False:
+                            try:
+                                self.cache['wowFeeds'][unicode(link['user_id'])]
+                            except KeyError:
+                                self.cache['wowFeeds'][unicode(link['user_id'])] = {}
+                            self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
+
+                    logger.info("[%s] Updated %s feeds for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
+
+                okCount += 1
+            else:
+                nokCount += 1
+
+            self.setCache('wowFeeds')
+
+        return "%s user resources updated, %s ignored" % (okCount, nokCount)
+
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
@@ -362,9 +402,9 @@ class BlizzNetwork(MMONetwork):
             userid = self.session['userid']
             userNick = userid
             background = False
-            logger.info("[%s] Foreground updating the resources for userid %s" % (self.handle, userid))
+            logger.info("[%s] Foreground updating the resources for %s" % (self.handle, self.getUserById(userid).nick))
         else:
-            message = "[%s] Background updating the resources for userid %s" % (self.handle, userid)
+            message = "[%s] Background updating the resources for %s" % (self.handle, self.getUserById(userid).nick)
             self.setBackgroundWorkerResult(message)
             logger.info(message)
 
@@ -385,12 +425,12 @@ class BlizzNetwork(MMONetwork):
                 userNick = retMessage['battletag']
                 logger.info("[%s] Updated battletag %s" % (self.handle, retMessage['battletag']))
             else:
-                message = "Unable to update Battletag for user %s (%s)" % (userid, retMessage)
+                message = "Unable to update Battletag for %s (%s)" % (self.getUserById(userid).nick, retMessage)
                 logger.debug(message)
                 try:
                     if retMessage['code'] == 403:
                         self.updateLink(userid, None)
-                        logger.warning("[%s] Removed access token for %s because %s" % (self.handle, self.getUserById(userid), retMessage['detail']))
+                        logger.warning("[%s] Removed access token for %s because %s" % (self.handle, self.getUserById(userid).nick, retMessage['detail']))
                 except KeyError:
                     pass
                 
@@ -418,20 +458,19 @@ class BlizzNetwork(MMONetwork):
                         self.cache['wowAchievments'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
                 self.setCache('wowAchievments')
 
-                self.getCache('wowFeeds')
-                for char in retMessage['characters']:
-                    charIndex = retMessage['characters'].index(char)
+                # self.getCache('wowFeeds')
+                # for char in retMessage['characters']:
+                #     charIndex = retMessage['characters'].index(char)
 
-                    logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
-                    if detailRetValue != False:
-                        try:
-                            self.cache['wowFeeds'][unicode(userid)]
-                        except KeyError:
-                            self.cache['wowFeeds'][unicode(userid)] = {}
-                        self.cache['wowFeeds'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
-                self.setCache('wowFeeds')
-
+                #     logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                #     (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
+                #     if detailRetValue != False:
+                #         try:
+                #             self.cache['wowFeeds'][unicode(userid)]
+                #         except KeyError:
+                #             self.cache['wowFeeds'][unicode(userid)] = {}
+                #         self.cache['wowFeeds'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                # self.setCache('wowFeeds')
 
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
 
