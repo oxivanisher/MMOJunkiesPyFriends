@@ -69,7 +69,7 @@ class BlizzNetwork(MMONetwork):
         # background updater methods
         self.registerWorker(self.updateBaseResources, 39600)
         self.registerWorker(self.updateAllUserResources, 3500)
-        self.registerWorker(self.updateUserFeeds, 120)
+        self.registerWorker(self.updateUserFeeds, 909)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_wowChars, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_jQCloud.html'})
