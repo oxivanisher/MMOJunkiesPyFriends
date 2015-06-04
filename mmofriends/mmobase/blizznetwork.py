@@ -418,6 +418,21 @@ class BlizzNetwork(MMONetwork):
                         self.cache['wowAchievments'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
                 self.setCache('wowAchievments')
 
+                self.getCache('wowFeeds')
+                for char in retMessage['characters']:
+                    charIndex = retMessage['characters'].index(char)
+
+                    logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
+                    if detailRetValue != False:
+                        try:
+                            self.cache['wowFeeds'][unicode(userid)]
+                        except KeyError:
+                            self.cache['wowFeeds'][unicode(userid)] = {}
+                        self.cache['wowFeeds'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                self.setCache('wowFeeds')
+
+
                 logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
 
         # fetching d3 profile
