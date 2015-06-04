@@ -362,6 +362,7 @@ class BlizzNetwork(MMONetwork):
 
         okCount = 0
         nokCount = 0
+        feedCount = 0
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user feed for %s" % (self.handle, self.getUserById(link['user_id']).nick))
             if link['network_data']:
@@ -381,17 +382,17 @@ class BlizzNetwork(MMONetwork):
                             except KeyError:
                                 self.cache['wowFeeds'][unicode(link['user_id'])] = {}
                             self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                            feedCount += 1
 
-                    logger.info("[%s] Updated %s feeds for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
+                    logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
 
                 okCount += 1
             else:
                 nokCount += 1
 
-            self.setCache('wowFeeds')
+        self.setCache('wowFeeds')
 
-        return "%s user resources updated, %s ignored" % (okCount, nokCount)
-
+        return "%s feeds from %s users updated, %s ignored" % (feedCount, okCount, nokCount)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
