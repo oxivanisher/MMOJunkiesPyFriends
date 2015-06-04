@@ -359,10 +359,12 @@ class BlizzNetwork(MMONetwork):
             logger = self.log
 
         self.getCache('wowFeeds')
+        self.getCache('wowAchievments')
 
         okCount = 0
         nokCount = 0
         feedCount = 0
+        lowieCount = 0
         for link in self.getNetworkLinks():
             logger.debug("[%s] Updating user feed for %s" % (self.handle, self.getUserById(link['user_id']).nick))
             if link['network_data']:
@@ -374,15 +376,19 @@ class BlizzNetwork(MMONetwork):
                     for char in retMessage['characters']:
                         charIndex = retMessage['characters'].index(char)
 
-                        logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                        (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), link['network_data'])
-                        if detailRetValue != False:
-                            try:
-                                self.cache['wowFeeds'][unicode(link['user_id'])]
-                            except KeyError:
-                                self.cache['wowFeeds'][unicode(link['user_id'])] = {}
-                            self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
-                            feedCount += 1
+                        if char['level'] < 10:
+                            lowieCount += 1
+                            logger.debug("[%s] Not updating feed for %s@%s, level too low." % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                        else:
+                            logger.debug("[%s] Updating feed for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                            (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), link['network_data'])
+                            if detailRetValue != False:
+                                try:
+                                    self.cache['wowFeeds'][unicode(link['user_id'])]
+                                except KeyError:
+                                    self.cache['wowFeeds'][unicode(link['user_id'])] = {}
+                                self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                                feedCount += 1
 
                     logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
 
@@ -392,7 +398,7 @@ class BlizzNetwork(MMONetwork):
 
         self.setCache('wowFeeds')
 
-        return "%s feeds from %s users updated, %s ignored" % (feedCount, okCount, nokCount)
+        return "%s feeds from %s users updated. Ignored because unlinked: %s, lowie: %s." % (feedCount, okCount, nokCount, lowieCount)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
@@ -440,6 +446,7 @@ class BlizzNetwork(MMONetwork):
         # fetching wow chars
         (retValue, retMessage) = self.queryBlizzardApi('/wow/user/characters', accessToken)
         if retValue != False:
+            lowieCount = 0
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][unicode(userid)] = retMessage
             self.setCache('wowProfiles')
@@ -449,17 +456,21 @@ class BlizzNetwork(MMONetwork):
                     charIndex = retMessage['characters'].index(char)
                     self.cacheWowAvatarFile(char['thumbnail'], char['race'], char['gender'])
 
-                    logger.debug("[%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
-                    (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
-                    if detailRetValue != False:
-                        try:
-                            self.cache['wowAchievments'][unicode(userid)]
-                        except KeyError:
-                            self.cache['wowAchievments'][unicode(userid)] = {}
-                        self.cache['wowAchievments'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
-                self.setCache('wowAchievments')
+                    if char['level'] < 10:
+                        lowieCount += 1
+                        logger.debug("[%s] Not updating feed for %s@%s, level too low." % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                    else:
+                        logger.debug("[%s] Updating achievments for %s@%s" % (self.handle, retMessage['characters'][charIndex]['name'], retMessage['characters'][charIndex]['realm']))
+                        (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
+                        if detailRetValue != False:
+                            try:
+                                self.cache['wowAchievments'][unicode(userid)]
+                            except KeyError:
+                                self.cache['wowAchievments'][unicode(userid)] = {}
+                            self.cache['wowAchievments'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                    self.setCache('wowAchievments')
 
-                logger.info("[%s] Updated %s WoW characters" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters'])))
+                logger.info("[%s] Updated %s WoW characters (ignored %s lowies)" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters']), lowieCount))
 
         # fetching d3 profile
         if self.cache['battletags'][unicode(userid)]:
