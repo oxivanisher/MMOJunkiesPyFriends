@@ -316,7 +316,8 @@ class ValveNetwork(MMONetwork):
                                 if friend['personastate'] in self.lastlyDontShow:
                                     tempState = 1
                                 if self.cache['users'][friend['steamid']]['personastate'] != tempState:
-                                    self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[tempState])
+                                    # commented out because of too much spam :/
+                                    # self.cache["lastly"][time.time()] = "%s is now %s" % (friend['personaname'], self.onlineStates[tempState])
                                     self.cache['users'][friend['steamid']]['personastate'] = tempState
                             # self.cache['users'][friend['steamid']]['personastate'] = friend['personastate']
                             if 'gameextrainfo' in friend:
