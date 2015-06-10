@@ -60,7 +60,7 @@ $(function() {
 
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
-        // $(this).find( '.section' ).
+        $(this).parents('.col').find( 'section' ).toggleClass('content-normal content-big', 100);
         $(this).parents('.col').toggleClass('col-md-4 col-md-8', 100).promise().done(function(){
             var redrawFunction = window["redrawBox" + $(this).find( ".box" ).attr('id')];
             if (typeof redrawFunction == 'function') {
