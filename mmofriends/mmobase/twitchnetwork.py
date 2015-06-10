@@ -185,10 +185,14 @@ class TwitchNetwork(MMONetwork):
 
         headers = {'Accept': 'application/vnd.twitchtv.v2+json',
                    'Authorization': 'OAuth %s' % accessToken}
+
         try:
-            r = requests.get(self.baseUrl + what, headers=headers).json()
+            with Timeout(160):
+                r = requests.get(self.baseUrl + what, headers=headers).json()
         except (ValueError, requests.ConnectionError) as e:
             return (False, 'Unable to fetch data from Twitch: %s' % e)
+        except Timeout.Timeout:
+            return (False, 'Timeout of 160 seconds reached. Request cancelled.')
         return (True, r)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
