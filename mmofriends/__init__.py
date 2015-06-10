@@ -518,6 +518,9 @@ def get_image(imgType, imgId = None):
             if imgId == 'System':
                 fileName = 'logo_trans_dark.png'
                 filePath = os.path.join(app.config['scriptPath'], 'static')
+            elif imgId == 'OpenGraph':
+                fileName = 'logo_mmo_grau_qd.png'
+                filePath = os.path.join(app.config['scriptPath'], 'static')
             else:
                 fileName = MMONetworks[imgId].icon
         elif imgType == 'cache':
