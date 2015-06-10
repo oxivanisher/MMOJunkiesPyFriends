@@ -5,10 +5,14 @@
 		<title>{{ _('MMOJunkies Friends') }} {% block title %}{% endblock %}</title>
 		<meta property="og:title" content="{{ _('MMOJunkies Friends') }}" />
 		<meta property="og:site_name" content="{{ _('Dashboard') }}"/>
-		{# <meta property="og:url" content="{{ url_for('index') }}" /> #}
 		<meta name="description" content="{{ _('Online gaming is social. Our website is helping you to find and connect with other people playing the same games as you. Having fun is our mission!') }}">
 		<meta property="og:description" content="{{ _('Online gaming is social. Our website is helping you to find and connect with other people playing the same games as you. Having fun is our mission!') }}" />
-		<meta name="author" content="Marc Urben">
+
+		<meta name="author" content="MMOJunkies.net">
+		<meta property="article:author" content="https://www.facebook.com/MMOJunkies.net" />
+		<meta property="article:publisher" content="{{ config.WEBURL }}" />
+		<meta property="og:url" content="{{ config.WEBURL }}" />
+
 		<meta name="fragment" content="!">
 		<meta name="keywords" content="mmo, games, gaming, spielen, spiele, freunde, clan, gilde, stream, streaming, chat, ts3, teamspeak, mmojunkies, steam, battle.net, blizzard, world of warcraft, starcraft, heroes of the storm, diablo, league of legends" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
