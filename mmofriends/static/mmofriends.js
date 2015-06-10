@@ -69,7 +69,7 @@ $(function() {
         });
         $('html, body').animate({
             scrollTop: $(this).offset().top
-        }, 2000);
+        }, 200);
     });
 
     // close dashboard box
