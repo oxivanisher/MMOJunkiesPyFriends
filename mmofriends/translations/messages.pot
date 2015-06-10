@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-10 10:22+0200\n"
+"POT-Creation-Date: 2015-06-10 10:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -587,8 +587,13 @@ msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:5
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:6
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:7
 msgid "MMOJunkies Friends"
+msgstr ""
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:7
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dashboard.html:2
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/error.html:7
+msgid "Dashboard"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:9
@@ -730,11 +735,6 @@ msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_networkLink.html:4
 msgid "Loading..."
-msgstr ""
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dashboard.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/error.html:7
-msgid "Dashboard"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dev.html:2

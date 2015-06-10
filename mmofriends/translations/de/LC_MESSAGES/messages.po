@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-10 10:22+0200\n"
+"POT-Creation-Date: 2015-06-10 10:26+0200\n"
 "PO-Revision-Date: 2015-04-21 10:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -615,9 +615,14 @@ msgstr "Verifiziert"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:5
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:6
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:7
 msgid "MMOJunkies Friends"
 msgstr "MMOJunkies Freunde"
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:7
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dashboard.html:2
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/error.html:7
+msgid "Dashboard"
+msgstr "Dashboard"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:9
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:10
@@ -761,11 +766,6 @@ msgstr "Spenden mit PayPal"
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_networkLink.html:4
 msgid "Loading..."
 msgstr "Lade..."
-
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dashboard.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/error.html:7
-msgid "Dashboard"
-msgstr "Dashboard"
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/dev.html:2
 msgid "Development"
