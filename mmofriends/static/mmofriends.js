@@ -66,10 +66,10 @@ $(function() {
             if (typeof redrawFunction == 'function') {
                 redrawFunction( true );
             }
+            $('html, body').animate({
+                scrollTop: $(this).offset().top
+            }, 200);
         });
-        $('html, body').animate({
-            scrollTop: $(this).offset().top
-        }, 200);
     });
 
     // close dashboard box
