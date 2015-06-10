@@ -2,15 +2,24 @@
 <html>
 	<head>
 		{%- block head %}
-		<title>MMOJunkies {% block title %}{% endblock %}</title>
+		<title>{{ _('MMOJunkies Friends') }} {% block title %}{% endblock %}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="MMOJunkies, Connect gaming networks to play games with your friends">
+		<meta name="description" content="{{ _('') }}">
 		<meta name="author" content="Marc Urben">
 		<meta name="fragment" content="!">
 		<meta name="keywords" content="mmo, games, gaming, spielen, spiele, freunde, clan, gilde, stream, streaming, chat, ts3, teamspeak, mmojunkies, steam, battle.net, blizzard, world of warcraft, starcraft, heroes of the storm, diablo, league of legends" />
+		{# Open Graph Tags (for Facebook) -#}
+		<meta property="og:title" content="{{ _('MMOJunkies Friends') }}" />
+		<meta property="og:site_name" content="{{ _('MMOJunkies Friends') }}"/>
+		{# <meta property="og:url" content="{{ url_for('index') }}" /> #}
+		<meta property="og:description" content="{{ _('Online gaming is social. Our website is helping you to find and connect to other people playing the same games as you.') }}" />
+		{# Languages -#}
 		<link rel="alternate" hreflang="de" href="{{ config.WEBURL }}" />
 		<link rel="alternate" hreflang="de-ch" href="{{ config.WEBURL }}" />
 		<link rel="alternate" hreflang="en" href="{{ config.WEBURL }}" />
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:locale:alternate" content="de_CH" />
+		<meta property="og:locale:alternate" content="de_DE" />
 		{# Favicon -#}
 		<link rel="shortcut icon" href="{{ url_for('static', filename='logo_trans_light.png') }}">
 		{# jQuery and jQueryUI -#}
