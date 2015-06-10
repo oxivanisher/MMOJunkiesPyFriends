@@ -60,13 +60,16 @@ $(function() {
 
     // expand / compress dashboard box
     $('.fa-expand').click(function(){
-        $(this).parents('.col').find( 'section' ).toggleClass('content-normal content-big', 100);
-        $(this).parents('.col').toggleClass('col-md-4 col-md-8', 100).promise().done(function(){
+        $(this).parents('.col').find( 'section' ).toggleClass('content-normal content-big', 190);
+        $(this).parents('.col').toggleClass('col-md-4 col-md-12', 200).promise().done(function(){
             var redrawFunction = window["redrawBox" + $(this).find( ".box" ).attr('id')];
             if (typeof redrawFunction == 'function') {
                 redrawFunction( true );
             }
         });
+        $('html, body').animate({
+            scrollTop: $(this).offset().top
+        }, 2000);
     });
 
     // close dashboard box
