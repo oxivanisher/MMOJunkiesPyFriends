@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-10 10:05+0200\n"
+"POT-Creation-Date: 2015-06-10 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -519,7 +519,7 @@ msgid "Login to view"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/about.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:137
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:136
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:1
 msgid "About"
 msgstr ""
@@ -530,7 +530,7 @@ msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_bulk_email.html:2
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_bulk_email.html:4
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:174
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:173
 msgid "Bulk Email"
 msgstr ""
 
@@ -547,12 +547,12 @@ msgid "Background Worker Status"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_system_status.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:176
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:175
 msgid "System Status"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/admin_user_management.html:2
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:175
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:174
 msgid "User Management"
 msgstr ""
 
@@ -586,87 +586,88 @@ msgid "Verified"
 msgstr ""
 
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:5
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:12
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:13
-msgid "SITE_TITLE"
-msgstr "MMOJunkies Friends"
-
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:6
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:7
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:15
-msgid "SITE_DESCRIPTION"
+msgid "MMOJunkies Friends"
 msgstr ""
-"Online gaming is social. Our website is helping you to find and connect "
-"to other people playing the same games as you. Having fun is our mission!"
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:94
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:9
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:10
+msgid ""
+"Online gaming is social. Our website is helping you to find and connect "
+"with other people playing the same games as you. Having fun is our "
+"mission!"
+msgstr ""
+
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:93
 msgid "Toggle navigation"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:122
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:121
 msgid "Games and Gamers"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:125
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:124
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/game_links.html:2
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/game_links.html:5
 msgid "Game links"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:126
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:125
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/game_links_add.html:2
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/game_links_add.html:5
 msgid "Add game link"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:143
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:142
 msgid "Social"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:146
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:145
 msgid "Follow"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:163
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:162
 msgid "Hidden boxes"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:172
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:171
 msgid "Administration"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:177
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:176
 msgid "BG Jobs Status"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:178
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:177
 msgid "Celery Status"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:179
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:178
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/partner_find.html:7
 msgid "Networks"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:180
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:179
 msgid "Developer Tools"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:185
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:184
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:5
 msgid "Connect to TS3 Server"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:190
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:189
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:3
 msgid "Your profile settings"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:191
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:190
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_navigation.html:4
 msgid "Your gamer profile"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:199
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:198
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/game_links_add.html:24
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:20
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_show.html:17
@@ -675,31 +676,31 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:201
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:200
 msgid "Logout"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:205
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:204
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_register.html:5
 msgid "Registration"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:206
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:205
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:3
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/box_System_login.html:6
 #: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/profile_login.html:2
 msgid "Login"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:217
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:216
 msgid "Success message"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:226
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:225
 msgid "Error message"
 msgstr ""
 
-#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:235
+#: /Users/urbenm/dev/MMOJunkiesPyFriends/mmofriends/templates/base.html:234
 msgid "Info message"
 msgstr ""
 
