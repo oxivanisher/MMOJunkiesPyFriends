@@ -12,7 +12,7 @@ import json
 import requests
 import urllib
 
-from flask import current_app, url_for, request
+from flask import current_app, url_for, request, get_flashed_messages
 from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
@@ -130,6 +130,9 @@ class BlizzNetwork(MMONetwork):
                 if not link['network_data']:
                     return (False, "%s %s" % (gettext("Blizzard automatically removes permission to fetch your data after 30 days."),
                                               gettext("Please klick <a href='%(link)s' target='_blank'>this link</a> to reauthorize.", link=self.requestAuthorizationUrl())))
+        else:
+            for message in get_flashed_messages(category_filter=["error"]):
+                pass
         return super(BlizzNetwork, self).loadNetworkToSession()
 
     def getPartners(self, **kwargs):
