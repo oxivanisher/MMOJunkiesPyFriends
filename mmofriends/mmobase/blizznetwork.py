@@ -124,10 +124,11 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     def loadNetworkToSession(self):
-        for link in self.getNetworkLinks(self.session['userid']):
-            if not link['network_data']:
-                return (False, "%s %s" % (gettext("Blizzard automatically removes permission to fetch your data after 30 days."),
-                                          gettext("Please klick <a href='%(link)s' target='_blank'>this link</a> to reauthorize.", link=self.requestAuthorizationUrl())))
+        if request.path != url_for('oauth2_login'):
+            for link in self.getNetworkLinks(self.session['userid']):
+                if not link['network_data']:
+                    return (False, "%s %s" % (gettext("Blizzard automatically removes permission to fetch your data after 30 days."),
+                                              gettext("Please klick <a href='%(link)s' target='_blank'>this link</a> to reauthorize.", link=self.requestAuthorizationUrl())))
         return super(BlizzNetwork, self).loadNetworkToSession()
 
     def getPartners(self, **kwargs):
