@@ -556,7 +556,7 @@ def get_sitemap_xml():
 
     for method in methodsToList:
         ret.append('    <url>')
-        ret.append('      <loc>%s</loc>' % (url_for(method.__name__, _external=True))
+        ret.append('      <loc>%s</loc>' % (url_for(method.__name__, _external=True)))
         ret.append('    </url>')
 
 
