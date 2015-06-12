@@ -124,6 +124,7 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     def loadNetworkToSession(self):
+        self.log.warning("test: %s | %s" % (request.path, url_for('oauth2_login', netHandle=self.handle)))
         if request.path != url_for('oauth2_login', netHandle=self.handle):
             for link in self.getNetworkLinks(self.session['userid']):
                 if not link['network_data']:
