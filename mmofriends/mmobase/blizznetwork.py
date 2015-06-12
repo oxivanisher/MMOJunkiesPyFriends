@@ -12,7 +12,7 @@ import json
 import requests
 import urllib
 
-from flask import current_app, url_for
+from flask import current_app, url_for, request
 from flask.ext.babel import Babel, gettext
 from mmoutils import *
 from mmouser import *
@@ -124,7 +124,7 @@ class BlizzNetwork(MMONetwork):
         return htmlFields
 
     def loadNetworkToSession(self):
-        if flask.request.path != url_for('oauth2_login'):
+        if request.path != url_for('oauth2_login'):
             for link in self.getNetworkLinks(self.session['userid']):
                 if not link['network_data']:
                     return (False, "%s %s" % (gettext("Blizzard automatically removes permission to fetch your data after 30 days."),
