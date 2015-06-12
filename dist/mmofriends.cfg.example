@@ -3,7 +3,7 @@ DEBUG = True
 ROOTUSER = "admin"
 APPSECRET = 'some key'
 ADMINS = ['you@email.com']
-WEBURL = "https://localhost:5000"
+#WEBURL = "https://localhost:5000"
 
 # email
 EMAILSERVER = "127.0.0.1"
