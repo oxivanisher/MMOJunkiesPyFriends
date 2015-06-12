@@ -549,18 +549,27 @@ def get_robots_txt():
 
 @app.route('/sitemap.xml')
 def get_sitemap_xml():
+    methodsToList = [ index(), profile_register(), profile_login(), game_links_show(), about() ]
     ret = []
     ret.append('<?xml version="1.0" encoding="UTF-8"?>')
     ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
-    ret.append('    <url>')
-    ret.append('      <loc>%s/</loc>' % app.config['WEBURL'])
-    ret.append('    </url>')
-    ret.append('    <url>')
-    ret.append('      <loc>%s/About</loc>' % app.config['WEBURL'])
-    ret.append('    </url>')
-    ret.append('    <url>')
-    ret.append('      <loc>%s/Profile/Register</loc>' % app.config['WEBURL'])
-    ret.append('    </url>')
+
+    for method in methodsToList:
+        ret.append('    <url>')
+        ret.append('      <loc>%s</loc>' % (url_for(method.__name__, _external=True))
+        ret.append('    </url>')
+
+
+    # ret.append('    <url>')
+    # ret.append('      <loc>%s/</loc>' % app.config['WEBURL'])
+    # ret.append('    </url>')
+    # ret.append('    <url>')
+    # ret.append('      <loc>%s/About</loc>' % app.config['WEBURL'])
+    # ret.append('    </url>')
+    # ret.append('    <url>')
+    # ret.append('      <loc>%s/Profile/Register</loc>' % app.config['WEBURL'])
+    # ret.append('    </url>')
+
     ret.append('</urlset>')
     return '\n'.join(ret)
 
