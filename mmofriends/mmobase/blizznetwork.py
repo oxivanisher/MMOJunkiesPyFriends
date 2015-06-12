@@ -287,7 +287,7 @@ class BlizzNetwork(MMONetwork):
     # Oauth2 helper
     def requestAuthorizationUrl(self):
         self.log.debug("%s is requesting the Authorization URL (Step 1/3)" % self.session['nick'])
-        params = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
+        params = {'redirect_uri': url_for('oauth2_login', netHandle=self.handle, _external=True),
                   'scope': 'wow.profile sc2.profile',
                   'response_type': 'code'}
         self.log.debug("Generating Authorization Url")
@@ -298,7 +298,7 @@ class BlizzNetwork(MMONetwork):
         #     self.requestAuthorizationUrl()
         self.log.debug("%s is requesting a Access Token (Step 2/3)" % self.session['nick'])
 
-        data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
+        data = {'redirect_uri': url_for('oauth2_login', netHandle=self.handle, _external=True),
                 'scope': 'wow.profile sc2.profile',
                 'grant_type': 'authorization_code',
                 'code': code}

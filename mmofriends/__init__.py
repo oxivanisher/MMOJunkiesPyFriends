@@ -544,31 +544,20 @@ def get_robots_txt():
     ret = []
     ret.append('User-agent: *')
     ret.append('Allow: /')
-    ret.append('Sitemap: %s/sitemap.xml' % app.config['WEBURL'])
+    ret.append('Sitemap: %s' % (url_for('get_sitemap_xml', _external=True))
     return '\n'.join(ret)
 
 @app.route('/sitemap.xml')
 def get_sitemap_xml():
-    methodsToList = [ index(), profile_register(), profile_login(), game_links_show(), about() ]
+    methodsToList = [ 'index', 'profile_register', 'profile_login', 'game_links_show', 'about' ]
     ret = []
     ret.append('<?xml version="1.0" encoding="UTF-8"?>')
     ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
 
     for method in methodsToList:
         ret.append('    <url>')
-        ret.append('      <loc>%s</loc>' % (url_for(method.__name__, _external=True)))
+        ret.append('      <loc>%s</loc>' % (url_for(method, _external=True)))
         ret.append('    </url>')
-
-
-    # ret.append('    <url>')
-    # ret.append('      <loc>%s/</loc>' % app.config['WEBURL'])
-    # ret.append('    </url>')
-    # ret.append('    <url>')
-    # ret.append('      <loc>%s/About</loc>' % app.config['WEBURL'])
-    # ret.append('    </url>')
-    # ret.append('    <url>')
-    # ret.append('      <loc>%s/Profile/Register</loc>' % app.config['WEBURL'])
-    # ret.append('    </url>')
 
     ret.append('</urlset>')
     return '\n'.join(ret)
@@ -923,7 +912,7 @@ def profile_register():
             try:
                 db.session.flush()
                 db.session.commit()
-                actUrl = app.config['WEBURL'] + url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey)
+                actUrl = url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey, _external=True)
                 if send_email(app, newUser.email,
                               gettext("MMOJunkies Activation Email"),
                               "<h3>%s %s</h3>" % (gettext("Hello"), request.form['nick']) + gettext("We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.", url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
@@ -973,7 +962,7 @@ def profile_show(do = None):
 
     size = 80
     gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
-    gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
+    gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(size)})
 
     return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all(), userAvatar = gravatar_url)
 
@@ -1086,7 +1075,7 @@ def profile_password_reset_request():
         db.session.merge(myUser)
         db.session.flush()
         db.session.commit()
-        actUrl = app.config['WEBURL'] + url_for('profile_password_reset_verify', userId=myUser.id, verifyKey=myUser.verifyKey)
+        actUrl = url_for('profile_password_reset_verify', userId=myUser.id, verifyKey=myUser.verifyKey, _external=True)
         if send_email(app, myUser.email,
                       gettext("MMOJunkies Password Reset"),
                       gettext("<h3>Hello %(nick)s</h3>You can reset your password with <a href='%(url)s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b>", nick=myUser.nick, url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
@@ -1177,7 +1166,7 @@ def partner_show(partnerId, netHandle = None):
 
     size = 120
     gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
-    gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(size)})
+    gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(size)})
 
     return render_template('partner_show.html',
                             myUser = myUser,
@@ -1273,7 +1262,7 @@ def getSystemUsers(request):
                     userNicks.append(nick.nick)
 
                 gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(user.email.lower()).hexdigest() + "?"
-                gravatar_url += urllib.urlencode({'d':app.config['WEBURL'] + url_for('static', filename='logo.png'), 's':str(16)})
+                gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(16)})
 
                 usersReturn[user.id] = { 'nick': user.nick,
                                          'avatar': gravatar_url,

@@ -155,7 +155,7 @@ class TwitchNetwork(MMONetwork):
     # Oauth2 helper
     def requestAuthorizationUrl(self):
         self.log.debug("[%s] %s is requesting the Authorization URL (Step 1/3)" % (self.handle, self.session['nick']))
-        params = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
+        params = {'redirect_uri': url_for('oauth2_login', netHandle=self.handle, _external=True),
                   'scope': 'user_read channel_read',
                   'response_type': 'code'}
         self.log.debug("[%s] Generating Authorization Url" % (self.handle))
@@ -165,7 +165,7 @@ class TwitchNetwork(MMONetwork):
         self.log.debug("[%s] Recieved code: %s" % (self.handle, code))
         self.log.debug("[%s] %s is requesting a Access Token (Step 2/3)" % (self.handle, self.session['nick']))
 
-        data = {'redirect_uri': '%s/Network/Oauth2/Login/%s' % (self.app.config['WEBURL'], self.handle),
+        data = {'redirect_uri': url_for('oauth2_login', netHandle=self.handle, _external=True),
                 'grant_type': 'authorization_code',
                 'code': code}
 
