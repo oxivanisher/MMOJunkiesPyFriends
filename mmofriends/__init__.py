@@ -544,7 +544,7 @@ def get_robots_txt():
     ret = []
     ret.append('User-agent: *')
     ret.append('Allow: /')
-    ret.append('Sitemap: %s' % (url_for('get_sitemap_xml', _external=True))
+    ret.append('Sitemap: %s' % (url_for('get_sitemap_xml', _external=True)))
     return '\n'.join(ret)
 
 @app.route('/sitemap.xml')
