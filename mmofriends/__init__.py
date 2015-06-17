@@ -550,7 +550,7 @@ def get_robots_txt():
 
 @app.route('/sitemap.xml')
 def get_sitemap_xml():
-    methodsToList = [ 'index', 'about', 'profile_register', 'profile_login', 'game_links_show' ]
+    methodsToList = [ 'index', 'about', 'profile_register', 'profile_login' ]
     ret = []
     ret.append('<?xml version="1.0" encoding="UTF-8"?>')
     ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
@@ -1399,7 +1399,7 @@ SystemBoxes["login"] = createDashboardBox(tmpFunc, "System", "login", {'loggedin
 SystemBoxes["networkLink"] = createDashboardBox(getNetworksLinkData, "System", "networkLink", {'loggedin': True, 'title': 'Network Connections'})
 SystemBoxes["lastly"] = createDashboardBox(getLastly, "System", "lastly", {'title': 'Lastly on MMOJunkies'})
 SystemBoxes["stats"] = createDashboardBox(getSystemStats, "System", "stats", {'title': 'Statistics'})
-SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'loggedin': True, 'title': 'Game Links'})
+SystemBoxes["links"] = createDashboardBox(getGameLinks, "System", "links", {'title': 'Game Links'})
 
 # Dashboard routes
 @app.route('/')
