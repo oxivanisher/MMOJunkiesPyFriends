@@ -292,10 +292,10 @@ class TS3Network(MMONetwork):
                                 self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (int(group['sgid']), client))
                             if int(group['sgid']) == self.config['donerGroupId']:
                                 inDonerGroup = True
-                                if myUser.donated == float(0):
-                                    logger.warning("[%s] Removing from doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
-                                    self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
-                                    inDonerGroup = False
+                                # if myUser.donated == float(0):
+                                #     logger.warning("[%s] Removing from doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
+                                #     self.sendCommand('servergroupdelclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
+                                #     inDonerGroup = False
                         if myUser.donated > float(0) and not inDonerGroup:
                             logger.warning("[%s] Adding to doner group %s" % (self.handle, self.cache['clientDatabase'][client]['client_nickname']))
                             self.sendCommand('servergroupaddclient sgid=%s cldbid=%s' % (self.config['donerGroupId'], client))
