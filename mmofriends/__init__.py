@@ -267,10 +267,11 @@ def getGames():
         games[net] = MMONetworks[net].getGames()
     return games
 
-def getGamesOfUser(userId):
+def getGamesOfUser(userId = None):
     games = {}
-    for net in MMONetworks.keys():
-        games[net] = MMONetworks[net].getGamesOfUser(userId)
+    if userId:
+        for net in MMONetworks.keys():
+            games[net] = MMONetworks[net].getGamesOfUser(userId)
     return games
 
 def getUsersOfGame(gameName):
@@ -549,7 +550,7 @@ def get_robots_txt():
 
 @app.route('/sitemap.xml')
 def get_sitemap_xml():
-    methodsToList = [ 'index', 'profile_register', 'profile_login', 'game_links_show', 'about' ]
+    methodsToList = [ 'index', 'about', 'profile_register', 'profile_login', 'game_links_show' ]
     ret = []
     ret.append('<?xml version="1.0" encoding="UTF-8"?>')
     ret.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
@@ -1301,19 +1302,30 @@ def getLastly(request):
             for date in ret.keys():
                 lastlyReturn.append({'date': date, 'age': get_short_age(float(date)), 'text': ret[date], 'net': net})
 
-    return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
+    if session.get('crawlerRun'):
+        return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:200], 'net': nets }
+    else:
+        return { 'lastly': sorted(lastlyReturn, key=lambda k: k['date'], reverse=True)[:30], 'net': nets }
 
 def getGameLinks(request):
     # https://github.com/IMBApplications/rmk.gabi/blob/master/gabicustom.py 132
+    def addLink(link):
+        return {'net': link.network_handle,
+                'gameId': link.gameId,
+                'link': link.link,
+                'name': link.name,
+                'comment': link.comment}
+
     retLinks = []
-    myGames = getGamesOfUser(session['userid'])
-    for link in MMOGameLink.query.all():
-        if link.gameId in myGames[link.network_handle].keys():
-            retLinks.append({'net': link.network_handle,
-                             'gameId': link.gameId,
-                             'link': link.link,
-                             'name': link.name,
-                             'comment': link.comment})
+    if session.get('logged_in'):
+        myGames = getGamesOfUser(session['userid'])
+        for link in MMOGameLink.query.all():
+            if link.gameId in myGames[link.network_handle].keys():
+                retLinks.append(addLink(link))
+    else:
+        myGames = getGamesOfUser()
+        for link in MMOGameLink.query.all():
+            retLinks.append(addLink(link))
     return { 'games': getGames(), 'links': retLinks }
 
 # Game link methods
@@ -1323,7 +1335,7 @@ def game_links_show():
     links = []
     myGames = getGamesOfUser(session['userid'])
     for link in allLinks:
-        if link.gameId in myGames[link.network_handle].keys():
+        if link.gameId in myGames[link.network_handle].keys() or session.get('crawlerRun'):
             links.append(link)
     return render_template('game_links.html', links = links, games = myGames, networks = getNetworks())
 
