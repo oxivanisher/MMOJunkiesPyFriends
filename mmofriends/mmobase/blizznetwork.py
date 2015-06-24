@@ -424,7 +424,7 @@ class BlizzNetwork(MMONetwork):
                         showMe = False
 
                         foundCount = 0
-                        for (checkType, checkTimestamp,) in checkFeed:
+                        for (checkType, checkTimestamp) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
                                 foundCount += 1
                         if foundCount < 2:
