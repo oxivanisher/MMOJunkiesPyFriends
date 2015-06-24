@@ -417,20 +417,21 @@ class BlizzNetwork(MMONetwork):
                         checkFeed.append((entry['type'], entry['timestamp']))
 
             for char in self.cache['wowFeeds'][userid].keys():
-
-                # find duplicated entries / first best char
-                # if bestChar['name'] != charName:
-                #     if entry
-
                 if 'feed' in self.cache['wowFeeds'][userid][char].keys():
                     charName = self.cache['wowFeeds'][userid][char]['name']
                     charRealm = self.cache['wowFeeds'][userid][char]['realm']
                     for entry in self.cache['wowFeeds'][userid][char]['feed']:
-                        showMe = True
-                        for (checkType, checkTimestamp) in checkFeed:
+                        showMe = False
+
+                        foundCount = 0
+                        for (checkType, checkTimestamp,) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
-                                if bestChar['name'] != charName:
-                                    showMe = False
+                                foundCount += 1
+                        if foundCount < 2:
+                            showMe = True
+                        else:
+                            if bestChar['name'] == charName:
+                                showMe = True
 
                         if showMe:
                             myTimestamp = float(entry['timestamp']/1000.0)
