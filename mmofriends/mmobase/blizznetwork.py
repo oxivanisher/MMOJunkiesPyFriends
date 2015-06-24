@@ -11,6 +11,7 @@ import random
 import json
 import requests
 import urllib
+import numpy
 
 from flask import current_app, url_for, request, get_flashed_messages
 from flask.ext.babel import Babel, gettext
@@ -422,7 +423,7 @@ class BlizzNetwork(MMONetwork):
                         tsOk = False
                         while not tsOk:
                             if myTimestamp in self.cache['lastly'].keys():
-                                myTimestamp += 0.0000001
+                                myTimestamp = numpy.nextafter(myTimestamp, myTimestamp + 1)
                             else:
                                 tsOk = True
                         if entry['type'] == 'ACHIEVEMENT':
