@@ -408,6 +408,14 @@ class BlizzNetwork(MMONetwork):
         self.getCache('lastly')
         for userid in self.cache['wowFeeds'].keys():
             bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
+
+            # create list of type and achievments to remove doubles
+            checkFeed = []
+            for char in self.cache['wowFeeds'][userid].keys():
+                if 'feed' in self.cache['wowFeeds'][userid][char].keys():
+                    for entry in self.cache['wowFeeds'][userid][char]['feed']:
+                        checkFeed.append(('type': entry['type'], 'timestamp': entry['timestamp']))
+
             for char in self.cache['wowFeeds'][userid].keys():
 
                 # find duplicated entries / first best char
@@ -418,20 +426,26 @@ class BlizzNetwork(MMONetwork):
                     charName = self.cache['wowFeeds'][userid][char]['name']
                     charRealm = self.cache['wowFeeds'][userid][char]['realm']
                     for entry in self.cache['wowFeeds'][userid][char]['feed']:
+                        showMe = True
+                        for (checkType, checkTimestamp) in checkFeed:
+                            if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
+                                if bestChar['name'] != charName:
+                                    showMe = False
 
-                        myTimestamp = float(entry['timestamp']/1000.0)
-                        tsOk = False
-                        while not tsOk:
-                            if myTimestamp in self.cache['lastly'].keys():
-                                myTimestamp = numpy.nextafter(myTimestamp, myTimestamp + 1)
-                            else:
-                                tsOk = True
-                        if entry['type'] == 'ACHIEVEMENT':
-                            self.cache['lastly'][myTimestamp] = "WOW achievment of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
-                        elif entry['type'] == 'CRITERIA':
-                            self.cache['lastly'][myTimestamp] = "WOW achievment criteria of %s@%s: %s for %s" % (charName, charRealm, entry['criteria']['description'], entry['achievement']['title'])
-                        elif entry['type'] == 'BOSSKILL':
-                            self.cache['lastly'][myTimestamp] = "WOW boss kill of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                        if showMe:
+                            myTimestamp = float(entry['timestamp']/1000.0)
+                            tsOk = False
+                            while not tsOk:
+                                if myTimestamp in self.cache['lastly'].keys():
+                                    myTimestamp = numpy.nextafter(myTimestamp, myTimestamp + 1)
+                                else:
+                                    tsOk = True
+                            if entry['type'] == 'ACHIEVEMENT':
+                                self.cache['lastly'][myTimestamp] = "WOW achievment of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                            elif entry['type'] == 'CRITERIA':
+                                self.cache['lastly'][myTimestamp] = "WOW achievment criteria of %s@%s: %s for %s" % (charName, charRealm, entry['criteria']['description'], entry['achievement']['title'])
+                            elif entry['type'] == 'BOSSKILL':
+                                self.cache['lastly'][myTimestamp] = "WOW boss kill of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
                         # elif entry['type'] == 'LOOT':
                         #     self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW item loot of %s@%s: %s" % (charName, charRealm, entry['itemId'])
 
