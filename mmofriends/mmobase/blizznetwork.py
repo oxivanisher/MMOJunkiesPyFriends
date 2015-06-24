@@ -364,6 +364,7 @@ class BlizzNetwork(MMONetwork):
 
         self.getCache('wowFeeds')
         self.getCache('wowAchievments')
+        self.getCache('wowProfiles')
 
         okCount = 0
         nokCount = 0
@@ -405,17 +406,31 @@ class BlizzNetwork(MMONetwork):
 
         self.getCache('lastly')
         for userid in self.cache['wowFeeds'].keys():
+            bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
             for char in self.cache['wowFeeds'][userid].keys():
+
+                # find duplicated entries / first best char
+                # if bestChar['name'] != charName:
+                #     if entry
+
                 if 'feed' in self.cache['wowFeeds'][userid][char].keys():
                     charName = self.cache['wowFeeds'][userid][char]['name']
                     charRealm = self.cache['wowFeeds'][userid][char]['realm']
                     for entry in self.cache['wowFeeds'][userid][char]['feed']:
+
+                        myTimestamp = float(entry['timestamp']/1000.0)
+                        tsOk = False
+                        while not tsOk:
+                            if myTimestamp in self.cache['lastly']:
+                                myTimestamp += 0.0000001
+                            else:
+                                tsOk = True
                         if entry['type'] == 'ACHIEVEMENT':
-                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW achievment of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                            self.cache['lastly'][myTimestamp] = "WOW achievment of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
                         elif entry['type'] == 'CRITERIA':
-                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW achievment criteria of %s@%s: %s for %s" % (charName, charRealm, entry['criteria']['description'], entry['achievement']['title'])
+                            self.cache['lastly'][myTimestamp] = "WOW achievment criteria of %s@%s: %s for %s" % (charName, charRealm, entry['criteria']['description'], entry['achievement']['title'])
                         elif entry['type'] == 'BOSSKILL':
-                            self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW boss kill of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
+                            self.cache['lastly'][myTimestamp] = "WOW boss kill of %s@%s: %s" % (charName, charRealm, entry['achievement']['title'])
                         # elif entry['type'] == 'LOOT':
                         #     self.cache['lastly'][int(entry['timestamp']/1000)] = "WOW item loot of %s@%s: %s" % (charName, charRealm, entry['itemId'])
 
