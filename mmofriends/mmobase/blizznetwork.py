@@ -427,8 +427,10 @@ class BlizzNetwork(MMONetwork):
                         for (checkType, checkTimestamp) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
                                 foundCount += 1
-                        if foundCount < 2:
+                        if foundCount == 2:
                             showMe = True
+                        elif foundCount == 0:
+                            logger.warning("Something is strange here... please investigate!")
                         else:
                             if bestChar['name'] == charName:
                                 showMe = True
@@ -437,7 +439,7 @@ class BlizzNetwork(MMONetwork):
                             myTimestamp = float(entry['timestamp']/1000.0)
                             tsOk = False
                             while not tsOk:
-                                if myTimestamp in self.cache['lastly'].keys():
+                                if str(myTimestamp) in self.cache['lastly'].keys():
                                     myTimestamp = numpy.nextafter(myTimestamp, myTimestamp + 1)
                                 else:
                                     tsOk = True
