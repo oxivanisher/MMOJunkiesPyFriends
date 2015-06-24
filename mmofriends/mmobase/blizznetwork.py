@@ -421,7 +421,7 @@ class BlizzNetwork(MMONetwork):
                         myTimestamp = float(entry['timestamp']/1000.0)
                         tsOk = False
                         while not tsOk:
-                            if myTimestamp in self.cache['lastly']:
+                            if myTimestamp in self.cache['lastly'].keys():
                                 myTimestamp += 0.0000001
                             else:
                                 tsOk = True
