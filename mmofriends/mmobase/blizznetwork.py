@@ -414,7 +414,7 @@ class BlizzNetwork(MMONetwork):
             for char in self.cache['wowFeeds'][userid].keys():
                 if 'feed' in self.cache['wowFeeds'][userid][char].keys():
                     for entry in self.cache['wowFeeds'][userid][char]['feed']:
-                        checkFeed.append(('type': entry['type'], 'timestamp': entry['timestamp']))
+                        checkFeed.append((entry['type'], entry['timestamp']))
 
             for char in self.cache['wowFeeds'][userid].keys():
 
