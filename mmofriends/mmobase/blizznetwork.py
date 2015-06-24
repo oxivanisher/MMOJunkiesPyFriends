@@ -439,7 +439,7 @@ class BlizzNetwork(MMONetwork):
                             myTimestamp = float(entry['timestamp']/1000.0)
                             tsOk = False
                             while not tsOk:
-                                if str(myTimestamp) in self.cache['lastly'].keys():
+                                if myTimestamp in self.cache['lastly'].keys():
                                     myTimestamp = numpy.nextafter(myTimestamp, myTimestamp + 1)
                                 else:
                                     tsOk = True
