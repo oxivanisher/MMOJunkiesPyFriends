@@ -584,6 +584,16 @@ def admin_system_status():
                             'description': network.description })
     infos = {}
     infos['loadedNets'] = loadedNets
+    infos['tablesizes'] = [] # name, size
+    infos['cachesizes'] = [] # handle, name, size
+
+    result = db.engine.execute("""SELECT table_name AS "Tables", 
+                                  round(((data_length + index_length) / 1024 / 1024), 2) "Size in MB" 
+                                  FROM information_schema.TABLES 
+                                  WHERE table_schema = "%(dbname)s"
+                                  ORDER BY (data_length + index_length) DESC;""" % {'dbname': 'mmofriends'})
+    infos['tablesizes'].append({ 'name': result, 'size': 'aa'})
+
     return render_template('admin_system_status.html', infos = infos)
 
 @app.route('/Administration/User_Management')
