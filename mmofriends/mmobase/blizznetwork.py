@@ -42,7 +42,7 @@ class BlizzNetwork(MMONetwork):
                           'hots': 'Heroes of the Storm' }
 
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
@@ -68,8 +68,8 @@ class BlizzNetwork(MMONetwork):
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
         # background updater methods
-        # self.registerWorker(self.updateBaseResources, 39600)
-        # self.registerWorker(self.updateAllUserResources, 3500)
+        self.registerWorker(self.updateBaseResources, 39600)
+        self.registerWorker(self.updateAllUserResources, 3500)
         self.registerWorker(self.updateUserFeeds, 909)
 
         # dashboard boxes
