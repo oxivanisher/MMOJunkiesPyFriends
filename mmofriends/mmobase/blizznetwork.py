@@ -68,8 +68,8 @@ class BlizzNetwork(MMONetwork):
         self.adminMethods.append((self.updateUserResources, 'Recache (your) user resources'))
 
         # background updater methods
-        self.registerWorker(self.updateBaseResources, 39600)
-        self.registerWorker(self.updateAllUserResources, 3500)
+        # self.registerWorker(self.updateBaseResources, 39600)
+        # self.registerWorker(self.updateAllUserResources, 3500)
         self.registerWorker(self.updateUserFeeds, 909)
 
         # dashboard boxes
@@ -427,12 +427,15 @@ class BlizzNetwork(MMONetwork):
                         for (checkType, checkTimestamp) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
                                 foundCount += 1
-                        if foundCount == 2:
+                                logger.info("found %s %s" % (checkType, checkTimestamp))
+                        if foundCount == 1:
                             showMe = True
                         elif foundCount == 0:
                             logger.warning("Something is strange here... please investigate!")
                         else:
+                            logger.info("found multiple occurences of %s %s" % (checkType, checkTimestamp))
                             if bestChar['name'] == charName:
+                                logger.info("found best char for %s %s" % ((checkType, checkTimestamp)))
                                 showMe = True
 
                         if showMe:
