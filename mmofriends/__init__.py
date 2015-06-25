@@ -588,11 +588,12 @@ def admin_system_status():
     infos['cachesizes'] = [] # handle, name, size
 
     result = db.engine.execute("""SELECT table_name AS "name", 
-                                  round(((data_length + index_length) / 1024 / 1024), 2) "size" 
+                                  round(data_length + index_length) "size" 
                                   FROM information_schema.TABLES 
                                   WHERE table_schema = "%(dbname)s"
                                   ORDER BY (data_length + index_length) DESC;""" % {'dbname': 'mmofriends'})
-    infos['tablesizes'].append(result)
+    for row in result:
+        infos['tablesizes'].append({ 'name': row['name'], 'size': bytes2human(row['size'])})
 
     return render_template('admin_system_status.html', infos = infos)
 
