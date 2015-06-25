@@ -597,7 +597,7 @@ def admin_system_status():
     infos['cachesizes'] = [] # handle, name, size
     result = db.engine.execute("""SELECT handle, name,
                                   CHAR_LENGTH(cache_data) AS 'size'
-                                  FROM %(cachename);""" % {'cachename': 'mmonetcache'})
+                                  FROM %(cachename)s;""" % {'cachename': 'mmonetcache'})
     for row in result:
         infos['cachesizes'].append({ 'handle': row['handle'], 'name': row['name'], 'size': bytes2human(row['size'])})
 
