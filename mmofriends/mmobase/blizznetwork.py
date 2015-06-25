@@ -427,15 +427,15 @@ class BlizzNetwork(MMONetwork):
                         for (checkType, checkTimestamp) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
                                 foundCount += 1
-                                logger.info("found %s %s" % (checkType, checkTimestamp))
+                        logger.info("Found count for %s %s is %s (%s)" % (entry['type'], entry['timestamp'], foundCount, charName))
                         if foundCount == 1:
                             showMe = True
                         elif foundCount == 0:
                             logger.warning("Something is strange here... please investigate!")
                         else:
-                            logger.info("found multiple occurences of %s %s" % (checkType, checkTimestamp))
+                            logger.info("found multiple occurences of %s %s" % (entry['type'], entry['timestamp']))
                             if bestChar['name'] == charName:
-                                logger.info("found best char for %s %s" % ((checkType, checkTimestamp)))
+                                logger.info("found best char for %s %s" % ((entry['type'], entry['timestamp'])))
                                 showMe = True
 
                         if showMe:
