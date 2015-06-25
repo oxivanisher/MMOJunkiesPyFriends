@@ -584,9 +584,8 @@ def admin_system_status():
                             'description': network.description })
     infos = {}
     infos['loadedNets'] = loadedNets
-    infos['tablesizes'] = [] # name, size
-    infos['cachesizes'] = [] # handle, name, size
 
+    infos['tablesizes'] = [] # name, size
     result = db.engine.execute("""SELECT table_name AS "name", 
                                   round(data_length + index_length) "size" 
                                   FROM information_schema.TABLES 
@@ -594,6 +593,13 @@ def admin_system_status():
                                   ORDER BY (data_length + index_length) DESC;""" % {'dbname': 'mmofriends'})
     for row in result:
         infos['tablesizes'].append({ 'name': row['name'], 'size': bytes2human(row['size'])})
+
+    infos['cachesizes'] = [] # handle, name, size
+    result = db.engine.execute("""SELECT handle, name,
+                                  CHAR_LENGTH(cache_data) AS 'size'
+                                  FROM s(cachename)%;""" % {'cachename': 'mmonetcache'})
+    for row in result:
+        infos['cachesizes'].append({ 'handle': row['handle'], 'name': row['name'], 'size': bytes2human(row['size'])})
 
     return render_template('admin_system_status.html', infos = infos)
 
