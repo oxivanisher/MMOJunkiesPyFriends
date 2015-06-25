@@ -42,7 +42,7 @@ class BlizzNetwork(MMONetwork):
                           'hots': 'Heroes of the Storm' }
 
         # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+        self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
@@ -427,13 +427,13 @@ class BlizzNetwork(MMONetwork):
                         for (checkType, checkTimestamp) in checkFeed:
                             if checkType == entry['type'] and checkTimestamp == entry['timestamp']:
                                 foundCount += 1
-                        logger.info("Found count for %s %s is %s (%s)" % (entry['type'], entry['timestamp'], foundCount, charName))
+                        logger.debug("Found count for %s %s is %s (%s)" % (entry['type'], entry['timestamp'], foundCount, charName))
                         if foundCount == 1:
                             showMe = True
                         elif foundCount == 0:
                             logger.warning("Something is strange here... please investigate!")
                         else:
-                            logger.info("found multiple occurences of %s %s" % (entry['type'], entry['timestamp']))
+                            logger.debug("found multiple occurences of %s %s" % (entry['type'], entry['timestamp']))
                             if bestChar['name'] == charName:
                                 logger.info("found best char for %s %s" % ((entry['type'], entry['timestamp'])))
                                 showMe = True
