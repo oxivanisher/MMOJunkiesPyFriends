@@ -178,6 +178,8 @@ class ValveNetwork(MMONetwork):
                                 self.cache['users'][friend['steamid']] = friend
                     except KeyError:
                         pass
+                    except TypeError:
+                        pass
 
             # calculate which steamids needs to be updated
             playerIds = []
