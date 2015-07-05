@@ -408,6 +408,8 @@ class BlizzNetwork(MMONetwork):
         self.getCache('lastly')
         self.cache['lastly'] = {}
         for userid in self.cache['wowFeeds'].keys():
+            if 'characters' not in self.cache['wowProfiles'][userid].keys():
+                continue
             bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
 
             # create list of type and achievments to remove doubles
