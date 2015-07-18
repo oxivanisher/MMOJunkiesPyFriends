@@ -60,7 +60,8 @@
 						<tr>
 							<td nowrap style="vertical-align: top;">{{ detail.key }}</td>
 							<td>
-								{%- if detail.value.startswith('http://') or detail.value.startswith('https://') -%}
+								{%- set myValue = detail.value|string -%}
+								{%- if myValue.startswith('http://') or myValue.startswith('https://') or myValue.startswith('//') -%}
 									<a href="{{ detail.value }}" target="_blank">{{ detail.value }}</a>
 								{%- else -%}
 									{{ detail.value }}
