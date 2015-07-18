@@ -21,7 +21,7 @@
 				{%- set myValue = detail.value|string -%}
 				{%- if myValue.startswith('http://') or myValue.startswith('https://') or myValue.startswith('//') -%}
 					<a href="myValue" target="_blank">{{ myValue|truncate(50, True) }}</a>
-				{%- else -%}
+				{%- elif myValue|length > 0 -%}
 					{{ myValue|truncate(50, True) }}
 				{%- endif -%}
 			</td>
