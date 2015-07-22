@@ -18,9 +18,12 @@
 		<meta name="keywords" content="mmo, games, gaming, spielen, spiele, freunde, clan, gilde, stream, streaming, chat, ts3, teamspeak, mmojunkies, steam, battle.net, blizzard, world of warcraft, starcraft, heroes of the storm, diablo, league of legends" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		{# Languages -#}
-		<link rel="alternate" hreflang="de" href="{{ url_for('index', _external=True) }}" />
-		<link rel="alternate" hreflang="de-ch" href="{{ url_for('index', _external=True) }}" />
-		<link rel="alternate" hreflang="en" href="{{ url_for('index', _external=True) }}" />
+
+		{#- Languages #}
+		{%- for key, value in config.LANGUAGES.iteritems() %}
+		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key, _external=True) }}" />
+		{%- endfor -%}
+
 		<meta property="og:locale" content="en_US" />
 		<meta property="og:locale:alternate" content="de_DE" />
 		{# Favicon -#}
@@ -33,11 +36,6 @@
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.structure.min.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.theme.min.css') }}" rel="stylesheet" />
-
-		{#- Languages #}
-		{%- for key, value in config.LANGUAGES.iteritems() %}
-		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key) }}" />
-		{%- endfor -%}
 
 		{# Bootstrap -#}
 		{#- Local version
