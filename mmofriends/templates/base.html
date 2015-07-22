@@ -33,6 +33,12 @@
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.structure.min.css') }}" rel="stylesheet" />
 		<link href="{{ url_for('static', filename='jquery/jquery-ui.theme.min.css') }}" rel="stylesheet" />
+
+		{#- Languages #}
+		{%- for key, value in config.LANGUAGES.iteritems() %}
+		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key) }}" />
+		{%- endfor %}
+
 		{# Bootstrap -#}
 		{#- Local version
 		<link href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}" rel="stylesheet" media="screen">
