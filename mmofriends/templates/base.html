@@ -37,7 +37,7 @@
 		{#- Languages #}
 		{%- for key, value in config.LANGUAGES.iteritems() %}
 		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key) }}" />
-		{%- endfor %-}
+		{%- endfor -%}
 
 		{# Bootstrap -#}
 		{#- Local version
