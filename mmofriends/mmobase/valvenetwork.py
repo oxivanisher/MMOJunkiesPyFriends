@@ -778,12 +778,13 @@ class ValveNetwork(MMONetwork):
             except IndexError:
                 return games
 
-        if 'ownedGames' in self.cache['users'][steamId]:
-            for gameid in self.cache['users'][steamId]['ownedGames']:
-                try:
-                    games[gameid] = self.cache['games'][str(gameid)]['name']
-                except KeyError:
-                    pass
+        if steamId in self.cache['users']:
+            if 'ownedGames' in self.cache['users'][steamId]:
+                for gameid in self.cache['users'][steamId]['ownedGames']:
+                    try:
+                        games[gameid] = self.cache['games'][str(gameid)]['name']
+                    except KeyError:
+                        pass
 
         return games
 
