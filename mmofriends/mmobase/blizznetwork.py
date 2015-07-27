@@ -399,7 +399,7 @@ class BlizzNetwork(MMONetwork):
 
                     if unicode(link['user_id']) in self.cache['wowFeeds']:
                         logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
-                    else
+                    else:
                         logger.debug("[%s] Updated no feeds for %s" % (self.handle, self.getUserById(link['user_id']).nick))
 
                 okCount += 1
