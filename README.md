@@ -41,6 +41,9 @@ http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue
 http://flask.pocoo.org/snippets/42/
 #  pip install Flask-OpenID
 
+# Important bugfix URL's:
+- http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
+
 # Ideas:
 - make a comment on all sites (logged in) to the dev
 - make network inking with a dialog popup and finally reload the page
