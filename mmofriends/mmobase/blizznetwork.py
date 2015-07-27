@@ -397,7 +397,10 @@ class BlizzNetwork(MMONetwork):
                                     self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
                                     feedCount += 1
 
-                    logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
+                    if unicode(link['user_id']) in self.cache['wowFeeds']:
+                        logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
+                    else
+                        logger.debug("[%s] Updated no feeds for %s" % (self.handle, self.getUserById(link['user_id']).nick))
 
                 okCount += 1
             else:
