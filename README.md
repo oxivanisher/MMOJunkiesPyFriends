@@ -49,7 +49,9 @@ http://flask.pocoo.org/snippets/42/
 https://github.com/justintv/Twitch-API/blob/master/authentication.md
 
 ### start redis server on osx
+```bash
 sudo redis-server /opt/local/etc/redis.conf
+```
 
 ### pip_update.py
 Use this script to update all pip packages to the nwewst version. Especially useful, if you installed some libs via apt-get.
