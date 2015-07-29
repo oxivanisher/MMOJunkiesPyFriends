@@ -22,7 +22,7 @@ from mmofriends import db
 try:
     from rauth.service import OAuth2Service
 except ImportError:
-    print "Please install rauth (https://github.com/litl/rauth)"
+    logging.error("[System] Please install rauth (https://github.com/litl/rauth)")
     import sys
     sys.exit(2)
 

@@ -1,13 +1,7 @@
 MMOJunkiesPyFriends
 ===================
 
-Website friends system to connect friends from different game sources.
-
-Planned is:
-- Connect friends from Battle.Net (Blizzard)
-- Steam (Valve)
-
-And let them register a TS3 account for our TS3 Server.
+Website friends system to connect friends from different game sources, used for https://mmojunkies.net.
 
 
 Ressources:
@@ -27,37 +21,35 @@ http://jquery.com/
 http://jqueryui.com/
 http://getbootstrap.com/
 
-git submodule foreach git pull
-git submodule update --init
-
-# Generate new application secret
-import os
-os.urandom(24) 
-
-# useful links:
-http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045
-
-# flask tutorial: Sign in with Steam ID
-http://flask.pocoo.org/snippets/42/
-#  pip install Flask-OpenID
-
-# Important bugfix URL's:
-- http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
-
-# Ideas:
+# Ideas for the future:
 - make a comment on all sites (logged in) to the dev
 - make network inking with a dialog popup and finally reload the page
 - statistic and/or ranking feature (lol, starcraft, ...)
 
-# ToDo:
-- TS3: Change user group on registration, spam unregistred users
-- TS3: Display DND (not only online and offline)
-- 
+# Install needed libs (debian)
+pip install requests
 
-# Twitch URL
+# Tips and Tricks
+## GIT Submodules
+git submodule foreach git pull
+git submodule update --init
+
+## Generate new application secret
+import os
+os.urandom(24) 
+
+## useful links:
+http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045
+
+## flask tutorial: Sign in with Steam ID
+http://flask.pocoo.org/snippets/42/
+#  pip install Flask-OpenID
+
+## Important bugfix URL's:
+- http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
+
+## Twitch URL
 https://github.com/justintv/Twitch-API/blob/master/authentication.md
 
-# start redis server on osx
+## start redis server on osx
 sudo redis-server /opt/local/etc/redis.conf
-
-# todo stoef

@@ -20,7 +20,8 @@ from mmofriends import db
 try:
     import feedparser
 except ImportError:
-    log.error("[System] Please install python-feedparser")
+    logging.error("[System] Please install python-feedparser")
+    import sys
     sys.exit(2)
 
 class RSSNews(MMONetwork):
