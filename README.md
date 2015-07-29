@@ -26,11 +26,17 @@ http://getbootstrap.com/
 - make network inking with a dialog popup and finally reload the page
 - statistic and/or ranking feature (lol, starcraft, ...)
 
-# Install needed libs (debian)
-pip install requests
+# Install needed libraries (debian)
+apt-get install python-pip python-dev redis-server
+pip install requests rauth numpy Flask-OpenID Flask-SQLAlchemy Flask-Compress Flask-Celery3 PyYAML feedparser celery redis
+
+## Install TS3 Lib (do this in some other directory!)
+git clone git://github.com/nikdoof/python-ts3.git
+cd python-ts3
+python setup.py install
 
 # Tips and Tricks
-## GIT Submodules
+## Init GIT Submodules
 git submodule foreach git pull
 git submodule update --init
 
