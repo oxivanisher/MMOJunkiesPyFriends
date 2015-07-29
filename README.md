@@ -25,8 +25,10 @@ python setup.py install
 
 ## Tips and Tricks
 ### Init GIT Submodules
+```bash
 git submodule foreach git pull
 git submodule update --init
+```
 
 ### Generate new application secret
 ```python
