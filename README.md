@@ -12,8 +12,8 @@ Website friends system to connect friends from different game sources, used for 
 
 ## Install needed libraries (debian)
 ```bash
-apt-get install python-pip python-dev redis-server
-pip install requests rauth numpy Flask-OpenID Flask-SQLAlchemy Flask-Compress Flask-Celery3 PyYAML feedparser celery redis
+apt-get install python-pip python-dev redis-server libmysqlclient-dev
+pip install requests rauth numpy Flask-OpenID Flask-SQLAlchemy Flask-Compress Flask-Celery3 PyYAML feedparser celery redis MySQL-python
 ```
 
 ### Install TS3 Lib (do this in some other directory!)
@@ -29,6 +29,9 @@ python setup.py install
 git submodule foreach git pull
 git submodule update --init
 ```
+
+### Unable to write file errors
+If there is a problem caching the external image files, check the permissions on "MMOJunkiesPyFriends/mmofriends/static/cache/"
 
 ### Generate new application secret
 ```python

@@ -15,7 +15,7 @@ from mmoutils import *
 try:
     import ts3
 except ImportError:
-    logging.error("[System] Please install python-ts3 (https://github.com/nikdoof/python-ts3)")
+    logging.error("[System] Please install the python-ts3 library (https://github.com/nikdoof/python-ts3)")
     import sys
     sys.exit(2)
 

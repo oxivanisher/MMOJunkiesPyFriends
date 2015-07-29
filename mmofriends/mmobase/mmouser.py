@@ -14,12 +14,7 @@ from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, 
 # from mmofriends import db, app
 db = SQLAlchemy()
 
-try:
-    from paypal import MMOPayPalPayment
-except ImportError:
-    logging.error("[Systen] Please install paypal")
-    import sys
-    sys.exit(2)
+from paypal import MMOPayPalPayment
 
 class MMOUserLevel(object):
 

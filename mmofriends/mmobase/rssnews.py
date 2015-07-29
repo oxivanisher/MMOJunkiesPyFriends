@@ -20,7 +20,7 @@ from mmofriends import db
 try:
     import feedparser
 except ImportError:
-    logging.error("[System] Please install python-feedparser")
+    logging.error("[System] Please install the feedparser library")
     import sys
     sys.exit(2)
 

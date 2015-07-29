@@ -33,19 +33,20 @@ try:
     from flask.ext.sqlalchemy import SQLAlchemy
     from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 except ImportError:
-    log.error("[System] Please install the sqlalchemy extension for flask")
+    log.error("[System] Please install the flask extension: Flask-SQLAlchemy")
     sys.exit(2)
 
 try:
     from flask.ext.openid import OpenID
 except ImportError:
-    log.error("[System] Please install the openid extension for flask")
+    log.error("[System] Please install the flask extension: Flask-OpenID")
     sys.exit(2)
 
 try:
     from flask.ext.compress import Compress
 except ImportError:
-    log.error("[System] Please install the compress extension for flask")
+    log.error("[System] Please install the flask extension: Flask-Compress")
+    sys.exit(2)
 
 try:
     from celery import Celery
@@ -76,7 +77,8 @@ try:
     import process
     from urlparse import urlsplit, urlunsplit, parse_qs
 except ImportError:
-    log.warning("[System] Unable to import the google crawler stuff")
+    log.warning("[System] Unable to import the google crawler stuff. See 'Init GIT Submodules' in the Readme.")
+    sys.exit(2)
 
 try:
     os.environ['MMOFRIENDS_CFG']
