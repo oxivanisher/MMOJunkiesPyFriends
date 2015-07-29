@@ -1,7 +1,7 @@
 MMOJunkiesPyFriends
 ===================
 
-Website friends system to connect friends from different game sources, used for https://mmojunkies.net.
+Website community system to connect friends from different gaming sources like Steam, Battlenet and Teamspeak 3 used for https://mmojunkies.net.
 
 ## Ideas for the future:
 * make a comment feature on all sites/boxes (logged in) to the dev for ideas/improvements
@@ -47,8 +47,8 @@ sudo redis-server /opt/local/etc/redis.conf
 
 ### pip_update.py
 Use this script to update all pip packages to the nwewst version. Especially useful, if you installed some libs via apt-get.
-# Debian dependencies for pip update
 ```bash
+# Debian dependencies for pip update
 apt-get install libmysqlclient-dev libffi-dev libacl1-dev libssl-dev
 ```
 
@@ -65,18 +65,18 @@ for dist in pip.get_installed_distributions():
 ```
 
 ### Useful links:
-*[Flask-SQLAlchemy import/context issue](http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045)
-*[Flask tutorial: Sign in with Steam ID](http://flask.pocoo.org/snippets/42/)
-*[InsecurePlatformWarning: A true SSLContext object is not available](http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent)
-*[Twitch API Auth](https://github.com/justintv/Twitch-API/blob/master/authentication.md)
-*[Battlenet Developer Community](https://dev.battle.net)
-*[Battlenet How to get started using APIs?](http://us.battle.net/en/forum/topic/13977917832#4)
-*[Steam Developer Community](http://steamcommunity.com/dev)
-*[Teamspeak 3 FAQ](http://voicecommandcenter.com/knowledgebase/24/Teamspeak-3-FAQ.html)
-*[Teamspeak 3 Knowledgebase](https://support.teamspeakusa.com/index.php?/Knowledgebase/List/Index/10/english#ts3_integrate_userdb)
-*[Teamspeak 3 Integrate existing user base](http://community.mybb.com/thread-117220.html)
-*[Teamspeak 3 Server Query Manual](http://media.teamspeak.com/ts3_literature/TeamSpeak%203%20Server%20Query%20Manual.pdf)
-*[How do I work with a git repository within another repository?](http://stackoverflow.com/questions/1811730/how-do-i-work-with-a-git-repository-within-another-repository)
+* [Flask-SQLAlchemy import/context issue](http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045)
+* [Flask tutorial: Sign in with Steam ID](http://flask.pocoo.org/snippets/42/)
+* [InsecurePlatformWarning: A true SSLContext object is not available](http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent)
+* [Twitch API Auth](https://github.com/justintv/Twitch-API/blob/master/authentication.md)
+* [Battlenet Developer Community](https://dev.battle.net)
+* [Battlenet How to get started using APIs?](http://us.battle.net/en/forum/topic/13977917832#4)
+* [Steam Developer Community](http://steamcommunity.com/dev)
+* [Teamspeak 3 FAQ](http://voicecommandcenter.com/knowledgebase/24/Teamspeak-3-FAQ.html)
+* [Teamspeak 3 Knowledgebase](https://support.teamspeakusa.com/index.php?/Knowledgebase/List/Index/10/english#ts3_integrate_userdb)
+* [Teamspeak 3 Integrate existing user base](http://community.mybb.com/thread-117220.html)
+* [Teamspeak 3 Server Query Manual](http://media.teamspeak.com/ts3_literature/TeamSpeak%203%20Server%20Query%20Manual.pdf)
+* [How do I work with a git repository within another repository?](http://stackoverflow.com/questions/1811730/how-do-i-work-with-a-git-repository-within-another-repository)
 
 ## Used libs
 * https://github.com/nikdoof/python-ts3
@@ -84,3 +84,22 @@ for dist in pip.get_installed_distributions():
 * http://jquery.com/
 * http://jqueryui.com/
 * http://getbootstrap.com/
+
+## Planning sandbox:
+### Groups
+* Name
+* Description
+* Nethandle (opt)
+* Game (opt)
+* Public (if false, invite only)
+* Timestamp (creation)
+* Members
+* Admins
+* Creator
+
+### Message
+* Parent (Messageboard or Group)
+* Content (json data)
+* Timestamp
+* Owner
+* Type (text, appointment, link)
