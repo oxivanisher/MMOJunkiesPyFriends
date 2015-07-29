@@ -15,7 +15,7 @@ from mmoutils import *
 try:
     import ts3
 except ImportError:
-    print "Please install PyTS3"
+    print "Please install python-ts3"
     import sys
     sys.exit(2)
 
