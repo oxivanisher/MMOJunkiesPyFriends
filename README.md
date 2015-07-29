@@ -103,3 +103,14 @@ for dist in pip.get_installed_distributions():
 * Timestamp
 * Owner
 * Type (text, appointment, link)
+
+### Timer (Grouping for maps?)
+* Parent (Group or User?)
+* StartTimestamp
+* Duration
+* Owner
+* Public
+* Name
+* Description
+* Persistent (if false, only onetime timer)
+* Colors (json?)
