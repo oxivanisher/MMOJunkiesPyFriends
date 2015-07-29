@@ -12,7 +12,7 @@ Website friends system to connect friends from different game sources, used for 
 
 ## Install needed libraries (debian)
 ```bash
-apt-get install python-pip python-dev redis-server libmysqlclient-dev
+apt-get install python-pip python-dev redis-server
 pip install requests rauth numpy Flask-OpenID Flask-SQLAlchemy Flask-Compress Flask-Celery3 PyYAML feedparser celery redis MySQL-python
 ```
 
@@ -58,6 +58,11 @@ sudo redis-server /opt/local/etc/redis.conf
 
 ### pip_update.py
 Use this script to update all pip packages to the nwewst version. Especially useful, if you installed some libs via apt-get.
+# Debian dependencies for pip update
+```bash
+apt-get install libmysqlclient-dev libffi-dev libacl1-dev libssl-dev
+```
+
 ```python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
