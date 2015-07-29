@@ -9,6 +9,7 @@ Website friends system to connect friends from different game sources, used for 
 * groups
 * timers
 * message board
+* easy access filter for network selection like OS X dock on the left side
 
 ## Install needed libraries (debian)
 ```bash
@@ -30,28 +31,16 @@ git submodule foreach git pull
 git submodule update --init
 ```
 
-### Unable to write file errors
+### Unable to write files to cache errors
 If there is a problem caching the external image files, check the permissions on "MMOJunkiesPyFriends/mmofriends/static/cache/"
 
-### Generate new application secret
+### Generate a new application secret
 ```python
 import os
 os.urandom(24) 
 ```
 
-### useful links:
-http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045
-
-### flask tutorial: Sign in with Steam ID
-http://flask.pocoo.org/snippets/42/
-
-### Important bugfix URL's:
-- http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
-
-### Twitch URL
-https://github.com/justintv/Twitch-API/blob/master/authentication.md
-
-### start redis server on osx
+### How to start the redis server on OS X
 ```bash
 sudo redis-server /opt/local/etc/redis.conf
 ```
@@ -75,15 +64,19 @@ for dist in pip.get_installed_distributions():
     call("pip install --upgrade " + dist.project_name + "", shell=True)
 ```
 
-## Ressources
-* https://dev.battle.net
-* http://steamcommunity.com/dev
-* http://voicecommandcenter.com/knowledgebase/24/Teamspeak-3-FAQ.html
-* http://community.mybb.com/thread-117220.html
-* https://support.teamspeakusa.com/index.php?/Knowledgebase/List/Index/10/english#ts3_integrate_userdb
-* http://media.teamspeak.com/ts3_literature/TeamSpeak%203%20Server%20Query%20Manual.pdf
-* http://stackoverflow.com/questions/1811730/how-do-i-work-with-a-git-repository-within-another-repository
-* http://us.battle.net/en/forum/topic/13977917832#4
+### Useful links:
+*[Flask-SQLAlchemy import/context issue](http://stackoverflow.com/questions/9692962/flask-sqlalchemy-import-context-issue/9695045#9695045)
+*[Flask tutorial: Sign in with Steam ID](http://flask.pocoo.org/snippets/42/)
+*[InsecurePlatformWarning: A true SSLContext object is not available](http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent)
+*[Twitch API Auth](https://github.com/justintv/Twitch-API/blob/master/authentication.md)
+*[Battlenet Developer Community](https://dev.battle.net)
+*[Battlenet How to get started using APIs?](http://us.battle.net/en/forum/topic/13977917832#4)
+*[Steam Developer Community](http://steamcommunity.com/dev)
+*[Teamspeak 3 FAQ](http://voicecommandcenter.com/knowledgebase/24/Teamspeak-3-FAQ.html)
+*[Teamspeak 3 Knowledgebase](https://support.teamspeakusa.com/index.php?/Knowledgebase/List/Index/10/english#ts3_integrate_userdb)
+*[Teamspeak 3 Integrate existing user base](http://community.mybb.com/thread-117220.html)
+*[Teamspeak 3 Server Query Manual](http://media.teamspeak.com/ts3_literature/TeamSpeak%203%20Server%20Query%20Manual.pdf)
+*[How do I work with a git repository within another repository?](http://stackoverflow.com/questions/1811730/how-do-i-work-with-a-git-repository-within-another-repository)
 
 ## Used libs
 * https://github.com/nikdoof/python-ts3
