@@ -470,13 +470,13 @@ class BlizzNetwork(MMONetwork):
         background = True
         if not userid:
             userid = self.session['userid']
-            userNick = userid
             background = False
             logger.info("[%s] Foreground updating the resources for %s" % (self.handle, self.getUserById(userid).nick))
         else:
             message = "[%s] Background updating the resources for %s" % (self.handle, self.getUserById(userid).nick)
             self.setBackgroundWorkerResult(message)
             logger.info(message)
+        userNick = self.getUserById(userid).nick
 
         if not accessToken:
             if userid != self.session['userid']:
@@ -492,7 +492,7 @@ class BlizzNetwork(MMONetwork):
             if 'battletag' in retMessage:
                 self.cache['battletags'][unicode(userid)] = retMessage['battletag']
                 self.setCache('battletags')
-                userNick = retMessage['battletag']
+                userNick = "%s (%s)" % (userNick, retMessage['battletag'])
                 logger.info("[%s] Updated battletag %s" % (self.handle, retMessage['battletag']))
             else:
                 message = "Unable to update Battletag for %s (%s)" % (self.getUserById(userid).nick, retMessage)
