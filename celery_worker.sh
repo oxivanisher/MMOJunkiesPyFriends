@@ -20,7 +20,7 @@ if [ -z "$MMOFRIENDS_CFG" ]; then
 fi
 
 # Actually starting the application worker.
-celery -A mmofriends.celery worker
+celery --autoscale=1,1 --concurrency=4 --app=mmofriends.celery worker
 
 # Changing back to origin path.
 cd ${ORIGDIR}
