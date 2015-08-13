@@ -269,8 +269,8 @@ class ValveNetwork(MMONetwork):
         for avatarUrl in avatarUrls:
             self.cacheFile(avatarUrl)
 
-        logger.debug("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(avatarUrl)))
-        return "%s user avatars checked of %s entries" % (len(avatarUrl), count)
+        logger.debug("[%s] Checked %s (%s) user avatars" % (self.handle, count, len(avatarUrls)))
+        return "%s user avatars checked of %s entries" % (len(avatarUrls), count)
 
     def updateUsersOnlineState(self, logger = None):
         count = 0
