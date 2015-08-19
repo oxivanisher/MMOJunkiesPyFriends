@@ -1355,8 +1355,11 @@ def game_links_show():
     links = []
     myGames = getGamesOfUser(session.get('userid'))
     for link in allLinks:
-        if link.gameId in myGames[link.network_handle].keys() or session.get('crawlerRun'):
+        if session.get('crawlerRun'):
             links.append(link)
+        elif link.network_handle in myGames.keys():
+            if link.gameId in myGames[link.network_handle].keys():
+                links.append(link)
     return render_template('game_links.html', links = links, games = myGames, networks = getNetworks())
 
 @app.route('/GameLinks/Add', methods = ['POST', 'GET'])
