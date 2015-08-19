@@ -165,38 +165,47 @@ class TS3Network(MMONetwork):
             logger.debug("[%s] Fetching channels" % (self.handle))
             self.cache['serverInfo']['channelList'] = []
             result = self.sendCommand('channellist -icon')
-            for channel in result.data:
-                try:
-                    if int(channel['channel_icon_id']) < 0:
-                        channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
-                except KeyError:
-                    channel['channel_icon_id'] = 0
-                self.cache['serverInfo']['channelList'].append(channel)
-                ccount += 1
+            if isinstance(result, bool):
+                logger.warning("[%s] Unable to fetch channel list from server" % (self.handle))
+            else:
+                for channel in result.data:
+                    try:
+                        if int(channel['channel_icon_id']) < 0:
+                            channel['channel_icon_id'] = str(int(channel['channel_icon_id']) + 4294967296)
+                    except KeyError:
+                        channel['channel_icon_id'] = 0
+                    self.cache['serverInfo']['channelList'].append(channel)
+                    ccount += 1
 
             # fetching groups
             gcount = 0
             logger.debug("[%s] Fetching groups" % (self.handle))
             self.cache['serverInfo']['groupList'] = {}
             result = self.sendCommand('servergrouplist')
-            for group in result.data:
-                # logger.error("group id %s" % group)
-                try:
-                    self.cache['serverInfo']['groupList'][group['sgid']] = group
-                    gcount += 1
-                except KeyError:
-                    logger.info("[%s] Missing group information" % (self.handle))
-                    pass
+            if isinstance(result, bool):
+                logger.warning("[%s] Unable to fetch server group list from server" % (self.handle))
+            else:
+                for group in result.data:
+                    # logger.error("group id %s" % group)
+                    try:
+                        self.cache['serverInfo']['groupList'][group['sgid']] = group
+                        gcount += 1
+                    except KeyError:
+                        logger.info("[%s] Missing group information" % (self.handle))
+                        pass
 
             # fetching channel groups
             cgcount = 0
             logger.debug("[%s] Fetching channel groups" % (self.handle))
             self.cache['serverInfo']['channelGroupList'] = {}
             result = self.sendCommand('channelgrouplist')
-            for group in result.data:
-                self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
-                cgcount += 1
-            self.setCache('serverInfo')
+            if isinstance(result, bool):
+                logger.warning("[%s] Unable to fetch channel group list from server" % (self.handle))
+            else:
+                for group in result.data:
+                    self.cache['serverInfo']['channelGroupList'][group['cgid']] = group
+                    cgcount += 1
+                self.setCache('serverInfo')
             return "%s channel(s), %s group(s) and %s channel group(s) updated" % (ccount, gcount, cgcount)
         else:
             return "Not connected to TS3 Server"
