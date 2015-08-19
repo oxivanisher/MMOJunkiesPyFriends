@@ -1353,7 +1353,10 @@ def getGameLinks(request):
 def game_links_show():
     allLinks = MMOGameLink.query.all()
     links = []
-    myGames = getGamesOfUser(session.get('userid'))
+    if session.get('crawlerRun'):
+        myGames = getGames()
+    else:
+        myGames = getGamesOfUser(session.get('userid'))
     for link in allLinks:
         if session.get('crawlerRun'):
             links.append(link)
