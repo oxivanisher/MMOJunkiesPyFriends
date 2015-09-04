@@ -582,7 +582,7 @@ class BlizzNetwork(MMONetwork):
                    'locale': self.locale}
 
         try:
-            r = requests.get(self.baseUrl + what, params=payload, timeout=5a).json()
+            r = requests.get(self.baseUrl + what, params=payload, timeout=10).json()
         except ValueError as e:
             return (False, e)
      
