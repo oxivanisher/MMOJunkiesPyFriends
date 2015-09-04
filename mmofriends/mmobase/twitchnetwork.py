@@ -188,7 +188,7 @@ class TwitchNetwork(MMONetwork):
 
         try:
             with Timeout(160):
-                r = requests.get(self.baseUrl + what, headers=headers).json()
+                r = requests.get(self.baseUrl + what, headers=headers, timeout=10).json()
         except (ValueError, requests.ConnectionError) as e:
             return (False, 'Unable to fetch data from Twitch: %s' % e)
         except Timeout.Timeout:

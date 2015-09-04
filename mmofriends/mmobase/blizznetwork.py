@@ -42,7 +42,7 @@ class BlizzNetwork(MMONetwork):
                           'hots': 'Heroes of the Storm' }
 
         # activate debug while development
-        self.setLogLevel(logging.DEBUG)
+        # self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",
