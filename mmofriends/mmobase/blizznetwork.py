@@ -582,9 +582,9 @@ class BlizzNetwork(MMONetwork):
                    'locale': self.locale}
 
         tryCount = 0
-        while tries < 3:
-            tryCount += 1
+        while tryCount < 3:
             try:
+                tryCount += 1
                 r = requests.get(self.baseUrl + what, params=payload, timeout=6.1).json()
                 break
             except requests.exceptions.Timeout:
@@ -593,9 +593,8 @@ class BlizzNetwork(MMONetwork):
                 self.log.warning("[%s] queryBlizzardApi ran into exception %s for: %s" % (self.handle, e, what))
             except ValueError as e:
                 self.log.warning("[%s] queryBlizzardApi got ValueError %s for: %s" % (self.handle, e, what))
-
-        if tryCount >= 3:
-            self.log.warning("[%s] queryBlizzardApi max tries reached for: %s" % (self.handle, e, what))
+        else:
+            self.log.warning("[%s] queryBlizzardApi %s tries reached for: %s" % (self.handle, tryCount, e, what))
             return (False, e)
      
         try:
