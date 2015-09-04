@@ -186,13 +186,21 @@ class TwitchNetwork(MMONetwork):
         headers = {'Accept': 'application/vnd.twitchtv.v2+json',
                    'Authorization': 'OAuth %s' % accessToken}
 
-        try:
-            with Timeout(160):
-                r = requests.get(self.baseUrl + what, headers=headers, timeout=10).json()
-        except (ValueError, requests.ConnectionError) as e:
-            return (False, 'Unable to fetch data from Twitch: %s' % e)
-        except Timeout.Timeout:
-            return (False, 'Timeout of 160 seconds reached. Request cancelled.')
+        tryCount = 0
+        while tryCount < 3:
+            try:
+                tryCount += 1
+                r = requests.get(self.baseUrl + what, headers=headers, timeout=6.1).json()
+                break
+            except requests.exceptions.Timeout:
+                self.log.warning("[%s] queryTwitchApi ran into timeout for: %s" % (self.handle, what))
+            except requests.exceptions.RequestException as e:
+                self.log.warning("[%s] queryTwitchApi ran into exception %s for: %s" % (self.handle, e, what))
+            except (ValueError, requests.ConnectionError) as e:
+                self.log.warning("[%s] queryTwitchApi got ValueError %s for: %s" % (self.handle, e, what))
+        else:
+            self.log.warning("[%s] queryTwitchApi %s tries reached for: %s" % (self.handle, tryCount, e, what))
+            return (False, e)
         return (True, r)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
