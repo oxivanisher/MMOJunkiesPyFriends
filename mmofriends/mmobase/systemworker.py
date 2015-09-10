@@ -23,7 +23,7 @@ class MMOSystemWorker(object):
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
 
-    def run(self, log):
+    def run(self):
         startTime = time.time()
         if (startTime - self.lastRun) > self.timeout:
             self.log.debug("[SW:%s] Running work method...")
