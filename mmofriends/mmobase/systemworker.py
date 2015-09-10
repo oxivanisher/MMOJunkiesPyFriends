@@ -31,10 +31,7 @@ class MMOSystemWorker(object):
             endTime = time.time()
             self.lastRun = endTime
             self.log.debug("[SW:%s] Work method finished with return '%s'. Run took %s seconds." % (self.handle, ret, endTime - startTime))
-            if ret:
-                return (True, ret)
-            else:
-                return (False, "Worker gave no return value")
+            return ret
 
     def work(self):
         return "I should do something ..."
