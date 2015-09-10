@@ -23,7 +23,7 @@ class MMOSystemWorker(object):
         self.setLogLevel(logging.DEBUG)
 
         self.getCache('backgroundTasks')
-        if method.func_name not in self.cache['backgroundTasks']:
+        if self.handle not in self.cache['backgroundTasks']:
             self.cache['backgroundTasks'][self.handle] = {}
             self.cache['backgroundTasks'][self.handle]['handle'] = "System"
             self.cache['backgroundTasks'][self.handle]['method'] = self.handle
@@ -31,7 +31,6 @@ class MMOSystemWorker(object):
             self.cache['backgroundTasks'][self.handle]['start'] = 0
             self.cache['backgroundTasks'][self.handle]['end'] = 0
             self.setCache('backgroundTasks')
-
 
     def run(self):
         startTime = time.time()
