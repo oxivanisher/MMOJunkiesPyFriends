@@ -82,6 +82,10 @@ class MMOSystemWorker(object):
             db.session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
 
+    def setLogLevel(self, level):
+        self.log.info("[SW:%s] Setting loglevel to %s" % (self.handle, level))
+        self.log.setLevel(level)
+
 # user checker
 class MMOUserChecker(MMOSystemWorker):
 
