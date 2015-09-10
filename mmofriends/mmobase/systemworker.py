@@ -106,7 +106,7 @@ class MMOUserChecker(MMOSystemWorker):
 
     def __init__(self):
         self.handle = "userChecker"
-        self.timetout = 20
+        self.timeout = 20
         super(MMOUserChecker, self).__init__()
 
     def work(self):
