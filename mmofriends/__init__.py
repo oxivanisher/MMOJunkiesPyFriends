@@ -538,7 +538,7 @@ def get_image(imgType, imgId = None):
         else:
             log.warning("[System] Image not found: %s/%s" % (filePath, fileName))
 
-    except (IndexError, AttributeError):
+    except (IndexError, AttributeError, KeyError):
         log.warning("[System] Unknown ID for img type %s: %s" % (imgType, imgId))
     abort(404)
 
