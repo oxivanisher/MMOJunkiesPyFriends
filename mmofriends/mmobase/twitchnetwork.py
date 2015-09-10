@@ -195,9 +195,12 @@ class TwitchNetwork(MMONetwork):
             except requests.exceptions.Timeout:
                 self.log.warning("[%s] queryTwitchApi ran into timeout for: %s" % (self.handle, what))
             except requests.exceptions.RequestException as e:
-                self.log.warning("[%s] queryTwitchApi ran into exception %s for: %s" % (self.handle, e, what))
+                self.log.warning("[%s] queryTwitchApi ran into requests.exception %s for: %s" % (self.handle, e, what))
             except (ValueError, requests.ConnectionError) as e:
                 self.log.warning("[%s] queryTwitchApi got ValueError %s for: %s" % (self.handle, e, what))
+            except Exception as e:
+                self.log.warning("[%s] queryTwitchApi ran into exception %s for: %s" % (self.handle, e, what))
+                return (False, e)
         else:
             self.log.warning("[%s] queryTwitchApi %s tries reached for: %s" % (self.handle, tryCount, e, what))
             return (False, e)

@@ -590,9 +590,12 @@ class BlizzNetwork(MMONetwork):
             except requests.exceptions.Timeout:
                 self.log.warning("[%s] queryBlizzardApi ran into timeout for: %s" % (self.handle, what))
             except requests.exceptions.RequestException as e:
-                self.log.warning("[%s] queryBlizzardApi ran into exception %s for: %s" % (self.handle, e, what))
+                self.log.warning("[%s] queryBlizzardApi ran into requests.exception %s for: %s" % (self.handle, e, what))
             except ValueError as e:
                 self.log.warning("[%s] queryBlizzardApi got ValueError %s for: %s" % (self.handle, e, what))
+            except Exception as e:
+                self.log.warning("[%s] queryBlizzardApi ran into exception %s for: %s" % (self.handle, e, what))
+                return (False, e)
         else:
             self.log.warning("[%s] queryBlizzardApi %s tries reached for: %s" % (self.handle, tryCount, e, what))
             return (False, e)
