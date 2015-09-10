@@ -354,7 +354,7 @@ def background_worker():
         for sysWorker in MMOSystemWorkers:
             ret = sysWorker.run()
             if ret:
-                log.info("[SW:%s] -> Result: %s" % (sysWorker.name, ret))
+                log.info("[SW:%s] -> Result: %s" % (sysWorker.handle, ret))
 
         if firstLoop:
             log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))
