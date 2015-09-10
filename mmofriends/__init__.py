@@ -19,6 +19,7 @@ from mmobase.blizznetwork import *
 from mmobase.twitchnetwork import *
 from mmobase.rssnews import *
 from mmobase.paypal import *
+from mmobase.systemworker import *
 
 log = getLogger(level=logging.INFO)
 
@@ -315,6 +316,11 @@ def background_worker():
 
     log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
+
+    log.warning("[System] Background worker is loading system workers")
+    MMOSystemWorkers = []
+    MMOSystemWorkers.append(MMOUserChecker())
+
     log.warning("[System] Background worker starts looping")
     firstLoop = time.time()
     loopCount = 0
@@ -344,6 +350,11 @@ def background_worker():
             ret = MMONetworks[net].background_worker(log)
             if ret:
                 log.info("[%s] -> Result: %s" % (net, ret))
+
+        for sysWorker in MMOSystemWorkers:
+            ret = sysWorker.run()
+            if ret:
+                log.info("[SW:%s] -> Result: %s" % (sysWorker.name, ret))
 
         if firstLoop:
             log.warning("[System] First loop finished. Run took %s seconds." % (time.time() - firstLoop))
