@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import logging
 
 from mmonetwork import MMONetworkCache
 
