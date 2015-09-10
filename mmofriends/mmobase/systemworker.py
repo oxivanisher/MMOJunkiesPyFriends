@@ -27,7 +27,7 @@ class MMOSystemWorker(object):
             self.cache['backgroundTasks'][self.handle] = {}
             self.cache['backgroundTasks'][self.handle]['handle'] = "System"
             self.cache['backgroundTasks'][self.handle]['method'] = self.handle
-            self.cache['backgroundTasks'][self.handle]['timeout'] = timeout
+            self.cache['backgroundTasks'][self.handle]['timeout'] = self.timeout
             self.cache['backgroundTasks'][self.handle]['start'] = 0
             self.cache['backgroundTasks'][self.handle]['end'] = 0
             self.setCache('backgroundTasks')
