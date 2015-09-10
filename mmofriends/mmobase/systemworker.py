@@ -15,22 +15,41 @@ db = SQLAlchemy()
 # base class
 class MMOSystemWorker(object):
     def __init__(self):
-        self.handle = "unnamedSW"
         self.lastRun = 0
-        self.timeout = 3600
         self.log = logging.getLogger(__name__ + "." + self.handle.lower())
+        self.cache = {}
 
         # activate debug while development
         self.setLogLevel(logging.DEBUG)
 
+        self.getCache('backgroundTasks')
+        if method.func_name not in self.cache['backgroundTasks']:
+            self.cache['backgroundTasks'][self.handle] = {}
+            self.cache['backgroundTasks'][self.handle]['handle'] = "System"
+            self.cache['backgroundTasks'][self.handle]['method'] = self.handle
+            self.cache['backgroundTasks'][self.handle]['timeout'] = timeout
+            self.cache['backgroundTasks'][self.handle]['start'] = 0
+            self.cache['backgroundTasks'][self.handle]['end'] = 0
+            self.setCache('backgroundTasks')
+
+
     def run(self):
         startTime = time.time()
         if (startTime - self.lastRun) > self.timeout:
+            self.cache['backgroundTasks'][self.handle]['start'] = time.time()
+            self.setCache('backgroundTasks')
+
             self.log.debug("[SW:%s] Running work method...")
             ret = self.work()
             endTime = time.time()
             self.lastRun = endTime
             self.log.debug("[SW:%s] Work method finished with return '%s'. Run took %s seconds." % (self.handle, ret, endTime - startTime))
+
+            self.getCache('backgroundTasks')
+            self.cache['backgroundTasks'][self.handle]['end'] = time.time()
+            self.cache['backgroundTasks'][self.handle]['result'] = ret
+            self.setCache('backgroundTasks')
+
             return ret
 
     def work(self):
@@ -87,9 +106,9 @@ class MMOSystemWorker(object):
 class MMOUserChecker(MMOSystemWorker):
 
     def __init__(self):
-        super(MMOUserChecker, self).__init__()
         self.handle = "userChecker"
         self.timetout = 20
+        super(MMOUserChecker, self).__init__()
 
     def work(self):
         return "I would check for users and stuff"
