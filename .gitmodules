@@ -6,4 +6,4 @@
 	url = git@github.com:litl/rauth.git
 [submodule "libs/sep"]
 	path = libs/sep
-	url = git@github.com:zx2c4/server-execute-phantom.git
+	url = git@github.com:oxivanisher/server-execute-phantom.git
