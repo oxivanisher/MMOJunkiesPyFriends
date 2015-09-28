@@ -29,7 +29,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-libs/sep/.git
 
 # Installer logs
 pip-log.txt
