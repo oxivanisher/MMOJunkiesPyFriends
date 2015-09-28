@@ -597,8 +597,9 @@ class BlizzNetwork(MMONetwork):
                 self.log.warning("[%s] queryBlizzardApi ran into exception %s for: %s" % (self.handle, e, what))
                 return (False, e)
         else:
-            self.log.warning("[%s] queryBlizzardApi %s tries reached for: %s" % (self.handle, tryCount, what))
-            return (False, e)
+            message = "queryBlizzardApi %s tries reached for: %s" % (tryCount, what)
+            self.log.warning("[%s] %s" % (self.handle, message))
+            return (False, message)
      
         try:
             if r['code']:
