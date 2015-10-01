@@ -621,14 +621,18 @@ def check_admin_permissions():
 
 @app.route('/Administration/SetLogLevel/<where>/<level>')
 def admin_set_loglevel(where = "System", level = "INFO"):
+    levels = {'error': logging.ERROR,
+              'warning': logging.WARNING ,
+              'info': logging.INFO ,
+              'debug': logging.DEBUG }
     # https://docs.python.org/2/library/logging.html#logging-levels
     check_admin_permissions()
 
     if where == "System":
-        log.warning("[System] Setting loglevel to: %s" % (level))
+        log.warning("[System] Setting loglevel to: %s" % (levels[level]))
         app.logger.setLevel(level)
     else:
-        log.warning("[System] Setting loglevel for %s to: %s" % (where, level))
+        log.warning("[System] Setting loglevel for %s to: %s" % (where, levels[level]))
         pass
     return url_for('index')
 
