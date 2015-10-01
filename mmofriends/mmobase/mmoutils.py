@@ -76,18 +76,18 @@ def bytes2human(n):
             return '%.1f%s' % (value, s)
     return "%sB" % n
 
-def getLogger(level=logging.INFO):
-    myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
-    logPath = os.path.join(myPath, 'log/mmofriends.log')
-    logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
-    console = logging.StreamHandler()
-    console.setLevel(logging.DEBUG)
-    # formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
-    # formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
-    formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
-    console.setFormatter(formatter)
-    logging.getLogger(__name__).addHandler(console)
-    return logging.getLogger(__name__)
+# def getLogger(level=logging.INFO):
+#     myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
+#     logPath = os.path.join(myPath, 'log/mmofriends.log')
+#     logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
+#     console = logging.StreamHandler()
+#     console.setLevel(logging.DEBUG)
+#     # formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
+#     # formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
+#     formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
+#     console.setFormatter(formatter)
+#     logging.getLogger(__name__).addHandler(console)
+#     return logging.getLogger(__name__)
 
 def get_short_age(timestamp):
     return get_short_duration(time.time() - int(timestamp))

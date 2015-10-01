@@ -68,7 +68,17 @@ except ImportError:
 # setup flask app
 app = Flask(__name__)
 
-app.logger = getLogger(level=logging.INFO)
+# setup logging
+myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
+logPath = os.path.join(myPath, 'log/mmofriends.log')
+app.logger.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
+# formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
+formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
+console.setFormatter(formatter)
+app.logger.addHandler(console)
 
 Compress(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
