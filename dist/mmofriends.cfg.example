@@ -4,6 +4,7 @@ ROOTUSER = "admin"
 APPSECRET = 'some key'
 ADMINS = ['you@email.com']
 #WEBURL = "https://localhost:5000"
+FAVICON = "some_img.png"
 
 # email
 EMAILSERVER = "127.0.0.1"

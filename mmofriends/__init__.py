@@ -549,6 +549,10 @@ def set_lang(language=None, path = None):
     return redirect(path)
 
 # support routes
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename=app.config['FAVICON']))
+
 @app.route('/Images/<imgType>/', methods = ['GET', 'POST'])
 @app.route('/Images/<imgType>/<imgId>', methods = ['GET', 'POST'])
 def get_image(imgType, imgId = None):
