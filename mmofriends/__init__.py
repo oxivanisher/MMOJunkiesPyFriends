@@ -534,6 +534,7 @@ def dev():
 # language route
 @app.route('/Lang/')
 @app.route('/Lang/<language>', defaults={'path': None})
+@app.route('/Lang/<language>/', defaults={'path': None})
 @app.route('/Lang/<language>/<path:path>')
 def set_lang(language=None, path = None):
     if not path:
@@ -1069,7 +1070,7 @@ def profile_login():
         try:
             myUser = getUserByNick(request.form['nick'])
         except Exception as e:
-            log.warning('[System] Error finding user: "%s" -> %s' % (request.form['nick'], e))
+            log.warning('[System] Error finding user: "%s" -> %s' % (request.form['nick'], e))
             flash(gettext('Error locating your user'), 'error')
             
             return redirect(url_for('profile_logout'))
