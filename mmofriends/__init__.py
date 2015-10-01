@@ -376,8 +376,6 @@ except Exception as e:
 # localization methods
 @babel.localeselector
 def get_locale():
-    log.setLevel(logging.INFO)
-
     sessionLang = session.get('displayLanguage')
     if sessionLang:
         session['currentLocale'] = sessionLang

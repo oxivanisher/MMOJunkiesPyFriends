@@ -86,7 +86,7 @@ def getLogger(level=logging.INFO):
     # formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
     formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
     console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    logging.getLogger(__name__).addHandler(console)
     return logging.getLogger(__name__)
 
 def get_short_age(timestamp):
