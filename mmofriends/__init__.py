@@ -21,11 +21,12 @@ from mmobase.rssnews import *
 from mmobase.paypal import *
 from mmobase.systemworker import *
 
-log = logging.getLogger(__name__)
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
 logPath = os.path.join(myPath, 'log/mmofriends.log')
-logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
+logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
+
+log = logging.getLogger(__name__)
 
 # flask imports
 try:
