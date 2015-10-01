@@ -24,7 +24,7 @@ from mmobase.systemworker import *
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
 logPath = os.path.join(myPath, 'log/mmofriends.log')
-logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
+logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)-7s %(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
 
@@ -539,8 +539,8 @@ def set_lang(language=None, request_url = None):
     if not request_url:
         request_url = url_for('index')
     session['displayLanguage'] = language
-    log.info("[System] Set lang %s and redirect to %s" % (session['displayLanguage'], request_url))
-    return redirect(request_url)
+    log.info("[System] Set lang to %s and redirect to %s" % (session['displayLanguage'], request_url))
+    return redirect(request.url_root + request_url)
 
 # support routes
 @app.route('/Images/<imgType>/', methods = ['GET', 'POST'])
