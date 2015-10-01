@@ -543,7 +543,7 @@ def dev():
 @app.route('/Lang/<language>/<path:path>')
 def set_lang(language=None, path = '/'):
     session['displayLanguage'] = language
-    newPath = (request.url_root + path).replace('//', '/')
+    newPath = (path).replace('//', '/')
     log.info("[System] Set lang to %s and redirect to %s" % (session['displayLanguage'], newPath))
     return redirect(newPath)
 
