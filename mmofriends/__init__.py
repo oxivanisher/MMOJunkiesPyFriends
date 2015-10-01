@@ -630,7 +630,7 @@ def admin_set_loglevel(where = "System", level = "INFO"):
 
     if where == "System":
         log.warning("[System] Setting loglevel to: %s" % (levels[level]))
-        app.logger.setLevel(level)
+        app.logger.setLevel(levels[level])
     else:
         log.warning("[System] Setting loglevel for %s to: %s" % (where, levels[level]))
         pass
