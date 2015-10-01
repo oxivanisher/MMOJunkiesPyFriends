@@ -21,7 +21,7 @@
 
 		{#- Languages #}
 		{%- for key, value in config.LANGUAGES.iteritems() %}
-		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key, _external=True) }}" />
+		<link rel="alternate" hreflang="{{ key }}" href="{{ url_for('set_lang', language=key, request_url=request.path, _external=True) }}" />
 		{%- endfor -%}
 
 		<meta property="og:locale" content="en_US" />
