@@ -541,7 +541,8 @@ def set_lang(language=None, path = None):
         path = url_for('index')
     session['displayLanguage'] = language
     log.info("[System] Set lang to %s and redirect to %s" % (session['displayLanguage'], path))
-    return redirect((request.url_root + path).replace('//', '/'))
+    newpath = "%s%s" % (request.url_root, path)
+    return redirect(newpath.replace('//', '/'))
 
 # support routes
 @app.route('/Images/<imgType>/', methods = ['GET', 'POST'])
