@@ -41,7 +41,7 @@ class BlizzNetwork(MMONetwork):
                           'hearthstone': 'Hearthstone',
                           'hots': 'Heroes of the Storm' }
 
-        self.setLogLevel(logging.INFO)
+        # self.setLogLevel(logging.DEBUG)
 
         self.wowDataResourcesList = {
             'wowBattlegroups': "/wow/data/battlegroups/",

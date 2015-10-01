@@ -29,7 +29,7 @@ class RSSNews(MMONetwork):
     def __init__(self, app, session, handle):
         super(RSSNews, self).__init__(app, session, handle)
 
-        self.setLogLevel(logging.INFO)
+        # self.setLogLevel(logging.DEBUG)
 
         # background updater methods
         self.registerWorker(self.updateNews, 559)

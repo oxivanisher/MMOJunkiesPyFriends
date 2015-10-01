@@ -25,7 +25,7 @@ class TS3Network(MMONetwork):
     def __init__(self, app, session, handle):
         super(TS3Network, self).__init__(app, session, handle)
 
-        self.setLogLevel(logging.INFO)
+        # self.setLogLevel(logging.DEBUG)
 
         self.server = None
         self.connected = False

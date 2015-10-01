@@ -31,7 +31,7 @@ class TwitchNetwork(MMONetwork):
     def __init__(self, app, session, handle):
         super(TwitchNetwork, self).__init__(app, session, handle)
 
-        self.setLogLevel(logging.INFO)
+        # self.setLogLevel(logging.DEBUG)
 
         # admin methods
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))
