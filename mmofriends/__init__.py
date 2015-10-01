@@ -634,7 +634,7 @@ def admin_set_loglevel(where = "System", level = "INFO"):
     else:
         log.warning("[System] Setting loglevel for %s to: %s" % (where, levels[level]))
         pass
-    return url_for('index')
+    return redirect(url_for('index'))
 
 @app.route('/Administration/System_Status')
 def admin_system_status():
