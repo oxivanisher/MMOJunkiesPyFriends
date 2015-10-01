@@ -22,7 +22,6 @@ from mmobase.paypal import *
 from mmobase.systemworker import *
 
 log = getLogger(level=logging.INFO)
-log.setLevel(logging.INFO)
 
 # flask imports
 try:
@@ -377,6 +376,8 @@ except Exception as e:
 # localization methods
 @babel.localeselector
 def get_locale():
+    log.setLevel(logging.INFO)
+
     sessionLang = session.get('displayLanguage')
     if sessionLang:
         session['currentLocale'] = sessionLang
