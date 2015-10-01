@@ -513,12 +513,14 @@ def dev():
 # language route
 @app.route('/Lang/')
 @app.route('/Lang/<language>')
-@app.route('/Lang/<language><request_url>')
+@app.route('/Lang/<language>/<request_url>')
 def set_lang(language=None, request_url = None):
     session['displayLanguage'] = language
     if request_url:
+        log.info("[System] Language set redirect for %s@%s" % (session['displayLanguage'], request_url))
         return redirect(request_url)
     else:
+        log.info("[System] Language set redirect for %s@Index" % (session['displayLanguage']))
         return redirect(url_for('index'))
 
 # support routes
