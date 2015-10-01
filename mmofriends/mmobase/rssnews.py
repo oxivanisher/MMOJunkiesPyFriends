@@ -28,8 +28,8 @@ class RSSNews(MMONetwork):
 
     def __init__(self, app, session, handle):
         super(RSSNews, self).__init__(app, session, handle)
-        # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+
+        self.setLogLevel(logging.INFO)
 
         # background updater methods
         self.registerWorker(self.updateNews, 559)

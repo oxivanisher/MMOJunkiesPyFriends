@@ -30,8 +30,8 @@ class TwitchNetwork(MMONetwork):
 
     def __init__(self, app, session, handle):
         super(TwitchNetwork, self).__init__(app, session, handle)
-        # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+
+        self.setLogLevel(logging.INFO)
 
         # admin methods
         # self.adminMethods.append((self.updateBaseResources, 'Recache base resources'))

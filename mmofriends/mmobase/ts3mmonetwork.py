@@ -24,8 +24,8 @@ class TS3Network(MMONetwork):
     # class overwrites
     def __init__(self, app, session, handle):
         super(TS3Network, self).__init__(app, session, handle)
-        # activate debug while development
-        # self.setLogLevel(logging.DEBUG)
+
+        self.setLogLevel(logging.INFO)
 
         self.server = None
         self.connected = False
