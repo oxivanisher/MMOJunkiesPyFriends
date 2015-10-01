@@ -22,7 +22,7 @@ from mmobase.paypal import *
 from mmobase.systemworker import *
 
 # logging to file
-myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
+myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
 logPath = os.path.join(myPath, 'log/mmofriends.log')
 logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
 
