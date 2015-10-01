@@ -535,14 +535,10 @@ def dev():
 @app.route('/Lang/')
 @app.route('/Lang/<language>')
 @app.route('/Lang/<language>/<request_url>')
-def set_lang(language=None, request_url = None):
+def set_lang(language=None, request_url = url_for('index')):
     session['displayLanguage'] = language
-    if request_url:
-        log.info("[System] Language set redirect for %s@%s" % (session['displayLanguage'], request_url))
-        return redirect(request_url)
-    else:
-        log.info("[System] Language set redirect for %s@Index" % (session['displayLanguage']))
-        return redirect(url_for('index'))
+    log.info("[System] Set lang %s and redirect to %s" % (session['displayLanguage'], request_url))
+    return redirect(request_url)
 
 # support routes
 @app.route('/Images/<imgType>/', methods = ['GET', 'POST'])
