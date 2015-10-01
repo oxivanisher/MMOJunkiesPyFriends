@@ -619,6 +619,19 @@ def check_admin_permissions():
         log.warning("[System] <%s> tried to access admin without permission!")
         abort(403)
 
+@app.route('/Administration/SetLogLevel/<where>/<level>')
+def admin_set_loglevel(where = "System", level = "INFO"):
+    # https://docs.python.org/2/library/logging.html#logging-levels
+    check_admin_permissions()
+
+    if where == "System":
+        log.warning("[System] Setting loglevel to: %s" % (level))
+        app.logger.setLevel(level)
+    else:
+        log.warning("[System] Setting loglevel for %s to: %s" % (where, level))
+        pass
+    return url_for('index')
+
 @app.route('/Administration/System_Status')
 def admin_system_status():
     check_admin_permissions()
