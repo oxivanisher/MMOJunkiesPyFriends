@@ -114,10 +114,13 @@ except RuntimeError as e:
 
 with app.test_request_context():
     if not app.debug:
+        logging.setLevel(logging.INFO)
         from logging.handlers import SMTPHandler
         mail_handler = SMTPHandler(app.config['EMAILSERVER'], app.config['EMAILFROM'], app.config['ADMINS'], current_app.name + ' failed!')
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+    else:
+        logging.setLevel(logging.INFO)
 
 # initialize stuff
 app.config['networkConfig'] = YamlConfig(os.path.join(app.config['scriptPath'], "../config/mmonetworks.yml")).get_values()
