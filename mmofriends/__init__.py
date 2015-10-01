@@ -21,8 +21,6 @@ from mmobase.rssnews import *
 from mmobase.paypal import *
 from mmobase.systemworker import *
 
-log = getLogger(level=logging.INFO)
-
 # flask imports
 try:
     from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
@@ -69,6 +67,9 @@ except ImportError:
 
 # setup flask app
 app = Flask(__name__)
+
+app.logger = getLogger(level=logging.INFO)
+
 Compress(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
 app.config['startupDate'] = time.time()
