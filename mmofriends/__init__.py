@@ -410,26 +410,31 @@ def get_locale():
 @app.errorhandler(400)
 def error_bad_request(error):
     flash(gettext("Bad Request"), 'error')
+    log.warning("[System] 400 Bad Request: %s" % (request.path))
     return redirect(url_for('index'))
 
 @app.errorhandler(401)
 def error_unauthorized_request(error):
     flash(gettext("Unauthorized request"), 'error')
+    log.warning("[System] 401 Page not found: %s" % (request.path))
     return redirect(url_for('index'))
 
 @app.errorhandler(403)
 def error_forbidden_request(error):
     flash(gettext("Forbidden request"), 'error')
+    log.warning("[System] 403 Page not found: %s" % (request.path))
     return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def error_not_found(error):
     flash(gettext("Page not found"), 'error')
+    log.warning("[System] 404 Page not found: %s" % (request.path))
     return redirect(url_for('index'))
 
 @app.errorhandler(500)
 def error_internal_server_error(error):
     flash(gettext("The server encountered an internal error, probably a bug in the program. The administration was automatically informed of this problem."), 'error')
+    log.warning("[System] 500 Internal error: %s" % (request.path))
     return index()
 
 # app routes
