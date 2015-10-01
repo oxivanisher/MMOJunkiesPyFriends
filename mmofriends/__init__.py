@@ -22,6 +22,7 @@ from mmobase.paypal import *
 from mmobase.systemworker import *
 
 log = getLogger(level=logging.INFO)
+log.setLevel(logging.INFO)
 
 # flask imports
 try:
