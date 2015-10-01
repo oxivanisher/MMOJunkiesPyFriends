@@ -21,6 +21,12 @@ from mmobase.rssnews import *
 from mmobase.paypal import *
 from mmobase.systemworker import *
 
+log = logging.getLogger(__name__)
+# logging to file
+myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
+logPath = os.path.join(myPath, 'log/mmofriends.log')
+logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
+
 # flask imports
 try:
     from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, make_response, send_from_directory, current_app, jsonify, Markup
@@ -69,16 +75,16 @@ except ImportError:
 app = Flask(__name__)
 
 # setup logging
-myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../')
-logPath = os.path.join(myPath, 'log/mmofriends.log')
-app.logger.basicConfig(filename=logPath, format='%(asctime)s %(levelname)s:%(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=level)
-console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
-# formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
-# formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
-formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
-console.setFormatter(formatter)
-app.logger.addHandler(console)
+log = app.logger
+
+# logging to console
+# console = logging.StreamHandler()
+# console.setLevel(logging.DEBUG)
+# # formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
+# # formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
+# formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
+# console.setFormatter(formatter)
+# app.logger.addHandler(console)
 
 Compress(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
