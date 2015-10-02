@@ -1415,8 +1415,12 @@ def getGameLinks(request):
     if session.get('logged_in'):
         myGames = getGamesOfUser(session.get('userid'))
         for link in MMOGameLink.query.all():
-            if link.gameId in myGames[link.network_handle].keys():
-                retLinks.append(addLink(link))
+            try:
+                if link.gameId in myGames[link.network_handle].keys():
+                    retLinks.append(addLink(link))
+            except KeyError:
+                log.debug("[System] Requested links for not existing game")
+
     else:
         myGames = getGamesOfUser()
         for link in MMOGameLink.query.all():
