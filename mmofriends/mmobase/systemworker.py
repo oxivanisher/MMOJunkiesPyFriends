@@ -98,7 +98,7 @@ class MMOSystemWorker(object):
             db.session.flush()
             self.log.debug("commit")
             db.session.commit()
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
+        except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db.session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
 
