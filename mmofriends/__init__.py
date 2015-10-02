@@ -24,9 +24,10 @@ from mmobase.systemworker import *
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
 logPath = os.path.join(myPath, 'log/mmofriends.log')
-logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)-7s %(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.DEBUG)
+logging.basicConfig(filename=logPath, format='%(asctime)s %(levelname)-7s %(message)s', datefmt='%Y-%d-%m %H:%M:%S', level=logging.INFO)
 
 log = logging.getLogger(__name__)
+log.info("[System] MMOJunkies Friends system is starting up")
 
 # flask imports
 try:
