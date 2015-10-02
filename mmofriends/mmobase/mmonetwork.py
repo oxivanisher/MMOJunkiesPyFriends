@@ -551,11 +551,11 @@ class MMONetwork(object):
 
     # Dashboard methods
     def getDashboardBoxes(self):
-        self.log.info("[%s] Get dashboard boxes" % self.handle)
+        self.log.debug("[%s] Get dashboard boxes" % self.handle)
         return self.dashboardBoxes.keys()
 
     def getDashboardBox(self, handle):
-        self.log.info("[%s] Get dashboard box %s" % (self.handle, handle))
+        self.log.debug("[%s] Get dashboard box %s" % (self.handle, handle))
         if handle in self.dashboardBoxes.keys():
             return self.dashboardBoxes[handle]
         else:
