@@ -7,12 +7,16 @@ import json
 
 from mmonetwork import MMONetworkCache
 
-# from mmofriends import db
-from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
+from mmofriends import db
+# from flask.ext.sqlalchemy import SQLAlchemy
+# from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
+# db = SQLAlchemy()
 
-app = Flask(__name__)
-db = SQLAlchemy(app)
+# from sqlalchemy.orm import sessionmaker
+# Session = sessionmaker(bind=engine)
+# Session = sessionmaker()
+# Session.configure(bind=engine)
+# session = Session()
 
 # base class
 class MMOSystemWorker(object):
