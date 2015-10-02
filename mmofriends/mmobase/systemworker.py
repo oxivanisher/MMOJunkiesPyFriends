@@ -15,7 +15,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 # from mmofriends import db
 
-# from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 db = SQLAlchemy()
 
 # from sqlalchemy.orm import sessionmaker
