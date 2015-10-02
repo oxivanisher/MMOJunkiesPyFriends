@@ -620,7 +620,7 @@ def check_admin_permissions():
         abort(403)
 
 @app.route('/Administration/SetLogLevel/<where>/<level>')
-def admin_set_loglevel(where = "System", level = "INFO"):
+def admin_set_loglevel(where = "System", level = "info"):
     levels = {'error': logging.ERROR,
               'warning': logging.WARNING ,
               'info': logging.INFO ,
@@ -629,10 +629,14 @@ def admin_set_loglevel(where = "System", level = "INFO"):
     check_admin_permissions()
 
     if where == "System":
-        log.warning("[System] Setting loglevel to: %s" % (levels[level]))
+        log.warning("[System] Setting loglevel to %s" % (levels[level]))
         app.logger.setLevel(levels[level])
     else:
-        log.warning("[System] Setting loglevel for %s to: %s" % (where, levels[level]))
+        if where in MMONetworks.keys():
+            log.warning("[System] Setting loglevel for %s to %s" % (where, levels[level]))
+            MMONetworks[where].setLogLevel(levels[level])
+        else:
+            log.warning("[System] Unable to set loglevel for %s to %s (not found)" % (where, levels[level]))
         pass
     return redirect(url_for('index'))
 
