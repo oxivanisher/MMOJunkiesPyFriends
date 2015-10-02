@@ -264,7 +264,7 @@ def getBox(netHandle, methodHandle):
         try:
             return MMONetworks[netHandle].getDashboardBox(methodHandle)
         except KeyError:
-            log.warning("[System] Box method %s not found for network %s" % (methodHandle, netHandle))
+            log.warning("[System] Box method %s not found for network %s" % (methodHandle, netHandle))
 
 def checkPassword(password1, password2):
     valid = True
