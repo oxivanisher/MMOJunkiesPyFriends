@@ -113,6 +113,7 @@ class MMOSystemWorker(object):
             db.session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
         finally:
+            self.log.debug("remove")
             db.session.remove()
 
     def setLogLevel(self, level):
