@@ -571,7 +571,11 @@ def get_image(imgType, imgId = None):
                 fileName = app.config['OPENGRAPHLOGO']
                 filePath = os.path.join(app.config['scriptPath'], 'static')
             else:
-                fileName = MMONetworks[imgId].icon
+                if imgId in MMONetworks:
+                    fileName = MMONetworks[imgId].icon
+                else:
+                    fileName = app.config['PLACEHOLDER']
+                    filePath = os.path.join(app.config['scriptPath'], 'static')
         elif imgType == 'cache':
             fileName = imgId
         elif imgType == 'flag':
