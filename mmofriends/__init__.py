@@ -487,7 +487,7 @@ def before_request():
     if session.get('logged_in'):
         try:
             if time.time() - session.get('last_lock_check') > 300:
-                log.info("[System] Lock check for user '%s'" % (session.get('nick')))
+                log.debug("[System] Lock check for user '%s'" % (session.get('nick')))
                 myUser = getUserById(session.get('userid'))
                 if myUser.locked == True:
                     session['logmeout'] = True
@@ -1328,7 +1328,7 @@ def getSystemUsers(request):
                 netsReturn[net]['description'] = MMONetworks[net].description
                 netsReturn[net]['usersConnected'] = 0
             else:
-                log.info("[System] Unable to fetch network users from %s" % findList)
+                log.info("[System] Unable to fetch network users from %s" % net)
 
         users = MMOUser.query.all()
         sortOrders = {}
