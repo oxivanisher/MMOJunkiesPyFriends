@@ -7,8 +7,12 @@ import json
 
 from mmonetwork import MMONetworkCache
 
-from mmofriends import db
-# from flask.ext.sqlalchemy import SQLAlchemy
+from mmofriends import app
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy(app)
+
+# from mmofriends import db
+
 # from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 # db = SQLAlchemy()
 
