@@ -1328,7 +1328,7 @@ def getSystemUsers(request):
                 netsReturn[net]['description'] = MMONetworks[net].description
                 netsReturn[net]['usersConnected'] = 0
             else:
-                log.info("[System] Unable to fetch network users from %s" % net)
+                log.debug("[System] Unable to fetch network users from %s" % net)
 
         users = MMOUser.query.all()
         sortOrders = {}
