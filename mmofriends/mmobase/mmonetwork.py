@@ -428,6 +428,7 @@ class MMONetwork(object):
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db.session.rollback()
             self.log.error("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+            db.session.remove()
         # finally:
         #     db.session.close()
         # db.session.expire(ret)
