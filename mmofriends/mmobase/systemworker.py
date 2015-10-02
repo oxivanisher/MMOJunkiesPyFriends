@@ -11,7 +11,8 @@ from mmonetwork import MMONetworkCache
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 
-db = SQLAlchemy()
+app = Flask(__name__)
+db = SQLAlchemy(app)
 
 # base class
 class MMOSystemWorker(object):
@@ -39,7 +40,7 @@ class MMOSystemWorker(object):
             self.cache['backgroundTasks'][self.handle]['start'] = time.time()
             self.setCache('backgroundTasks')
 
-            self.log.debug("[SW:%s] Running work method...")
+            self.log.debug("[SW:%s] Running work method" % (self.handle))
             ret = self.work()
             endTime = time.time()
             self.lastRun = endTime
