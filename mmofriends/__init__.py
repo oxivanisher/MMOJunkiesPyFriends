@@ -142,7 +142,8 @@ app.jinja_env.globals.update(get_short_age=get_short_age)
 # app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database
-db = SQLAlchemy(app)
+# option 2! http://piotr.banaszkiewicz.org/blog/2012/06/29/flask-sqlalchemy-init_app/
+db = SQLAlchemy()
 with app.test_request_context():
     from mmobase.mmouser import *
     from mmobase.mmonetwork import *
