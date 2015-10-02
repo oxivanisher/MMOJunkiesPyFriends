@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# http://stackoverflow.com/questions/12044776/how-to-use-flask-sqlalchemy-in-a-celery-task
+
 import time
 import logging
 import json
 
 from mmonetwork import MMONetworkCache
 
-from mmofriends import app
+# from mmofriends import app
 from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
 # from mmofriends import db
 
 # from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
-# db = SQLAlchemy()
+db = SQLAlchemy()
 
 # from sqlalchemy.orm import sessionmaker
 # Session = sessionmaker(bind=engine)
@@ -110,6 +112,8 @@ class MMOSystemWorker(object):
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db.session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+        finally:
+            db.session.remove()
 
     def setLogLevel(self, level):
         self.log.info("[SW:%s] Setting loglevel to %s" % (self.handle, level))
