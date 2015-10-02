@@ -565,10 +565,10 @@ def get_image(imgType, imgId = None):
             fileName = MMOFriends[int(imgId)].avatar
         elif imgType == 'network':
             if imgId == 'System':
-                fileName = 'logo_trans_dark.png'
+                fileName = app.config['SYSTEMLOGO']
                 filePath = os.path.join(app.config['scriptPath'], 'static')
             elif imgId == 'OpenGraph':
-                fileName = 'logo_mmo_grau_qd.png'
+                fileName = app.config['OPENGRAPHLOGO']
                 filePath = os.path.join(app.config['scriptPath'], 'static')
             else:
                 fileName = MMONetworks[imgId].icon
@@ -792,7 +792,7 @@ def admin_bulk_email():
                     continue
                 if send_email(app, user.email, request.form['subject'],
                     "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
-                    'logo_banner1_mmo_color_qr.png'):
+                    app.config['EMAILBANNER']):
                     okCount += 1
                 else:
                     nokCount += 1
@@ -1004,7 +1004,7 @@ def profile_register():
                 if send_email(app, newUser.email,
                               gettext("MMOJunkies Activation Email"),
                               "<h3>%s %s</h3>" % (gettext("Hello"), request.form['nick']) + gettext("We are happy to welcome you to MMOJunkies!<br>Please verify your account with <a href='%(url)s'>this link</a>.<br><br><b>To remove the recurring message in Teamspeak, you have to connect yout TS3 user in the 'Network Connections' box.", url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
-                              'logo_banner1_mmo_color_qr.png'):
+                              app.config['EMAILBANNERWELCOME']):
                     flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=newUser.email), 'info')
                 else:
                     flash(gettext("Error sending the email to you."), 'error')
@@ -1050,7 +1050,7 @@ def profile_show(do = None):
 
     size = 80
     gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
-    gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(size)})
+    gravatar_url += urllib.urlencode({'d':url_for('static', filename=app.config['PLACEHOLDER'], _external=True), 's':str(size)})
 
     return render_template('profile_show.html', values = myUser, nicknames = myUser.nicks.all(), userAvatar = gravatar_url)
 
@@ -1167,7 +1167,7 @@ def profile_password_reset_request():
         if send_email(app, myUser.email,
                       gettext("MMOJunkies Password Reset"),
                       gettext("<h3>Hello %(nick)s</h3>You can reset your password with <a href='%(url)s'>this link</a>. If you did not request this password reset, you can just ignore it. Your current password is still valid.</b>", nick=myUser.nick, url=actUrl) + gettext("<br><br>Have fun and see you soon ;)"),
-                      'logo_banner1_mmo_color_qr.png'):
+                      app.config['EMAILBANNER']):
             flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
     else:
         flash(gettext("No user found with this email address"))
@@ -1187,7 +1187,7 @@ def profile_password_reset_verify(userId, verifyKey):
             if send_email(app, myUser.email,
                           gettext("MMOJunkies New Password"),
                           gettext("<h3>Hello %(nick)s</h3>Your new password is now <b>%(password)s</b>. Please change it right after you logged in.", nick=myUser.nick, password=newPassword) + gettext("<br><br>Have fun and see you soon ;)"),
-                          'logo_banner1_mmo_color_qr.png'):
+                          app.config['EMAILBANNER']):
                 flash(gettext("Please check your mails at %(emailaddr)s", emailaddr=myUser.email), 'info')
         else:
             myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
@@ -1254,7 +1254,7 @@ def partner_show(partnerId, netHandle = None):
 
     size = 120
     gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(myUser.email.lower()).hexdigest() + "?"
-    gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(size)})
+    gravatar_url += urllib.urlencode({'d':url_for('static', filename=app.config['PLACEHOLDER'], _external=True), 's':str(size)})
 
     return render_template('partner_show.html',
                             myUser = myUser,
@@ -1350,7 +1350,7 @@ def getSystemUsers(request):
                     userNicks.append(nick.nick)
 
                 gravatar_url = "//www.gravatar.com/avatar/" + hashlib.md5(user.email.lower()).hexdigest() + "?"
-                gravatar_url += urllib.urlencode({'d':url_for('static', filename='logo.png', _external=True), 's':str(16)})
+                gravatar_url += urllib.urlencode({'d':url_for('static', filename=app.config['PLACEHOLDER'], _external=True), 's':str(16)})
 
                 usersReturn[user.id] = { 'nick': user.nick,
                                          'avatar': gravatar_url,
