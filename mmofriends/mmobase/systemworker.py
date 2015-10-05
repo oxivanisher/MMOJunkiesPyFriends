@@ -7,22 +7,8 @@ import time
 import logging
 import json
 
-from mmonetwork import MMONetworkCache
-
-# from mmofriends import app
-from flask.ext.sqlalchemy import SQLAlchemy
-# db = SQLAlchemy(app)
-
-# from mmofriends import db
-
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
-db = SQLAlchemy()
-
-# from sqlalchemy.orm import sessionmaker
-# Session = sessionmaker(bind=engine)
-# Session = sessionmaker()
-# Session.configure(bind=engine)
-# session = Session()
+from mmofriends.mmoutils import *
+from mmofriends.models import *
 
 # base class
 class MMOSystemWorker(object):
@@ -71,7 +57,7 @@ class MMOSystemWorker(object):
         try:
             ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db.session.rollback()
+            db_session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on getCache: %s" % (self.handle, e))
             ret = False
 
@@ -103,18 +89,18 @@ class MMOSystemWorker(object):
 
         ret.last_update = int(time.time())
         self.log.debug("merge")
-        db.session.merge(ret)
+        db_session.merge(ret)
         try:
             self.log.debug("flush")
-            db.session.flush()
+            db_session.flush()
             self.log.debug("commit")
-            db.session.commit()
+            db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
-            db.session.rollback()
+            db_session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
-        finally:
-            self.log.debug("remove")
-            db.session.remove()
+        # finally:
+        #     self.log.debug("remove")
+        #     db_session.remove()
 
     def setLogLevel(self, level):
         self.log.info("[SW:%s] Setting loglevel to %s" % (self.handle, level))

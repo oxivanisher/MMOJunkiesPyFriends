@@ -16,85 +16,8 @@ import signal
 from flask import current_app
 from flask.ext.babel import Babel, gettext
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
-from mmoutils import *
-from mmouser import *
-from mmofriends import db
 
-class Timeout():
-    """Timeout class using ALARM signal."""
-    class Timeout(Exception):
-        pass
- 
-    def __init__(self, sec):
-        self.sec = sec
- 
-    def __enter__(self):
-        signal.signal(signal.SIGALRM, self.raise_timeout)
-        signal.alarm(self.sec)
- 
-    def __exit__(self, *args):
-        signal.alarm(0)    # disable alarm
- 
-    def raise_timeout(self, *args):
-        raise Timeout.Timeout()
-
-class MMONetworkCache(db.Model):
-    __tablename__ = 'mmonetcache'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    network_handle = db.Column(db.String(20))
-    entry_name = db.Column(db.String(20))
-    last_update = db.Column(db.Integer)
-    cache_data = db.Column(db.UnicodeText) #MEDIUMTEXT
-    
-    __table_args__ = (db.UniqueConstraint(network_handle, entry_name, name="handle_name_uc"), )
-
-    def __init__(self, network_handle, entry_name, cache_data = ""):
-        self.network_handle = network_handle
-        self.entry_name = entry_name
-        self.last_update = 0
-        self.cache_data = cache_data
-
-    def __repr__(self):
-        return '<MMONetworkCache %r>' % self.id
-
-    def get(self):
-        return json.loads(self.cache_data)
-
-    def set(self, cache_data):
-        self.cache_data = json.dumps(cache_data)
-
-    def age(self):
-        return int(time.time()) - self.last_update
-
-class MMOGameLink(db.Model):
-    __tablename__ = 'mmogamelink'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.ForeignKey('mmouser.id'))
-    user = db.relationship('MMOUser', backref=db.backref('gamelinks', lazy='dynamic'))
-    network_handle = db.Column(db.String(20))
-    gameId = db.Column(db.String(255))
-    link = db.Column(db.String(255))
-    name = db.Column(db.String(255))
-    comment = db.Column(db.UnicodeText)
-    date = db.Column(db.Integer)
-
-    __table_args__ = (db.UniqueConstraint(network_handle, gameId, link, name="net_game_link_uc"), )
-
-    def __init__(self, user_id, network_handle, gameId, link, name = "", comment = "", date = 0):
-        self.user_id = user_id
-        self.network_handle = network_handle
-        self.gameId = gameId
-        self.link = link
-        self.name = name
-        self.comment = comment
-        if not date:
-            date = int(time.time())
-        self.date = date
-
-    def __repr__(self):
-        return '<MMOGameLink %r>' % self.id
+from mmofriends.mmoutils import *
 
 class MMONetwork(object):
 
@@ -227,14 +150,14 @@ class MMONetwork(object):
         if updateLink:
             self.log.debug("[%s] Updating network link for user %s" % (self.handle, self.session['nick']))
             ret.network_data = network_data
-            db.session.merge(ret)
+            db_session.merge(ret)
         else:
             self.log.debug("[%s] Saving network link for user %s" % (self.handle, self.session['nick']))
             netLink = MMONetLink(self.session['userid'], self.handle, network_data)
-            db.session.add(netLink)
+            db_session.add(netLink)
 
-        db.session.flush()
-        db.session.commit()
+        # db_session.flush()
+        db_session.commit()
 
     def updateLink(self, userid, network_data, logger = None):
         if not logger:
@@ -247,9 +170,9 @@ class MMONetwork(object):
             return False
 
         ret.network_data = network_data
-        db.session.merge(ret)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(ret)
+        # db_session.flush()
+        db_session.commit()
         return True
 
     def loadLinks(self, userId):
@@ -262,21 +185,21 @@ class MMONetwork(object):
         netLinks = []
         if userId:
             self.log.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
-            for link in db.session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
+            for link in db_session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         else:
             self.log.debug("[%s] Getting all network links" % (self.handle))
-            for link in db.session.query(MMONetLink).filter_by(network_handle=self.handle):
+            for link in db_session.query(MMONetLink).filter_by(network_handle=self.handle):
                 netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         return netLinks
 
     def unlink(self, user_id, netLinkId):
         try:
-            link = db.session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
+            link = db_session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
             self.delSessionValue(self.linkIdName)
-            db.session.delete(link)
-            db.session.flush()
-            db.session.commit()
+            db_session.delete(link)
+            # db_session.flush()
+            db_session.commit()
             self.log.info("[%s] Unlinked network with userid %s and netLinkId %s" % (self.handle, user_id, netLinkId))
             return True
         except Exception as e:
@@ -383,7 +306,7 @@ class MMONetwork(object):
         try:
             ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db.session.rollback()
+            db_session.rollback()
             self.log.warning("[%s] SQL Alchemy Error on getCache: %s" % (self.handle, e))
             ret = False
 
@@ -403,7 +326,7 @@ class MMONetwork(object):
             self.log.debug("[%s] getCache - Setting up new cache: %s" % (self.handle, name))
             self.cache[name] = {}
 
-        # db.session.commit()
+        # db_session.commit()
 
     def setCache(self, name):
         # self.log.debug("Saving cache: %s" % name)
@@ -421,17 +344,17 @@ class MMONetwork(object):
             raise TypeError
 
         ret.last_update = int(time.time())
-        db.session.merge(ret)
+        db_session.merge(ret)
         try:
-            db.session.flush()
-            db.session.commit()
+            # db_session.flush()
+            db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
-            db.session.rollback()
+            db_session.rollback()
             self.log.error("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
-            db.session.remove()
+            # db_session.remove()
         # finally:
-        #     db.session.close()
-        # db.session.expire(ret)
+        #     db_session.close()
+        # db_session.expire(ret)
 
     def getCacheAge(self, name):
         # self.log.debug("Getting age of cache: %s" % name)
@@ -453,14 +376,14 @@ class MMONetwork(object):
             ret = MMONetworkCache(self.handle, name)
             
         ret.last_update = 0
-        db.session.merge(ret)
+        db_session.merge(ret)
         try:
-            db.session.flush()
-            db.session.commit()
+            # db_session.flush()
+            db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db.session.rollback()
+            db_session.rollback()
             self.log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
-        # db.session.expire(ret)
+        # db_session.expire(ret)
 
     # Background worker methods
     def background_worker(self, logger):
@@ -508,7 +431,7 @@ class MMONetwork(object):
                     ret = False
                 except OperationalError as e:
                     logger.warning("[%s] Background worker encountered DB OperationalError (%s) while working on %s." % (self.handle, e, method.func_name))
-                    db.session.remove()
+                    db_session.remove()
                     ret = False
                 except Exception as e:
                     logger.error("[%s] Exception catched in '%s':\n%s" % (self.handle, method.func_name, traceback.format_exc()))

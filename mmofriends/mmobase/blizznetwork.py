@@ -15,10 +15,10 @@ import numpy
 
 from flask import current_app, url_for, request, get_flashed_messages
 from flask.ext.babel import Babel, gettext
-from mmoutils import *
-from mmouser import *
-from mmonetwork import *
-from mmofriends import db
+
+from mmofriends.mmoutils import *
+from mmofriends.models import *
+from mmofriends.database import db_session
 
 try:
     from rauth.service import OAuth2Service
@@ -602,7 +602,7 @@ class BlizzNetwork(MMONetwork):
      
         try:
             if r['code']:
-                link = db.session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
+                link = db_session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
                 # self.unlink(self.session['userid'], link.id)
                 self.log.debug("[%s] queryBlizzardApi found code: %s" % (self.handle, r['code']))
                 with self.app.test_request_context():

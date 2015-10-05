@@ -10,16 +10,19 @@ import hashlib
 import itertools
 import contextlib
 
-from mmobase.mmouser import *
-from mmobase.mmonetwork import *
-from mmobase.mmoutils import *
-from mmobase.ts3mmonetwork import *
-from mmobase.valvenetwork import *
-from mmobase.blizznetwork import *
-from mmobase.twitchnetwork import *
-from mmobase.rssnews import *
-from mmobase.paypal import *
-from mmobase.systemworker import *
+
+# from mmobase.mmouser import *
+# from mmobase.mmonetwork import *
+# from mmobase.mmoutils import *
+# from mmobase.ts3mmonetwork import *
+# from mmobase.valvenetwork import *
+# from mmobase.blizznetwork import *
+# from mmobase.twitchnetwork import *
+# from mmobase.rssnews import *
+# from mmobase.paypal import *
+# from mmobase.systemworker import *
+from mmoutils import *
+from mmobase import *
 
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
@@ -36,12 +39,12 @@ except ImportError:
     log.error("[System] Please install flask")
     sys.exit(2)
 
-try:
-    from flask.ext.sqlalchemy import SQLAlchemy
-    from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
-except ImportError:
-    log.error("[System] Please install the flask extension: Flask-SQLAlchemy")
-    sys.exit(2)
+# try:
+#     from flask.ext.sqlalchemy import SQLAlchemy
+#     from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
+# except ImportError:
+#     log.error("[System] Please install the flask extension: Flask-SQLAlchemy")
+#     sys.exit(2)
 
 try:
     from flask.ext.openid import OpenID
@@ -72,6 +75,9 @@ except ImportError:
 # except ImportError:
 #     log.error("Please install python-twitter")
 #     sys.exit(2)
+
+# load database
+from mmofriends.database import db_session, init_db, engine
 
 # setup flask app
 app = Flask(__name__)
@@ -143,16 +149,17 @@ app.jinja_env.globals.update(get_short_age=get_short_age)
 
 # initialize database
 # option 2! http://piotr.banaszkiewicz.org/blog/2012/06/29/flask-sqlalchemy-init_app/
-db = SQLAlchemy()
+# db = SQLAlchemy()
 with app.test_request_context():
-    from mmobase.mmouser import *
-    from mmobase.mmonetwork import *
-    try:
-        db.create_all()
-    except OperationalError as e:
-        log.warning("System] Unable to create or check database tables! DB Server is probably not available...")
-    # db.session.autocommit = True
-    # db.session.autoflush = True
+    init_db()
+    # from mmobase.mmouser import *
+    # from mmobase.mmonetwork import *
+    # try:
+    #     db_create_all()
+    # except OperationalError as e:
+    #     log.warning("System] Unable to create or check database tables! DB Server is probably not available...")
+    # db_session.autocommit = True
+    # db_session.autoflush = True
     oid = OpenID(app)
     babel = Babel(app)
 
@@ -331,11 +338,11 @@ def background_worker():
     retryCount = 0
     while not connected:
         try:
-            db.session.execute("select 1").fetchall()
+            db_session.execute("select 1").fetchall()
             connected = True
         except OperationalError as e:
             retryCount += 1
-            db.session.remove()
+            db_session.remove()
             time.sleep(0.1)
     if retryCount:
         log.warning("[System] Background worker reconnected to DB after %s tries." % retryCount)
@@ -358,13 +365,13 @@ def background_worker():
         retryCount = 0
         while not connected:
             try:
-                db.session.execute("select 1").fetchall()
+                db_session.execute("select 1").fetchall()
                 connected = True
             except OperationalError as e:
                 if not retryCount:
                     log.warning("[System] Background worker encountered DB OperationalError: %s Sleeping..." % (e))
                 retryCount += 1
-                db.session.remove()
+                db_session.remove()
                 time.sleep(0.1)
         if retryCount:
             log.warning("[System] Background worker reconnected to DB after %s tries" % (retryCount))
@@ -390,7 +397,7 @@ def background_worker():
             lastNotify = time.time()
             log.warning("[System] Background worker status: Loop no.: %s; Uptime: %s" % (loopCount, get_long_duration(lastNotify - startupTime)))
 
-        db.session.remove()
+        db_session.remove()
         time.sleep(1)
 
 try:
@@ -445,11 +452,11 @@ def error_internal_server_error(error):
 # app routes
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db.session.remove()
+    db_session.remove()
 
 @app.before_first_request
 def before_first_request():
-    db.session.remove()
+    # db_session.remove()
     loadNetworks()
 
 @app.before_request
@@ -466,14 +473,14 @@ def before_request():
     retryCount = 0
     while not connected:
         try:
-            db.session.execute("select 1").fetchall()
+            db_session.execute("select 1").fetchall()
             connected = True
         except OperationalError:
             retryCount += 1
             if retryCount > 20:
                 return render_template('epic_fail.html')
             else:
-                db.session.remove()
+                db_session.remove()
                 time.sleep(0.1)
 
     try:
@@ -664,19 +671,19 @@ def admin_system_status():
     infos['loadedNets'] = loadedNets
 
     infos['tablesizes'] = [] # name, size
-    result = db.engine.execute("""SELECT table_name AS "name", 
-                                  round(data_length + index_length) "size" 
-                                  FROM information_schema.TABLES 
-                                  WHERE table_schema = "%(dbname)s"
-                                  ORDER BY (data_length + index_length) DESC;""" % {'dbname': 'mmofriends'})
+    result = engine.execute("""SELECT table_name AS "name", 
+                               round(data_length + index_length) "size" 
+                               FROM information_schema.TABLES 
+                               WHERE table_schema = "%(dbname)s"
+                               ORDER BY (data_length + index_length) DESC;""" % {'dbname': 'mmofriends'})
     for row in result:
         infos['tablesizes'].append({ 'name': row['name'], 'size': bytes2human(row['size'])})
 
     infos['cachesizes'] = [] # handle, name, size
-    result = db.engine.execute("""SELECT network_handle, entry_name,
-                                  CHAR_LENGTH(cache_data) AS 'size'
-                                  FROM %(cachename)s
-                                  ORDER BY CHAR_LENGTH(cache_data) DESC;""" % {'cachename': 'mmonetcache'})
+    result = engine.execute("""SELECT network_handle, entry_name,
+                               CHAR_LENGTH(cache_data) AS 'size'
+                               FROM %(cachename)s
+                               ORDER BY CHAR_LENGTH(cache_data) DESC;""" % {'cachename': 'mmonetcache'})
     for row in result:
         infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
 
@@ -709,9 +716,9 @@ def admin_user_management_togglelock(userId):
         myUser.load()
         myUser.locked = not myUser.locked
         log.info("[System] Lock state of '%s' was changed to: %s" % (myUser.nick, myUser.locked))
-        db.session.merge(myUser)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(myUser)
+        # db_session.flush()
+        db_session.commit()
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/User_Management/ToggleAdmin/<userId>')
@@ -723,9 +730,9 @@ def admin_user_management_toggleadmin(userId):
             myUser.load()
             myUser.admin = not myUser.admin
             log.info("[System] Admin state of '%s' was changed to: %s" % (myUser.nick, myUser.admin))
-            db.session.merge(myUser)
-            db.session.flush()
-            db.session.commit()
+            db_session.merge(myUser)
+            # db_session.flush()
+            db_session.commit()
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
@@ -1005,10 +1012,10 @@ def profile_register():
                 newUser.locked = False
                 newUser.veryfied = True
 
-            db.session.add(newUser)
+            db_session.add(newUser)
             try:
-                db.session.flush()
-                db.session.commit()
+                # db_session.flush()
+                db_session.commit()
                 actUrl = url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey, _external=True)
                 if send_email(app, newUser.email,
                               gettext("MMOJunkies Activation Email"),
@@ -1021,10 +1028,10 @@ def profile_register():
                 return redirect(url_for('index'))
 
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-                db.session.rollback()
+                db_session.rollback()
                 flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
                 log.warning("[System] SQL Alchemy Error: %s" % e)
-            # db.session.expire(newUser)
+            # db_session.expire(newUser)
     
     return render_template('profile_register.html', values = request.form)
 
@@ -1052,9 +1059,9 @@ def profile_show(do = None):
             myUser.name = request.form['name']
             userChanged = True
     if userChanged:
-        db.session.merge(myUser)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(myUser)
+        # db_session.flush()
+        db_session.commit()
         flash(gettext("Profile changed"), 'success')
 
     size = 80
@@ -1087,17 +1094,17 @@ def profile_verify(userId, verifyKey):
     if not verifyUser:
         flash(gettext("User not found to verify."))
     elif verifyUser.verify(verifyKey):
-        db.session.merge(verifyUser)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(verifyUser)
+        # db_session.flush()
+        db_session.commit()
         if verifyUser.veryfied:
-            # db.session.expire(verifyUser)
+            # db_session.expire(verifyUser)
             flash(gettext("Verification ok. Please log in."), 'success')
             # return redirect(url_for('profile_login'))
             return redirect(url_for('index'))
         else:
             flash(gettext("Verification NOT ok. Please try again."), 'error')
-    # db.session.expire(verifyUser)
+    # db_session.expire(verifyUser)
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
@@ -1169,9 +1176,9 @@ def profile_password_reset_request():
     if myUser:
         myUser.load()
         myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
-        db.session.merge(myUser)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(myUser)
+        # db_session.flush()
+        db_session.commit()
         actUrl = url_for('profile_password_reset_verify', userId=myUser.id, verifyKey=myUser.verifyKey, _external=True)
         if send_email(app, myUser.email,
                       gettext("MMOJunkies Password Reset"),
@@ -1201,9 +1208,9 @@ def profile_password_reset_verify(userId, verifyKey):
         else:
             myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
             flash(gettext("Wrong verification link. Please request a new one."))
-        db.session.merge(myUser)
-        db.session.flush()
-        db.session.commit()
+        db_session.merge(myUser)
+        # db_session.flush()
+        db_session.commit()
     return redirect(url_for('index'))
 
 # partner routes
@@ -1459,12 +1466,12 @@ def game_links_add():
                                   request.form['name'],
                                   request.form['comment'])
 
-            db.session.add(newLink)
+            db_session.add(newLink)
             try:
-                db.session.flush()
-                db.session.commit()
+                # db_session.flush()
+                db_session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-                db.session.rollback()
+                db_session.rollback()
                 flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
                 log.warning("[System] SQL Alchemy Error: %s" % e)
 
@@ -1612,12 +1619,12 @@ def paypal_webhook():
                                       paypal_verify_request.read(),
                                       request.form.get('memo'))
 
-        db.session.add(newPayment)
+        db_session.add(newPayment)
         try:
-            db.session.flush()
-            db.session.commit()
+            # db_session.flush()
+            db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db.session.rollback()
+            db_session.rollback()
             log.warning("[System] SQL Alchemy Error: %s" % e)
 
         log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))

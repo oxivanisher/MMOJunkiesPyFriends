@@ -12,10 +12,9 @@ import re
 
 from flask import current_app
 from flask.ext.babel import Babel, gettext
-from mmoutils import *
-from mmouser import *
-from mmonetwork import *
-from mmofriends import db
+
+from mmofriends.mmoutils import *
+from mmofriends.models import *
 
 try:
     import feedparser

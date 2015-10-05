@@ -14,10 +14,9 @@ import urllib
 
 from flask import current_app, url_for
 from flask.ext.babel import Babel, gettext
-from mmoutils import *
-from mmouser import *
-from mmonetwork import *
-from mmofriends import db
+
+from mmofriends.mmoutils import *
+from mmofriends.models import *
 
 try:
     from rauth.service import OAuth2Service
@@ -202,8 +201,9 @@ class TwitchNetwork(MMONetwork):
                 self.log.warning("[%s] queryTwitchApi ran into exception %s for: %s" % (self.handle, e, what))
                 return (False, e)
         else:
-            self.log.warning("[%s] queryTwitchApi %s tries reached for: %s" % (self.handle, tryCount, e, what))
-            return (False, e)
+            message = "queryTwitchApi %s tries reached for: %s" % (tryCount, e, what)
+            self.log.warning("[%s] %s" % (self.handle, message))
+            return (False, message)
         return (True, r)
 
     def updateUserResources(self, userid = None, accessToken = None, logger = None):

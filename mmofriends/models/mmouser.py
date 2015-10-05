@@ -8,29 +8,28 @@ import time
 import string
 import random
 
-from mmoutils import *
-from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError
-# from mmofriends import db, app
-db = SQLAlchemy()
+from sqlalchemy import Boolean, Column, Integer, String, UnicodeText, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship, backref
+
+from mmofriends.mmoutils import *
+from mmofriends.database import Base
 
 from paypal import MMOPayPalPayment
 
 class MMOUserLevel(object):
-
     pass
 
-class MMONetLink(db.Model):
+class MMONetLink(Base):
     __tablename__ = 'mmonetlink'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.ForeignKey('mmouser.id'))
-    user = db.relationship('MMOUser', backref=db.backref('links', lazy='dynamic'))
-    network_handle = db.Column(db.String(20))
-    network_data = db.Column(db.String(200))
-    linked_date = db.Column(db.Integer)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('mmouser.id'))
+    user = relationship('MMOUser', backref=backref('links', lazy='dynamic'))
+    network_handle = Column(String(20))
+    network_data = Column(String(200))
+    linked_date = Column(Integer)
 
-    __table_args__ = (db.UniqueConstraint(user_id, network_handle, name="userid_network_handle_uc"), )
+    __table_args__ = (UniqueConstraint(user_id, network_handle, name="userid_network_handle_uc"), )
 
     def __init__(self, user_id, network_handle, network_data = "", linked_date = 0):
         self.user_id = user_id
@@ -44,15 +43,15 @@ class MMONetLink(db.Model):
         return '<MMONetLink %r>' % self.id
 
 
-class MMOUserNick(db.Model):
+class MMOUserNick(Base):
     __tablename__ = 'mmousernick'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user = db.relationship('MMOUser', backref=db.backref('nicks', lazy='dynamic'))
-    user_id = db.Column(db.ForeignKey('mmouser.id'))
-    nick = db.Column(db.String(25))    
+    id = Column(Integer, primary_key=True)
+    user = relationship('MMOUser', backref=backref('nicks', lazy='dynamic'))
+    user_id = Column(Integer, ForeignKey('mmouser.id'))
+    nick = Column(String(25))    
 
-    __table_args__ = (db.UniqueConstraint(user_id, nick, name="userid_nick_uc"), )
+    __table_args__ = (UniqueConstraint(user_id, nick, name="userid_nick_uc"), )
 
     def __init__(self, user_id, nick):
         self.user_id = user_id
@@ -62,22 +61,22 @@ class MMOUserNick(db.Model):
         return '<MMOUserNick %r' % self.id
 
 
-class MMOUser(db.Model):
+class MMOUser(Base):
     __tablename__ = 'mmouser'
 
-    id = db.Column(db.Integer, primary_key=True)
-    nick = db.Column(db.String(20), unique=True)
-    name = db.Column(db.String(20), unique=False)
-    email = db.Column(db.String(120), unique=True)
-    website = db.Column(db.String(120), unique=False)
-    password = db.Column(db.String(512), unique=False)
-    joinedDate = db.Column(db.Integer, unique=False)
-    lastLoginDate = db.Column(db.Integer, unique=False)
-    lastRefreshDate = db.Column(db.Integer, unique=False)
-    verifyKey = db.Column(db.String(32), unique=False)
-    admin = db.Column(db.Boolean)
-    locked = db.Column(db.Boolean)
-    veryfied = db.Column(db.Boolean)
+    id = Column(Integer, primary_key=True)
+    nick = Column(String(20), unique=True)
+    name = Column(String(20), unique=False)
+    email = Column(String(120), unique=True)
+    website = Column(String(120), unique=False)
+    password = Column(String(512), unique=False)
+    joinedDate = Column(Integer, unique=False)
+    lastLoginDate = Column(Integer, unique=False)
+    lastRefreshDate = Column(Integer, unique=False)
+    verifyKey = Column(String(32), unique=False)
+    admin = Column(Boolean)
+    locked = Column(Boolean)
+    veryfied = Column(Boolean)
 
     def __init__(self, nick):
         self.log = logging.getLogger(__name__)
@@ -150,11 +149,11 @@ class MMOUser(db.Model):
         if nick:
             newNick = MMOUserNick(self.id, nick)
             try:
-                db.session.add(newNick)
-                db.session.flush()
-                db.session.commit()
+                session.add(newNick)
+                session.flush()
+                session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                db.session.rollback()
+                session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -165,11 +164,11 @@ class MMOUser(db.Model):
         if nickId:
             oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
             try:
-                db.session.delete(oldNick)
-                db.session.flush()
-                db.session.commit()
+                session.delete(oldNick)
+                session.flush()
+                session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                db.session.rollback()
+                session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -183,7 +182,7 @@ class MMOUser(db.Model):
             for donation in donations:
                 amount += float(donation.payment_amount)
         except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-            db.session.rollback()
+            session.rollback()
             self.log.warning("[User] SQL Alchemy Error: %s" % e)
         self.donated = amount
 

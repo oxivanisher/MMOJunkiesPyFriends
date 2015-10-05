@@ -8,9 +8,9 @@ import random
 
 from flask import current_app, url_for
 from flask.ext.babel import Babel, gettext
-from mmofriends import db
-from mmonetwork import *
-from mmoutils import *
+
+from mmofriends.mmoutils import *
+from mmofriends.models import *
 
 try:
     import ts3

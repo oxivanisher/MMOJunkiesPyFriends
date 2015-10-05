@@ -2,32 +2,33 @@
 # -*- coding: utf-8 -*-
 
 import time
+from sqlalchemy import Column, Integer, String, UnicodeText, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship, backref
 
-# from mmofriends import db
-from flask.ext.sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+from mmofriends.mmoutils import *
+from mmofriends.database import Base
 
-class MMOPayPalPayment(db.Model):
+class MMOPayPalPayment(Base):
     __tablename__ = 'mmopaypalpayment'
 
-    id = db.Column(db.Integer, primary_key=True)
-    item_name = db.Column(db.String(255))
-    item_number = db.Column(db.String(255))
-    custom = db.Column(db.String(255))
-    payment_status =  db.Column(db.String(255))
-    payment_amount =  db.Column(db.String(255))
-    payment_currency =  db.Column(db.String(255))
-    payment_type =  db.Column(db.String(255))
-    payment_date =  db.Column(db.String(255))
-    txn_id =  db.Column(db.String(255))
-    txn_type =  db.Column(db.String(255))
-    receiver_email =  db.Column(db.String(255))
-    receiver_id =  db.Column(db.String(255))
-    payer_email =  db.Column(db.String(255))
-    test_ipn =  db.Column(db.String(255))
-    response_string =  db.Column(db.String(255))
-    memo =  db.Column(db.String(255))
-    date = db.Column(db.Integer)
+    id = Column(Integer, primary_key=True)
+    item_name = Column(String(255))
+    item_number = Column(String(255))
+    custom = Column(String(255))
+    payment_status =  Column(String(255))
+    payment_amount =  Column(String(255))
+    payment_currency =  Column(String(255))
+    payment_type =  Column(String(255))
+    payment_date =  Column(String(255))
+    txn_id =  Column(String(255))
+    txn_type =  Column(String(255))
+    receiver_email =  Column(String(255))
+    receiver_id =  Column(String(255))
+    payer_email =  Column(String(255))
+    test_ipn =  Column(String(255))
+    response_string =  Column(String(255))
+    memo =  Column(String(255))
+    date = Column(Integer)
 
     def __init__(self, item_name, item_number, custom, payment_status, payment_amount, payment_currency, payment_type, payment_date, txn_id, txn_type, receiver_email, receiver_id, payer_email, test_ipn, response_string, memo):
         self.item_name = item_name
