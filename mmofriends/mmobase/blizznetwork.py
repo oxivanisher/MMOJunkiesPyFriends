@@ -393,8 +393,9 @@ class BlizzNetwork(MMONetwork):
                                         self.cache['wowFeeds'][link['user_id']]
                                     except KeyError:
                                         self.cache['wowFeeds'][link['user_id']] = {}
-                                    self.cache['wowFeeds'][link['user_id']][retMessage['characters'][charIndex]['name']] = detailRetMessage
-                                    feedCount += 1
+                                    if detailRetMessage != '{"status": "nok", "reason": "Character not found."}':
+                                        self.cache['wowFeeds'][link['user_id']][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                                        feedCount += 1
 
                     if link['user_id'] in self.cache['wowFeeds']:
                         logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][link['user_id']]), self.getUserById(link['user_id']).nick))
@@ -410,7 +411,10 @@ class BlizzNetwork(MMONetwork):
         self.getCache('lastly')
         self.cache['lastly'] = {}
         for userid in self.cache['wowFeeds'].keys():
-            if 'characters' not in self.cache['wowProfiles'][userid].keys():
+            try:
+                if 'characters' not in self.cache['wowProfiles'][userid].keys():
+                    continue
+            except KeyError:
                 continue
             bestChar = self.getBestWowChar(self.cache['wowProfiles'][userid]['characters'])
 
