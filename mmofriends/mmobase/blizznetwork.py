@@ -313,7 +313,7 @@ class BlizzNetwork(MMONetwork):
         self.setSessionValue(self.linkIdName, access_token)
         # self.updateBaseResources(False)
         self.updateUserResources()
-        return self.cache['battletags'][unicode(self.session['userid'])]
+        return self.cache['battletags'][self.session['userid']]
 
     # update resource helpers
     def updateBaseResources(self, force = True):
@@ -390,14 +390,14 @@ class BlizzNetwork(MMONetwork):
                                 (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=feed&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), link['network_data'])
                                 if detailRetValue != False:
                                     try:
-                                        self.cache['wowFeeds'][unicode(link['user_id'])]
+                                        self.cache['wowFeeds'][link['user_id']]
                                     except KeyError:
-                                        self.cache['wowFeeds'][unicode(link['user_id'])] = {}
-                                    self.cache['wowFeeds'][unicode(link['user_id'])][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                                        self.cache['wowFeeds'][link['user_id']] = {}
+                                    self.cache['wowFeeds'][link['user_id']][retMessage['characters'][charIndex]['name']] = detailRetMessage
                                     feedCount += 1
 
-                    if unicode(link['user_id']) in self.cache['wowFeeds']:
-                        logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][unicode(link['user_id'])]), self.getUserById(link['user_id']).nick))
+                    if link['user_id'] in self.cache['wowFeeds']:
+                        logger.debug("[%s] Updated %s feed(s) for %s" % (self.handle, len(self.cache['wowFeeds'][link['user_id']]), self.getUserById(link['user_id']).nick))
                     else:
                         logger.debug("[%s] Updated no feeds for %s" % (self.handle, self.getUserById(link['user_id']).nick))
 
@@ -489,7 +489,7 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             self.getCache('battletags')
             if 'battletag' in retMessage:
-                self.cache['battletags'][unicode(userid)] = retMessage['battletag']
+                self.cache['battletags'][userid] = retMessage['battletag']
                 self.setCache('battletags')
                 userNick = "%s (%s)" % (userNick, retMessage['battletag'])
                 logger.info("[%s] Updated battletag %s" % (self.handle, retMessage['battletag']))
@@ -510,7 +510,7 @@ class BlizzNetwork(MMONetwork):
         if retValue != False:
             lowieCount = 0
             self.getCache('wowProfiles')
-            self.cache['wowProfiles'][unicode(userid)] = retMessage
+            self.cache['wowProfiles'][userid] = retMessage
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
                 self.getCache('wowAchievments')
@@ -526,20 +526,20 @@ class BlizzNetwork(MMONetwork):
                         (detailRetValue, detailRetMessage) = self.queryBlizzardApi('/wow/character/%s/%s?fields=achievements&locale=en_GB' % (retMessage['characters'][charIndex]['realm'], retMessage['characters'][charIndex]['name']), accessToken)
                         if detailRetValue != False:
                             try:
-                                self.cache['wowAchievments'][unicode(userid)]
+                                self.cache['wowAchievments'][userid]
                             except KeyError:
-                                self.cache['wowAchievments'][unicode(userid)] = {}
-                            self.cache['wowAchievments'][unicode(userid)][retMessage['characters'][charIndex]['name']] = detailRetMessage
+                                self.cache['wowAchievments'][userid] = {}
+                            self.cache['wowAchievments'][userid][retMessage['characters'][charIndex]['name']] = detailRetMessage
                     self.setCache('wowAchievments')
 
-                logger.info("[%s] Updated %s WoW characters (ignored %s lowies)" % (self.handle, len(self.cache['wowProfiles'][unicode(userid)]['characters']), lowieCount))
+                logger.info("[%s] Updated %s WoW characters (ignored %s lowies)" % (self.handle, len(self.cache['wowProfiles'][userid]['characters']), lowieCount))
 
         # fetching d3 profile
-        if self.cache['battletags'][unicode(userid)]:
-            (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][unicode(userid)].replace('#', '-'), accessToken)
+        if self.cache['battletags'][userid]:
+            (retValue, retMessage) = self.queryBlizzardApi('/d3/profile/%s/' % self.cache['battletags'][userid].replace('#', '-'), accessToken)
             if retValue != False:
                 self.getCache('d3Profiles')
-                self.cache['d3Profiles'][unicode(userid)] = retMessage
+                self.cache['d3Profiles'][userid] = retMessage
                 self.setCache('d3Profiles')
                 logger.info("[%s] Updated D3 Profile" % (self.handle))
 
@@ -547,7 +547,7 @@ class BlizzNetwork(MMONetwork):
         (retValue, retMessage) = self.queryBlizzardApi('/sc2/profile/user', accessToken)
         if retValue != False:
             self.getCache('sc2Profiles')
-            self.cache['sc2Profiles'][unicode(userid)] = retMessage
+            self.cache['sc2Profiles'][userid] = retMessage
             self.setCache('sc2Profiles')
             logger.info("[%s] Updated SC2 Profile" % (self.handle))
 
@@ -737,11 +737,11 @@ class BlizzNetwork(MMONetwork):
 
         games = self.products
 
-        if unicode(userId) not in self.cache['wowProfiles'].keys():
+        if userId not in self.cache['wowProfiles'].keys():
             games.pop("worldofwarcraft", None)
-        if unicode(userId) not in self.cache['d3Profiles'].keys():
+        if userId not in self.cache['d3Profiles'].keys():
             games.pop("diablo3", None)
-        if unicode(userId) not in self.cache['sc2Profiles'].keys():
+        if userId not in self.cache['sc2Profiles'].keys():
             games.pop("starcraft2", None)
 
         return games
