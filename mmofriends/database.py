@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+from flask import Flask
+
 try:
     from sqlalchemy import create_engine
     from sqlalchemy.orm import scoped_session, sessionmaker
@@ -9,7 +13,15 @@ except ImportError:
     log.error("[System] Please install the sqlalchemy")
     sys.exit(2)
 
-engine = create_engine('sqlite:////tmp/test.db', convert_unicode=True)
+try:
+    os.environ['MMOFRIENDS_CFG']
+except KeyError:
+    os.environ['MMOFRIENDS_CFG'] = "../dist/mmofriends.cfg.example"
+
+dbapp = Flask(__name__)
+dbapp.config.from_envvar('MMOFRIENDS_CFG', silent=False)
+
+engine = create_engine(dbapp.config['SQLALCHEMY_DATABASE_URI'], convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

@@ -3,9 +3,15 @@ DEBUG = True
 ROOTUSER = "admin"
 APPSECRET = 'some key'
 ADMINS = ['you@email.com']
-#WEBURL = "https://localhost:5000"
-FAVICON = "some_img.png"
-LOGO = "some_img.png"
+COMPRESS_DEBUG = True
+COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml', 'application/json', 'application/javascript', 'text/javascript']
+FAVICON = "placeholder.png"
+SYSTEMLOGO = "placeholder.png"
+OPENGRAPHLOGO = "placeholder.png"
+PLACEHOLDER = "placeholder.png"
+EMAILBANNER = "logo_banner2_mmo_color_qr.png"
+EMAILBANNERWELCOME = "logo_banner1_mmo_color_qr.png"
+
 
 # email
 EMAILSERVER = "127.0.0.1"

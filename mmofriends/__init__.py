@@ -23,6 +23,7 @@ import contextlib
 # from mmobase.systemworker import *
 from mmoutils import *
 from mmobase import *
+from models import *
 
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')
@@ -155,7 +156,7 @@ with app.test_request_context():
     # from mmobase.mmouser import *
     # from mmobase.mmonetwork import *
     # try:
-    #     db_create_all()
+    #     db.create_all()
     # except OperationalError as e:
     #     log.warning("System] Unable to create or check database tables! DB Server is probably not available...")
     # db_session.autocommit = True
