@@ -18,6 +18,10 @@ from flask.ext.babel import Babel, gettext
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
 
 from mmofriends.mmoutils import *
+from mmonetcache import *
+from mmogamelink import *
+from mmouser import *
+from mmofriends.database import Base, db_session
 
 class MMONetwork(object):
 

@@ -811,17 +811,17 @@ class ValveNetwork(MMONetwork):
 
     # Dashboard
     def dashboard_games2weeks(self, request):
-        self.log.debug("Dashboard games2weeks")
+        self.log.debug("[%s] Dashboard games2weeks" % (self.handle))
         return self.getGameStats('games2weeks')
 
     def dashboard_gamesForever(self, request):
-        self.log.debug("Dashboard gamesForever")
+        self.log.debug("[%s] Dashboard gamesForever" % (self.handle))
         return self.getGameStats('gamesForever')
 
     def dashboard_gamesUsers(self, request):
-        self.log.debug("Dashboard gamesUsers")
+        self.log.debug("[%s] Dashboard gamesUsers" % (self.handle))
         return self.getGameStats('gamesUsers')
 
     def dashboard_nowBeeingPlayed(self, request):
-        self.log.debug("Dashboard gamesUsers")
+        self.log.debug("[%s] Dashboard gamesUsers" % (self.handle))
         return self.getGameStats('gamesNowPlaying')

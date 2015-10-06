@@ -108,7 +108,7 @@ class RSSNews(MMONetwork):
 
     # Dashboard
     def dashboard_getNews(self, request):
-        self.log.debug("Dashboard getNews")
+        self.log.debug("[%s] Dashboard getNews" % (self.handle))
         self.getCache('feeds')
 
         feedRet = []

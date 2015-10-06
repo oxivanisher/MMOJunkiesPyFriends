@@ -47,6 +47,9 @@ class MMOSystemWorker(object):
             self.cache['backgroundTasks'][self.handle]['result'] = ret
             self.setCache('backgroundTasks')
 
+            self.log.debug("remove")
+            db_session.remove()
+
             return ret
 
     def work(self):
@@ -91,16 +94,13 @@ class MMOSystemWorker(object):
         self.log.debug("merge")
         db_session.merge(ret)
         try:
-            self.log.debug("flush")
-            db_session.flush()
+            # self.log.debug("flush")
+            # db_session.flush()
             self.log.debug("commit")
             db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db_session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
-        # finally:
-        #     self.log.debug("remove")
-        #     db_session.remove()
 
     def setLogLevel(self, level):
         self.log.info("[SW:%s] Setting loglevel to %s" % (self.handle, level))

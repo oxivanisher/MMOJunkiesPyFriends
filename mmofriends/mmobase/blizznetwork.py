@@ -771,7 +771,7 @@ class BlizzNetwork(MMONetwork):
             
     # Dashboard
     def dashboard_wowChars(self, request):
-        self.log.debug("Dashboard wowChars")
+        self.log.debug("[%s] Dashboard wowChars" % (self.handle))
 
         self.getCache('wowProfiles')
 

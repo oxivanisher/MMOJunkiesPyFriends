@@ -22,8 +22,8 @@ import contextlib
 # from mmobase.paypal import *
 # from mmobase.systemworker import *
 from mmoutils import *
-from mmobase import *
 from models import *
+from mmobase import *
 
 # logging to file
 myPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../')

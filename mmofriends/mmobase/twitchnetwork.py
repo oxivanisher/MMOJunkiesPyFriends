@@ -348,7 +348,7 @@ class TwitchNetwork(MMONetwork):
 
     # Dashbord boxes
     def dashboard_channels(self, request):
-        self.log.debug("Dashboard channels")
+        self.log.debug("[%s] Dashboard channels" % (self.handle))
         self.getCache("channels")
         self.getCache("streams")
 
