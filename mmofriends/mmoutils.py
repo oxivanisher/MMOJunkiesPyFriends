@@ -13,6 +13,8 @@ import textwrap
 import time
 import smtplib
 import gzip
+import signal
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage

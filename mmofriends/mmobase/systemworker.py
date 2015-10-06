@@ -47,7 +47,6 @@ class MMOSystemWorker(object):
             self.cache['backgroundTasks'][self.handle]['result'] = ret
             self.setCache('backgroundTasks')
 
-            self.log.debug("remove")
             db_session.remove()
 
             return ret
@@ -84,19 +83,14 @@ class MMOSystemWorker(object):
             ret = MMONetworkCache(self.handle, name)
 
         try:
-            self.log.debug("set")
             ret.set(self.cache[name])
         except TypeError as e:
             self.log.warning("[SW:%s] setCache - Unable to set cache (TypeError): %s (%s)" % (self.handle, name, e))
             raise TypeError
 
         ret.last_update = int(time.time())
-        self.log.debug("merge")
         db_session.merge(ret)
         try:
-            # self.log.debug("flush")
-            # db_session.flush()
-            self.log.debug("commit")
             db_session.commit()
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db_session.rollback()
