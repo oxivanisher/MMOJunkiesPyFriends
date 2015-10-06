@@ -22,7 +22,7 @@ EMAILPASSWORD = ""
 
 # database
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mmofriends.db'
-#with mysql: SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/mmofriends'
+#with mysql: SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/mmofriends?charset=utf8'
 SQLALCHEMY_POOL_RECYCLE = 1800
 SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
