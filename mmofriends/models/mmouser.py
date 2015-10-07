@@ -150,9 +150,8 @@ class MMOUser(Base):
             newNick = MMOUserNick(self.id, nick)
             try:
                 session.add(newNick)
-                session.flush()
                 session.commit()
-            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
+            except Exception as e:
                 session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
