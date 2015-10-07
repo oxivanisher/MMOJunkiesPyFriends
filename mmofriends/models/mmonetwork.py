@@ -20,7 +20,7 @@ from mmofriends.mmoutils import *
 from mmonetcache import *
 from mmogamelink import *
 from mmouser import *
-from mmofriends.database import Base, db_session
+from mmofriends.database import db_session, Base
 
 class MMONetwork(object):
 

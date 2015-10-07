@@ -13,8 +13,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
-from mmofriends.database import Base
-
+from mmofriends.database import db_session, Base
 from paypal import MMOPayPalPayment
 
 class MMOUserLevel(object):

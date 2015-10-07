@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
-from mmofriends.database import Base
+from mmofriends.database import db_session, Base
 
 class MMONetworkCache(Base):
     __tablename__ = 'mmonetcache'
