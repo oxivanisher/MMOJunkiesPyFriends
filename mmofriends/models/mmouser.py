@@ -10,6 +10,7 @@ import random
 
 from sqlalchemy import Boolean, Column, Integer, String, UnicodeText, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
 from mmofriends.database import Base
@@ -151,7 +152,7 @@ class MMOUser(Base):
             try:
                 session.add(newNick)
                 session.commit()
-            except Exception as e:
+            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
                 session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False

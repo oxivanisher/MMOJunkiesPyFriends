@@ -3,6 +3,7 @@
 
 from sqlalchemy import Column, Integer, String, UnicodeText, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
 from mmofriends.database import Base
