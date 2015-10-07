@@ -150,10 +150,10 @@ class MMOUser(Base):
         if nick:
             newNick = MMOUserNick(self.id, nick)
             try:
-                session.add(newNick)
-                session.commit()
+                db_session.add(newNick)
+                db_session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                session.rollback()
+                db_session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -164,11 +164,10 @@ class MMOUser(Base):
         if nickId:
             oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
             try:
-                session.delete(oldNick)
-                session.flush()
-                session.commit()
+                db_session.delete(oldNick)
+                db_session.commit()
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                session.rollback()
+                db_session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -182,7 +181,7 @@ class MMOUser(Base):
             for donation in donations:
                 amount += float(donation.payment_amount)
         except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-            session.rollback()
+            db_session.rollback()
             self.log.warning("[User] SQL Alchemy Error: %s" % e)
         self.donated = amount
 
