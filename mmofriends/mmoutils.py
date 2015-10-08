@@ -315,6 +315,7 @@ def checkShowBox(session, box):
 
 def runQuery(f, retry=30):
     def retryCheck(retry):
+        waitForDbConnection()
         if not retry:
             logging.error("[Utils] DB query retries exeeded. Raising exception.")
             raise
@@ -332,7 +333,6 @@ def runQuery(f, retry=30):
         except sqlalchemy.exc.OperationalError as e:
             logging.warning("[Utils] DB OperationalError: %s" % (e))
             db_session.rollback()
-            waitForDbConnection()
             retryCheck(retry)
         except sqlalchemy.exc.IntegrityError as e:
             logging.warning("[Utils] DB IntegrityError: %s" % (e))
