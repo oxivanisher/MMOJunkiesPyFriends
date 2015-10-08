@@ -323,7 +323,7 @@ def runQuery(f, retry=30):
             if retry and exc.connection_invalidated:
                 logging.warning("[Utils] DB connection invalidated. Rolling back...")
                 db_session.rollback()
-            elif retry and exc.OperationalError as exc:
+            elif retry and exc.OperationalError:
                 logging.warning("[Utils] DB OperationalError. Rolling back...")
                 db_session.rollback()
             else:
