@@ -335,18 +335,18 @@ celery = make_celery(app)
 def background_worker():
     log.setLevel(logging.INFO)
     log.warning("[System] Background worker is checking DB connection")
-    connected = False
-    retryCount = 0
-    while not connected:
-        try:
-            db_session.execute("select 1").fetchall()
-            connected = True
-        except OperationalError as e:
-            retryCount += 1
-            db_session.remove()
-            time.sleep(0.1)
-    if retryCount:
-        log.warning("[System] Background worker reconnected to DB after %s tries." % retryCount)
+    # connected = False
+    # retryCount = 0
+    # while not connected:
+    #     try:
+    #         db_session.execute("select 1").fetchall()
+    #         connected = True
+    #     except OperationalError as e:
+    #         retryCount += 1
+    #         db_session.remove()
+    #         time.sleep(0.1)
+    # if retryCount:
+    #     log.warning("[System] Background worker reconnected to DB after %s tries." % retryCount)
 
     log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
