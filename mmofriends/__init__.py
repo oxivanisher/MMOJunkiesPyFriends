@@ -719,7 +719,7 @@ def admin_user_management_togglelock(userId):
         log.info("[System] Lock state of '%s' was changed to: %s" % (myUser.nick, myUser.locked))
         db_session.merge(myUser)
         # db_session.flush()
-        db_commit(db_session)
+        run_query(db_session.commit)
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/User_Management/ToggleAdmin/<userId>')
@@ -733,7 +733,7 @@ def admin_user_management_toggleadmin(userId):
             log.info("[System] Admin state of '%s' was changed to: %s" % (myUser.nick, myUser.admin))
             db_session.merge(myUser)
             # db_session.flush()
-            db_commit(db_session)
+            run_query(db_session.commit)
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
@@ -1016,7 +1016,7 @@ def profile_register():
             db_session.add(newUser)
             try:
                 # db_session.flush()
-                db_commit(db_session)
+                run_query(db_session.commit)
                 actUrl = url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey, _external=True)
                 if send_email(app, newUser.email,
                               gettext("MMOJunkies Activation Email"),
@@ -1062,7 +1062,7 @@ def profile_show(do = None):
     if userChanged:
         db_session.merge(myUser)
         # db_session.flush()
-        db_commit(db_session)
+        run_query(db_session.commit)
         flash(gettext("Profile changed"), 'success')
 
     size = 80
@@ -1097,7 +1097,7 @@ def profile_verify(userId, verifyKey):
     elif verifyUser.verify(verifyKey):
         db_session.merge(verifyUser)
         # db_session.flush()
-        db_commit(db_session)
+        run_query(db_session.commit)
         if verifyUser.veryfied:
             # db_session.expire(verifyUser)
             flash(gettext("Verification ok. Please log in."), 'success')
@@ -1179,7 +1179,7 @@ def profile_password_reset_request():
         myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
         db_session.merge(myUser)
         # db_session.flush()
-        db_commit(db_session)
+        run_query(db_session.commit)
         actUrl = url_for('profile_password_reset_verify', userId=myUser.id, verifyKey=myUser.verifyKey, _external=True)
         if send_email(app, myUser.email,
                       gettext("MMOJunkies Password Reset"),
@@ -1211,7 +1211,7 @@ def profile_password_reset_verify(userId, verifyKey):
             flash(gettext("Wrong verification link. Please request a new one."))
         db_session.merge(myUser)
         # db_session.flush()
-        db_commit(db_session)
+        run_query(db_session.commit)
     return redirect(url_for('index'))
 
 # partner routes
@@ -1470,7 +1470,7 @@ def game_links_add():
             db_session.add(newLink)
             try:
                 # db_session.flush()
-                db_commit(db_session)
+                run_query(db_session.commit)
             except (IntegrityError, InterfaceError, InvalidRequestError) as e:
                 db_session.rollback()
                 flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
@@ -1623,7 +1623,7 @@ def paypal_webhook():
         db_session.add(newPayment)
         try:
             # db_session.flush()
-            db_commit(db_session)
+            run_query(db_session.commit)
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
             db_session.rollback()
             log.warning("[System] SQL Alchemy Error: %s" % e)
