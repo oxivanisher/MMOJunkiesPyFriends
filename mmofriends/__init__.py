@@ -335,7 +335,7 @@ celery = make_celery(app)
 def background_worker():
     log.setLevel(logging.INFO)
     log.warning("[System] Background worker is checking DB connection")
-    checkDbConnection()
+    waitForDbConnection()
 
     log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
@@ -351,7 +351,7 @@ def background_worker():
     startupTime = time.time()
     work = True
     while work:
-        checkDbConnection()
+        waitForDbConnection()
         # connected = False
         # retryCount = 0
         # while not connected:
