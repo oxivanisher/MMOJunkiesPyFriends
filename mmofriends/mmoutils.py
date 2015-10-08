@@ -317,12 +317,12 @@ def run_query(f, retry=2):
     while retry:
         retry -= 1
         try:
-            logging.info("[Utils] DB query successful")
+            logging.warning("[Utils] DB query successful")
             return f() # "break" if query was successful and return any results
         except sqlalchemy.exc.DBAPIError as exc:
             if retry and exc.connection_invalidated:
-                logging.info("[Utils] DB query rollback")
+                logging.warning("[Utils] DB query rollback")
                 db_session.rollback()
             else:
-                logging.info("[Utils] DB query tries exeeded. Raising exception.")
+                logging.warning("[Utils] DB query tries exeeded. Raising exception.")
                 raise
