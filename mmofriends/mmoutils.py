@@ -313,7 +313,7 @@ def checkShowBox(session, box):
 
     return show
 
-def run_query(f, retry=10):
+def runQuery(f, retry=10):
     while retry:
         retry -= 1
         try:
@@ -327,3 +327,17 @@ def run_query(f, retry=10):
             else:
                 logging.warning("[Utils] DB query tries exeeded. Raising exception.")
                 raise
+
+def checkDbConnection():
+    connected = False
+    retryCount = 0
+    while not connected:
+        try:
+            db_session.execute("select 1").fetchall()
+            connected = True
+        except OperationalError as e:
+            retryCount += 1
+            db_session.remove()
+            time.sleep(0.1)
+    if retryCount:
+        logging.warning("[Utils] DB connection check connected to DB after %s tries." % retryCount)

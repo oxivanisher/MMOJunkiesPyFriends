@@ -150,7 +150,7 @@ class MMOUser(Base):
             newNick = MMOUserNick(self.id, nick)
             try:
                 db_session.add(newNick)
-                run_query(db_session.commit)
+                runQuery(db_session.commit)
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
                 db_session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
@@ -164,7 +164,7 @@ class MMOUser(Base):
             oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
             try:
                 db_session.delete(oldNick)
-                run_query(db_session.commit)
+                runQuery(db_session.commit)
             except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
                 db_session.rollback()
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)

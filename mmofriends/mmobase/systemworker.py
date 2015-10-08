@@ -91,7 +91,7 @@ class MMOSystemWorker(object):
         ret.last_update = int(time.time())
         db_session.merge(ret)
         try:
-            run_query(db_session.commit)
+            runQuery(db_session.commit)
         except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
             db_session.rollback()
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
