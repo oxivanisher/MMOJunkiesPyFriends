@@ -335,7 +335,7 @@ def checkDbConnection():
         try:
             db_session.execute("select 1").fetchall()
             connected = True
-        except OperationalError as e:
+        except sqlalchemy.exc.OperationalError as e:
             retryCount += 1
             db_session.remove()
             time.sleep(0.1)
