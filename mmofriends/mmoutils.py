@@ -19,6 +19,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
+import sqlalchemy
+from mmofriends.database import db_session
+
 class YamlConfig (object):
     def __init__(self, filename = None):
         self.filename = filename
@@ -309,3 +312,17 @@ def checkShowBox(session, box):
         show = False
 
     return show
+
+def run_query(f, retry=2):
+    while retry:
+        retry -= 1
+        try:
+            logging.info("[Utils] DB query successful")
+            return f() # "break" if query was successful and return any results
+         except sqlalchemy.exc.DBAPIError as exc:
+            if retry and exc.connection_invalidated:
+                logging.info("[Utils] DB query rollback")
+                session.rollback()
+            else:
+                logging.info("[Utils] DB query tries exeeded. Raising exception.")
+                raise
