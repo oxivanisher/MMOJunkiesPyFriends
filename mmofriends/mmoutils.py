@@ -319,17 +319,28 @@ def runQuery(f, retry=30):
         try:
             logging.debug("[Utils] DB query successful")
             return f() # "break" if query was successful and return any results
-        except sqlalchemy.exc.DBAPIError as exc:
-            if retry and exc.connection_invalidated:
-                logging.warning("[Utils] DB connection invalidated. Rolling back...")
+        except sqlalchemy.exc.DBAPIError as e:
+            if e.connection_invalidated:
+                logging.warning("[Utils] DB connection invalidated. Rolling back: (%s)" % (e))
                 db_session.rollback()
-            elif retry and exc.OperationalError:
-                logging.warning("[Utils] DB OperationalError. Rolling back...")
-                db_session.rollback()
-            else:
-                logging.warning("[Utils] DB query retries exeeded. Raising exception.")
-                raise
-            time.sleep(0.1)
+        except sqlalchemy.exc.OperationalError as e:
+            logging.warning("[Utils] DB OperationalError. Rolling back: (%s)" % (e))
+            db_session.rollback()
+        except sqlalchemy.exc.IntegrityError as e:
+            logging.warning("[Utils] DB IntegrityError. Rolling back: (%s)" % (e))
+            db_session.rollback()
+        except sqlalchemy.exc.InterfaceError as e:
+            logging.warning("[Utils] DB InterfaceError. Rolling back: (%s)" % (e))
+            db_session.rollback()
+        except sqlalchemy.exc.InvalidRequestError as e:
+            logging.warning("[Utils] DB InvalidRequestError. Rolling back: (%s)" % (e))
+            db_session.rollback()
+
+        if not retry:
+            logging.warning("[Utils] DB query retries exeeded. Raising exception.")
+            raise
+
+        time.sleep(0.1)
 
 def checkDbConnection():
     connected = False
