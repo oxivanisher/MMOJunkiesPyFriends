@@ -160,7 +160,7 @@ class MMONetwork(object):
             db_session.add(netLink)
 
         # db_session.flush()
-        db_session.commit()
+        db_commit(db_session)
 
     def updateLink(self, userid, network_data, logger = None):
         if not logger:
@@ -175,7 +175,7 @@ class MMONetwork(object):
         ret.network_data = network_data
         db_session.merge(ret)
         # db_session.flush()
-        db_session.commit()
+        db_commit(db_session)
         return True
 
     def loadLinks(self, userId):
@@ -202,7 +202,7 @@ class MMONetwork(object):
             self.delSessionValue(self.linkIdName)
             db_session.delete(link)
             # db_session.flush()
-            db_session.commit()
+            db_commit(db_session)
             self.log.info("[%s] Unlinked network with userid %s and netLinkId %s" % (self.handle, user_id, netLinkId))
             return True
         except Exception as e:
@@ -329,7 +329,7 @@ class MMONetwork(object):
             self.log.debug("[%s] getCache - Setting up new cache: %s" % (self.handle, name))
             self.cache[name] = {}
 
-        # db_session.commit()
+        # db_commit(db_session)
 
     def setCache(self, name):
         # self.log.debug("Saving cache: %s" % name)
@@ -382,7 +382,7 @@ class MMONetwork(object):
         db_session.merge(ret)
         try:
             # db_session.flush()
-            db_session.commit()
+            db_commit(db_session)
         except (IntegrityError, InterfaceError, InvalidRequestError) as e:
             db_session.rollback()
             self.log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
