@@ -313,7 +313,7 @@ def checkShowBox(session, box):
 
     return show
 
-def runQuery(f, retry=10):
+def runQuery(f, retry=30):
     while retry:
         retry -= 1
         try:
@@ -321,19 +321,22 @@ def runQuery(f, retry=10):
             return f() # "break" if query was successful and return any results
         except sqlalchemy.exc.DBAPIError as exc:
             if retry and exc.connection_invalidated:
-                logging.warning("[Utils] DB query rollback")
+                logging.warning("[Utils] DB connection invalidated. Rolling back...")
+                db_session.rollback()
+            elif retry and exc.OperationalError as exc:
+                logging.warning("[Utils] DB OperationalError. Rolling back...")
                 db_session.rollback()
             else:
-                logging.warning("[Utils] DB query tries exeeded. Raising exception.")
+                logging.warning("[Utils] DB query retries exeeded. Raising exception.")
                 raise
-            time.sleep(0.5)
+            time.sleep(0.1)
 
 def checkDbConnection():
     connected = False
     retryCount = 0
     while not connected:
         try:
-            db_session.execute("select 1").fetchall()
+            runQuery(db_session.execute("select 1").fetchall)
             connected = True
         except sqlalchemy.exc.OperationalError as e:
             retryCount += 1
