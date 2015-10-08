@@ -313,16 +313,17 @@ def checkShowBox(session, box):
 
     return show
 
-def run_query(f, retry=2):
+def run_query(f, retry=10):
     while retry:
         retry -= 1
         try:
-            logging.warning("[Utils] DB query successful")
+            logging.debug("[Utils] DB query successful")
             return f() # "break" if query was successful and return any results
         except sqlalchemy.exc.DBAPIError as exc:
             if retry and exc.connection_invalidated:
                 logging.warning("[Utils] DB query rollback")
                 db_session.rollback()
+                time.sleep(0.5)
             else:
                 logging.warning("[Utils] DB query tries exeeded. Raising exception.")
                 raise
