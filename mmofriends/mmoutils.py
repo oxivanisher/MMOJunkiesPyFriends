@@ -349,7 +349,7 @@ def runQuery(f, retry=30):
 
         time.sleep(0.1)
 
-def waitForDbConnection():
+def waitForDbConnection(maxTries = 0):
     connected = False
     retryCount = 0
     while not connected:
@@ -360,5 +360,13 @@ def waitForDbConnection():
             retryCount += 1
             db_session.remove()
             time.sleep(0.1)
+
+        if maxTries:
+            if retryCount >= maxTries:
+                logging.warning("[Utils] DB connection check unable to connect to DB after %s tries." % retryCount)
+                return False
+
     if retryCount:
         logging.warning("[Utils] DB connection check connected to DB after %s tries." % retryCount)
+
+    return True
