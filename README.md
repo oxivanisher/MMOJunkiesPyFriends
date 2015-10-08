@@ -14,7 +14,7 @@ Website community system to connect friends from different gaming sources like S
 ## Install needed libraries (debian)
 ```bash
 apt-get install python-pip python-dev redis-server
-pip install requests rauth numpy Flask-OpenID Flask-SQLAlchemy Flask-Compress Flask-Celery3 Flask-Babel PyYAML feedparser celery redis MySQL-python
+pip install requests rauth numpy Flask-OpenID Flask-Compress Flask-Celery3 Flask-Babel PyYAML feedparser celery redis MySQL-python
 ```
 
 ### Install TS3 Lib (do this in some other directory!)
