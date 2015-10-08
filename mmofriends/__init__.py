@@ -362,20 +362,20 @@ def background_worker():
     startupTime = time.time()
     work = True
     while work:
-        connected = False
-        retryCount = 0
-        while not connected:
-            try:
-                db_session.execute("select 1").fetchall()
-                connected = True
-            except OperationalError as e:
-                if not retryCount:
-                    log.warning("[System] Background worker encountered DB OperationalError: %s Sleeping..." % (e))
-                retryCount += 1
-                db_session.remove()
-                time.sleep(0.1)
-        if retryCount:
-            log.warning("[System] Background worker reconnected to DB after %s tries" % (retryCount))
+        # connected = False
+        # retryCount = 0
+        # while not connected:
+        #     try:
+        #         db_session.execute("select 1").fetchall()
+        #         connected = True
+        #     except OperationalError as e:
+        #         if not retryCount:
+        #             log.warning("[System] Background worker encountered DB OperationalError: %s Sleeping..." % (e))
+        #         retryCount += 1
+        #         db_session.remove()
+        #         time.sleep(0.1)
+        # if retryCount:
+        #     log.warning("[System] Background worker reconnected to DB after %s tries" % (retryCount))
 
         log.setLevel(logging.INFO)
         loopCount += 1
