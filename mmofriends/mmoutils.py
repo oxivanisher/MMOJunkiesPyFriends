@@ -332,6 +332,7 @@ def runQuery(f, retry=30):
         except sqlalchemy.exc.OperationalError as e:
             logging.warning("[Utils] DB OperationalError: %s" % (e))
             db_session.rollback()
+            waitForDbConnection()
             retryCheck(retry)
         except sqlalchemy.exc.IntegrityError as e:
             logging.warning("[Utils] DB IntegrityError: %s" % (e))
@@ -348,7 +349,7 @@ def runQuery(f, retry=30):
 
         time.sleep(0.1)
 
-def checkDbConnection():
+def waitForDbConnection():
     connected = False
     retryCount = 0
     while not connected:
