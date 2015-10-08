@@ -353,7 +353,7 @@ def background_worker():
 
     log.warning("[System] Background worker is loading system workers")
     MMOSystemWorkers = []
-    MMOSystemWorkers.append(MMOUserChecker())
+    # MMOSystemWorkers.append(MMOUserChecker())
 
     log.warning("[System] Background worker starts looping")
     firstLoop = time.time()
