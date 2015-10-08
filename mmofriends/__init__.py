@@ -1312,7 +1312,7 @@ def getSystemUsers(request):
 
         try:
             users = runQuery(MMOUser.query.all)
-         except Exception as e:
+        except Exception as e:
             self.log.warning("[System] SQL Alchemy Error on getSystemUsers: %s" % (e))
 
         sortOrders = {}
