@@ -323,10 +323,10 @@ def runQuery(f, retry=10):
             if retry and exc.connection_invalidated:
                 logging.warning("[Utils] DB query rollback")
                 db_session.rollback()
-                time.sleep(0.5)
             else:
                 logging.warning("[Utils] DB query tries exeeded. Raising exception.")
                 raise
+            time.sleep(0.5)
 
 def checkDbConnection():
     connected = False
