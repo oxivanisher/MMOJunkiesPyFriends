@@ -334,15 +334,15 @@ celery = make_celery(app)
 @celery.task()
 def background_worker():
     log.setLevel(logging.INFO)
-    log.warning("[System] Background worker is checking DB connection")
-    waitForDbConnection()
+    # log.warning("[System] Background worker is checking DB connection")
+    # waitForDbConnection()
 
     log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
 
     log.warning("[System] Background worker is loading system workers")
     MMOSystemWorkers = []
-    # MMOSystemWorkers.append(MMOUserChecker())
+    MMOSystemWorkers.append(MMOUserChecker())
 
     log.warning("[System] Background worker starts looping")
     firstLoop = time.time()
@@ -351,7 +351,7 @@ def background_worker():
     startupTime = time.time()
     work = True
     while work:
-        waitForDbConnection()
+        # waitForDbConnection()
         # connected = False
         # retryCount = 0
         # while not connected:
