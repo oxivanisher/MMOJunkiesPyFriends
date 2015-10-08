@@ -201,7 +201,7 @@ class TwitchNetwork(MMONetwork):
                 self.log.warning("[%s] queryTwitchApi ran into exception %s for: %s" % (self.handle, e, what))
                 return (False, e)
         else:
-            message = "queryTwitchApi %s tries reached for: %s" % (tryCount, e, what)
+            message = "queryTwitchApi %s tries reached for: %s" % (tryCount, what)
             self.log.warning("[%s] %s" % (self.handle, message))
             return (False, message)
         return (True, r)
