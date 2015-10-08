@@ -10,17 +10,6 @@ import hashlib
 import itertools
 import contextlib
 
-
-# from mmobase.mmouser import *
-# from mmobase.mmonetwork import *
-# from mmobase.mmoutils import *
-# from mmobase.ts3mmonetwork import *
-# from mmobase.valvenetwork import *
-# from mmobase.blizznetwork import *
-# from mmobase.twitchnetwork import *
-# from mmobase.rssnews import *
-# from mmobase.paypal import *
-# from mmobase.systemworker import *
 from mmoutils import *
 from models import *
 from mmobase import *
@@ -39,13 +28,6 @@ try:
 except ImportError:
     log.error("[System] Please install flask")
     sys.exit(2)
-
-# try:
-#     from flask.ext.sqlalchemy import SQLAlchemy
-#     from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, OperationalError
-# except ImportError:
-#     log.error("[System] Please install the flask extension: Flask-SQLAlchemy")
-#     sys.exit(2)
 
 try:
     from flask.ext.openid import OpenID
@@ -85,15 +67,6 @@ app = Flask(__name__)
 
 # setup logging
 log = app.logger
-
-# logging to console
-# console = logging.StreamHandler()
-# console.setLevel(logging.DEBUG)
-# # formatter = logging.Formatter('%(levelname)-7s %(name)-25s| %(message)s')
-# # formatter = logging.Formatter("[%(levelname)8s] --- %(message)s (%(filename)s:%(lineno)s)")
-# formatter = logging.Formatter("%(levelname)-7s %(message)s (%(filename)s:%(lineno)s)")
-# console.setFormatter(formatter)
-# app.logger.addHandler(console)
 
 Compress(app)
 app.config['scriptPath'] = os.path.dirname(os.path.realpath(__file__))
@@ -149,18 +122,8 @@ app.jinja_env.globals.update(get_short_age=get_short_age)
 # app.register_blueprint(gaming_api, url_prefix='/Games')
 
 # initialize database
-# option 2! http://piotr.banaszkiewicz.org/blog/2012/06/29/flask-sqlalchemy-init_app/
-# db = SQLAlchemy()
 with app.test_request_context():
     init_db()
-    # from mmobase.mmouser import *
-    # from mmobase.mmonetwork import *
-    # try:
-    #     db.create_all()
-    # except OperationalError as e:
-    #     log.warning("System] Unable to create or check database tables! DB Server is probably not available...")
-    # db_session.autocommit = True
-    # db_session.autoflush = True
     oid = OpenID(app)
     babel = Babel(app)
 
@@ -223,7 +186,12 @@ def getUserByNick(nick = None):
     with app.test_request_context():
         if not nick:
             nick = session.get('nick')
-        ret = MMOUser.query.filter(MMOUser.nick.ilike(nick)).first()
+        try:
+            ret = runQuery(MMOUser.query.filter(MMOUser.nick.ilike(nick)).first)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on getUserByNick: %s" % (e))
+            ret = False
+
         if ret:
             return ret
         else:
@@ -231,7 +199,12 @@ def getUserByNick(nick = None):
 
 def getUserByEmail(email = None):
     with app.test_request_context():
-        ret = MMOUser.query.filter(MMOUser.email.ilike(email)).first()
+        try:
+            ret = runQuery(MMOUser.query.filter(MMOUser.email.ilike(email)).first)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on getUserByEmail: %s" % (e))
+            ret = False
+
         if ret:
             return ret
         else:
@@ -241,7 +214,12 @@ def getUserById(userId = None):
     with app.test_request_context():
         if not userId:
             userId = session.get('userid')
-        ret = MMOUser.query.filter_by(id=userId).first()
+        try:
+            ret = runQuery(MMOUser.query.filter_by(id=userId).first)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on getUserById: %s" % (e))
+            ret = False
+
         if ret:
             return ret
         else:
@@ -334,9 +312,6 @@ celery = make_celery(app)
 @celery.task()
 def background_worker():
     log.setLevel(logging.INFO)
-    # log.warning("[System] Background worker is checking DB connection")
-    # waitForDbConnection()
-
     log.warning("[System] Background worker is loading the MMONetworks")
     MMONetworks = loadNetworks()
 
@@ -351,22 +326,6 @@ def background_worker():
     startupTime = time.time()
     work = True
     while work:
-        # waitForDbConnection()
-        # connected = False
-        # retryCount = 0
-        # while not connected:
-        #     try:
-        #         db_session.execute("select 1").fetchall()
-        #         connected = True
-        #     except OperationalError as e:
-        #         if not retryCount:
-        #             log.warning("[System] Background worker encountered DB OperationalError: %s Sleeping..." % (e))
-        #         retryCount += 1
-        #         db_session.remove()
-        #         time.sleep(0.1)
-        # if retryCount:
-        #     log.warning("[System] Background worker reconnected to DB after %s tries" % (retryCount))
-
         log.setLevel(logging.INFO)
         loopCount += 1
         for net in MMONetworks.keys():
@@ -684,7 +643,11 @@ def admin_system_status():
 def admin_user_management():
     registredUsers = []
     with app.test_request_context():
-        users = MMOUser.query.all()
+        try:
+            users = runQuery(MMOUser.query.all)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on Admin user management: %s" % (e))
+
         for user in users:
             registredUsers.append({ 'id': user.id,
                                     'nick': user.nick,
@@ -708,8 +671,10 @@ def admin_user_management_togglelock(userId):
         myUser.locked = not myUser.locked
         log.info("[System] Lock state of '%s' was changed to: %s" % (myUser.nick, myUser.locked))
         db_session.merge(myUser)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on Admin toggle lock: %s" % (e))
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/User_Management/ToggleAdmin/<userId>')
@@ -722,8 +687,10 @@ def admin_user_management_toggleadmin(userId):
             myUser.admin = not myUser.admin
             log.info("[System] Admin state of '%s' was changed to: %s" % (myUser.nick, myUser.admin))
             db_session.merge(myUser)
-            # db_session.flush()
+        try:
             runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on Admin toggle admin: %s" % (e))
     return redirect(url_for('admin_user_management'))
 
 @app.route('/Administration/Celery_Status')
@@ -793,16 +760,20 @@ def admin_bulk_email():
         if request.form['message'] and request.form['subject']:
             okCount = 0
             nokCount = 0
-            for user in MMOUser.query.all():
-                user.load()
-                if user.nick != "oxi":
-                    continue
-                if send_email(app, user.email, request.form['subject'],
-                    "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
-                    app.config['EMAILBANNER']):
-                    okCount += 1
-                else:
-                    nokCount += 1
+            try:
+                for user in runQuery(MMOUser.query.all):
+                    user.load()
+                    if user.nick != "oxi":
+                        continue
+                    if send_email(app, user.email, request.form['subject'],
+                        "<h3>%s %s</h3>" % (gettext("Hello"), user.nick) + request.form['message'] + gettext("<br><br>Have fun and see you soon ;)"),
+                        app.config['EMAILBANNER']):
+                        okCount += 1
+                    else:
+                        nokCount += 1
+            except Exception as e:
+                self.log.warning("[System] SQL Alchemy Error on Admin bulk email: %s" % (e))
+
             retMessage = gettext("Messages sent: %(okCount)s; Messages not sent: %(nokCount)s", okCount=okCount, nokCount=nokCount)
 
     return render_template('admin_bulk_email.html', retMessage = retMessage)
@@ -1005,7 +976,6 @@ def profile_register():
 
             db_session.add(newUser)
             try:
-                # db_session.flush()
                 runQuery(db_session.commit)
                 actUrl = url_for('profile_verify', userId=newUser.id, verifyKey=newUser.verifyKey, _external=True)
                 if send_email(app, newUser.email,
@@ -1018,8 +988,7 @@ def profile_register():
                 # return redirect(url_for('profile_login'))
                 return redirect(url_for('index'))
 
-            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-                db_session.rollback()
+            except Exception as e:
                 flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
                 log.warning("[System] SQL Alchemy Error: %s" % e)
             # db_session.expire(newUser)
@@ -1051,8 +1020,10 @@ def profile_show(do = None):
             userChanged = True
     if userChanged:
         db_session.merge(myUser)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on profile show: %s" % (e))
         flash(gettext("Profile changed"), 'success')
 
     size = 80
@@ -1086,16 +1057,15 @@ def profile_verify(userId, verifyKey):
         flash(gettext("User not found to verify."))
     elif verifyUser.verify(verifyKey):
         db_session.merge(verifyUser)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on verify key: %s" % (e))
         if verifyUser.veryfied:
-            # db_session.expire(verifyUser)
             flash(gettext("Verification ok. Please log in."), 'success')
-            # return redirect(url_for('profile_login'))
             return redirect(url_for('index'))
         else:
             flash(gettext("Verification NOT ok. Please try again."), 'error')
-    # db_session.expire(verifyUser)
     return redirect(url_for('index'))
 
 @app.route('/Profile/Login', methods=['GET', 'POST'])
@@ -1168,8 +1138,10 @@ def profile_password_reset_request():
         myUser.load()
         myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
         db_session.merge(myUser)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on password reset: %s" % (e))
         actUrl = url_for('profile_password_reset_verify', userId=myUser.id, verifyKey=myUser.verifyKey, _external=True)
         if send_email(app, myUser.email,
                       gettext("MMOJunkies Password Reset"),
@@ -1200,8 +1172,10 @@ def profile_password_reset_verify(userId, verifyKey):
             myUser.verifyKey = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(32))
             flash(gettext("Wrong verification link. Please request a new one."))
         db_session.merge(myUser)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on password reset verify key: %s" % (e))
     return redirect(url_for('index'))
 
 # partner routes
@@ -1289,8 +1263,11 @@ def getSystemStats(request):
             bgTasks += 1
 
     users = 0
-    for user in MMOUser.query.all():
-        users += 1
+    try:
+        for user in runQuery(MMOUser.query.all):
+            users += 1
+    except Exception as e:
+        self.log.warning("[System] SQL Alchemy Error on getSystemStats: %s" % (e))
 
     loadedNets = 0
     for handle in MMONetworks.keys():
@@ -1333,7 +1310,11 @@ def getSystemUsers(request):
             else:
                 log.debug("[System] Unable to fetch network users from %s" % net)
 
-        users = MMOUser.query.all()
+        try:
+            users = runQuery(MMOUser.query.all)
+         except Exception as e:
+            self.log.warning("[System] SQL Alchemy Error on getSystemUsers: %s" % (e))
+
         sortOrders = {}
         for user in users:
             detailLinks = {}
@@ -1413,7 +1394,7 @@ def getGameLinks(request):
     retLinks = []
     if session.get('logged_in'):
         myGames = getGamesOfUser(session.get('userid'))
-        for link in MMOGameLink.query.all():
+        for link in runQuery(MMOGameLink.query.all):
             try:
                 if link.gameId in myGames[link.network_handle].keys():
                     retLinks.append(addLink(link))
@@ -1422,14 +1403,18 @@ def getGameLinks(request):
 
     else:
         myGames = getGamesOfUser()
-        for link in MMOGameLink.query.all():
+        for link in runQuery(MMOGameLink.query.all):
             retLinks.append(addLink(link))
     return { 'games': getGames(), 'links': retLinks }
 
 # Game link methods
 @app.route('/GameLinks/Show')
 def game_links_show():
-    allLinks = MMOGameLink.query.all()
+    try:
+        allLinks = runQuery(MMOGameLink.query.all)
+    except Exception as e:
+        self.log.warning("[System] SQL Alchemy Error on gamelinks show: %s" % (e))
+
     links = []
     if session.get('crawlerRun'):
         myGames = getGames()
@@ -1459,10 +1444,8 @@ def game_links_add():
 
             db_session.add(newLink)
             try:
-                # db_session.flush()
                 runQuery(db_session.commit)
-            except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-                db_session.rollback()
+            except Exception as e:
                 flash("%s: %s" % (gettext("SQL Alchemy Error"), e), 'error')
                 log.warning("[System] SQL Alchemy Error: %s" % e)
 
@@ -1612,10 +1595,8 @@ def paypal_webhook():
 
         db_session.add(newPayment)
         try:
-            # db_session.flush()
             runQuery(db_session.commit)
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db_session.rollback()
+        except Exception as e:
             log.warning("[System] SQL Alchemy Error: %s" % e)
 
         log.info("Pulled {email} from transaction".format(email=request.form.get('payer_email')))

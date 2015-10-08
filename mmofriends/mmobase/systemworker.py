@@ -57,9 +57,8 @@ class MMOSystemWorker(object):
     # helper
     def getCache(self, name):
         try:
-            ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db_session.rollback()
+            ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
+        except Exception as e:
             self.log.warning("[SW:%s] SQL Alchemy Error on getCache: %s" % (self.handle, e))
             ret = False
 
@@ -75,7 +74,12 @@ class MMOSystemWorker(object):
             self.cache[name] = {}
 
     def setCache(self, name):
-        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        try:
+            ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+            ret = False
+
         if ret:
             self.log.debug("[SW:%s] setCache - Found existing cache: %s" % (self.handle, name))
         else:
@@ -92,8 +96,7 @@ class MMOSystemWorker(object):
         db_session.merge(ret)
         try:
             runQuery(db_session.commit)
-        except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
-            db_session.rollback()
+        except Exception as e:
             self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
 
     def setLogLevel(self, level):

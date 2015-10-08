@@ -606,7 +606,11 @@ class BlizzNetwork(MMONetwork):
      
         try:
             if r['code']:
-                link = db_session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first()
+                try:
+                    link = runQuery(db_session.query(MMONetLink).filter_by(network_handle=self.handle, network_data=accessToken).first)
+                except Exception as e:
+                    self.log.warning("[%s] SQL Alchemy Error on queryBlizzardApi: %s" % (self.handle, e))
+
                 # self.unlink(self.session['userid'], link.id)
                 self.log.debug("[%s] queryBlizzardApi found code: %s" % (self.handle, r['code']))
                 with self.app.test_request_context():

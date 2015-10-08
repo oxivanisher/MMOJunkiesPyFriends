@@ -10,7 +10,6 @@ import random
 
 from sqlalchemy import Boolean, Column, Integer, String, UnicodeText, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
 from mmofriends.database import db_session, Base
@@ -151,8 +150,7 @@ class MMOUser(Base):
             try:
                 db_session.add(newNick)
                 runQuery(db_session.commit)
-            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                db_session.rollback()
+            except Exception as e:
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -161,12 +159,16 @@ class MMOUser(Base):
     def removeNick(self, nickId = None):
         self.log.info("[User] Removing NickID: %s for MMOUser %s" % (nickId, self.getDisplayName()))
         if nickId:
-            oldNick = MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first()
+            try:
+                oldNick = runQuery(MMOUserNick.query.filter_by(id=nickId, user_id=self.id).first)
+            except Exception as e:
+                self.log.warning("[User] SQL Alchemy Error on removeNick: %s" % (e))
+                return False
+
             try:
                 db_session.delete(oldNick)
                 runQuery(db_session.commit)
-            except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-                db_session.rollback()
+            except Exception as e:
                 self.log.warning("[User] SQL Alchemy Error: %s" % e)
                 return False
             return True
@@ -179,8 +181,7 @@ class MMOUser(Base):
             donations = MMOPayPalPayment.query.filter_by(custom=self.id, payment_status="Completed", response_string="Verified", item_name="MMOJunkies")
             for donation in donations:
                 amount += float(donation.payment_amount)
-        except (IntegrityError, InterfaceError, InvalidRequestError, StatementError) as e:
-            db_session.rollback()
+        except Exception as e:
             self.log.warning("[User] SQL Alchemy Error: %s" % e)
         self.donated = amount
 

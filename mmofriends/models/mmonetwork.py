@@ -14,7 +14,6 @@ import traceback
 
 from flask import current_app
 from flask.ext.babel import Babel, gettext
-from sqlalchemy.exc import IntegrityError, InterfaceError, InvalidRequestError, StatementError, OperationalError
 
 from mmofriends.mmoutils import *
 from mmonetcache import *
@@ -52,7 +51,12 @@ class MMONetwork(object):
 
     # Helpers
     def getUserById(self, userId):
-        ret = MMOUser.query.filter_by(id=userId).first()
+        try:
+            ret = runQuery(MMOUser.query.filter_by(id=userId).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on getUserById: %s" % (self.handle, e))
+            ret = False
+
         if ret:
             return ret
         else:
@@ -145,7 +149,12 @@ class MMONetwork(object):
     def saveLink(self, network_data):
         updateLink = False
 
-        ret = MMONetLink.query.filter_by(network_handle=self.handle, user_id=self.session['userid']).first()
+        try:
+            ret = runQuery(MMONetLink.query.filter_by(network_handle=self.handle, user_id=self.session['userid']).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on saveLink: %s" % (self.handle, e))
+            ret = False
+
         if ret:
             if not ret.network_data:
                 updateLink = True
@@ -159,23 +168,32 @@ class MMONetwork(object):
             netLink = MMONetLink(self.session['userid'], self.handle, network_data)
             db_session.add(netLink)
 
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on saveLink: %s" % (self.handle, e))
 
     def updateLink(self, userid, network_data, logger = None):
         if not logger:
             logger = self.log
         logger.debug("[%s] Updating network link for user %s" % (self.handle, userid))
         netLink = MMONetLink(userid, self.handle, network_data)
-        ret = MMONetLink.query.filter_by(network_handle=self.handle, user_id=userid).first()
+        try:
+            ret = runQuery(MMONetLink.query.filter_by(network_handle=self.handle, user_id=userid).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on updateLink: %s" % (self.handle, e))
+            ret = False
+
         if not ret:
             logger.warning("[%s] Unable to update network link for user %s, no existing link found." % (self.handle, userid))
             return False
 
         ret.network_data = network_data
         db_session.merge(ret)
-        # db_session.flush()
-        runQuery(db_session.commit)
+        try:
+            runQuery(db_session.commit)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on updateLink: %s" % (self.handle, e))
         return True
 
     def loadLinks(self, userId):
@@ -188,8 +206,9 @@ class MMONetwork(object):
         netLinks = []
         if userId:
             self.log.debug("[%s] Getting network links for userId %s" % (self.handle, userId))
-            for link in db_session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
-                netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
+            try:
+                for link in db_session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
+                    netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
         else:
             self.log.debug("[%s] Getting all network links" % (self.handle))
             for link in db_session.query(MMONetLink).filter_by(network_handle=self.handle):
@@ -198,10 +217,9 @@ class MMONetwork(object):
 
     def unlink(self, user_id, netLinkId):
         try:
-            link = db_session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first()
+            link = runQuery(db_session.query(MMONetLink).filter_by(user_id=user_id, id=netLinkId).first)
             self.delSessionValue(self.linkIdName)
             db_session.delete(link)
-            # db_session.flush()
             runQuery(db_session.commit)
             self.log.info("[%s] Unlinked network with userid %s and netLinkId %s" % (self.handle, user_id, netLinkId))
             return True
@@ -308,8 +326,7 @@ class MMONetwork(object):
     def getCache(self, name):
         try:
             ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db_session.rollback()
+        except Exception as e:
             self.log.warning("[%s] SQL Alchemy Error on getCache: %s" % (self.handle, e))
             ret = False
 
@@ -329,11 +346,13 @@ class MMONetwork(object):
             self.log.debug("[%s] getCache - Setting up new cache: %s" % (self.handle, name))
             self.cache[name] = {}
 
-        # runQuery(db_session.commit)
-
     def setCache(self, name):
-        # self.log.debug("Saving cache: %s" % name)
-        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        try:
+            ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+            ret = False
+
         if ret:
             self.log.debug("[%s] setCache - Found existing cache: %s" % (self.handle, name))
         else:
@@ -349,26 +368,29 @@ class MMONetwork(object):
         ret.last_update = int(time.time())
         db_session.merge(ret)
         try:
-            # db_session.flush()
             runQuery(db_session.commit)
-        except (IntegrityError, InterfaceError, InvalidRequestError, Exception) as e:
-            db_session.rollback()
+        except Exception as e:
             self.log.error("[%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
-            # db_session.remove()
-        # finally:
-        #     db_session.close()
-        # db_session.expire(ret)
 
     def getCacheAge(self, name):
-        # self.log.debug("Getting age of cache: %s" % name)
-        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        try:
+            ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on getCacheAge: %s" % (self.handle, e))
+            ret = False
+
         if not ret:
             return int(time.time())
         return ret.last_update
 
     def forceCacheUpdate(self, name):
         self.log.debug("[%s] Forcing cache update: %s" % (self.handle, name))
-        ret = MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first()
+        try:
+            ret = runQuery(MMONetworkCache.query.filter_by(network_handle=self.handle, entry_name=name).first)
+        except Exception as e:
+            self.log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
+            ret = False
+
         if ret:
             try:
                 self.cache[name] = json.loads(ret.cache_data)
@@ -381,12 +403,9 @@ class MMONetwork(object):
         ret.last_update = 0
         db_session.merge(ret)
         try:
-            # db_session.flush()
             runQuery(db_session.commit)
-        except (IntegrityError, InterfaceError, InvalidRequestError) as e:
-            db_session.rollback()
+        except Exception as e:
             self.log.warning("[%s] SQL Alchemy Error on forceCacheUpdate: %s" % (self.handle, e))
-        # db_session.expire(ret)
 
     # Background worker methods
     def background_worker(self, logger):

@@ -290,7 +290,11 @@ class TS3Network(MMONetwork):
                 else:
                     logger.debug("[%s] Not spaming (already linked): %s (%s)" % (self.handle, self.cache['onlineClients'][client]['client_nickname'], client))
                     if 'groups' in self.cache['clientDatabase'][client]:
-                        myUser = MMOUser.query.filter_by(id=userLinks[client]).first()
+                        try:
+                            myUser = runQuery(MMOUser.query.filter_by(id=userLinks[client]).first)
+                        except Exception as e:
+                            self.log.warning("[%s] SQL Alchemy Error on userWatchdog: %s" % (self.handle, e))
+                            return "DB connection error"
                         myUser.load()
                         inDonerGroup = False
 
