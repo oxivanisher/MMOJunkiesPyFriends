@@ -209,6 +209,9 @@ class MMONetwork(object):
             try:
                 for link in db_session.query(MMONetLink).filter_by(user_id=userId, network_handle=self.handle):
                     netLinks.append({'network_data': link.network_data, 'linked_date': link.linked_date, 'user_id': link.user_id, 'id': link.id})
+            except Exception as e:
+                self.log.warning("[%s] SQL Alchemy Error on getNetworkLinks: %s" % (self.handle, e))
+
         else:
             self.log.debug("[%s] Getting all network links" % (self.handle))
             for link in db_session.query(MMONetLink).filter_by(network_handle=self.handle):
