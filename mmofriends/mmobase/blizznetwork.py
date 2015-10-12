@@ -591,16 +591,16 @@ class BlizzNetwork(MMONetwork):
                 r = requests.get(self.baseUrl + what, params=payload, timeout=6.1).json()
                 break
             except requests.exceptions.Timeout:
-                self.log.warning("[%s] queryBlizzardApi ran into timeout for: %s" % (self.handle, what))
+                self.log.debug("[%s] queryBlizzardApi ran into timeout for: %s" % (self.handle, what))
             except requests.exceptions.RequestException as e:
-                self.log.warning("[%s] queryBlizzardApi ran into requests.exception %s for: %s" % (self.handle, e, what))
+                self.log.debug("[%s] queryBlizzardApi ran into requests.exception %s for: %s" % (self.handle, e, what))
             except ValueError as e:
-                self.log.warning("[%s] queryBlizzardApi got ValueError %s for: %s" % (self.handle, e, what))
+                self.log.debug("[%s] queryBlizzardApi got ValueError %s for: %s" % (self.handle, e, what))
             except Exception as e:
                 self.log.warning("[%s] queryBlizzardApi ran into exception %s for: %s" % (self.handle, e, what))
                 return (False, e)
         else:
-            message = "queryBlizzardApi %s tries reached for: %s" % (tryCount, what)
+            message = "queryBlizzardApi %s tries reached. giving up on: %s" % (tryCount, what)
             self.log.warning("[%s] %s" % (self.handle, message))
             return (False, message)
      
