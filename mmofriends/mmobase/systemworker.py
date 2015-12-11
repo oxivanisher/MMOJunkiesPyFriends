@@ -113,3 +113,28 @@ class MMOUserChecker(MMOSystemWorker):
 
     def work(self):
         return "I would check for users and stuff"
+
+class MMODatabaseMaintenance(MMOSystemWorker):
+
+    def __init__(self):
+        self.handle = "databaseMaintenance"
+        self.timeout = 86400
+        super(MMODatabaseMaintenance, self).__init__()
+
+    def work(self):
+        # FIXME: use mysql_query("SHOW TABLES");
+        tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
+        tablesOk = []
+        tablesNok = []
+
+        for table in tableList:
+            try:
+                # engine.execute()
+                # db_session.merge(ret)
+                # runQuery(db_session.commit)
+                tablesOk.append(table)
+            except Exception as e:
+                self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+                tablesNok.append(table)
+
+        return "Database optimized: %s; Unable to optimize: %s" % (', '.join(tablesOk), ', '.join(tablesNok))
