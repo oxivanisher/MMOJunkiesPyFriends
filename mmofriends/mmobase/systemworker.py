@@ -8,7 +8,7 @@ import logging
 import json
 
 from mmofriends.mmoutils import *
-from mmofriends.database import *
+from mmofriends.database import db_session, engine
 from mmofriends.models import *
 
 # base class
@@ -130,7 +130,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
         for table in tableList:
             try:
-                result = engine.execute('SHOW TABLES;')
+                result = engine.execute("""SHOW TABLES;""")
                 # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
                 # runQuery(db_session.commit)
