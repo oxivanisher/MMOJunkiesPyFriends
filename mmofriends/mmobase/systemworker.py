@@ -129,7 +129,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
         for table in tableList:
             try:
-                # engine.execute()
+                engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
                 # runQuery(db_session.commit)
                 tablesOk.append(table)
