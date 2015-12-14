@@ -134,9 +134,9 @@ class MMODatabaseMaintenance(MMOSystemWorker):
                 # for row in result:
                 # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
 
-                # tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
+                tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
 
-                tableList = get_db_tables()
+                # tableList = get_db_tables()
                 self.log.debug("[SW:%s] Found the following tables: %s" % (self.handle, ', '.join(tableList)))
 
                 result = engine.execute('OPTIMIZE TABLE %s;' % (', '.join(tableList)))

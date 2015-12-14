@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# http://pythoncentral.io/understanding-python-sqlalchemy-session/
 
 import os
 import sys
@@ -35,5 +36,5 @@ def init_db():
     import mmofriends.models
     Base.metadata.create_all(bind=engine)
 
-def get_db_tables():
-    return Base.metadata.reflect(bind=engine)
+# def get_db_tables():
+#     return Base.metadata.reflect(bind=engine)
