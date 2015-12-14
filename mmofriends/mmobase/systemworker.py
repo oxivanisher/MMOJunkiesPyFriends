@@ -132,8 +132,8 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
         for table in tableList:
             try:
-                print engine.driver
-                result = engine.execute(text("SHOW TABLES;"))
+                self.log.info("driver: %s" % (engine.driver))
+                # result = engine.execute(text("SHOW TABLES;"))
                 # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
                 # runQuery(db_session.commit)
