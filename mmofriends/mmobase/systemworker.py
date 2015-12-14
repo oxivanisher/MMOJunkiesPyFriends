@@ -8,6 +8,7 @@ import logging
 import json
 
 from mmofriends.mmoutils import *
+from mmofriends.database import *
 from mmofriends.models import *
 
 # base class
@@ -134,7 +135,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
                 # runQuery(db_session.commit)
                 tablesOk.append(table)
             except Exception as e:
-                self.log.warning("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
+                self.log.error("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
                 tablesNok.append(table)
 
         return "Database optimized: %s; Unable to optimize: %s" % (', '.join(tablesOk), ', '.join(tablesNok))
