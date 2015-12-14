@@ -36,4 +36,4 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 def get_db_tables():
-    return schema.MetaData.reflect()
+    return Base.metadata.reflect()
