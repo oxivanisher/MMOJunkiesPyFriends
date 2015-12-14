@@ -129,12 +129,12 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
         for table in tableList:
             try:
-                engine.execute('OPTIMIZE TABLE %s;' % (table))
+                print engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
                 # runQuery(db_session.commit)
                 tablesOk.append(table)
             except Exception as e:
-                self.log.warning("[SW:%s] SQL Alchemy Error on setCache: %s" % (self.handle, e))
+                self.log.warning("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
                 tablesNok.append(table)
 
         return "Database optimized: %s; Unable to optimize: %s" % (', '.join(tablesOk), ', '.join(tablesNok))
