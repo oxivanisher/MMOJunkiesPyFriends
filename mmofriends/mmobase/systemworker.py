@@ -10,7 +10,7 @@ import json
 from sqlalchemy.sql import text
 
 from mmofriends.mmoutils import *
-from mmofriends.database import db_session, engine
+from mmofriends.database import db_session, engine, Base
 from mmofriends.models import *
 
 # base class
@@ -127,26 +127,22 @@ class MMODatabaseMaintenance(MMOSystemWorker):
     def work(self):
         if engine.url.get_dialect().name == "mysql":
 
-            # FIXME: use mysql_query("SHOW TABLES");
-            # for row in result:
-            # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
-
-            tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
-
             try:
+                # tables = Base.metadata.reflect(engine)
+                # FIXME: use mysql_query("SHOW TABLES");
+                # for row in result:
+                # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
+
+                # tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
+
+                tableList = Base.metadata.reflect(engine)
+                self.log.debug("[SW:%s] Found the following tables: %s" % (self.handle, ', '.join(tableList)))
+
                 result = engine.execute('OPTIMIZE TABLE %s;' % (', '.join(tableList)))
             except Exception as e:
                 self.log.error("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
 
         else:
             self.log.info("[SW:%s] Database optimization not supported for dialect: %s" % (self.handle, engine.url.get_dialect().name))
-
-
-        # self.log.info("driver: %s" % (engine.driver))
-        self.log.info("dialect: %s" % (engine.url.get_dialect().name))
-        # result = engine.execute(text("SHOW TABLES;"))
-        # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
-        # db_session.merge(ret)
-        # runQuery(db_session.commit)
 
         return "Database optimized: %s" % (result)
