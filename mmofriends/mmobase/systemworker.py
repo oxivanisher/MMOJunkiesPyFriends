@@ -125,6 +125,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
         super(MMODatabaseMaintenance, self).__init__()
 
     def work(self):
+        tableList = []
         if engine.url.get_dialect().name == "mysql":
 
             try:
@@ -145,4 +146,4 @@ class MMODatabaseMaintenance(MMOSystemWorker):
         else:
             self.log.info("[SW:%s] Database optimization not supported for dialect: %s" % (self.handle, engine.url.get_dialect().name))
 
-        return "Database optimized: %s" % (result)
+        return "%s tables optimized." % (len(tableList))
