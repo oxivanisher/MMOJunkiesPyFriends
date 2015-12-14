@@ -149,4 +149,4 @@ class MMODatabaseMaintenance(MMOSystemWorker):
         # db_session.merge(ret)
         # runQuery(db_session.commit)
 
-        return "Database optimized: %s" % (result))
+        return "Database optimized: %s" % (result)
