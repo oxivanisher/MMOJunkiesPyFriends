@@ -6,7 +6,7 @@ import sys
 from flask import Flask
 
 try:
-    from sqlalchemy import create_engine
+    from sqlalchemy import create_engine, schema
     from sqlalchemy.orm import scoped_session, sessionmaker
     from sqlalchemy.ext.declarative import declarative_base
 except ImportError:
@@ -36,4 +36,4 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 def get_db_tables():
-    return sqlalchemy.schema.MetaData.reflect()
+    return schema.MetaData.reflect()
