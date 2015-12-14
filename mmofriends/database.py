@@ -34,3 +34,6 @@ def init_db():
     # you will have to import them first before calling init_db()
     import mmofriends.models
     Base.metadata.create_all(bind=engine)
+
+def get_db_tables():
+    return sqlalchemy.schema.MetaData.reflect()

@@ -10,7 +10,7 @@ import json
 from sqlalchemy.sql import text
 
 from mmofriends.mmoutils import *
-from mmofriends.database import db_session, engine, Base
+from mmofriends.database import db_session, engine, get_db_tables
 from mmofriends.models import *
 
 # base class
@@ -136,7 +136,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
                 # tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
 
-                tableList = Base.metadata.reflect(engine)
+                tableList = get_db_tables()
                 self.log.debug("[SW:%s] Found the following tables: %s" % (self.handle, ', '.join(tableList)))
 
                 result = engine.execute('OPTIMIZE TABLE %s;' % (', '.join(tableList)))
