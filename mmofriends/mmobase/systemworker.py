@@ -125,26 +125,28 @@ class MMODatabaseMaintenance(MMOSystemWorker):
         super(MMODatabaseMaintenance, self).__init__()
 
     def work(self):
-        # FIXME: use mysql_query("SHOW TABLES");
-        tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
-        tablesOk = []
-        tablesNok = []
+        if engine.url.get_dialect().name == "mysql":
 
-        for table in tableList:
+            # FIXME: use mysql_query("SHOW TABLES");
+            # for row in result:
+            # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
+
+            tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
+
             try:
-                # self.log.info("driver: %s" % (engine.driver))
-                self.log.info("dialect: %s" % (engine.url.get_dialect().name))
-                # result = engine.execute(text("SHOW TABLES;"))
-                # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
-                # db_session.merge(ret)
-                # runQuery(db_session.commit)
-                tablesOk.append(table)
+                result = engine.execute('OPTIMIZE TABLE %s;' % (', '.join(tableList)))
             except Exception as e:
                 self.log.error("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
-                tablesNok.append(table)
 
-        # for row in result:
-        # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
+        else:
+            self.log.info("[SW:%s] Database optimization not supported for dialect: %s" % (self.handle, engine.url.get_dialect().name))
 
 
-        return "Database optimized: %s; Unable to optimize: %s" % (', '.join(tablesOk), ', '.join(tablesNok))
+        # self.log.info("driver: %s" % (engine.driver))
+        self.log.info("dialect: %s" % (engine.url.get_dialect().name))
+        # result = engine.execute(text("SHOW TABLES;"))
+        # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
+        # db_session.merge(ret)
+        # runQuery(db_session.commit)
+
+        return "Database optimized: %s" % (result))
