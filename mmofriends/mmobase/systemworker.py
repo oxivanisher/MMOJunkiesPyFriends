@@ -133,7 +133,7 @@ class MMODatabaseMaintenance(MMOSystemWorker):
         for table in tableList:
             try:
                 self.log.info("driver: %s" % (engine.driver))
-                self.log.info("dialect: %s" % (engine.url.get_dialect()))
+                self.log.info("dialect: %s" % (engine.url.get_dialect().name))
                 # result = engine.execute(text("SHOW TABLES;"))
                 # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
