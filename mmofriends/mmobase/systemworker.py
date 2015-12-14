@@ -7,10 +7,8 @@ import time
 import logging
 import json
 
-from sqlalchemy.sql import text
-
 from mmofriends.mmoutils import *
-from mmofriends.database import db_session, engine
+from mmofriends.database import *
 from mmofriends.models import *
 
 # base class
@@ -136,7 +134,11 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
                 tableList = ['mmogamelink', 'mmonetcache', 'mmonetlink', 'mmopaypalpayment', 'mmouser', 'mmousernick']
 
+<<<<<<< HEAD
                 # tableList = get_db_tables()
+=======
+                tableList = get_table_list()
+>>>>>>> dev
                 self.log.debug("[SW:%s] Found the following tables: %s" % (self.handle, ', '.join(tableList)))
 
                 result = engine.execute('OPTIMIZE TABLE %s;' % (', '.join(tableList)))
