@@ -130,12 +130,17 @@ class MMODatabaseMaintenance(MMOSystemWorker):
 
         for table in tableList:
             try:
-                print engine.execute('OPTIMIZE TABLE %s;' % (table))
+                result = engine.execute('SHOW TABLES;')
+                # result = engine.execute('OPTIMIZE TABLE %s;' % (table))
                 # db_session.merge(ret)
                 # runQuery(db_session.commit)
                 tablesOk.append(table)
             except Exception as e:
                 self.log.error("[SW:%s] SQL Alchemy Error on table optimization: %s" % (self.handle, e))
                 tablesNok.append(table)
+
+        # for row in result:
+        # infos['cachesizes'].append({ 'handle': row['network_handle'], 'name': row['entry_name'], 'size': bytes2human(row['size'])})
+
 
         return "Database optimized: %s; Unable to optimize: %s" % (', '.join(tablesOk), ', '.join(tablesNok))
