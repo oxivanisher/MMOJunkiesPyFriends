@@ -10,7 +10,7 @@ import json
 from sqlalchemy.sql import text
 
 from mmofriends.mmoutils import *
-from mmofriends.database import db_session, engine, get_db_tables
+from mmofriends.database import db_session, engine
 from mmofriends.models import *
 
 # base class
