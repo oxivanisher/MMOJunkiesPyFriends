@@ -1256,7 +1256,7 @@ def getSystemStats(request):
         for user in runQuery(MMOUser.query.all):
             users += 1
     except Exception as e:
-        self.log.warning("[System] SQL Alchemy Error on getSystemStats: %s" % (e))
+        log.warning("[System] SQL Alchemy Error on getSystemStats: %s" % (e))
 
     loadedNets = 0
     for handle in MMONetworks.keys():
