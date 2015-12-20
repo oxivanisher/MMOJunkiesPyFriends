@@ -583,7 +583,7 @@ class TS3Network(MMONetwork):
             return gettext("Please choose a user.")
         self.getCache('onlineClients')
         self.connect()
-        self.log.info("[%s] Link user %s to network %s" % (self.handle, userId, self.name))
+        self.log.info("[%s] Link user %s to %s (%s) with network %s" % (self.handle, self.getSessionValue('nick'), self.cache['onlineClients'][userId]['client_nickname'], userId, self.name))
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
         message = gettext("Your key is: %(key)s", key=self.getSessionValue('doLinkKey'))
