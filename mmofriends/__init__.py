@@ -1080,7 +1080,7 @@ def profile_login():
                 flash(gettext("User locked. Please contact an administrator."), 'info')
                 return redirect(url_for('index'))
             elif myUser.checkPassword(request.form['password']):
-                log.info("[System] <%s> logged in" % myUser.nick)
+                log.info("[System] <%s> logged in" % myUser.getDisplayName())
                 session['logged_in'] = True
                 session['userid'] = myUser.id
                 session['nick'] = myUser.nick
@@ -1098,7 +1098,7 @@ def profile_login():
                 #     MMONetworks[net].loadNetworkToSession()
 
             else:
-                log.info("[System] Invalid password for %s" % myUser.nick)
+                log.info("[System] Invalid password for %s" % myUser.getDisplayName())
                 flash(gettext('Invalid login'), 'error')
         else:
             flash(gettext('Invalid login'), 'error')
