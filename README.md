@@ -13,8 +13,8 @@ Website community system to connect friends from different gaming sources like S
 
 ## Install needed libraries (debian)
 ```bash
-apt-get install python-pip python-dev redis-server
-pip install requests rauth numpy Flask-OpenID Flask-Compress Flask-Celery3 Flask-Babel PyYAML feedparser celery redis MySQL-python
+apt-get install python-pip python-dev redis-server libmysqlclient-dev
+pip install PyYAML Flask-Babel rauth feedparser Flask Flask-OpenID Flask-Babel celery redis requests numpy Flask-OpenID Flask-Compress Flask-Celery3 celery redis MySQL-python sqlalchemy
 ```
 
 ### Install TS3 Lib (do this in some other directory!)
