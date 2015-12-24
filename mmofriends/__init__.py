@@ -75,7 +75,7 @@ app.config['startupDate'] = time.time()
 try:
     sys.path.append(os.path.join(app.config['scriptPath'], '../libs/sep'))
     import process
-    from urlparse import urlsplit, urlunsplit, parse_qs
+    # from urlparse import urlsplit, urlunsplit, parse_qs
 except ImportError:
     log.warning("[System] Unable to import the google crawler stuff. See 'Init GIT Submodules' in the Readme.")
     sys.exit(2)
