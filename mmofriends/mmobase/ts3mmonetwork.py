@@ -583,7 +583,7 @@ class TS3Network(MMONetwork):
             return gettext("Please choose a user.")
         self.getCache('onlineClients')
         self.connect()
-        self.log.info("[%s] Link user %s to %s (%s) with network %s" % (self.handle, self.getSessionValue('nick'), self.cache['onlineClients'][userId]['client_nickname'], userId, self.name))
+        self.log.info("[%s] Link user %s to %s (%s) with network %s" % (self.handle, self.session['nick'], self.cache['onlineClients'][userId]['client_nickname'], userId, self.name))
         self.setSessionValue('doLinkKey', "%06d" % (random.randint(1, 999999)))
         self.setSessionValue(self.linkIdName, userId)
         message = gettext("Your key is: %(key)s", key=self.getSessionValue('doLinkKey'))
@@ -596,19 +596,19 @@ class TS3Network(MMONetwork):
                 break
             except EOFError as e:
                 if count > 15:
-                    self.log.warning("[%s] Unable to link network for %s (%s) to %s because: %s (%s)" % (self.handle, self.cache['onlineClients'][userId]['client_nickname'], userId, self.getSessionValue('nick'), e, ret))
+                    self.log.warning("[%s] Unable to link network for %s (%s) to %s because: %s (%s)" % (self.handle, self.cache['onlineClients'][userId]['client_nickname'], userId, self.session['nick'], e, ret))
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
             except KeyError as e:
                 if count > 15:
-                    self.log.warning("[%s] Unable to link network for %s to %s because onlineclient was not found: %s (%s)" % (self.handle, userId, self.getSessionValue('nick'), e, ret))
+                    self.log.warning("[%s] Unable to link network for %s to %s because onlineclient was not found: %s (%s)" % (self.handle, userId, self.session['nick'], e, ret))
                     return gettext("Client not found. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
             except Exception as e:
                 if count > 15:
-                    self.log.error("[%s] Unable to link network for %s (%s) to %s because: %s (%s)" % (self.handle, self.cache['onlineClients'][userId]['client_nickname'], userId, self.getSessionValue('nick'), e, ret))
+                    self.log.error("[%s] Unable to link network for %s (%s) to %s because: %s (%s)" % (self.handle, self.cache['onlineClients'][userId]['client_nickname'], userId, self.session['nick'], e, ret))
                     return gettext("Temporary TS3 Server error occured. Please try again, sorry.")
                 else:
                     time.sleep(0.2)
