@@ -637,7 +637,7 @@ class TS3Network(MMONetwork):
 
             return True
         else:
-            self.log.warning("[%s] Unable to finalize user link to network %s because no userKey is submitted." % (self.handle, self.name))
+            self.log.warning("[%s] Unable to finalize user link to network %s, Key wrong: %s != %s." % (self.handle, self.name, self.getSessionValue('doLinkKey'), userKey))
             return False
 
     def admin(self):
