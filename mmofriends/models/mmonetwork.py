@@ -317,9 +317,12 @@ class MMONetwork(object):
             myDict['details'].append({'key': key, 'value': value})
 
     def setPartnerAvatar(self, myDict, avatarName):
-        if avatarName[0] == '/':
-            avatarName = avatarName[1:]
-        myDict['avatar'] = avatarName
+        if len(avatarName):
+            if avatarName[0] == '/':
+                avatarName = avatarName[1:]
+            myDict['avatar'] = avatarName
+        else:
+            myDict['avatar'] = ''
 
     def getStats(self):
         self.log.debug("[%s] Requesting stats" % (self.handle))
