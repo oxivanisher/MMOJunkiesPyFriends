@@ -111,7 +111,13 @@ class MMONetwork(object):
             self.log.info("[%s] Downloading %s" % (self.handle, url))
 
             try:
-                r = requests.get(url, timeout=10).save(outputFilePath)
+                r = requests.get(url, timeout=10)
+                if r.status_code == 200:
+                    with open(outputFilePath, 'wb') as f:
+                        for chunk in r:
+                            f.write(chunk)
+                else:
+                    self.log.warning("[%s] cacheFile did get status code %s from: %s" % (self.handle, r.status_code, url))
             except requests.exceptions.Timeout:
                 self.log.warning("[%s] cacheFile ran into timeout for: %s" % (self.handle, url))
                 return ""
