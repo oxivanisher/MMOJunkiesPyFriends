@@ -7,7 +7,7 @@ import socket
 import os
 import random
 import atexit
-import urllib
+import requests
 import json
 import zlib
 import traceback
@@ -110,12 +110,21 @@ class MMONetwork(object):
         else:
             self.log.info("[%s] Downloading %s" % (self.handle, url))
 
-            avatarFile = urllib.URLopener()
             try:
-                avatarFile.retrieve(url, outputFilePath)
-            except IOError as e:
-                self.log.warning("[%s] Unable to cache file from URL: %s (%s)" % (self.handle, url, e))
+                r = requests.get(url, timeout=10).save(outputFilePath)
+            except requests.exceptions.Timeout:
+                self.log.warning("[%s] cacheFile ran into timeout for: %s" % (self.handle, url))
                 return ""
+            except requests.exceptions.RequestException as e:
+                self.log.warning("[%s] cacheFile ran into requests.exception %s for: %s" % (self.handle, e, url))
+                return ""
+            except (ValueError, requests.ConnectionError) as e:
+                self.log.warning("[%s] cacheFile got ValueError %s for: %s" % (self.handle, e, url))
+                return ""
+            except Exception as e:
+                self.log.warning("[%s] cacheFile ran into exception %s for: %s" % (self.handle, e, url))
+                return ""
+
         return newUrl
 
     # Basic class methods

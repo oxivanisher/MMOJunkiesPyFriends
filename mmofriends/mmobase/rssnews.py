@@ -7,7 +7,6 @@ import time
 # import random
 # import json
 # import requests
-# import urllib
 import re
 
 from flask import current_app
