@@ -70,6 +70,7 @@ class BlizzNetwork(MMONetwork):
         self.registerWorker(self.updateBaseResources, 39600)
         self.registerWorker(self.updateAllUserResources, 3500)
         self.registerWorker(self.updateUserFeeds, 909)
+        self.registerWorker(self.cleanProfiles, 3400)
 
         # dashboard boxes
         self.registerDashboardBox(self.dashboard_wowChars, 'wowChars', {'title': 'WoW: Chars by level','template': 'box_jQCloud.html'})
@@ -466,6 +467,22 @@ class BlizzNetwork(MMONetwork):
 
         return "%s feeds from %s users updated. Ignored because unlinked: %s, lowie: %s." % (feedCount, okCount, nokCount, lowieCount)
 
+    def cleanProfiles(self, logger = None):
+        # FIXME: clean up other profiles too... (d3, sc2)
+        if not logger:
+            logger = self.log
+
+        wowCleanCount = 0
+        self.getCache('wowProfiles')
+        for profile in self.cache['wowProfiles']:
+            if 'lastUpdate' in profile.keys():
+                if profile['lastUpdate'] < time.time() + 86400:
+                    self.cache.pop(profile, None)
+                    wowCleanCount += 1
+        self.setCache('wowProfiles')
+        
+        return "%s WoW profiles cleaned up." % (wowCleanCount)
+
     def updateUserResources(self, userid = None, accessToken = None, logger = None):
         if not logger:
             logger = self.log
@@ -515,6 +532,7 @@ class BlizzNetwork(MMONetwork):
             lowieCount = 0
             self.getCache('wowProfiles')
             self.cache['wowProfiles'][userid] = retMessage
+            self.cache['wowProfiles'][userid]['lastUpdate'] = time.time()
             self.setCache('wowProfiles')
             if background and 'characters' in retMessage.keys():
                 self.getCache('wowAchievments')
