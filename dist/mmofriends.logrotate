@@ -1,0 +1,8 @@
+USERHOME/git_checkouts/MMOJunkiesPyFriends/log/*.log {
+        weekly
+        missingok
+        rotate 52
+        compress
+        notifempty
+        create 0660 www-data USER
+}
