@@ -11,6 +11,7 @@ import requests
 import json
 import zlib
 import traceback
+import sqlalchemy
 
 from flask import current_app
 from flask.ext.babel import Babel, gettext
@@ -472,7 +473,7 @@ class MMONetwork(object):
                     self.getCache('backgroundTasks')
                     logger.error("[%s] Timeout of 600 seconds reached. Background job '%s' killed!\n%s\n%s" % (self.handle, method.func_name, traceback.format_exc(), self.cache['backgroundTasks'][method.func_name]['result']))
                     ret = False
-                except OperationalError as e:
+                except sqlalchemy.exc.OperationalError as e:
                     logger.warning("[%s] Background worker encountered DB OperationalError (%s) while working on %s." % (self.handle, e, method.func_name))
                     db_session.remove()
                     ret = False
