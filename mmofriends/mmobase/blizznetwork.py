@@ -469,16 +469,26 @@ class BlizzNetwork(MMONetwork):
 
     def cleanProfiles(self, logger = None):
         # FIXME: clean up other profiles too... (d3, sc2)
+
+        keepProfilesSeconds = 86400
+
         if not logger:
             logger = self.log
 
         wowCleanCount = 0
         self.getCache('wowProfiles')
         for profile in self.cache['wowProfiles'].keys():
+            deleteMe = False
             if 'lastUpdate' in self.cache['wowProfiles'][profile].keys():
-                if self.cache['wowProfiles'][profile]['lastUpdate'] + 86400 < time.time():
-                    self.cache['wowProfiles'].pop(profile, None)
-                    wowCleanCount += 1
+                if self.cache['wowProfiles'][profile]['lastUpdate'] + keepProfilesSeconds < time.time():
+                    deleteMe = True
+            else:
+                deleteMe = True
+
+            if deleteMe:
+                self.cache['wowProfiles'].pop(profile, None)
+                wowCleanCount += 1
+
         self.setCache('wowProfiles')
         
         return "%s WoW profiles cleaned up." % (wowCleanCount)
