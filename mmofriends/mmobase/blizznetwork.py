@@ -476,7 +476,7 @@ class BlizzNetwork(MMONetwork):
         self.getCache('wowProfiles')
         for profile in self.cache['wowProfiles'].keys():
             if 'lastUpdate' in self.cache['wowProfiles'][profile].keys():
-                if self.cache['wowProfiles'][profile]['lastUpdate'] < time.time() + 86400:
+                if self.cache['wowProfiles'][profile]['lastUpdate'] + 86400 < time.time():
                     self.cache['wowProfiles'].pop(profile, None)
                     wowCleanCount += 1
         self.setCache('wowProfiles')
