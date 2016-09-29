@@ -90,8 +90,11 @@ class TS3Network(MMONetwork):
                 logger = self.log
 
             for client in self.cache['onlineClients']:
-                logger.debug("[%s] Updating online client info for: %s" % (self.handle, self.cache['onlineClients'][client]['client_database_id']))
-                self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
+                try:
+                    logger.debug("[%s] Updating online client info for: %s" % (self.handle, self.cache['onlineClients'][client]['client_database_id']))
+                    self.fetchUserDetatilsByCldbid(self.cache['onlineClients'][client]['client_database_id'])
+                except UnicodeDecodeError:
+                    logger.error("[%s] UnicodeDecodeError on updateOnlineClientInfos for: %s" % (self.handle, self.cache['onlineClients'][client]['client_database_id']))
             return "%s online client(s) updated" % len(self.cache['onlineClients'])
         else:
             return "Not connected to TS3 Server"
