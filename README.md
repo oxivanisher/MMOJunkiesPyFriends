@@ -14,14 +14,23 @@ Website community system to connect friends from different gaming sources like S
 ## Install needed libraries (debian)
 ```bash
 apt-get install python-pip python-dev redis-server libmysqlclient-dev
-pip install PyYAML Flask-Babel rauth feedparser Flask Flask-OpenID Flask-Babel celery redis requests numpy Flask-OpenID Flask-Compress Flask-Celery3 celery redis MySQL-python sqlalchemy
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+pip install -r dist/requirements.txt
+deactivate
+
+#pip install PyYAML Flask-Babel rauth feedparser Flask Flask-OpenID Flask-Babel celery redis requests numpy Flask-OpenID Flask-Compress Flask-Celery3 celery redis MySQL-python sqlalchemy
+
 ```
 
-### Install TS3 Lib (do this in some other directory!)
+### Install TS3 Lib
 ```bash
-git clone git://github.com/nikdoof/python-ts3.git
-cd python-ts3
+git clone git://github.com/nikdoof/python-ts3.git libs/python-ts3
+source venv/bin/activate
+cd libs/python-ts3
 python setup.py install
+deactivate
 ```
 
 ## Tips and Tricks

@@ -22,8 +22,14 @@ if [ -z "$MMOFRIENDS_CFG" ]; then
 	fi
 fi
 
+# Activating virtualenv
+source venv/bin/activate
+
 # Actually starting the application.
 python mmofriends.py
+
+# Deactivating virtualenv
+deactivate
 
 # Changing back to origin path.
 cd ${ORIGDIR}
